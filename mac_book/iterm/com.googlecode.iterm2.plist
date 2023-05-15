@@ -170,7 +170,7 @@
 				<real>1</real>
 			</dict>
 			<key>Automatically Log</key>
-			<true/>
+			<false/>
 			<key>BM Growl</key>
 			<true/>
 			<key>Background Color</key>
@@ -205,6 +205,8 @@
 			<integer>120</integer>
 			<key>Command</key>
 			<string></string>
+			<key>Cursor Boost</key>
+			<real>0.0</real>
 			<key>Cursor Color</key>
 			<dict>
 				<key>Blue Component</key>
@@ -258,6 +260,7 @@
 				<string>ssh</string>
 				<string>slogin</string>
 				<string>telnet</string>
+				<string></string>
 			</array>
 			<key>Keyboard Map</key>
 			<dict>
@@ -553,7 +556,7 @@
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>RictyDiminished-Regular 13</string>
+			<string>AnonymiceProNF 13</string>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
 			<key>Prompt Before Closing 2</key>
