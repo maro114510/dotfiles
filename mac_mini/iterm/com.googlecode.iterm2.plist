@@ -1567,6 +1567,8 @@
 	</dict>
 	<key>PreserveWindowSizeWhenTabBarVisibilityChanges</key>
 	<false/>
+	<key>PromptOnQuit</key>
+	<false/>
 	<key>ShowFullScreenTabBar</key>
 	<false/>
 	<key>SoundForEsc</key>
