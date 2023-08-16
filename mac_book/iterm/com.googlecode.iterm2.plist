@@ -589,6 +589,8 @@
 			</dict>
 			<key>Send Code When Idle</key>
 			<false/>
+			<key>Set Local Environment Vars</key>
+			<false/>
 			<key>Shortcut</key>
 			<string></string>
 			<key>Show Status Bar</key>
@@ -1366,6 +1368,8 @@
 			</dict>
 			<key>Send Code When Idle</key>
 			<false/>
+			<key>Set Local Environment Vars</key>
+			<false/>
 			<key>Shortcut</key>
 			<string></string>
 			<key>Show Status Bar</key>
@@ -1570,6 +1574,8 @@
 	</dict>
 	<key>PreserveWindowSizeWhenTabBarVisibilityChanges</key>
 	<false/>
+	<key>Print In Black And White</key>
+	<true/>
 	<key>PromptOnQuit</key>
 	<false/>
 	<key>ShowFullScreenTabBar</key>
