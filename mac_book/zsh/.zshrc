@@ -167,6 +167,7 @@ alias gp="git pull"
 alias gf='git flow'
 alias vim='nvim'
 alias vi='vi'
+alias lg='lazygit'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias memo='sh ~/commands/create_memo.sh'
