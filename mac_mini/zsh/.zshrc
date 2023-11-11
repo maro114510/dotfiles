@@ -151,6 +151,8 @@ alias prp='poetry run python'
 alias gp="git pull"
 alias gf='git flow'
 alias lg='lazygit'
+alias vim='nvim'
+alias vi='vi'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias memo='sh ~/commands/create_memo.sh'
