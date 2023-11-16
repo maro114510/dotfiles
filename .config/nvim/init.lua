@@ -1,7 +1,8 @@
--- カラースキームの変更
+-- NeoVi Setting
+-- Change Color Scheme
 vim.cmd[[colorscheme tokyonight-night]]
 
--- カーソルの設定→抜けるときに_
+-- when leave
 vim.cmd([[
     augroup RestoreCursorShapeOnExit
         autocmd!
@@ -9,7 +10,9 @@ vim.cmd([[
     augroup END
 ]])
 
--- クリップボードにコピーしない設定
+vim.cmd[[autocmd VimLeave * :!clear]]
+
+-- clipboard copy setting
 vim.api.nvim_set_keymap('n', 'x', '"_x', {noremap = true})
 vim.api.nvim_set_keymap('n', 's', '"_s', {noremap = true})
 vim.api.nvim_set_keymap('n', 'd', '"_d', { noremap = true })
@@ -19,15 +22,15 @@ vim.api.nvim_set_keymap('x', 'd', '"_d', { noremap = true })
 -- Esc
 vim.api.nvim_set_keymap('i', 'jj', '<ESC>', {noremap = true, silent = true})
 
--- クリップボードにコピーしない ##要修正##
+-- Do not use clipboard
 vim.opt.formatoptions:remove("r")
 vim.opt.formatoptions:remove("o")
 
--- プラグイン
+-- Plugin
 require("options")
 require("plugins")
 
--- 日本語切り替え
+-- Japanese Input Source
 require('im_select').setup {
     default_im_select = "com.apple.keylayout.ABC"
 }
@@ -42,7 +45,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end,
 })
 
--- いい感じの見た目
+-- View Setting
 require("lualine").setup()
 require("tabline").setup()
 
@@ -57,3 +60,4 @@ require("nvim-treesitter.configs").setup({
   },
 })
 
+vim.cmd[[highlight Comment cterm=italic gui=italic guifg=#ffd700 ctermfg=226]]
