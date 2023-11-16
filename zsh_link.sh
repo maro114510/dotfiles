@@ -8,5 +8,6 @@ if [ -f "$HOME/.zshrc" ]; then
     echo "backup done"
 fi
 
-ln -sfn "$CURRENT_DIR/.zshrc" "$HOME/.zshrc"
+ln -sfn "$CURRENT_DIR/.config/.zshrc" "$HOME/.zshrc"
 
+echo "linked"
