@@ -131,6 +131,7 @@ if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -
 export GOPATH=$HOME/go
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
+export PATH=$PATH:$(go env GOPATH)/bin
 
 ### Rust ###
 export PATH="$HOME/.cargo/bin:$PATH"
