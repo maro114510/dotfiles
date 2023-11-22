@@ -1,23 +1,40 @@
--- -番号表示
+-- Setting Base Config
+-- Show number
 vim.opt.number = true
--- -エラー時の音を画面表示に
+
+-- Error sound to visual
 vim.opt.visualbell = true
 
--- -大文字無視
+-- Ignore capital
 vim.opt.ignorecase = true
--- -大文字で検索したら区別をつける
+
+-- If search Capitalize
 vim.opt.smartcase = true
--- -検索が末尾までいったら先頭から検索
+
+-- If the search reeach end, from the beginning
 vim.opt.wrapscan = true
 
--- カーソル移動
--- - 行を跨いでの移動
+-- Movin cursor
+-- Moving across lines
 vim.opt.whichwrap = 'b', 's', 'h', 'l', '<', '>', '[', ']'
--- - 削除時の対象
+
+-- Target at deletion
 vim.opt.backspace = 'start', 'eol', 'indent'
 
--- クリップボード連携
+-- Link to clipboard
 vim.opt.clipboard:append({unnamedeplus = true})
 
--- マウス有効
+-- Able to mouse
 vim.opt.mouse = 'a'
+
+-- Visualization of control characters
+vim.opt.list = true
+vim.opt.listchars = {
+	tab = '│·',
+	extends = '⟩',
+	precedes = '⟨',
+	trail = '·',
+	eol = '↴',
+	nbsp = '%'
+}
+
