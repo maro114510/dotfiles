@@ -173,3 +173,10 @@ alias ac='sh ~/commands/auto_commit.sh'
 alias memo='sh ~/commands/create_memo.sh'
 
 
+
+# bun completions
+[ -s "/Users/atsuki/.bun/_bun" ] && source "/Users/atsuki/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
