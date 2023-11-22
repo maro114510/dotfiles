@@ -22,6 +22,14 @@ vim.api.nvim_set_keymap('x', 'd', '"_d', { noremap = true })
 -- Esc
 vim.api.nvim_set_keymap('i', 'jj', '<ESC>', {noremap = true, silent = true})
 
+-- Exchange ;:
+vim.api.nvim_set_keymap('', ';',':', {noremap = true})
+
+-- Indent
+vim.o.smartindent = true
+vim.o.list = true
+vim.o.listchars = 'tab:>>-,trail:-'
+
 -- Do not use clipboard
 vim.opt.formatoptions:remove("r")
 vim.opt.formatoptions:remove("o")
