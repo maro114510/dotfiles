@@ -174,6 +174,7 @@ alias lg='lazygit'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias memo='sh ~/commands/create_memo.sh'
+alias tmuxer='tmux new -s \; source-file ~/.tmux.session.conf'
 
 
 

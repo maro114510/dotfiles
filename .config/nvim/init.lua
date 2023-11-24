@@ -1,4 +1,4 @@
--- NeoVi Setting
+-- NeoVim Setting
 
 -- Indent
 vim.o.smartindent = true
@@ -12,10 +12,11 @@ require("lsp")
 require("comp")
 require("keymap")
 require("autocmds")
+require("base")
 
 vim.api.nvim_create_autocmd("BufWritePost", {
-  pattern = { "plugins.lua" },
-  command = "PackerCompile",
+	pattern = { "plugins.lua" },
+	command = "PackerCompile",
 })
 
 -- Japanese Input Source
@@ -26,11 +27,11 @@ require('im_select').setup {
 -- NerdTree
 vim.g.NERDTreeShowHidden = 1
 vim.api.nvim_create_autocmd("VimEnter", {
-    pattern = "*",
-    callback = function()
-        vim.cmd("NERDTree")
-        vim.cmd("wincmd p")
-    end,
+	pattern = "*",
+	callback = function()
+		vim.cmd("NERDTree")
+		vim.cmd("wincmd p")
+	end,
 })
 
 -- View Setting
@@ -42,10 +43,8 @@ require("mini.indentscope").setup({
 })
 
 require("nvim-treesitter.configs").setup({
-    auto_install = true,
-    highlight = {
-        enable = true,
-    },
+	auto_install = true,
+	highlight = {
+		enable = true,
+	},
 })
-
-

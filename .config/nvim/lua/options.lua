@@ -22,13 +22,6 @@ vim.opt.matchtime = 1
 vim.opt.termguicolors = true -- 24bit Color
 vim.opt.background = "dark" -- Using dark Color
 
--- Indent
-vim.opt.shiftwidth = 4
-vim.opt.tabstop = 4
-vim.opt.expandtab = true
-vim.opt.autoindent = true
-vim.opt.smartindent = true
-
 -- Display
 vim.opt.wrap = false -- Disable wrap test
 vim.opt.showtabline = 2 -- Display tabline
