@@ -16,4 +16,7 @@ if [ -f "$HOME/.tmux.session.conf" ]; then
     echo "backup done"
 fi
 
+ln -sfn "$CURRENT_DIR/.config/.tmux.session.conf" "$HOME/.tmux.session.conf"
+
+
 echo "linked"
