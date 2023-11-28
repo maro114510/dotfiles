@@ -5,7 +5,7 @@
 	<key>AllowClipboardAccess</key>
 	<true/>
 	<key>AutoHideTmuxClientSession</key>
-	<true/>
+	<false/>
 	<key>Custom Color Presets</key>
 	<dict>
 		<key>dracula</key>
@@ -2048,8 +2048,14 @@
 	<integer>4</integer>
 	<key>TabViewType</key>
 	<integer>0</integer>
+	<key>TmuxUsesDedicatedProfile</key>
+	<false/>
+	<key>TmuxWarnBeforePausing</key>
+	<false/>
 	<key>UseBorder</key>
 	<false/>
+	<key>UseTmuxStatusBar</key>
+	<true/>
 	<key>VisualIndicatorForEsc</key>
 	<false/>
 	<key>WindowNumber</key>
