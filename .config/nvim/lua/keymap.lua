@@ -1,4 +1,3 @@
-
 -- clipboard copy setting
 vim.api.nvim_set_keymap('n', 'x', '"_x', { noremap = true })
 vim.api.nvim_set_keymap('n', 's', '"_s', { noremap = true })

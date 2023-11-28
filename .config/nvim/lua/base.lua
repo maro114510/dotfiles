@@ -29,7 +29,6 @@ vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 
 -- Link to clipboard
--- vim.opt.clipboard:append({unnamedeplus = true})
 vim.opt.clipboard:append { 'unnamed', 'unnamedplus' }
 
 -- Able to mouse

@@ -62,4 +62,3 @@ return require('packer').startup(function(use)
 	-- use { "fatih/vim-go", opt = true, ft = { "go" } }
 	use "tpope/vim-commentary"
 end)
-
