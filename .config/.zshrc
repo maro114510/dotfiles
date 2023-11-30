@@ -174,8 +174,18 @@ alias lg='lazygit'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias memo='sh ~/commands/create_memo.sh'
+alias めも='sh ~/commands/create_memo.sh'
 alias tmuxer='tmux new -s \; source-file ~/.tmux.session.conf'
 
+if [ -f "$HOME/.env" ]; then
+    source "$HOME/.env"
+
+    if [ "$LOCAL_NAME" = "macbook" ]; then
+		alias brewd="brew bundle dump --force --file=/Users/atsuki/ghq/github.com/maro114510/dotfiles/mac_book/Brewfile"
+    elif [ "$LOCAL_NAME" = "macmini" ]; then
+		alias brewd="brew bundle dump --force --file=/Users/nohira/ghq/github.com/maro114510/dotfiles/mac_mini/Brewfile"
+    fi
+fi
 
 
 # bun completions
