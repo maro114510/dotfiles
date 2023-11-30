@@ -32,3 +32,4 @@ vim.opt.winblend = 20 -- Opacity
 vim.opt.pumblend = 20 -- Popup window
 vim.opt.showtabline = 2 -- subcoloumn
 vim.opt.signcolumn = "yes" -- signcolumn
+
