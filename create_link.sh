@@ -1,7 +1,7 @@
 #!/bin/bash
 
-CURRENT_DIR="$(pwd)"
 
-# BREW_CMD="brew bundle dump --force --file=$CURRENT_DIR/Brewfile"
-
+source zsh_link.sh
+source vim_link.sh
+source tmuxs.sh
 
