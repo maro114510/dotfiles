@@ -1,0 +1,37 @@
+name: macbook
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  macos-test:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run brew bundle macbook
+      run: |
+        sh init.sh
+        brew bundle --file mac_book/Brewfile
+
+    - name: zsh
+      run: |
+        sh zsh_link.sh
+
+
+    - name: vim 
+      run: |
+        sh vim_link.sh
+
+    - name: tmux
+      run: |
+        sh tmuxs.sh
+
+    - name: wezterm
+      run: |
+        sh wezterm.sh
+

@@ -182,9 +182,13 @@ if [ -f "$HOME/.env" ]; then
     source "$HOME/.env"
 
     if [ "$LOCAL_NAME" = "macbook" ]; then
-		alias brewd="brew bundle dump --force --file=/Users/atsuki/ghq/github.com/maro114510/dotfiles/mac_book/Brewfile"
+		bfile='/Users/atsuki/ghq/github.com/maro114510/dotfiles/mac_book/Brewfile' 
+		alias brewd="brew bundle dump --force --file=$bifle"
+		ln -sfn "$bfile" "$HOME/Brewfile"
     elif [ "$LOCAL_NAME" = "macmini" ]; then
-		alias brewd="brew bundle dump --force --file=/Users/nohira/ghq/github.com/maro114510/dotfiles/mac_mini/Brewfile"
+		bfile='/Users/atsuki/ghq/github.com/maro114510/dotfiles/mac_mini/Brewfile' 
+		alias brewd="brew bundle dump --force --file=$bfile"
+		ln -sfn "$bfile" "$HOME/Brewfile"
     fi
 fi
 
