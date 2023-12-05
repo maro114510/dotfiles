@@ -29,7 +29,7 @@ local keys = {
         mods = 'SHIFT|META',
         action = wezterm.action.ToggleFullScreen,
     },
-    -- Ctrl+Shift+dで新しいペインを作成(画面を分割)
+    -- Ctrl+Shift+d create new pane
     {
         key = 'd',
         mods = 'SHIFT|CMD',

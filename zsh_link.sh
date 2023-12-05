@@ -2,6 +2,7 @@
 
 CURRENT_DIR=$(pwd)
 
+# if .zshrc exists → backup
 if [ -f "$HOME/.zshrc" ]; then
     BACKUP="$HOME/.zshrc_$(date +"%Y%m%d_%H%M%S")"
     rsync -oL "$HOME/.zshrc" "$BACKUP"

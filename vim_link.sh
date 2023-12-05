@@ -2,9 +2,9 @@
 
 CURRENT_DIR=$(pwd)
 TARGET_DIR="$CURRENT_DIR/.config/nvim"
-
 NVIM_DIR="$HOME/.config/nvim"
 
+# neovim link
 if [ -d "$NVIM_DIR" ]; then
     BACKUP_DIR="$HOME/.config/nvim/nvim_backup_$(date +"%Y%m%d_%H%M%S")"
     rsync -a "$NVIM_DIR" "$BACKUP_DIR"

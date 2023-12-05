@@ -4,42 +4,42 @@ set encoding=utf-8
 set fileformat=unix
 
 "===== memo =====
-set number "行番号の表示
-set list "タブ、空白、改行を可視化
-set title "編集中のファイル名を表示
-set laststatus=2 "ステータスを表示
-set ruler "カーソル位置を表示
+set number " line number
+set list " display
+set title " view title
+set laststatus=2 " display status
+set ruler " display cursor
 set ambiwidth=double
-syntax on "シンタックスハイライト
+syntax on " syntax highlight
 
-"===== 文字、カーソル設定 =====
+"===== figure =====
 set autoindent
 set smartindent
 set tabstop=4
 set shiftwidth=4
 set expandtab
 
-"===== 検索設定 =====
-set ignorecase "大文字小文字の区別なし
-set wrapscan "検索時に最後まで行ったら最初に戻る
-set hlsearch "検索した文字を強調
-set incsearch "インクリメンタルサーチを有効化
+"===== search =====
+set ignorecase
+set wrapscan " return to start if reach end
+set hlsearch " enhance word
+set incsearch
 
-"===== カッコ =====
+"===== blackets =====
 inoremap ( ()<left>
 inoremap [ []<left>
 inoremap { {}<left>
 inoremap " ""<left>
 inoremap ' ''<left>
 
-"===== その他 =====
+"===== others =====
 set history=300
 set clipboard+=unnamed
 set nobackup
 set noswapfile
 set autoread
 
-"===== プラグイン設定 =====
+"===== plugin settings =====
 autocmd VimEnter * NERDTree | wincmd p
 let NERDTreeShowHidden=1
 

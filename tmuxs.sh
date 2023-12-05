@@ -2,6 +2,7 @@
 
 CURRENT_DIR=$(pwd)
 
+# tmux
 if [ -f "$HOME/.tmux.conf" ]; then
     BACKUP="$HOME/.tmux.conf_$(date +"%Y%m%d_%H%M%S")"
     rsync -oL "$HOME/.tmux.conf" "$BACKUP"
@@ -11,6 +12,7 @@ else
 	echo ".tmux.conf linked"
 fi
 
+# tmux alias
 if [ -f "$HOME/.tmux.session.conf" ]; then
 	BACKUP="$HOME/.tmux.session.conf_$(date +"%Y%m%d_%H%M%S")"
 	rsync -oL "$HOME/.tmux.session.conf" "$BACKUP"

@@ -6,6 +6,7 @@ TARGET_DIR="$CURRENT_DIR/.config/wezterm"
 WEZTERM="$HOME/.wezterm.lua"
 WEZTERM_DIR="$HOME/.config/wezterm/config"
 
+# if .wezterm.lua exists → backup
 if [ -f $WEZTERM ]; then
     BACKUP_FILE="$HOME/.wezterm.lua_backup_$(date +"%Y%m%d_%H%M%S")"
 	rsync -oL "$WEZTERM" "$BACKUP_FILE"
