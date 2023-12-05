@@ -16,7 +16,8 @@ jobs:
     - name: Run brew bundle macbook
       run: |
         sh init.sh
-        brew bundle --file mac_book/Brewfile
+        brew install neovim \
+          tmux vim git peco
 
     - name: zsh
       run: |
