@@ -182,13 +182,13 @@ if [ -f "$HOME/.env" ]; then
     source "$HOME/.env"
 
     if [ "$LOCAL_NAME" = "macbook" ]; then
-		bfile='/Users/atsuki/ghq/github.com/maro114510/dotfiles/mac_book/Brewfile' 
+		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_book/Brewfile"
 		alias brewd="brew bundle dump --force --file=$bifle"
 		if [ ! -f "$HOME/Brewfile" ]; then
 			ln -sfn "$bfile" "$HOME/Brewfile"
 		fi
     elif [ "$LOCAL_NAME" = "macmini" ]; then
-		bfile='/Users/atsuki/ghq/github.com/maro114510/dotfiles/mac_mini/Brewfile' 
+		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_mini/Brewfile"
 		alias brewd="brew bundle dump --force --file=$bfile"
 		if [ ! -f "$HOME/Brewfile" ]; then
 			ln -sfn "$bfile" "$HOME/Brewfile"
@@ -198,7 +198,7 @@ fi
 
 
 # bun completions
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+[ -s "/Users/atsuki/.bun/_bun" ] && source "/Users/atsuki/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
