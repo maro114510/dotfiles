@@ -50,3 +50,5 @@ require("nvim-treesitter.configs").setup({
 	},
 })
 
+-- after
+vim.cmd('runtime! after/**/.vim')

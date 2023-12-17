@@ -76,5 +76,12 @@ return require('packer').startup(function(use)
 		config = function() require("nvim-autopairs").setup {} end
 	}
 	-- use { "fatih/vim-go", opt = true, ft = { "go" } }
+	use ({
+		'nvimdev/lspsaga.nvim',
+		after = 'nvim-lspconfig',
+		config = function()
+			require('lspsaga').setup({})
+		end,
+	})
 	use "tpope/vim-commentary"
 end)
