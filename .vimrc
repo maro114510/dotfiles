@@ -66,6 +66,7 @@ call jetpack#begin()
 	Jetpack 'junegunn/fzf.vim'
 	Jetpack 'nathanaelkane/vim-indent-guides'
 	Jetpack 'tpope/vim-fugitive'
+	Jetpack 'unblevable/quick-scope'
 	Jetpack 'preservim/nerdtree'
 call jetpack#end()
 
