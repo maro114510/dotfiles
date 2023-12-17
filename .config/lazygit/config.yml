@@ -1,0 +1,14 @@
+git:
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never
+gui:
+  theme:
+    selectedLineBgColor:
+      - underline
+    selectedRangeBgColor:
+      - underline
+  showIcons: true
+  language: 'en'
+os:
+  editCommand: "nvim"
