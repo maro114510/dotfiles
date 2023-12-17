@@ -34,7 +34,7 @@
 # *.png
 # *.mp4
 # *.json
-*compiled.lua
+*_compiled.lua
 
 
 ### macOS ###

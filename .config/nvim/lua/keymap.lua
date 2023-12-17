@@ -30,3 +30,5 @@ vim.api.nvim_set_keymap('n', '<space>rf', '<Plug>(coc-references)', { noremap = 
 -- space + rn = Rename
 vim.api.nvim_set_keymap('n', '<space>rn', '<Plug>(coc-rename)', { noremap = true, silent = true })
 
+-- word jump
+vim.api.nvim_set_keymap('n', '<S-C-h>', "<cmd>lua require'hop'.hint_words()<cr>", {})

@@ -51,5 +51,7 @@ require("nvim-treesitter.configs").setup({
 	},
 })
 
+require("appearance")
+
 -- after
 vim.cmd('runtime! after/**/.vim')

@@ -30,24 +30,34 @@ return require('packer').startup(function(use)
 	use({
 		'nvim-treesitter/nvim-treesitter',
 		run = ':TSUpdate',
+		highlight = {
+			enable = true,
+		},
+
 	})
 	use {
 		'nvim-neo-tree/neo-tree.nvim',
 		branch = 'v2.x',
 		requires = {
-			'nvim-lua/plenary.nvim',
+			'nvii-lua/plenary.nvim',
 			'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
 			'MunifTanjim/nui.nvim',
 		}
 	}
 	use 'preservim/nerdtree'
 	use 'ryanoasis/vim-devicons'
+	-- ====== Appearance ======
+	-- bufferline
+	use {'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons'}
+	-- color scheme
+	use 'shaunsingh/nord.nvim'
 	-- use 'kristijanhusak/defx-icons'
 	use 'bryanmylee/vim-colorscheme-icons'
 	use {
 		'neoclide/coc.nvim',
 		branch = 'release'
 	}
+
 	-- fzf
 	use {
 		'junegunn/fzf.vim',
@@ -55,7 +65,7 @@ return require('packer').startup(function(use)
 	}
 	use { 'ibhagwan/fzf-lua',
 		-- optional for icon support
-		requires = { 
+		requires = {
 			'kyazdani42/nvim-web-devicons',
 			'nvim-tree/nvim-web-devicons'
 		}
@@ -78,10 +88,20 @@ return require('packer').startup(function(use)
 		"iamcco/markdown-preview.nvim",
 	run = function() vim.fn["mkdp#util#install"]() end,
 	})
-	use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
+	-- use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
+
 	-- terminal usage
 	use {"akinsho/toggleterm.nvim", tag = '*', config = function()
 		require("toggleterm").setup()
+		end
+	}
+
+	use {
+		'phaazon/hop.nvim',
+		branch = 'v2', -- optional but strongly recommended
+		config = function()
+			-- you can configure Hop the way you like here; see :h hop-config
+			require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
 		end
 	}
 
@@ -109,3 +129,4 @@ return require('packer').startup(function(use)
 	})
 	use 'tpope/vim-commentary'
 end)
+
