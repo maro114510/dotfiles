@@ -80,6 +80,7 @@ plugins=(
       zsh-completions
       zsh-autosuggestions
       zsh-history-substring-search
+	  z
 )
 
 source $ZSH/oh-my-zsh.sh

@@ -35,17 +35,19 @@ return require('packer').startup(function(use)
 		},
 
 	})
-	use {
-		'nvim-neo-tree/neo-tree.nvim',
-		branch = 'v2.x',
-		requires = {
-			'nvii-lua/plenary.nvim',
-			'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
-			'MunifTanjim/nui.nvim',
-		}
-	}
+
+--	use {
+--		'nvim-neo-tree/neo-tree.nvim',
+--		branch = 'v2.x',
+--		requires = {
+--			'nvii-lua/plenary.nvim',
+--			'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+--			'MunifTanjim/nui.nvim',
+--		}
+--	}
 	use 'preservim/nerdtree'
 	use 'ryanoasis/vim-devicons'
+
 	-- ====== Appearance ======
 	-- bufferline
 	use {'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons'}
@@ -56,6 +58,25 @@ return require('packer').startup(function(use)
 	use {
 		'neoclide/coc.nvim',
 		branch = 'release'
+	}
+
+	-- scroll bar
+	use 'petertriho/nvim-scrollbar'
+	use {
+		"kevinhwang91/nvim-hlslens",
+		config = function()
+			require("hlslens").setup({
+				build_position_cb = function(plist, _, _, _)
+					require("scrollbar.handlers.search").handler.show(plist.start_pos)
+				end,
+			})
+			vim.cmd([[
+				augroup scrollbar_search_hide
+					autocmd!
+					autocmd CmdlineLeave : lua require('scrollbar.handlers.search').handler.hide()
+				augroup END
+			]])
+		end,
 	}
 
 	-- fzf
