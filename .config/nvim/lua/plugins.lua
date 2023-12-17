@@ -21,23 +21,23 @@ return require('packer').startup(function(use)
 	use 'folke/tokyonight.nvim'
 	use 'keaising/im-select.nvim'
 	use {
-		"nvim-lualine/lualine.nvim",
-		requires = { "nvim-tree/nvim-web-devicons", opt = true }
+		'nvim-lualine/lualine.nvim',
+		requires = { 'nvim-tree/nvim-web-devicons', opt = true }
 	}
-	use("nvim-tree/nvim-web-devicons")
-	use("kdheepak/tabline.nvim")
-	use("echasnovski/mini.indentscope")
+	use('nvim-tree/nvim-web-devicons')
+	use('kdheepak/tabline.nvim')
+	use('echasnovski/mini.indentscope')
 	use({
-		"nvim-treesitter/nvim-treesitter",
-		run = ":TSUpdate",
+		'nvim-treesitter/nvim-treesitter',
+		run = ':TSUpdate',
 	})
 	use {
-		"nvim-neo-tree/neo-tree.nvim",
-		branch = "v2.x",
+		'nvim-neo-tree/neo-tree.nvim',
+		branch = 'v2.x',
 		requires = {
-			"nvim-lua/plenary.nvim",
-			"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-			"MunifTanjim/nui.nvim",
+			'nvim-lua/plenary.nvim',
+			'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+			'MunifTanjim/nui.nvim',
 		}
 	}
 	use 'preservim/nerdtree'
@@ -46,7 +46,7 @@ return require('packer').startup(function(use)
 	use 'bryanmylee/vim-colorscheme-icons'
 	use {
 		'neoclide/coc.nvim',
-		branch = "release"
+		branch = 'release'
 	}
 	-- fzf
 	use {
@@ -60,9 +60,33 @@ return require('packer').startup(function(use)
 			'nvim-tree/nvim-web-devicons'
 		}
 	}
+	-- move cursor match-up
+	 use {
+		'andymass/vim-matchup',
+		setup = function()
+		-- may set any options here
+		vim.g.matchup_matchparen_offscreen = { method = "popup" }
+		end
+	}
+	-- auto brackets close
+	use 'cohama/lexima.vim'
+	-- manage git
+	use 'vim-denops/denops.vim'
+	use 'lambdalisue/gin.vim'
+	-- markdown preview
+	use({
+		"iamcco/markdown-preview.nvim",
+	run = function() vim.fn["mkdp#util#install"]() end,
+	})
+	use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
+	-- terminal usage
+	use {"akinsho/toggleterm.nvim", tag = '*', config = function()
+		require("toggleterm").setup()
+		end
+	}
 
 	-- LSP
-	use "neovim/nvim-lspconfig"
+	use 'neovim/nvim-lspconfig'
 	use 'hrsh7th/cmp-nvim-lsp'
 	use 'hrsh7th/cmp-buffer'
 	use 'hrsh7th/cmp-path'
@@ -72,10 +96,10 @@ return require('packer').startup(function(use)
 	use 'L3MON4D3/LuaSnip'
 	use 'saadparwaiz1/cmp_luasnip'
 	use {
-		"windwp/nvim-autopairs",
-		config = function() require("nvim-autopairs").setup {} end
+		'windwp/nvim-autopairs',
+		config = function() require('nvim-autopairs').setup {} end
 	}
-	-- use { "fatih/vim-go", opt = true, ft = { "go" } }
+	-- use { 'fatih/vim-go', opt = true, ft = { 'go' } }
 	use ({
 		'nvimdev/lspsaga.nvim',
 		after = 'nvim-lspconfig',
@@ -83,5 +107,5 @@ return require('packer').startup(function(use)
 			require('lspsaga').setup({})
 		end,
 	})
-	use "tpope/vim-commentary"
+	use 'tpope/vim-commentary'
 end)
