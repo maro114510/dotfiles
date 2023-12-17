@@ -44,6 +44,22 @@ return require('packer').startup(function(use)
 	use 'ryanoasis/vim-devicons'
 	-- use 'kristijanhusak/defx-icons'
 	use 'bryanmylee/vim-colorscheme-icons'
+	use {
+		'neoclide/coc.nvim',
+		branch = "release"
+	}
+	-- fzf
+	use {
+		'junegunn/fzf.vim',
+		requires = { 'junegunn/fzf', run = ':call fzf#install()' }
+	}
+	use { 'ibhagwan/fzf-lua',
+		-- optional for icon support
+		requires = { 
+			'kyazdani42/nvim-web-devicons',
+			'nvim-tree/nvim-web-devicons'
+		}
+	}
 
 	-- LSP
 	use "neovim/nvim-lspconfig"

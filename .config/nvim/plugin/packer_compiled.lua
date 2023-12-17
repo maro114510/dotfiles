@@ -49,8 +49,8 @@ local function save_profiles(threshold)
 end
 
 time([[Luarocks path setup]], true)
-local package_path_str = "/Users/nohira/.cache/nvim/packer_hererocks/2.1.1699801871/share/lua/5.1/?.lua;/Users/nohira/.cache/nvim/packer_hererocks/2.1.1699801871/share/lua/5.1/?/init.lua;/Users/nohira/.cache/nvim/packer_hererocks/2.1.1699801871/lib/luarocks/rocks-5.1/?.lua;/Users/nohira/.cache/nvim/packer_hererocks/2.1.1699801871/lib/luarocks/rocks-5.1/?/init.lua"
-local install_cpath_pattern = "/Users/nohira/.cache/nvim/packer_hererocks/2.1.1699801871/lib/lua/5.1/?.so"
+local package_path_str = "/Users/nohira/.cache/nvim/packer_hererocks/2.1.1700008891/share/lua/5.1/?.lua;/Users/nohira/.cache/nvim/packer_hererocks/2.1.1700008891/share/lua/5.1/?/init.lua;/Users/nohira/.cache/nvim/packer_hererocks/2.1.1700008891/lib/luarocks/rocks-5.1/?.lua;/Users/nohira/.cache/nvim/packer_hererocks/2.1.1700008891/lib/luarocks/rocks-5.1/?/init.lua"
+local install_cpath_pattern = "/Users/nohira/.cache/nvim/packer_hererocks/2.1.1700008891/lib/lua/5.1/?.so"
 if not string.find(package.path, package_path_str, 1, true) then
   package.path = package.path .. ';' .. package_path_str
 end
@@ -103,6 +103,26 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/nohira/.local/share/nvim/site/pack/packer/start/cmp_luasnip",
     url = "https://github.com/saadparwaiz1/cmp_luasnip"
+  },
+  ["coc.nvim"] = {
+    loaded = true,
+    path = "/Users/nohira/.local/share/nvim/site/pack/packer/start/coc.nvim",
+    url = "https://github.com/neoclide/coc.nvim"
+  },
+  fzf = {
+    loaded = true,
+    path = "/Users/nohira/.local/share/nvim/site/pack/packer/start/fzf",
+    url = "https://github.com/junegunn/fzf"
+  },
+  ["fzf-lua"] = {
+    loaded = true,
+    path = "/Users/nohira/.local/share/nvim/site/pack/packer/start/fzf-lua",
+    url = "https://github.com/ibhagwan/fzf-lua"
+  },
+  ["fzf.vim"] = {
+    loaded = true,
+    path = "/Users/nohira/.local/share/nvim/site/pack/packer/start/fzf.vim",
+    url = "https://github.com/junegunn/fzf.vim"
   },
   ["im-select.nvim"] = {
     loaded = true,

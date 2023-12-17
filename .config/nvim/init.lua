@@ -9,6 +9,7 @@ vim.o.listchars = 'tab:>>-,trail:-'
 require("options")
 require("plugins")
 require("lsp")
+require("coc")
 require("comp")
 require("keymap")
 require("autocmds")
