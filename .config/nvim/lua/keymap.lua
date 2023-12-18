@@ -33,3 +33,4 @@ vim.api.nvim_set_keymap('n', '<space>rn', '<Plug>(coc-rename)', { noremap = true
 
 -- word jump
 vim.api.nvim_set_keymap('n', '<S-C-h>', "<cmd>lua require'hop'.hint_words()<cr>", {})
+
