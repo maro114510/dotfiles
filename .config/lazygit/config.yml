@@ -7,3 +7,13 @@ gui:
   language: 'en'
 refresher:
   refreshInterval: 3
+customCommands:
+  - key: 'u'
+    context: 'files'
+    description: 'stash include untracked'
+    command: 'git stash save --include-untracked "{{index .PromptResponses 0}}" '
+    prompts:
+      - type: 'input'
+        title: 'Stash Message'
+        initialValue: 'WIP'
+
