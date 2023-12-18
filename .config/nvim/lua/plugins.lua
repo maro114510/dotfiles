@@ -1,4 +1,5 @@
--- Install plugin
+
+-- install plugin
 local ensure_packer = function()
 	local fn = vim.fn
 	local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
@@ -14,50 +15,55 @@ local packer_bootstrap = ensure_packer()
 
 vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
-	-- Packer can manage itself
+	-- packer can manage itself
 	use 'wbthomason/packer.nvim'
 
-	-- Input source
+	-- input source
 	use 'keaising/im-select.nvim'
 
-	-- Input completion
+	-- input completion
 	use {
 		'neoclide/coc.nvim',
 		branch = 'release'
 	}
 
-	-- Filer
+	-- filer
 	use 'preservim/nerdtree'
 
-	-- ====== Appearance ======
+	-- ====== appearance ======
 	-- theme
 	use 'folke/tokyonight.nvim'
 	use 'shaunsingh/nord.nvim'
 	-- bufferline
 	use {'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons'}
-	-- Icons
+	-- icons
 	use 'bryanmylee/vim-colorscheme-icons'
 	use 'ryanoasis/vim-devicons'
 	use('nvim-tree/nvim-web-devicons')
 
-	-- Lua's underline status
+	-- lua's underline status
 	use {
 		'nvim-lualine/lualine.nvim',
 		requires = { 'nvim-tree/nvim-web-devicons', opt = true }
 	}
-	-- Setting tab view
+	-- setting tab view
 	use('kdheepak/tabline.nvim')
 	use('echasnovski/mini.indentscope')
 	-- syntax highlight
 	use({
 		'nvim-treesitter/nvim-treesitter',
-		run = ':TSUpdate',
+		run = ':tsupdate',
 		highlight = {
 			enable = true,
 		},
 	})
 
-
+	use {
+		'numtostr/comment.nvim',
+		config = function()
+			require('comment').setup()
+		end
+	}
 
 	-- fzf
 	use {
@@ -105,12 +111,12 @@ return require('packer').startup(function(use)
 		'phaazon/hop.nvim',
 		branch = 'v2', -- optional but strongly recommended
 		config = function()
-			-- you can configure Hop the way you like here; see :h hop-config
+			-- you can configure hop the way you like here; see :h hop-config
 			require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
 		end
 	}
 
-	-- LSP
+	-- lsp
 	use 'neovim/nvim-lspconfig'
 	use 'hrsh7th/cmp-nvim-lsp'
 	use 'hrsh7th/cmp-buffer'
@@ -118,7 +124,7 @@ return require('packer').startup(function(use)
 	use 'hrsh7th/cmp-cmdline'
 	use 'hrsh7th/nvim-cmp'
 
-	use 'L3MON4D3/LuaSnip'
+	use 'l3mon4d3/luasnip'
 	use 'saadparwaiz1/cmp_luasnip'
 	use {
 		'windwp/nvim-autopairs',
