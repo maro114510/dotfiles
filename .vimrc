@@ -46,11 +46,9 @@ set hlsearch
 set incsearch
 
 " ===== blackets =====
-"
 inoremap ( ()<left>
 inoremap [ []<left>
 inoremap { {}<left>
-inoremap " ""<left>
 inoremap ' ''<left>
 
 " ===== others =====
@@ -82,6 +80,9 @@ inoremap jj <Esc>
 " Exchange ;:
 noremap ; :
 
+" set
+set whichwrap+=b,s,h,l,<,>,[,]
+set backspace=start,eol,indent
 
 
 " ===== Apppearance =====
