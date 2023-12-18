@@ -15,6 +15,7 @@ require("keymap")
 require("autocmds")
 require("base")
 require("tterm")
+require("fff")
 
 vim.api.nvim_create_autocmd("BufWritePost", {
 	pattern = { "plugins.lua" },
