@@ -31,6 +31,7 @@ set smartindent
 set tabstop=4
 set shiftwidth=4
 set expandtab
+let g:indent_guides_enable_on_vim_startup = 1
 
 "===== search =====
 " search ignore upper-case lower-case character
@@ -94,5 +95,20 @@ call jetpack#begin()
 	Jetpack 'unblevable/quick-scope'
 	" nerdtree
 	Jetpack 'preservim/nerdtree'
+	" Unite
+	Jetpack 'Shougo/unite.vim'
+	" ctrlp
+	Jetpack 'ctrlpvim/ctrlp.vim'
+	" window size
+	Jetpack 'simeji/winresizer'
 call jetpack#end()
+
+" Unite settings
+nnoremap <silent> un :<C-u>Unite buffer<CR>
+nnoremap <silent> unf :<C-u>Unite file<CR>
+nnoremap <silent> ufr :<C-u>Unite file_rec<CR>
+nnoremap <silent> ub :<C-u>Unite bookmark<CR>
+nnoremap <silent> umru :<C-u>Unite file_mru<CR>
+nnoremap <silent> ur :<C-u>Unite -buffer-name=register register<CR>
+
 
