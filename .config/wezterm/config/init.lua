@@ -38,7 +38,8 @@ local keys = {
 }
 
 wezterm.font {
-    family = 'font-anonymice-nerd-font'
+    -- family = 'font-anonymice-nerd-font'
+    family = 'font-Hack-nerd-font'
 }
 
 local home = os.getenv( "HOME" )
