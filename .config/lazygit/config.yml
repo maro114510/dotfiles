@@ -7,5 +7,3 @@ gui:
   language: 'en'
 refresher:
   refreshInterval: 3
-os:
-  editCommand: "nvim"
