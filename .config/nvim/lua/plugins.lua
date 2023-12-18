@@ -16,49 +16,48 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
 	-- Packer can manage itself
 	use 'wbthomason/packer.nvim'
-	--
-	-- Input install source
-	use 'folke/tokyonight.nvim'
+
+	-- Input source
 	use 'keaising/im-select.nvim'
+
+	-- Input completion
+	use {
+		'neoclide/coc.nvim',
+		branch = 'release'
+	}
+
+	-- Filer
+	use 'preservim/nerdtree'
+
+	-- ====== Appearance ======
+	-- theme
+	use 'folke/tokyonight.nvim'
+	use 'shaunsingh/nord.nvim'
+	-- bufferline
+	use {'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons'}
+	-- Icons
+	use 'bryanmylee/vim-colorscheme-icons'
+	use 'ryanoasis/vim-devicons'
+	use('nvim-tree/nvim-web-devicons')
+
+	-- Lua's underline status
 	use {
 		'nvim-lualine/lualine.nvim',
 		requires = { 'nvim-tree/nvim-web-devicons', opt = true }
 	}
-	use('nvim-tree/nvim-web-devicons')
+	-- Setting tab view
 	use('kdheepak/tabline.nvim')
 	use('echasnovski/mini.indentscope')
+	-- syntax highlight
 	use({
 		'nvim-treesitter/nvim-treesitter',
 		run = ':TSUpdate',
 		highlight = {
 			enable = true,
 		},
-
 	})
 
---	use {
---		'nvim-neo-tree/neo-tree.nvim',
---		branch = 'v2.x',
---		requires = {
---			'nvii-lua/plenary.nvim',
---			'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
---			'MunifTanjim/nui.nvim',
---		}
---	}
-	use 'preservim/nerdtree'
-	use 'ryanoasis/vim-devicons'
 
-	-- ====== Appearance ======
-	-- bufferline
-	use {'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons'}
-	-- color scheme
-	use 'shaunsingh/nord.nvim'
-	-- use 'kristijanhusak/defx-icons'
-	use 'bryanmylee/vim-colorscheme-icons'
-	use {
-		'neoclide/coc.nvim',
-		branch = 'release'
-	}
 
 	-- fzf
 	use {
@@ -72,25 +71,28 @@ return require('packer').startup(function(use)
 			'nvim-tree/nvim-web-devicons'
 		}
 	}
+
 	-- move cursor match-up
 	 use {
 		'andymass/vim-matchup',
 		setup = function()
-		-- may set any options here
-		vim.g.matchup_matchparen_offscreen = { method = "popup" }
+			-- may set any options here
+			vim.g.matchup_matchparen_offscreen = { method = "popup" }
 		end
 	}
+
 	-- auto brackets close
 	use 'cohama/lexima.vim'
+
 	-- manage git
 	use 'vim-denops/denops.vim'
 	use 'lambdalisue/gin.vim'
+
 	-- markdown preview
 	use({
 		"iamcco/markdown-preview.nvim",
-	run = function() vim.fn["mkdp#util#install"]() end,
+		run = function() vim.fn["mkdp#util#install"]() end,
 	})
-	-- use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
 
 	-- terminal usage
 	use {"akinsho/toggleterm.nvim", tag = '*', config = function()
@@ -98,6 +100,7 @@ return require('packer').startup(function(use)
 		end
 	}
 
+	-- move cursor
 	use {
 		'phaazon/hop.nvim',
 		branch = 'v2', -- optional but strongly recommended
@@ -121,7 +124,6 @@ return require('packer').startup(function(use)
 		'windwp/nvim-autopairs',
 		config = function() require('nvim-autopairs').setup {} end
 	}
-	-- use { 'fatih/vim-go', opt = true, ft = { 'go' } }
 	use ({
 		'nvimdev/lspsaga.nvim',
 		after = 'nvim-lspconfig',
