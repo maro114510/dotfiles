@@ -13,7 +13,8 @@ vim.api.nvim_set_keymap('', ';',':', { noremap = true })
 
 -- fzf
 vim.keymap.set("n", "<c-P>",
-  "<cmd>lua require('fzf-lua').files()<CR>", { silent = true })
+  "<cmd>lua require('fzf-lua').files()<CR>", { silent = true }
+)
 
 vim.api.nvim_set_keymap('n', '<C-f>', ':FzfLua files<CR>', { noremap = true, silent = true })
 
