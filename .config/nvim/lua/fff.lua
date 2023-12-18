@@ -8,7 +8,6 @@ file_tabedit = function(selected, opts)
 	-- actions.file_tabedit(selected, opts)
 end
 
-
 require'fzf-lua'.setup {
 	actions = {
 		files = {
@@ -21,5 +20,4 @@ require'fzf-lua'.setup {
 		},
 	},
 }
-
 
