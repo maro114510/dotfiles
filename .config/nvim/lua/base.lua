@@ -28,6 +28,28 @@ vim.o.expandtab = false
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 
+-- coc
+vim.g.coc_global_extensions = {
+	'coc-flutter',
+	'coc-cmake',
+	'coc-sh',
+	'coc-python',
+	'coc-html',
+	'coc-lua',
+	'coc-sql',
+	'coc-go',
+	'coc-rls',
+	'coc-tsserver',
+	'coc-docker',
+	'coc-yaml',
+	'coc-markdownlint',
+	'coc-xml',
+	'coc-css',
+	'coc-json',
+	'coc-vimlsp',
+	'coc-spell-checker',
+}
+
 -- Link to clipboard
 vim.opt.clipboard:append { 'unnamed', 'unnamedplus' }
 
