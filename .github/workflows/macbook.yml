@@ -1,8 +1,6 @@
 name: macbook
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -17,12 +15,11 @@ jobs:
       run: |
         sh init.sh
         brew install neovim \
-          tmux vim git peco
+          tmux vim git
 
     - name: zsh
       run: |
         sh zsh_link.sh
-
 
     - name: vim 
       run: |

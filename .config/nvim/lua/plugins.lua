@@ -1,4 +1,5 @@
--- Install plugin
+
+-- install plugin
 local ensure_packer = function()
 	local fn = vim.fn
 	local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
@@ -14,51 +15,128 @@ local packer_bootstrap = ensure_packer()
 
 vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
-	-- Packer can manage itself
+	-- packer can manage itself
 	use 'wbthomason/packer.nvim'
-	--
-	-- Input install source
-	use 'folke/tokyonight.nvim'
+
+	-- input source
 	use 'keaising/im-select.nvim'
+
+	-- input completion
 	use {
-		"nvim-lualine/lualine.nvim",
-		requires = { "nvim-tree/nvim-web-devicons", opt = true }
+		'neoclide/coc.nvim',
+		branch = 'release'
 	}
-	use("nvim-tree/nvim-web-devicons")
-	use("kdheepak/tabline.nvim")
-	use("echasnovski/mini.indentscope")
-	use({
-		"nvim-treesitter/nvim-treesitter",
-		run = ":TSUpdate",
-	})
+
+	-- filer
+	use 'preservim/nerdtree'
+
+	-- ====== appearance ======
+	-- theme
+	use 'folke/tokyonight.nvim'
+	use 'shaunsingh/nord.nvim'
+	-- bufferline
+	use {'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons'}
+	-- icons
+	use 'bryanmylee/vim-colorscheme-icons'
+	use 'ryanoasis/vim-devicons'
+	use('nvim-tree/nvim-web-devicons')
+
+	-- lua's underline status
 	use {
-		"nvim-neo-tree/neo-tree.nvim",
-		branch = "v2.x",
+		'nvim-lualine/lualine.nvim',
+		requires = { 'nvim-tree/nvim-web-devicons', opt = true }
+	}
+	-- setting tab view
+	use('kdheepak/tabline.nvim')
+	use('echasnovski/mini.indentscope')
+	-- syntax highlight
+	use({
+		'nvim-treesitter/nvim-treesitter',
+		run = ':tsupdate',
+		highlight = {
+			enable = true,
+		},
+	})
+
+	use {
+		'numtostr/comment.nvim',
+		config = function()
+			require('comment').setup()
+		end
+	}
+
+	-- fzf
+	use {
+		'junegunn/fzf.vim',
+		requires = { 'junegunn/fzf', run = ':call fzf#install()' }
+	}
+	use { 'ibhagwan/fzf-lua',
+		-- optional for icon support
 		requires = {
-			"nvim-lua/plenary.nvim",
-			"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-			"MunifTanjim/nui.nvim",
+			'kyazdani42/nvim-web-devicons',
+			'nvim-tree/nvim-web-devicons'
 		}
 	}
-	use 'preservim/nerdtree'
-	use 'ryanoasis/vim-devicons'
-	-- use 'kristijanhusak/defx-icons'
-	use 'bryanmylee/vim-colorscheme-icons'
 
-	-- LSP
-	use "neovim/nvim-lspconfig"
+	-- move cursor match-up
+	 use {
+		'andymass/vim-matchup',
+		setup = function()
+			-- may set any options here
+			vim.g.matchup_matchparen_offscreen = { method = "popup" }
+		end
+	}
+
+	-- auto brackets close
+	use 'cohama/lexima.vim'
+
+	-- manage git
+	use 'vim-denops/denops.vim'
+	use 'lambdalisue/gin.vim'
+
+	-- markdown preview
+	use({
+		"iamcco/markdown-preview.nvim",
+		run = function() vim.fn["mkdp#util#install"]() end,
+	})
+
+	-- terminal usage
+	use {"akinsho/toggleterm.nvim", tag = '*', config = function()
+		require("toggleterm").setup()
+		end
+	}
+
+	-- move cursor
+	use {
+		'phaazon/hop.nvim',
+		branch = 'v2', -- optional but strongly recommended
+		config = function()
+			-- you can configure hop the way you like here; see :h hop-config
+			require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
+		end
+	}
+
+	-- lsp
+	use 'neovim/nvim-lspconfig'
 	use 'hrsh7th/cmp-nvim-lsp'
 	use 'hrsh7th/cmp-buffer'
 	use 'hrsh7th/cmp-path'
 	use 'hrsh7th/cmp-cmdline'
 	use 'hrsh7th/nvim-cmp'
 
-	use 'L3MON4D3/LuaSnip'
+	use 'l3mon4d3/luasnip'
 	use 'saadparwaiz1/cmp_luasnip'
 	use {
-		"windwp/nvim-autopairs",
-		config = function() require("nvim-autopairs").setup {} end
+		'windwp/nvim-autopairs',
+		config = function() require('nvim-autopairs').setup {} end
 	}
-	-- use { "fatih/vim-go", opt = true, ft = { "go" } }
-	use "tpope/vim-commentary"
+	use ({
+		'nvimdev/lspsaga.nvim',
+		after = 'nvim-lspconfig',
+		config = function()
+			require('lspsaga').setup({})
+		end,
+	})
+	use 'tpope/vim-commentary'
 end)
+

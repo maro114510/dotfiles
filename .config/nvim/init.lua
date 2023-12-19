@@ -9,10 +9,13 @@ vim.o.listchars = 'tab:>>-,trail:-'
 require("options")
 require("plugins")
 require("lsp")
+require("coc")
 require("comp")
 require("keymap")
 require("autocmds")
 require("base")
+require("tterm")
+require("fff")
 
 vim.api.nvim_create_autocmd("BufWritePost", {
 	pattern = { "plugins.lua" },
@@ -49,3 +52,7 @@ require("nvim-treesitter.configs").setup({
 	},
 })
 
+require("appearance")
+
+-- after
+vim.cmd('runtime! after/**/.vim')

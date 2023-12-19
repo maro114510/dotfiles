@@ -9,7 +9,8 @@ WEZTERM_DIR="$HOME/.config/wezterm"
 # if .wezterm.lua exists → backup
 if [ -f $WEZTERM ]; then
     BACKUP_FILE="$HOME/.wezterm.lua_backup_$(date +"%Y%m%d_%H%M%S")"
-	rsync -oL "$WEZTERM" "$BACKUP_FILE"
+	cp -r "$WEZTERM" "$BACKUP_FILE"
+	ln -sfn "$TARGET_DIR/.wezterm.lua" "WEZTERM"
 	echo ".wezterm.lua backuped"
 else
 	ln -sfn "$HOME/.wezterm.lua" "$WEZTERM"
@@ -24,7 +25,7 @@ else
 	mkdir -p "$WEZTERM_DIR"
 	for item in "$TARGET_DIR"/*; do
 		if [ -e "$item" ]; then
-			ln -sfn "$item" "$WEZTERM_DIR/$(basename "$item")"
+			ln -sfn "$item" "$WEZTERM_DIR/config/$(basename "$item")"
 		fi
 	done
 	echo "wezterm linked"

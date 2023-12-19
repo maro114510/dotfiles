@@ -11,6 +11,8 @@ export ZSH="$HOME/.oh-my-zsh"
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 # ZSH_THEME="robbyrussell"
+# ZSH_THEME="agnoster"
+# ZSH_THEME="jonathan"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -78,6 +80,7 @@ plugins=(
       zsh-completions
       zsh-autosuggestions
       zsh-history-substring-search
+	  z
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -183,15 +186,15 @@ if [ -f "$HOME/.env" ]; then
 
     if [ "$LOCAL_NAME" = "macbook" ]; then
 		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_book/Brewfile"
-		alias brewd="brew bundle dump --force --file=$bifle"
+		alias brewd="brew bundle dump --force --file=$bfifle"
 		if [ ! -f "$HOME/Brewfile" ]; then
-			ln -sfn "$bfile" "$HOME/Brewfile"
+			cp -f "$bfile" "$HOME/Brewfile"
 		fi
     elif [ "$LOCAL_NAME" = "macmini" ]; then
 		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_mini/Brewfile"
 		alias brewd="brew bundle dump --force --file=$bfile"
 		if [ ! -f "$HOME/Brewfile" ]; then
-			ln -sfn "$bfile" "$HOME/Brewfile"
+			cp -f "$bfile" "$HOME/Brewfile"
 		fi
     fi
 fi
