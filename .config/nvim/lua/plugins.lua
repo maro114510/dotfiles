@@ -86,7 +86,7 @@ return require('packer').startup(function(use)
 			file_ignore_patterns = {
 				".git/.*", ".cache", "%.o", "%.a", "%.out", "%.class",
 				"%.pdf", "%.mkv", "%.mp4", "%.zip", "^./.git/"
-			},
+			}
 		},
 		requires = {
 			{ 'nvim-lua/plenary.nvim' }
