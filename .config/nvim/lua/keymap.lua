@@ -21,12 +21,11 @@ vim.api.nvim_set_keymap('', ';',':', { noremap = true })
 -- telescope
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<c-P>',
-    '<cmd>:Telescope find_files hidden=true prompt_prefix=🔍<CR>'
+    '<cmd>:Telescope git_files hidden=true prompt_prefix=🔍<CR>'
 )
 
 vim.keymap.set('n', '<c-F>',
-	builtin.treesitter,
-	{}
+    '<cmd>:Telescope grep_string hidden=true prompt_prefix=🔍<CR>'
 )
 
 -- COC

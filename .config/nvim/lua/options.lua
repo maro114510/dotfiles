@@ -23,9 +23,14 @@ vim.opt.termguicolors = true -- 24bit Color
 vim.opt.background = "dark" -- Using dark Color
 
 -- Display
-vim.opt.wrap = false -- Disable wrap test
-vim.opt.showtabline = 2 -- Display tabline
-vim.opt.showmatch = true -- lighlighttab
+-- Disable wrap test
+vim.opt.wrap = false
+-- Display tabline
+vim.opt.showtabline = 2 
+-- highlights
+vim.opt.showmatch = true
+vim.opt.list = true
+vim.opt.listchars = { tab = '>>', trail = '-', nbsp = '+' }
 
 -- Interface
 vim.opt.winblend = 20 -- Opacity

@@ -33,13 +33,14 @@ return require('packer').startup(function(use)
 	-- ====== appearance ======
 	-- theme
 	use 'folke/tokyonight.nvim'
-	use 'shaunsingh/nord.nvim'
+	-- use 'shaunsingh/nord.nvim'
 	-- bufferline
 	use {'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons'}
 	-- icons
-	use 'bryanmylee/vim-colorscheme-icons'
-	use 'ryanoasis/vim-devicons'
+	-- use 'bryanmylee/vim-colorscheme-icons'
+	-- use 'ryanoasis/vim-devicons'
 	use('nvim-tree/nvim-web-devicons')
+	use 'yamatsum/nvim-cursorline'
 
 	-- lua's underline status
 	use {
@@ -78,28 +79,30 @@ return require('packer').startup(function(use)
 --		}
 --	}
 
+	use {'nvim-telescope/telescope-ui-select.nvim' }
 	use {
 		'nvim-telescope/telescope.nvim', tag = '0.1.5',
+		defaults = {
+			file_ignore_patterns = {
+				".git/.*", ".cache", "%.o", "%.a", "%.out", "%.class",
+				"%.pdf", "%.mkv", "%.mp4", "%.zip", "^./.git/"
+			},
+		},
 		requires = {
 			{ 'nvim-lua/plenary.nvim' }
 		},
 		extentions = {
 			fuzzy = true,
+			['ui-select'] = {
+				require('telescope.themes').get_dropdown {
+					-- opts
+				},
+			}
 		}
 	}
 	use {
 		"nvim-telescope/telescope-file-browser.nvim",
 		requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
-	}
-	use { 'nvim-telescope/telescope-ui-select.nvim' }
-
-	-- move cursor match-up
-	 use {
-		'andymass/vim-matchup',
-		setup = function()
-			-- may set any options here
-			vim.g.matchup_matchparen_offscreen = { method = "popup" }
-		end
 	}
 
 	-- auto brackets close

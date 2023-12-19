@@ -1,7 +1,6 @@
 
 -- vim.cmd[[colorscheme nord]]
 
-
 require("bufferline").setup({
 	options = {
 		mode = "tabs",
@@ -28,4 +27,17 @@ require("bufferline").setup({
 		}
 	},
 })
+
+require('nvim-cursorline').setup {
+  cursorline = {
+    enable = true,
+    timeout = 1000,
+    number = false,
+  },
+  cursorword = {
+    enable = true,
+    min_length = 3,
+    hl = { underline = true },
+  }
+}
 
