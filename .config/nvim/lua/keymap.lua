@@ -1,3 +1,4 @@
+
 -- clipboard copy setting
 vim.api.nvim_set_keymap('n', 'x', '"_x', { noremap = true })
 vim.api.nvim_set_keymap('n', 's', '"_s', { noremap = true })
@@ -12,11 +13,21 @@ vim.api.nvim_set_keymap('i', 'jj', '<ESC>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('', ';',':', { noremap = true })
 
 -- fzf
-vim.keymap.set("n", "<c-P>",
-  "<cmd>lua require('fzf-lua').files()<CR>", { silent = true }
+-- vim.keymap.set("n", "<c-P>",
+--   "<cmd>lua require('fzf-lua').files()<CR>", { silent = true }
+-- )
+-- vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("fzf-lua").grep_project()<CR>', { noremap = true, silent = true })
+
+-- telescope
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<c-P>',
+    '<cmd>:Telescope find_files hidden=true prompt_prefix=🔍<CR>'
 )
 
-vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("fzf-lua").grep_project()<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<c-F>',
+	builtin.treesitter,
+	{}
+)
 
 -- COC
 -- when normal mode
