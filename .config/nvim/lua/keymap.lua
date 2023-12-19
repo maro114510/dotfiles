@@ -16,7 +16,7 @@ vim.keymap.set("n", "<c-P>",
   "<cmd>lua require('fzf-lua').files()<CR>", { silent = true }
 )
 
-vim.api.nvim_set_keymap('n', '<C-f>', ':FzfLua files<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("fzf-lua").grep_project()<CR>', { noremap = true, silent = true })
 
 -- COC
 -- when normal mode
