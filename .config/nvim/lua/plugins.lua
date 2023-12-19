@@ -93,11 +93,6 @@ return require('packer').startup(function(use)
 		},
 		extentions = {
 			fuzzy = true,
-			['ui-select'] = {
-				require('telescope.themes').get_dropdown {
-					-- opts
-				},
-			}
 		}
 	}
 	use {
