@@ -17,15 +17,6 @@
 			"command": "docker-langserver",
 			"filetypes": ["dockerfile"],
 			"args": ["--stdio"]
-		},
-		"lua": {
-			"settings": {
-				"diagnostics": {
-					"globals": [
-						"vim",
-					]
-				}
-			}
 		}
 	},
 	"python.jediEnabled": false

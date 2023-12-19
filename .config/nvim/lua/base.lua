@@ -35,7 +35,6 @@ vim.g.coc_global_extensions = {
 	'coc-sh',
 	'coc-python',
 	'coc-html',
-	'coc-lua',
 	'coc-sql',
 	'coc-go',
 	'coc-rls',
