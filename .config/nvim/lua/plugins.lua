@@ -66,17 +66,25 @@ return require('packer').startup(function(use)
 	}
 
 	-- fzf
+--	use {
+--		'junegunn/fzf.vim',
+--		requires = { 'junegunn/fzf', run = ':call fzf#install()' }
+--	}
+--	use { 'ibhagwan/fzf-lua',
+--		-- optional for icon support
+--		requires = {
+--			'kyazdani42/nvim-web-devicons',
+--			'nvim-tree/nvim-web-devicons'
+--		}
+--	}
+
 	use {
-		'junegunn/fzf.vim',
-		requires = { 'junegunn/fzf', run = ':call fzf#install()' }
-	}
-	use { 'ibhagwan/fzf-lua',
-		-- optional for icon support
+		'nvim-telescope/telescope.nvim', tag = '0.1.5',
 		requires = {
-			'kyazdani42/nvim-web-devicons',
-			'nvim-tree/nvim-web-devicons'
+			{ 'nvim-lua/plenary.nvim' }
 		}
 	}
+	use { 'nvim-telescope/telescope-ui-select.nvim' }
 
 	-- move cursor match-up
 	 use {
