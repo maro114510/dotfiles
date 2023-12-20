@@ -67,38 +67,38 @@ return require('packer').startup(function(use)
 	}
 
 	-- fzf
---	use {
---		'junegunn/fzf.vim',
---		requires = { 'junegunn/fzf', run = ':call fzf#install()' }
---	}
---	use { 'ibhagwan/fzf-lua',
---		-- optional for icon support
---		requires = {
---			'kyazdani42/nvim-web-devicons',
---			'nvim-tree/nvim-web-devicons'
---		}
---	}
-
-	use {'nvim-telescope/telescope-ui-select.nvim' }
 	use {
-		'nvim-telescope/telescope.nvim', tag = '0.1.5',
-		defaults = {
-			file_ignore_patterns = {
-				".git/.*", ".cache", "%.o", "%.a", "%.out", "%.class",
-				"%.pdf", "%.mkv", "%.mp4", "%.zip", "^./.git/"
-			}
-		},
+		'junegunn/fzf.vim',
+		requires = { 'junegunn/fzf', run = ':call fzf#install()' }
+	}
+	use { 'ibhagwan/fzf-lua',
+		-- optional for icon support
 		requires = {
-			{ 'nvim-lua/plenary.nvim' }
-		},
-		extentions = {
-			fuzzy = true,
+			'kyazdani42/nvim-web-devicons',
+			'nvim-tree/nvim-web-devicons'
 		}
 	}
-	use {
-		"nvim-telescope/telescope-file-browser.nvim",
-		requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
-	}
+
+	-- use {'nvim-telescope/telescope-ui-select.nvim' }
+	-- use {
+	-- 	'nvim-telescope/telescope.nvim', tag = '0.1.5',
+	-- 	defaults = {
+	-- 		file_ignore_patterns = {
+	-- 			".git/.*", ".cache", "%.o", "%.a", "%.out", "%.class",
+	-- 			"%.pdf", "%.mkv", "%.mp4", "%.zip", "^./.git/"
+	-- 		}
+	-- 	},
+	-- 	requires = {
+	-- 		{ 'nvim-lua/plenary.nvim' }
+	-- 	},
+	-- 	extentions = {
+	-- 		fuzzy = true,
+	-- 	}
+	-- }
+	-- use {
+	-- 	"nvim-telescope/telescope-file-browser.nvim",
+	-- 	requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
+	-- }
 
 	-- auto brackets close
 	use 'cohama/lexima.vim'

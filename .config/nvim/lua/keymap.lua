@@ -13,20 +13,20 @@ vim.api.nvim_set_keymap('i', 'jj', '<ESC>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('', ';',':', { noremap = true })
 
 -- fzf
--- vim.keymap.set("n", "<c-P>",
---   "<cmd>lua require('fzf-lua').files()<CR>", { silent = true }
--- )
--- vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("fzf-lua").grep_project()<CR>', { noremap = true, silent = true })
+vim.keymap.set("n", "<c-P>",
+  "<cmd>lua require('fzf-lua').files()<CR>", { silent = true }
+)
+vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("fzf-lua").grep_project()<CR>', { noremap = true, silent = true })
 
 -- telescope
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<c-P>',
-    '<cmd>:Telescope git_files hidden=true prompt_prefix=🔍<CR>'
-)
-
-vim.keymap.set('n', '<c-F>',
-    '<cmd>:Telescope grep_string hidden=true prompt_prefix=🔍<CR>'
-)
+-- local builtin = require('telescope.builtin')
+-- vim.keymap.set('n', '<c-P>',
+--     '<cmd>:Telescope git_files hidden=true prompt_prefix=🔍<CR>'
+-- )
+-- 
+-- vim.keymap.set('n', '<c-F>',
+--     '<cmd>:Telescope grep_string hidden=true prompt_prefix=🔍<CR>'
+-- )
 
 -- COC
 -- when normal mode
