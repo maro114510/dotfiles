@@ -5,6 +5,7 @@
 	"suggest.minTriggerInputLength": 2,
 	"suggest.snippetIndicator": " ►",
 	"coc.preferences.hoverTarget": "float",
+	"coc.preferences.formatOnSaveFileTypes": [ "go" ],
 	"suggest.preferCompleteThanJumpPlaceholder": true,
 	"languageserver": {
 		"clangd": {
