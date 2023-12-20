@@ -65,3 +65,4 @@ vim.opt.listchars = {
 	eol = '↴',
 	nbsp = '%'
 }
+

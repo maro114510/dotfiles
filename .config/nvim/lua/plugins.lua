@@ -26,6 +26,7 @@ return require('packer').startup(function(use)
 		'neoclide/coc.nvim',
 		branch = 'release'
 	}
+	use 'fatih/vim-go'
 
 	-- filer
 	use 'preservim/nerdtree'

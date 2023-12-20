@@ -6,6 +6,8 @@ vim.api.nvim_set_keymap('n', 'd', '"_d', { noremap = true })
 vim.api.nvim_set_keymap('n', 'D', '"_D', { noremap = true })
 vim.api.nvim_set_keymap('x', 'd', '"_d', { noremap = true })
 
+vim.api.nvim_set_keymap('n', 'ciw', 'viw"_c', { noremap = true })
+
 -- Esc
 vim.api.nvim_set_keymap('i', 'jj', '<ESC>', { noremap = true, silent = true })
 
