@@ -1,13 +1,59 @@
--- NeoVim Setting
+vim.loader.enable()
 
--- Indent
-vim.o.smartindent = true
-vim.o.list = true
-vim.o.listchars = 'tab:>>-,trail:-'
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", -- latest stable release
+		lazypath,
+	})
+end
 
--- Plugin
+local plugins = require("plugins")
+
+local opts = {
+	checker = {
+		enabled = true,
+	},
+	performance = {
+--		cache = {
+--			enabled = true,
+--		},
+		rtp = {
+			disabled_plugins = {
+				'gzip',
+				'matchit',
+				--'matchparen',
+				--'netrwPlugin',
+				'tarPlugin',
+				'tohtml',
+				'tutor',
+				'zipPlugin',
+			},
+		},
+	},
+}
+
+
+vim.opt.rtp:prepend(lazypath)
+require("lazy").setup(plugins, opts)
+
+require("lualine").setup({
+	sections = {
+		lualine_x = {
+		{
+			require("lazy.status").updates,
+			cond = require("lazy.status").has_updates,
+			color = { fg = "#ff9e64" },
+		},
+		},
+	},
+})
+
 require('options')
-require('plugins')
 require('lsp')
 require('coc')
 require('comp')
@@ -15,45 +61,5 @@ require('keymap')
 require('autocmds')
 require('base')
 require('tterm')
--- require('fff')
-require('telefig')
-
-vim.api.nvim_create_autocmd('BufWritePost', {
-	pattern = { 'plugins.lua' },
-	command = 'PackerCompile',
-})
-
--- Japanese Input Source
-require('im_select').setup {
-    default_im_select = 'com.apple.keylayout.ABC'
-}
-
--- NerdTree
-vim.g.NERDTreeShowHidden = 1
-vim.api.nvim_create_autocmd('VimEnter', {
-	pattern = '*',
-	callback = function()
-		vim.cmd('NERDTree')
-		vim.cmd('wincmd p')
-	end,
-})
-
--- View Setting
-require('lualine').setup()
-require('tabline').setup()
-
-require('mini.indentscope').setup({
-    symbol = '▏',
-})
-
-require('nvim-treesitter.configs').setup({
-	auto_install = true,
-	highlight = {
-		enable = true,
-	},
-})
-
+require('fzf-lua-setting')
 require('appearance')
-
--- after
-vim.cmd('runtime! after/**/.vim')

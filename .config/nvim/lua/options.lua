@@ -23,6 +23,11 @@ vim.opt.termguicolors = true -- 24bit Color
 vim.opt.background = "dark" -- Using dark Color
 
 -- Display
+-- Indent
+vim.o.smartindent = true
+vim.o.list = true
+vim.o.listchars = 'tab:>>-,trail:-'
+
 -- Disable wrap test
 vim.opt.wrap = false
 -- Display tabline
