@@ -12,8 +12,6 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 
-local plugins = require("plugins")
-
 local opts = {
 	checker = {
 		enabled = true,
@@ -36,7 +34,7 @@ local opts = {
 
 
 vim.opt.rtp:prepend(lazypath)
-require("lazy").setup(plugins, opts)
+require("lazy").setup("plugins", opts)
 
 require("lualine").setup({
 	sections = {
@@ -52,11 +50,3 @@ require("lualine").setup({
 
 require("config")
 
-require('lsp')
-require('coc')
-require('comp')
-require('autocmds')
-require('base')
-require('tterm')
-require('fzf-lua-setting')
-require('appearance')

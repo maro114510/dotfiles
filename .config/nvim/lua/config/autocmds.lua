@@ -19,3 +19,4 @@ vim.cmd([[
 ]])
 
 vim.cmd[[highlight Comment cterm=italic gui=italic guifg=#ffd700 ctermfg=226]]
+
