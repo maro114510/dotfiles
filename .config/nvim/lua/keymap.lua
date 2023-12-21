@@ -20,6 +20,9 @@ vim.keymap.set("n", "<c-P>",
 )
 vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("fzf-lua").lsp_workspace_symbols()<CR>', { noremap = true, silent = true })
 
+-- ToggleTerm
+vim.api.nvim_set_keymap('n', '<C-T>', '<cmd>exe v:count1 . "ToggleTerm"<CR>', { noremap = true, silent = true })
+
 -- COC
 -- when normal mode
 -- double space
