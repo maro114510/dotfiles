@@ -1,10 +1,5 @@
 -- NeoVim Setting
 
--- Indent
-vim.o.smartindent = true
-vim.o.list = true
-vim.o.listchars = 'tab:>>-,trail:-'
-
 -- Plugin
 require('options')
 require('plugins')
