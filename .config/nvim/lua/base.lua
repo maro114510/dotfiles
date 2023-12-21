@@ -28,6 +28,9 @@ vim.o.expandtab = false
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 
+-- Nerd tree
+vim.g.NERDTreeShowHidden = 1
+
 -- coc
 vim.g.coc_global_extensions = {
 	'coc-flutter',

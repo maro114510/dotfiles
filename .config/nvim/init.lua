@@ -13,25 +13,10 @@ require('tterm')
 -- require('fff')
 require('telefig')
 
-vim.api.nvim_create_autocmd('BufWritePost', {
-	pattern = { 'plugins.lua' },
-	command = 'PackerCompile',
-})
-
 -- Japanese Input Source
 require('im_select').setup {
     default_im_select = 'com.apple.keylayout.ABC'
 }
-
--- NerdTree
-vim.g.NERDTreeShowHidden = 1
-vim.api.nvim_create_autocmd('VimEnter', {
-	pattern = '*',
-	callback = function()
-		vim.cmd('NERDTree')
-		vim.cmd('wincmd p')
-	end,
-})
 
 -- View Setting
 require('lualine').setup()
