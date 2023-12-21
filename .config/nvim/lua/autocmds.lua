@@ -6,7 +6,6 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 
 -- NerdTree
 vim.api.nvim_create_autocmd('VimEnter', {
-	pattern = '*',
 	callback = function()
 		vim.cmd('NERDTree')
 		vim.cmd('wincmd p')
