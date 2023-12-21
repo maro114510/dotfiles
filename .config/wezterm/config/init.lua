@@ -45,12 +45,6 @@ wezterm.font {
 local home = os.getenv( "HOME" )
 local background_path = home .. '/.config/wezterm/config/background.jpg'
 
-local mux = wezterm.mux
-wezterm.on("gui-startup", function(cmd)
-    local tab, pane, window = mux.spawn_window(cmd or {})
-    window:gui_window():toggle_fullscreen()
-end)
-
 ---@class Config
 ---@field options table
 local Config = {

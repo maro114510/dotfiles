@@ -1,4 +1,5 @@
 -- format file name
+local wezterm = require("wezterm")
 local function BaseName(s)
 	return string.gsub(s, '(.*[/\\])(.*)', '%2')
 end
