@@ -19,9 +19,6 @@ local opts = {
 		enabled = true,
 	},
 	performance = {
---		cache = {
---			enabled = true,
---		},
 		rtp = {
 			disabled_plugins = {
 				'gzip',
@@ -53,11 +50,11 @@ require("lualine").setup({
 	},
 })
 
-require('options')
+require("config")
+
 require('lsp')
 require('coc')
 require('comp')
-require('keymap')
 require('autocmds')
 require('base')
 require('tterm')
