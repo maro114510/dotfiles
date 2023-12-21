@@ -27,6 +27,7 @@ vim.opt.background = "dark" -- Using dark Color
 vim.o.smartindent = true
 vim.o.list = true
 vim.o.listchars = 'tab:>>-,trail:-'
+vim.api.nvim_set_option('termguicolors', true)
 
 -- Disable wrap test
 vim.opt.wrap = false
