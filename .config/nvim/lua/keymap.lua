@@ -20,16 +20,6 @@ vim.keymap.set("n", "<c-P>",
 )
 vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("fzf-lua").lsp_workspace_symbols()<CR>', { noremap = true, silent = true })
 
--- telescope
--- local builtin = require('telescope.builtin')
--- vim.keymap.set('n', '<c-P>',
---     '<cmd>:Telescope git_files hidden=true prompt_prefix=🔍<CR>'
--- )
--- 
--- vim.keymap.set('n', '<c-F>',
---     '<cmd>:Telescope grep_string hidden=true prompt_prefix=🔍<CR>'
--- )
-
 -- COC
 -- when normal mode
 -- double space

@@ -1,6 +1,8 @@
 -- NeoVim Setting
 
 -- Plugin
+require('load-plugin')
+
 require('options')
 require('plugins')
 require('lsp')
@@ -10,28 +12,7 @@ require('keymap')
 require('autocmds')
 require('base')
 require('tterm')
--- require('fff')
-require('telefig')
-
--- Japanese Input Source
-require('im_select').setup {
-    default_im_select = 'com.apple.keylayout.ABC'
-}
-
--- View Setting
-require('lualine').setup()
-require('tabline').setup()
-
-require('mini.indentscope').setup({
-    symbol = '▏',
-})
-
-require('nvim-treesitter.configs').setup({
-	auto_install = true,
-	highlight = {
-		enable = true,
-	},
-})
+require('fzf-lua-setting')
 
 require('appearance')
 
