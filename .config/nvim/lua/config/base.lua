@@ -1,3 +1,4 @@
+
 -- Setting Base Config
 -- Show number
 vim.opt.number = true
@@ -68,4 +69,3 @@ vim.opt.listchars = {
 	eol = '↴',
 	nbsp = '%'
 }
-

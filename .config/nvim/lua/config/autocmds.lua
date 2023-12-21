@@ -1,8 +1,3 @@
--- packer 
-vim.api.nvim_create_autocmd('BufWritePost', {
-	pattern = { 'plugins.lua' },
-	command = 'PackerCompile',
-})
 
 -- NerdTree
 vim.api.nvim_create_autocmd('VimEnter', {
@@ -24,3 +19,4 @@ vim.cmd([[
 ]])
 
 vim.cmd[[highlight Comment cterm=italic gui=italic guifg=#ffd700 ctermfg=226]]
+

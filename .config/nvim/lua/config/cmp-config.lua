@@ -1,3 +1,4 @@
+
 local cmp = require'cmp'
 
 cmp.setup({
@@ -58,3 +59,4 @@ cmp.setup.cmdline(':', {
 --require('lspconfig')['gopls'].setup {
 --	capabilities = capabilities
 --}
+

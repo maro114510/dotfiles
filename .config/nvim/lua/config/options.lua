@@ -1,3 +1,4 @@
+
 -- About File
 vim.opt.fileencoding = "utf-8"
 vim.opt.swapfile = false -- Do not create swapfiile
@@ -39,8 +40,11 @@ vim.opt.list = true
 vim.opt.listchars = { tab = '>>', trail = '-', nbsp = '+' }
 
 -- Interface
-vim.opt.winblend = 20 -- Opacity
-vim.opt.pumblend = 20 -- Popup window
-vim.opt.showtabline = 2 -- subcoloumn
-vim.opt.signcolumn = "yes" -- signcolumn
+-- Opacity
+vim.opt.winblend = 20
+-- Opacity
+vim.opt.pumblend = 20
+-- Sub Coloums
+vim.opt.showtabline = 2
+vim.opt.signcolumn = "yes"
 
