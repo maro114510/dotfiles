@@ -62,7 +62,7 @@ local Config = {
 	-- scrollbar
 	enable_scroll_bar = true,
 
-	hide_tab_bar_if_only_one_tab = true,
+	-- hide_tab_bar_if_only_one_tab = true,
 
 	-- window
 	window_background_image = background_path,

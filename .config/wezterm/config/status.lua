@@ -92,7 +92,7 @@ end
 local function RightUpdate(window, pane)
   local elems = {}
 
-  GetHostAndCwd(elems, pane)
+  -- GetHostAndCwd(elems, pane)
   GetDate(elems)
   GetBattery(elems, window)
   GetTime(elems)
@@ -101,7 +101,7 @@ local function RightUpdate(window, pane)
 end
 
 wezterm.on('update-status', function(window, pane)
-  LeftUpdate(window, pane) -- 前回書いたコードはそのままで。
+  LeftUpdate(window, pane)
   RightUpdate(window, pane)
 end)
 
