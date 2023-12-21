@@ -18,7 +18,7 @@ vim.api.nvim_set_keymap('', ';',':', { noremap = true })
 vim.keymap.set("n", "<c-P>",
   "<cmd>lua require('fzf-lua').files()<CR>", { silent = true }
 )
-vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("fzf-lua").grep_project()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("fzf-lua").lsp_workspace_symbols()<CR>', { noremap = true, silent = true })
 
 -- telescope
 -- local builtin = require('telescope.builtin')
