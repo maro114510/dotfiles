@@ -8,6 +8,13 @@ vim.api.nvim_set_keymap('x', 'd', '"_d', { noremap = true })
 
 vim.api.nvim_set_keymap('n', 'ciw', 'viw"_c', { noremap = true })
 
+-- move
+vim.api.nvim_set_keymap('n', 'j', 'gj', { noremap = true })
+vim.api.nvim_set_keymap('n', 'k', 'gk', { noremap = true })
+
+-- yank
+vim.api.nvim_set_keymap('n', 'Y', 'y$', { noremap = true })
+
 -- Esc
 vim.api.nvim_set_keymap('i', 'jj', '<ESC>', { noremap = true, silent = true })
 

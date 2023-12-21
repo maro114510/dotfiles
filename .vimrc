@@ -45,6 +45,14 @@ set hlsearch
 " increment
 set incsearch
 
+" keymap
+nnoremap j gj
+nnoremap k gk
+nnoremap <Down> gj
+nnoremap <Up>   gk
+nnoremap gj j
+nnoremap gk k
+
 " ===== blackets =====
 inoremap ( ()<left>
 inoremap [ []<left>
@@ -73,6 +81,7 @@ nnoremap s "_s
 nnoremap d "_d
 nnoremap D "_D
 xnoremap d "_d
+nnoremap Y y$
 
 " Map 'jj' to <Esc> in insert mode
 inoremap jj <Esc>
@@ -87,6 +96,10 @@ set backspace=start,eol,indent
 
 " ===== Apppearance =====
 set termguicolors
+let g:tokyonight_style = 'storm' " available: night, storm
+let g:tokyonight_enable_italic = 1
+
+colorscheme tokyonight
 
 let g:tokyonight_style = 'night' " available: night, storm
 let g:tokyonight_enable_italic = 1
@@ -133,6 +146,7 @@ call jetpack#begin()
     Jetpack 'Shougo/pum.vim'
     Jetpack 'tani/ddc-fuzzy'
     Jetpack 'gelguy/wilder.nvim'
+	Jetpack 'ghifarit53/tokyonight-vim'
 call jetpack#end()
 
 " Unite settings
