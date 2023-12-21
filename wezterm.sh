@@ -12,7 +12,7 @@ if [ -f $WEZTERM ]; then
 	cp -r "$WEZTERM" "$BACKUP_FILE" || { echo "wezterm backup faild"; exit 1; }
 	echo ".wezterm.lua backuped"
 else
-	ln -s "$HOME/.wezterm.lua" "$WEZTERM" || { echo ".wezterm link faild"; exit 1; }
+	ln -s "$TARGET_DIR/.wezterm.lua" "$WEZTERM" || { echo ".wezterm link faild"; exit 1; }
 	echo ".wezterm.lua linked"
 fi
 
