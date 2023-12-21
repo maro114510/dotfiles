@@ -1,3 +1,12 @@
+
+-- NerdTree
+vim.api.nvim_create_autocmd('VimEnter', {
+	callback = function()
+		vim.cmd('NERDTree')
+		vim.cmd('wincmd p')
+	end,
+})
+
 -- Change Color Scheme
 vim.cmd[[colorscheme tokyonight-night]]
 
@@ -10,3 +19,4 @@ vim.cmd([[
 ]])
 
 vim.cmd[[highlight Comment cterm=italic gui=italic guifg=#ffd700 ctermfg=226]]
+

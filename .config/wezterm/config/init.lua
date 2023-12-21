@@ -45,12 +45,6 @@ wezterm.font {
 local home = os.getenv( "HOME" )
 local background_path = home .. '/.config/wezterm/config/background.jpg'
 
-local mux = wezterm.mux
-wezterm.on("gui-startup", function(cmd)
-    local tab, pane, window = mux.spawn_window(cmd or {})
-    window:gui_window():toggle_fullscreen()
-end)
-
 ---@class Config
 ---@field options table
 local Config = {
@@ -68,7 +62,7 @@ local Config = {
 	-- scrollbar
 	enable_scroll_bar = true,
 
-	hide_tab_bar_if_only_one_tab = true,
+	-- hide_tab_bar_if_only_one_tab = true,
 
 	-- window
 	window_background_image = background_path,

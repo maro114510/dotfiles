@@ -1,3 +1,4 @@
+
 -- Setting Base Config
 -- Show number
 vim.opt.number = true
@@ -27,6 +28,30 @@ vim.o.smartindent = true
 vim.o.expandtab = false
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
+
+-- Nerd tree
+vim.g.NERDTreeShowHidden = 1
+
+-- coc
+vim.g.coc_global_extensions = {
+	'coc-flutter',
+	'coc-cmake',
+	'coc-sh',
+	'coc-python',
+	'coc-html',
+	'coc-sql',
+	'coc-go',
+	'coc-rls',
+	'coc-tsserver',
+	'coc-docker',
+	'coc-yaml',
+	'coc-markdownlint',
+	'coc-xml',
+	'coc-css',
+	'coc-json',
+	'coc-vimlsp',
+	'coc-spell-checker',
+}
 
 -- Link to clipboard
 vim.opt.clipboard:append { 'unnamed', 'unnamedplus' }

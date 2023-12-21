@@ -3,31 +3,15 @@
 CURRENT_DIR=$(pwd)
 TARGET_DIR="$CURRENT_DIR/.config/wezterm"
 
-WEZTERM="$HOME/.wezterm.lua"
 WEZTERM_DIR="$HOME/.config/wezterm"
 
-# if .wezterm.lua exists → backup
-if [ -f $WEZTERM ]; then
-    BACKUP_FILE="$HOME/.wezterm.lua_backup_$(date +"%Y%m%d_%H%M%S")"
-	cp -r "$WEZTERM" "$BACKUP_FILE"
-	ln -sfn "$TARGET_DIR/.wezterm.lua" "WEZTERM"
-	echo ".wezterm.lua backuped"
-else
-	ln -sfn "$TARGET_DIR/.wezterm.lua" "$WEZTERM"
-	echo ".wezterm.lua linked"
-fi
-
 if [ -d "$WEZTERM_DIR" ]; then
-	BACKUP_DIR="$HOME/.config/wezterm/config_backup_$(date +"%Y%m%d_%H%M%S")"
-	rsync -a "$TARGET_DIR/config" "$WEZTERM_DIR"
+	BACKUP_DIR="$HOME/.config/wezterm_backup_$(date +"%Y%m%d_%H%M%S")"
+	cp -r "$WEZTERM_DIR"/* "$BACKUP_DIR" || { echo ".wezterm backup faild"; exit 1; }
 	echo "wezterm config backup done"
 else
-	mkdir -p "$WEZTERM_DIR"
-	for item in "$TARGET_DIR"/*; do
-		if [ -e "$item" ]; then
-			ln -sfn "$item" "$WEZTERM_DIR/config/$(basename "$item")"
-		fi
-	done
+	# mkdir -p "$WEZTERM_DIR"
+	ln -s "$TARGET_DIR"/ "$HOME/.config/" || { echo ".wezterm link faild"; exit 1; }
 	echo "wezterm linked"
 fi
 

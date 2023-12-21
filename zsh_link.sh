@@ -5,10 +5,10 @@ CURRENT_DIR=$(pwd)
 # if .zshrc exists → backup
 if [ -f "$HOME/.zshrc" ]; then
     BACKUP="$HOME/.zshrc_$(date +"%Y%m%d_%H%M%S")"
-    rsync -oL "$HOME/.zshrc" "$BACKUP"
+    cp -r"$HOME/.zshrc" "$BACKUP" || { echo ".zshrc backup faild"; exit 1; }
     echo ".zshrc backup done"
 else
-	ln -sfn "$CURRENT_DIR/.config/.zshrc" "$HOME/.zshrc"
+	ln -s "$CURRENT_DIR/.config/.zshrc" "$HOME/.zshrc" || { echo ".zshrc link faild"; exit 1; }
 	echo ".zshrc linked"
 fi
 

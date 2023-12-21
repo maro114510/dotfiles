@@ -1,9 +1,19 @@
+
 -- clipboard copy setting
 vim.api.nvim_set_keymap('n', 'x', '"_x', { noremap = true })
 vim.api.nvim_set_keymap('n', 's', '"_s', { noremap = true })
 vim.api.nvim_set_keymap('n', 'd', '"_d', { noremap = true })
 vim.api.nvim_set_keymap('n', 'D', '"_D', { noremap = true })
 vim.api.nvim_set_keymap('x', 'd', '"_d', { noremap = true })
+
+vim.api.nvim_set_keymap('n', 'ciw', 'viw"_c', { noremap = true })
+
+-- move
+vim.api.nvim_set_keymap('n', 'j', 'gj', { noremap = true })
+vim.api.nvim_set_keymap('n', 'k', 'gk', { noremap = true })
+
+-- yank
+vim.api.nvim_set_keymap('n', 'Y', 'y$', { noremap = true })
 
 -- Esc
 vim.api.nvim_set_keymap('i', 'jj', '<ESC>', { noremap = true, silent = true })
@@ -15,8 +25,10 @@ vim.api.nvim_set_keymap('', ';',':', { noremap = true })
 vim.keymap.set("n", "<c-P>",
   "<cmd>lua require('fzf-lua').files()<CR>", { silent = true }
 )
+vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("fzf-lua").lsp_workspace_symbols()<CR>', { noremap = true, silent = true })
 
-vim.api.nvim_set_keymap('n', '<C-f>', ':FzfLua files<CR>', { noremap = true, silent = true })
+-- ToggleTerm
+vim.api.nvim_set_keymap('n', '<C-T>', '<cmd>exe v:count1 . "ToggleTerm"<CR>', { noremap = true, silent = true })
 
 -- COC
 -- when normal mode

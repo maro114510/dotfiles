@@ -5,7 +5,6 @@ file_tabedit = function(selected, opts)
 	actions.file_tabedit(selected, opts)
 	vim.cmd("NERDTree")
 	vim.cmd("wincmd p")
-	-- actions.file_tabedit(selected, opts)
 end
 
 require'fzf-lua'.setup {

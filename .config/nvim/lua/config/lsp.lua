@@ -1,3 +1,4 @@
+
 -- require'lspconfig'.gopls.setup{}
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
@@ -53,3 +54,6 @@ require('lspconfig')['rust_analyzer'].setup{
 		["rust-analyzer"] = {}
 	}
 }
+require('lspconfig').gopls.setup{}
+-- require('lspconfig').lua_ls.setup{}
+
