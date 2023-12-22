@@ -43,7 +43,7 @@ wezterm.font {
 }
 
 local home = os.getenv( "HOME" )
-local background_path = home .. '/.config/wezterm/config/background.jpg'
+-- local background_path = home .. '/.config/wezterm/config/background.jpg'
 
 ---@class Config
 ---@field options table
