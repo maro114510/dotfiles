@@ -22,7 +22,7 @@ fi
 function zsh_confing {
 	if [ -f "$HOME/.zshrc" ]; then
 		BACKUP="$HOME/.zshrc_$(date +"%Y%m%d_%H%M%S")"
-		cp -r"$HOME/.zshrc" "$BACKUP" || { echo ".zshrc backup faild"; exit 1; }
+		cp -r "$HOME/.zshrc" "$BACKUP" || { echo ".zshrc backup faild"; exit 1; }
 		echo ".zshrc backup done"
 	else
 		ln -s "$CURRENT_DIR/.config/.zshrc" "$HOME/.zshrc" || { echo ".zshrc link faild"; exit 1; }
@@ -98,7 +98,7 @@ function vim_config {
 
 	# neovim link
 	if [ -d "$NVIM_DIR" ]; then
-		BACKUP_DIR="$HOME/.config/nvim/nvim_backup_$(date +"%Y%m%d_%H%M%S")"
+		BACKUP_DIR="$HOME/.config/nvim_backup_$(date +"%Y%m%d_%H%M%S")"
 		cp -r "$NVIM_DIR" "$BACKUP_DIR" || { echo "nvim backup faild"; exit 1; }
 		echo "nvim backup done"
 	else
@@ -154,7 +154,7 @@ if [[ $1 = "" ]]; then
 fi
 
 
-while getopts ":stwvh" optKey; do
+while getopts ":zstwvh" optKey; do
 	case "$optKey" in
 		t)
 			echo "load tmux config"
