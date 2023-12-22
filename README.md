@@ -4,7 +4,7 @@ Welcome.
 The usage of dotfiles is as follows.
 
 ```bash
-$ sh create_link.sh
+$ ./setup -s
 ```
 
 The operating environment is as follows
@@ -23,3 +23,4 @@ If necessary, install the software with the following commands.
     * https://github.com/ohmyzsh/ohmyzsh
 
 Please contact me if you need anything else.
+
