@@ -21,8 +21,6 @@ dashboard.section.header.val = {
 	" ;   |.'      |   | ,'      `---`           '---' '---'   |   ;/            ",
 	" '---'        `----'                                      '---'             ",
 }
-require("alpha.term")
-dashboard.section.terminal.command = vim.fn.stdpath("config") .. "/nvim-logo -t"
 
 -- Set menu
 dashboard.section.buttons.val = {
@@ -41,6 +39,7 @@ local function footer()
 	local version_info = "   v" .. version.major .. "." .. version.minor .. "." .. version.patch
 	return datetime .. "  ⚡" .. " plugins" .. version_info
 end
+
 dashboard.section.footer.val = footer()
 
 -- Send config to alpha
