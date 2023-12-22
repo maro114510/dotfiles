@@ -45,7 +45,6 @@ vim.g.coc_global_extensions = {
 	'coc-tsserver',
 	'coc-docker',
 	'coc-yaml',
-	'coc-markdownlint',
 	'coc-xml',
 	'coc-css',
 	'coc-json',
