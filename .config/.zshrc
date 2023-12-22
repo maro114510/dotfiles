@@ -120,6 +120,7 @@ if uname -a | grep -sq "Linux"; then
     export PATH=$HOME/lazygit:$PATH
     export PATH=/snap/bin:$PATH
     export PATH=$HOME/node-v21.5.0-linux-armv7l/bin:$PATH
+	export EDIOR=nvim
 elif [ "$(uname)" = "Darwin" ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
@@ -191,7 +192,7 @@ alias gp="git pull"
 alias gf='git flow'
 alias v='nvim'
 alias vim='nvim'
-alias vi='vi'
+alias vi='/usr/local/bin/vim'
 alias lg='lazygit'
 alias cl='clear'
 

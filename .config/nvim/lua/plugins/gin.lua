@@ -1,6 +1,6 @@
 
 return {
-	'vim-denops/denops.vim',
-	'lambdalisue/gin.vim',
+	-- 'vim-denops/denops.vim',
+	-- 'lambdalisue/gin.vim',
 }
 

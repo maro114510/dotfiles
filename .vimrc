@@ -141,7 +141,7 @@ call jetpack#begin()
     Jetpack 'hrsh7th/cmp-path'
     Jetpack 'hrsh7th/cmp-cmdline'
     Jetpack 'Shougo/ddc.vim'
-    Jetpack 'vim-denops/denops.vim'
+    " Jetpack 'vim-denops/denops.vim'
     Jetpack 'ervandew/supertab'
     Jetpack 'Shougo/pum.vim'
     Jetpack 'tani/ddc-fuzzy'
