@@ -116,10 +116,10 @@ export LANG="en_US.UTF-8"
 
 ### homebrew ###
 if uname -a | grep -sq "Linux"; then
-    echo "ok"
-    export PATH=$HOME/lazygit:$PATH
-    export PATH=/snap/bin:$PATH
-    export PATH=$HOME/node-v21.5.0-linux-armv7l/bin:$PATH
+	export PATH=$HOME/lazygit:$PATH
+	export PATH=/snap/bin:$PATH
+	export PATH=$HOME/node-v21.5.0-linux-armv7l/bin:$PATH
+	echo "ok"
 elif [ "$(uname)" = "Darwin" ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
