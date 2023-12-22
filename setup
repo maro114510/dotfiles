@@ -123,9 +123,11 @@ function vim_config {
 # setup
 
 function setup() {
-	if [[ ! -f "$HOME/commands/setup.sh" ]]; then
-		ln -s "$CURRENT_DIR/setup.sh" "$HOME/commands/setup.sh" || { echo "setup.sh link faild"; exit 1; }
-		echo "setup.sh linked"
+	if [[ ! -f "$HOME/commands/setup" ]]; then
+		ln -s "$CURRENT_DIR/setup" "$HOME/commands/setup" || { echo "setup.sh link faild"; exit 1; }
+		echo "setup linked"
+	else
+		echo "setup already linked"
 	fi
 }
 

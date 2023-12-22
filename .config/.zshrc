@@ -157,7 +157,7 @@ zle -N peco-select-history
 bindkey '^r' peco-select-history
 
 # export commands
-export PATH="$HOME/command:$PATH"
+export PATH="$HOME/commands:$PATH"
 
 ### Starship ###
 eval "$(starship init zsh)"
@@ -190,7 +190,7 @@ if [ -f "$HOME/.env" ]; then
 	if [ "$LOCAL_NAME" = "macbook" ]; then
 		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_book/Brewfile"
 		alias brewd="brew bundle dump --force --file=$bfifle"
-    elif [ "$LOCAL_NAME" = "macmini" ]; then
+	elif [ "$LOCAL_NAME" = "macmini" ]; then
 		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_mini/Brewfile"
 		alias brewd="brew bundle dump --force --file=$bfile"
 	fi
