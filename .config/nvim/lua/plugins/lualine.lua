@@ -7,17 +7,7 @@ return {
 			opt = true
 		},
 		opts = function()
-			require("lualine").setup({
-				sections = {
-					lualine_x = {
-					{
-						require("lazy.status").updates,
-						cond = require("lazy.status").has_updates,
-						color = { fg = "#ff9e64" },
-					},
-					},
-				},
-			})
+			require("lualine").setup({})
 		end
 	},
 }
