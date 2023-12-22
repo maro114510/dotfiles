@@ -29,7 +29,7 @@ noice.setup({
 		enabled = true,
 		view_error = "notify",
 		view_warning = "notify",
-		view_search = "mini",
+		view_search = "notify",
 	},
 })
 
