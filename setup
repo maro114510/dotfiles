@@ -7,8 +7,7 @@ set -eu
 # 	exit 1
 # fi
 
-CURRENT_DIR="$(pwd)"
-SCRIPT_DIR="$CURRENT_DIR/scripts"
+DOT_DIR="$HOME/ghq/github.com/maron114510/dotfiles"
 
 if ! type -p git >/dev/null; then
 	echo "error: git not found on the system" >&2
@@ -25,7 +24,7 @@ function zsh_confing {
 		cp -r "$HOME/.zshrc" "$BACKUP" || { echo ".zshrc backup faild"; exit 1; }
 		echo ".zshrc backup done"
 	else
-		ln -s "$CURRENT_DIR/.config/.zshrc" "$HOME/.zshrc" || { echo ".zshrc link faild"; exit 1; }
+		ln -s "$DOT_DIR/.config/.zshrc" "$HOME/.zshrc" || { echo ".zshrc link faild"; exit 1; }
 		echo ".zshrc linked"
 	fi
 }
@@ -38,7 +37,7 @@ function tmux_config {
 		cp -r "$HOME/.tmux.conf" "$BACKUP" || { echo "tmux backup faild"; exit 1; }
 		echo ".tmux.conf backup done"
 	else
-		ln -sfn "$CURRENT_DIR/.config/.tmux.conf" "$HOME/.tmux.conf" || { echo "tmux link faild"; exit 1; }
+		ln -sfn "$DOT_DIR/.config/.tmux.conf" "$HOME/.tmux.conf" || { echo "tmux link faild"; exit 1; }
 		echo ".tmux.conf linked"
 	fi
 
@@ -48,7 +47,7 @@ function tmux_config {
 		cp -r "$HOME/.tmux.session.conf" "$BACKUP" || { echo "tmux session backup faild"; exit 1; }
 		echo "tmux session backup done"
 	else
-		ln -s "$CURRENT_DIR/.config/.tmux.session.conf" "$HOME/.tmux.session.conf" || { echo "tmux session link faild"; exit 1; }
+		ln -s "$DOT_DIR/.config/.tmux.session.conf" "$HOME/.tmux.session.conf" || { echo "tmux session link faild"; exit 1; }
 		echo "tmux session linked"
 	fi
 }
@@ -57,7 +56,7 @@ function tmux_config {
 # wezterm
 
 function wezterm_config {
-	WEZ_TARGET_DIR="$CURRENT_DIR/.config/wezterm"
+	WEZ_TARGET_DIR="$DOT_DIR/.config/wezterm"
 
 	WEZTERM_DIR="$HOME/.config/wezterm"
 
@@ -77,7 +76,7 @@ function wezterm_config {
 
 function lazygit_config {
 	LAZY_TARGET_DIR="$HOME/Library/Application Support/lazygit"
-	LAGY_CONFIG="$CURRENT_DIR/.config/lazygit/config.yml"
+	LAGY_CONFIG="$DOT_DIR/.config/lazygit/config.yml"
 
 	if [ -f "$LAZY_TARGET_DIR/config.yml" ]; then
 		BACKUP_FILE="$LAZY_TARGET_DIR/config.$(date +"%Y%m%d_%H%M%S").yml"
@@ -93,7 +92,7 @@ function lazygit_config {
 # vims
 
 function vim_config {
-	NVIM_TARGET_DIR="$CURRENT_DIR/.config/nvim"
+	NVIM_TARGET_DIR="$DOT_DIR/.config/nvim"
 	NVIM_DIR="$HOME/.config/nvim"
 
 	# neovim link
@@ -114,7 +113,7 @@ function vim_config {
 		echo ".vimrc backup done"
 	else
 		touch .vimrc
-		ln -s "$CURRENT_DIR/.vimrc" "$HOME/.vimrc" || { echo "vim link faild"; exit 1; }
+		ln -s "$DOT_DIR/.vimrc" "$HOME/.vimrc" || { echo "vim link faild"; exit 1; }
 		echo ".vimrc linked"
 	fi
 }
@@ -124,7 +123,7 @@ function vim_config {
 
 function setup() {
 	if [[ ! -f "$HOME/commands/setup" ]]; then
-		ln -s "$CURRENT_DIR/setup" "$HOME/commands/setup" || { echo "setup.sh link faild"; exit 1; }
+		ln -s "$DOT_DIR/setup" "$HOME/commands/setup" || { echo "setup.sh link faild"; exit 1; }
 		echo "setup linked"
 	else
 		echo "setup already linked"
