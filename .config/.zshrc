@@ -115,8 +115,14 @@ source $ZSH/oh-my-zsh.sh
 export LANG="en_US.UTF-8"
 
 ### homebrew ###
-eval "$(/opt/homebrew/bin/brew shellenv)"
-
+if uname -a | grep -sq "Linux"; then
+    echo "ok"
+    export PATH=$HOME/lazygit:$PATH
+    export PATH=/snap/bin:$PATH
+    export PATH=$HOME/node-v21.5.0-linux-armv7l/bin:$PATH
+elif [ "$(uname)" = "Darwin" ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
 ### Node.js ###
 export NVM_DIR="$HOME/.nvm"
@@ -131,6 +137,15 @@ if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -
 
 
 ### Golang ###
+if uname -a | grep -sq "Linux"; then
+	export PATH=$PATH:/usr/local/go/bin
+elif [ "$(uname)" = "Darwin" ]; then
+	export GOPATH=$HOME/go
+	export GOBIN=$GOPATH/bin
+	export PATH=$PATH:$GOBIN
+	export PATH=$PATH:$(go env GOPATH)/bin
+fi
+
 export GOPATH=$HOME/go
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
@@ -158,6 +173,7 @@ bindkey '^r' peco-select-history
 
 # export commands
 export PATH="$HOME/commands:$PATH"
+
 
 ### Starship ###
 eval "$(starship init zsh)"
