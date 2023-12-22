@@ -24,7 +24,7 @@ dashboard.section.buttons.val = {
 	dashboard.button("r", "  Recent file", ":FzfLua oldfiles <CR>"),
 	dashboard.button("f", "󰥨  Find file", ":FzfLua files <CR>"),
 	dashboard.button("g", "󰱼  Find text", ":FzfLua live_grep <CR>"),
-	dashboard.button('l', '󰒲    lazy', ':Lazy<CR>'),
+	dashboard.button('l', '󰒲  Lazy', ':Lazy<CR>'),
 	dashboard.button("q", "  Quit", ":qa<CR>"),
 }
 

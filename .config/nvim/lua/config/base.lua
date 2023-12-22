@@ -62,7 +62,7 @@ vim.opt.mouse = 'a'
 -- Visualization of control characters
 vim.opt.list = true
 vim.opt.listchars = {
-	tab = '│·',
+	tab = '→-',
 	extends = '⟩',
 	precedes = '⟨',
 	trail = '·',
