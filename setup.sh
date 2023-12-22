@@ -10,16 +10,148 @@ if ! type -p git >/dev/null; then
   exit 1
 fi
 
-function script_run {
-	if [[ ! -f "$1" ]]; then
-		echo "$1 does not exist."
-		exit 1
+
+############################################################
+# if .zshrc exists → backup
+
+function zsh_confing {
+	if [ -f "$HOME/.zshrc" ]; then
+		BACKUP="$HOME/.zshrc_$(date +"%Y%m%d_%H%M%S")"
+		cp -r"$HOME/.zshrc" "$BACKUP" || { echo ".zshrc backup faild"; exit 1; }
+		echo ".zshrc backup done"
+	else
+		ln -s "$CURRENT_DIR/.config/.zshrc" "$HOME/.zshrc" || { echo ".zshrc link faild"; exit 1; }
+		echo ".zshrc linked"
+	fi
+}
+
+############################################################
+# tmux
+function tmux_config {
+	if [ -f "$HOME/.tmux.conf" ]; then
+		BACKUP="$HOME/.tmux.conf_$(date +"%Y%m%d_%H%M%S")"
+		cp -r "$HOME/.tmux.conf" "$BACKUP" || { echo "tmux backup faild"; exit 1; }
+		echo ".tmux.conf backup done"
+	else
+		ln -sfn "$CURRENT_DIR/.config/.tmux.conf" "$HOME/.tmux.conf" || { echo "tmux link faild"; exit 1; }
+		echo ".tmux.conf linked"
 	fi
 
-	sh -c "$1"
+	# tmux alias
+	if [ -f "$HOME/.tmux.session.conf" ]; then
+		BACKUP="$HOME/.tmux.session.conf_$(date +"%Y%m%d_%H%M%S")"
+		cp -r "$HOME/.tmux.session.conf" "$BACKUP" || { echo "tmux session backup faild"; exit 1; }
+		echo "tmux session backup done"
+	else
+		ln -s "$CURRENT_DIR/.config/.tmux.session.conf" "$HOME/.tmux.session.conf" || { echo "tmux session link faild"; exit 1; }
+		echo "tmux session linked"
+	fi
 }
 
-function link_dotfiles {
-	echo "[ Link dotfiles ]"
+############################################################
+# wezterm
 
+function wezterm_config {
+	WEZ_TARGET_DIR="$CURRENT_DIR/.config/wezterm"
+
+	WEZTERM_DIR="$HOME/.config/wezterm"
+
+	if [ -d "$WEZTERM_DIR" ]; then
+		BACKUP_DIR="$HOME/.config/wezterm_backup_$(date +"%Y%m%d_%H%M%S")"
+		cp -r "$WEZTERM_DIR"/* "$BACKUP_DIR" || { echo ".wezterm backup faild"; exit 1; }
+		echo "wezterm config backup done"
+	else
+		# mkdir -p "$WEZTERM_DIR"
+		ln -s "$WEZ_TARGET_DIR"/ "$HOME/.config/" || { echo ".wezterm link faild"; exit 1; }
+		echo "wezterm linked"
+	fi
 }
+
+############################################################
+# lazygit
+
+function lazygit_config {
+	LAZY_TARGET_DIR="$HOME/Library/Application Support/lazygit"
+	LAGY_CONFIG="$CURRENT_DIR/.config/lazygit/config.yml"
+
+	if [ -f "$LAZY_TARGET_DIR/config.yml" ]; then
+		BACKUP_FILE="$LAZY_TARGET_DIR/config.$(date +"%Y%m%d_%H%M%S").yml"
+		cp -r "$LAZY_TARGET_DIR/config.yml" "$BACKUP_FILE" || { echo "lazygit backup faild"; exit 1; }
+		echo "lazygit config backuped"
+	else
+		ln -s "$LAGY_CONFIG" "$LAZY_TARGET_DIR/config.yml" || { echo "lazygit link faild"; exit 1; }
+		echo "lazygit config linked"
+	fi
+}
+
+############################################################
+# vims
+
+function vim_config {
+	NVIM_TARGET_DIR="$CURRENT_DIR/.config/nvim"
+	NVIM_DIR="$HOME/.config/nvim"
+
+	# neovim link
+	if [ -d "$NVIM_DIR" ]; then
+		BACKUP_DIR="$HOME/.config/nvim/nvim_backup_$(date +"%Y%m%d_%H%M%S")"
+		cp -r "$NVIM_DIR" "$BACKUP_DIR" || { echo "nvim backup faild"; exit 1; }
+		echo "nvim backup done"
+	else
+		mkdir -p "$NVIM_DIR"
+		ln -s "$NVIM_TARGET_DIR"/* "$NVIM_DIR" || { echo "nvim link faild"; exit 1; }
+		echo "nvim linked"
+	fi
+
+	# vim link
+	if [ -f "$HOME/.vimrc" ]; then
+		BACKUP_FILE="$HOME/.vimrc_backup_$(date +"%Y%m%d_%H%M%S")"
+		cp -r "$HOME/.vimrc" "$BACKUP_FILE" || { echo "vim backup faild"; exit 1; }
+		echo ".vimrc backup done"
+	else
+		touch .vimrc
+		ln -s "$CURRENT_DIR/.vimrc" "$HOME/.vimrc" || { echo "vim link faild"; exit 1; }
+		echo ".vimrc linked"
+	fi
+}
+
+############################################################
+# usage
+
+function usage() {
+  cat <<EOM
+Usage: $(basename "$0") [OPTIONS]
+  -h  Show this help text
+  -a  Option a
+  -b  Option b
+  -c  Commit message
+  -d  Directory
+EOM
+  exit 2
+}
+
+############################################################
+
+
+while getopts ":a:b:c:d:h" optKey; do
+  case "$optKey" in
+	a)
+	  echo "-a = ${OPTARG}"
+	  ;;
+	b)
+	  echo "-b = ${OPTARG}"
+	  ;;
+	c)
+	  echo "-c = ${OPTARG}"
+	  ;;
+	d)
+	  echo "-d = ${OPTARG}"
+	  ;;
+	'-h'|'--help'|* )
+	  usage
+	  ;;
+  esac
+done
+
+
+# end of script
+

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CURRENT_DIR=$(pwd)
-TARGET_DIR="$CURRENT_DIR/.config/wezterm"
+WEZ_TARGET_DIR="$CURRENT_DIR/.config/wezterm"
 
 WEZTERM_DIR="$HOME/.config/wezterm"
 
@@ -11,7 +11,7 @@ if [ -d "$WEZTERM_DIR" ]; then
 	echo "wezterm config backup done"
 else
 	# mkdir -p "$WEZTERM_DIR"
-	ln -s "$TARGET_DIR"/ "$HOME/.config/" || { echo ".wezterm link faild"; exit 1; }
+	ln -s "$WEZ_TARGET_DIR"/ "$HOME/.config/" || { echo ".wezterm link faild"; exit 1; }
 	echo "wezterm linked"
 fi
 

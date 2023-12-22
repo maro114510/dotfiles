@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CURRENT_DIR=$(pwd)
-TARGET_DIR="$CURRENT_DIR/.config/nvim"
+NVIM_TARGET_DIR="$CURRENT_DIR/.config/nvim"
 NVIM_DIR="$HOME/.config/nvim"
 
 # neovim link
@@ -11,7 +11,7 @@ if [ -d "$NVIM_DIR" ]; then
     echo "nvim backup done"
 else
 	mkdir -p "$NVIM_DIR"
-	ln -s "$TARGET_DIR"/* "$NVIM_DIR" || { echo "nvim link faild"; exit 1; }
+	ln -s "$NVIM_TARGET_DIR"/* "$NVIM_DIR" || { echo "nvim link faild"; exit 1; }
 	echo "nvim linked"
 fi
 
