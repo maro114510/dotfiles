@@ -163,6 +163,7 @@ eval "$(starship init zsh)"
 
 
 ##### alias #####
+alias ls='lsd'
 alias ll='ls -l'
 alias la='ls -al'
 alias cp='cp -i'
@@ -171,7 +172,7 @@ alias rm='rm -i'
 alias prp='poetry run python'
 alias gp="git pull"
 alias gf='git flow'
-alias vim='nvim'
+alias v='nvim'
 alias vi='vi'
 alias lg='lazygit'
 alias cl='clear'
