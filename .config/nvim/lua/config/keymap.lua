@@ -8,6 +8,10 @@ vim.api.nvim_set_keymap('x', 'd', '"_d', { noremap = true })
 
 vim.api.nvim_set_keymap('n', 'ciw', 'viw"_c', { noremap = true })
 
+-- change buffer files
+vim.api.nvim_set_keymap('n', '<C-j>', '<cmd>bprev<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-k>', '<cmd>bnext<CR>', { noremap = true, silent = true })
+
 -- move
 vim.api.nvim_set_keymap('n', 'j', 'gj', { noremap = true })
 vim.api.nvim_set_keymap('n', 'k', 'gk', { noremap = true })
