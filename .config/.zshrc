@@ -75,12 +75,12 @@ export ZSH="$HOME/.oh-my-zsh"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-      git
-      zsh-syntax-highlighting
-      zsh-completions
-      zsh-autosuggestions
-      zsh-history-substring-search
-	  z
+	git
+	zsh-syntax-highlighting
+	zsh-completions
+	zsh-autosuggestions
+	zsh-history-substring-search
+	z
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -156,7 +156,8 @@ function peco-select-history() {
 zle -N peco-select-history
 bindkey '^r' peco-select-history
 
-
+# export commands
+export PATH="$HOME/command:$PATH"
 
 ### Starship ###
 eval "$(starship init zsh)"
@@ -184,15 +185,15 @@ alias めも='sh ~/commands/create_memo.sh'
 alias tmuxer='tmux new -s \; source-file ~/.tmux.session.conf'
 
 if [ -f "$HOME/.env" ]; then
-    source "$HOME/.env"
+	source "$HOME/.env"
 
-    if [ "$LOCAL_NAME" = "macbook" ]; then
+	if [ "$LOCAL_NAME" = "macbook" ]; then
 		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_book/Brewfile"
 		alias brewd="brew bundle dump --force --file=$bfifle"
     elif [ "$LOCAL_NAME" = "macmini" ]; then
 		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_mini/Brewfile"
 		alias brewd="brew bundle dump --force --file=$bfile"
-    fi
+	fi
 fi
 
 

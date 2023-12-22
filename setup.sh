@@ -2,12 +2,17 @@
 
 set -eu
 
+if [ "$(uname)" != "Darwin" ] ; then
+	echo "Not macOS!"
+	exit 1
+fi
+
 CURRENT_DIR="$(pwd)"
 SCRIPT_DIR="$CURRENT_DIR/scripts"
 
 if ! type -p git >/dev/null; then
-  echo "error: git not found on the system" >&2
-  exit 1
+	echo "error: git not found on the system" >&2
+	exit 1
 fi
 
 
@@ -115,43 +120,67 @@ function vim_config {
 }
 
 ############################################################
+# setup
+
+function setup() {
+	if [[ ! -f "$HOME/commands/setup.sh" ]]; then
+		ln -s "$CURRENT_DIR/setup.sh" "$HOME/commands/setup.sh" || { echo "setup.sh link faild"; exit 1; }
+		echo "setup.sh linked"
+	fi
+}
+
+############################################################
 # usage
 
 function usage() {
-  cat <<EOM
+	cat <<EOM
 Usage: $(basename "$0") [OPTIONS]
-  -h  Show this help text
-  -a  Option a
-  -b  Option b
-  -c  Commit message
-  -d  Directory
+	-h  Show this help text
+	-t  Tmux config load
+	-z  Zsh config load
+	-w  Wezterm config load
+	-v  Vim config load
 EOM
   exit 2
 }
 
 ############################################################
+# main
+
+if [[ $1 = "" ]]; then
+	echo "no args"
+fi
 
 
-while getopts ":a:b:c:d:h" optKey; do
-  case "$optKey" in
-	a)
-	  echo "-a = ${OPTARG}"
-	  ;;
-	b)
-	  echo "-b = ${OPTARG}"
-	  ;;
-	c)
-	  echo "-c = ${OPTARG}"
-	  ;;
-	d)
-	  echo "-d = ${OPTARG}"
-	  ;;
-	'-h'|'--help'|* )
-	  usage
-	  ;;
-  esac
+while getopts ":stwvh" optKey; do
+	case "$optKey" in
+		t)
+			echo "load tmux config"
+			# tmux_config
+			;;
+		z)
+			echo "load zsh config"
+			zsh_confing
+			;;
+		w)
+			echo "load wezterm config"
+			wezterm_config
+			;;
+		v)
+			echo "load vim config"
+			vim_config
+			;;
+		s)
+			echo "setup"
+			setup
+			;;
+		'-h'|'--help'|* )
+			usage
+			;;
+	esac
 done
 
+############################################################
 
 # end of script
 
