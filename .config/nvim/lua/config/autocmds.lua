@@ -2,7 +2,7 @@
 -- Change Color Scheme
 vim.cmd[[colorscheme tokyonight-night]]
 
--- when leave
+-- when leave cursor setting
 vim.cmd([[
 	augroup RestoreCursorShapeOnExit
 		autocmd!
