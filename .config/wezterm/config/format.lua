@@ -8,7 +8,7 @@ wezterm.on('format-window-title', function(tab)
 	return BaseName(tab.active_pane.foregraound_process_name)
 end)
 
-local HEADER = '' -- 文字化けしちゃってるかもしれませんが、アイコンフォント入ってます。
+local HEADER = ''
 
 local SYMBOL_COLOR = { '#ffb2cc', '#a4a4a4' }
 local FONT_COLOR = { '#dddddd', '#888888' }

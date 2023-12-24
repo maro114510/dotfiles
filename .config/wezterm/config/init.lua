@@ -24,22 +24,22 @@ local keys = {
 	{ key = 'j', mods = mod.SUPER_REV, action = act.ActivatePaneDirection('Down') },
 	{ key = 'h', mods = mod.SUPER_REV, action = act.ActivatePaneDirection('Left') },
 	{ key = 'l', mods = mod.SUPER_REV, action = act.ActivatePaneDirection('Right') },
-    {
-        key = 'f',
-        mods = 'SHIFT|META',
-        action = wezterm.action.ToggleFullScreen,
-    },
-    -- Ctrl+Shift+d create new pane
-    {
-        key = 'd',
-        mods = 'SHIFT|CMD',
-        action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
-    },
+	{
+		key = 'f',
+		mods = 'SHIFT|META',
+		action = wezterm.action.ToggleFullScreen,
+	},
+	-- Ctrl+Shift+d create new pane
+	{
+		key = 'd',
+		mods = 'SHIFT|CMD',
+		action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
+	},
 }
 
 wezterm.font {
-    -- family = 'font-anonymice-nerd-font'
-    family = 'font-Hack-nerd-font'
+	-- family = 'font-anonymice-nerd-font'
+	family = 'font-Hack-nerd-font'
 }
 
 local home = os.getenv( "HOME" )
