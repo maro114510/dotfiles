@@ -1,4 +1,3 @@
-
 " ===== fileoption =====
 " priority of file encoding
 set fileencodings=utf-8,cp932,sjis
@@ -117,36 +116,37 @@ augroup END
 "===== Vim-jetpack =====
 packadd vim-jetpack
 call jetpack#begin()
-    " plugin managr
-    Jetpack 'tani/vim-jetpack', {'opt': 1} "bootstrap
-    " vim indent guides
-    Jetpack 'nathanaelkane/vim-indent-guides'
-    " fuzzy file search
-    Jetpack 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    Jetpack 'junegunn/fzf.vim'
-    " using git
-    Jetpack 'tpope/vim-fugitive'
-    " move fast
-    Jetpack 'unblevable/quick-scope'
-    " nerdtree
-    Jetpack 'preservim/nerdtree'
-    " Unite
-    Jetpack 'Shougo/unite.vim'
-    " ctrlp
-    Jetpack 'ctrlpvim/ctrlp.vim'
-    " window size
-    Jetpack 'simeji/winresizer'
-    Jetpack 'ghifarit53/tokyonight-vim'
-    Jetpack 'neoclide/coc.nvim', {'branch': 'release'}
-    Jetpack 'hrsh7th/cmp-path'
-    Jetpack 'hrsh7th/cmp-cmdline'
-    Jetpack 'Shougo/ddc.vim'
-    Jetpack 'vim-denops/denops.vim'
-    Jetpack 'ervandew/supertab'
-    Jetpack 'Shougo/pum.vim'
-    Jetpack 'tani/ddc-fuzzy'
-    Jetpack 'gelguy/wilder.nvim'
+	" plugin managr
+	Jetpack 'tani/vim-jetpack', {'opt': 1} "bootstrap
+	" vim indent guides
+	Jetpack 'nathanaelkane/vim-indent-guides'
+	" fuzzy file search
+	Jetpack 'junegunn/fzf', { 'do': { -> fzf#install() } }
+	Jetpack 'junegunn/fzf.vim'
+	" using git
+	Jetpack 'tpope/vim-fugitive'
+	" move fast
+	Jetpack 'unblevable/quick-scope'
+	" nerdtree
+	Jetpack 'preservim/nerdtree'
+	" Unite
+	Jetpack 'Shougo/unite.vim'
+	" ctrlp
+	Jetpack 'ctrlpvim/ctrlp.vim'
+	" window size
+	Jetpack 'simeji/winresizer'
 	Jetpack 'ghifarit53/tokyonight-vim'
+	Jetpack 'neoclide/coc.nvim', {'branch': 'release'}
+	Jetpack 'hrsh7th/cmp-path'
+	Jetpack 'hrsh7th/cmp-cmdline'
+	Jetpack 'Shougo/ddc.vim'
+	Jetpack 'vim-denops/denops.vim'
+	Jetpack 'ervandew/supertab'
+	Jetpack 'Shougo/pum.vim'
+	Jetpack 'tani/ddc-fuzzy'
+	Jetpack 'gelguy/wilder.nvim'
+	Jetpack 'ghifarit53/tokyonight-vim'
+	Jetpack 'sheerun/vim-polyglot'
 call jetpack#end()
 
 " Unite settings
