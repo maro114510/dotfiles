@@ -53,7 +53,8 @@ local Config = {
 	front_end = 'WebGpu',
 	webgpu_power_preference = 'HighPerformance',
 
-	color_scheme = 'tokyonight_night',
+	-- color_scheme = 'tokyonight_night',
+	color_scheme = 'tokyonight_storm',
 	window_background_opacity = 0.85,
 
 	-- cursor
@@ -72,3 +73,4 @@ local Config = {
 }
 
 return Config
+
