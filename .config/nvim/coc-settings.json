@@ -7,6 +7,12 @@
 	"coc.preferences.hoverTarget": "float",
 	"coc.preferences.formatOnSaveFileTypes": [ "go" ],
 	"suggest.preferCompleteThanJumpPlaceholder": true,
+	"diagnostic.virtualText": true,
+	"diagnostic.virtualTextCurrentLineOnly": false,
+	"diagnostic.infoSign": "",
+	"diagnostic.hintSign": "",
+	"diagnostic.warningSign": "",
+	"diagnostic.errorSign": "",
 	"languageserver": {
 		"clangd": {
 			"command": "clangd",
