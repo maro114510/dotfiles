@@ -1,4 +1,5 @@
-local wezterm = require('wezterm')
+
+local wezterm = require 'wezterm'
 local act = wezterm.action
 
 local mod = {}
@@ -54,12 +55,15 @@ local Config = {
 	webgpu_power_preference = 'HighPerformance',
 
 	-- color_scheme = 'tokyonight_night',
-	color_scheme = 'tokyonight_storm',
+	color_scheme = 'Molokai',
+	-- color_scheme = 'tokyonight_storm',
 	window_background_opacity = 0.85,
 
 	-- cursor
 	default_cursor_style = 'SteadyUnderline',
 
+	-- background
+	-- background_image = background_path,
 	-- scrollbar
 	enable_scroll_bar = true,
 

@@ -1,4 +1,4 @@
-local act = require "wezterm".action
+--[[ local act = require "wezterm".action
 
 config.keys = {
 	{
@@ -7,3 +7,7 @@ config.keys = {
 		action = act.ShowLauncherArgs { flags = 'WORKSPACES' , title = "Select workspace" },
 	},
 }
+
+return {
+
+} ]]
