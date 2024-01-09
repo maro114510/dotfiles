@@ -26,13 +26,32 @@ vim.api.nvim_set_keymap('i', 'jj', '<ESC>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('', ';',':', { noremap = true })
 
 -- fzf
-vim.keymap.set("n", "<c-P>",
-	"<cmd>lua require('fzf-lua').files()<CR>", { silent = true }
+vim.keymap.set(
+	"n",
+	"<c-P>",
+	"<cmd>lua require('fzf-lua').files()<CR>",
+	{ silent = true }
 )
-vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("fzf-lua").lsp_workspace_symbols()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap(
+	'n',
+	'<C-w>',
+	'<cmd>lua require("fzf-lua").lsp_live_workspace_symbols()<CR>',
+	{ noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+	'n',
+	'<C-g>',
+	'<cmd>lua require("fzf-lua").grep()<CR>',
+	{ noremap = true, silent = true }
+)
 
 -- ToggleTerm
-vim.api.nvim_set_keymap('n', '<C-T>', '<cmd>exe v:count1 . "ToggleTerm"<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap(
+	'n',
+	'<C-T>',
+	'<cmd>exe v:count1 . "ToggleTerm"<CR>',
+	{ noremap = true, silent = true }
+)
 
 -- COC
 -- when normal mode
