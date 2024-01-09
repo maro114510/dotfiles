@@ -242,7 +242,9 @@ fdcntrm() {
 # docker image rm
 fdimgrm() {
 	local cid
-	cid=$(docker image ls -a | sed 1d | fzf -m -q "$1" | awk '{print $1}')
+	# get image id from docker image ls
+	cid=$(docker image ls -a | sed 1d | fzf -m -q "$1" | awk '{print $3}')
+	echo $cid
 	[ -n "$cid" ] && echo $cid | xargs docker image rm -f
 }
 # vim with fzf
