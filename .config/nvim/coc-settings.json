@@ -1,5 +1,6 @@
 
 {
+	"suggest.echodocSupport": true,
 	"suggest.noselect": true,
 	"suggest.triggerAfterInsertEnter": true,
 	"suggest.minTriggerInputLength": 2,
