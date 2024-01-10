@@ -205,6 +205,7 @@ alias ac='sh ~/commands/auto_commit.sh'
 alias memo='sh ~/commands/create_memo.sh'
 alias めも='sh ~/commands/create_memo.sh'
 alias tmuxer='tmux new -s \; source-file ~/.tmux.session.conf'
+alias g='cd $(ghq list -p | fzf)'
 
 if [ -f "$HOME/.env" ]; then
 	source "$HOME/.env"
@@ -289,4 +290,6 @@ fkill() {
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# Fig
+# mise -- runtime version manager
+eval "$(/opt/homebrew/bin/mise activate zsh)"
+export PATH="/opt/homebrew/bin/mise/shims:$PATH"
