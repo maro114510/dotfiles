@@ -45,7 +45,6 @@ vim.g.coc_global_extensions = {
 	'coc-tsserver',
 	'coc-docker',
 	'coc-yaml',
-	'coc-markdownlint',
 	'coc-xml',
 	'coc-css',
 	'coc-json',
@@ -62,7 +61,7 @@ vim.opt.mouse = 'a'
 -- Visualization of control characters
 vim.opt.list = true
 vim.opt.listchars = {
-	tab = '│·',
+	tab = '→-',
 	extends = '⟩',
 	precedes = '⟨',
 	trail = '·',

@@ -1,0 +1,191 @@
+#!/bin/bash
+
+set -eu
+
+# if [ "$(uname)" != "Darwin" ] ; then
+# 	echo "Not macOS!"
+# 	exit 1
+# fi
+
+DOT_DIR="$HOME/ghq/github.com/maron114510/dotfiles"
+
+if ! type -p git >/dev/null; then
+	echo "error: git not found on the system" >&2
+	exit 1
+fi
+
+
+############################################################
+# if .zshrc exists → backup
+
+function zsh_confing {
+	if [ -f "$HOME/.zshrc" ]; then
+		BACKUP="$HOME/.zshrc_$(date +"%Y%m%d_%H%M%S")"
+		cp -r "$HOME/.zshrc" "$BACKUP" || { echo ".zshrc backup faild"; exit 1; }
+		echo ".zshrc backup done"
+	else
+		ln -s "$DOT_DIR/.config/.zshrc" "$HOME/.zshrc" || { echo ".zshrc link faild"; exit 1; }
+		echo ".zshrc linked"
+	fi
+}
+
+############################################################
+# tmux
+function tmux_config {
+	if [ -f "$HOME/.tmux.conf" ]; then
+		BACKUP="$HOME/.tmux.conf_$(date +"%Y%m%d_%H%M%S")"
+		cp -r "$HOME/.tmux.conf" "$BACKUP" || { echo "tmux backup faild"; exit 1; }
+		echo ".tmux.conf backup done"
+	else
+		ln -sfn "$DOT_DIR/.config/.tmux.conf" "$HOME/.tmux.conf" || { echo "tmux link faild"; exit 1; }
+		echo ".tmux.conf linked"
+	fi
+
+	# tmux alias
+	if [ -f "$HOME/.tmux.session.conf" ]; then
+		BACKUP="$HOME/.tmux.session.conf_$(date +"%Y%m%d_%H%M%S")"
+		cp -r "$HOME/.tmux.session.conf" "$BACKUP" || { echo "tmux session backup faild"; exit 1; }
+		echo "tmux session backup done"
+	else
+		ln -s "$DOT_DIR/.config/.tmux.session.conf" "$HOME/.tmux.session.conf" || { echo "tmux session link faild"; exit 1; }
+		echo "tmux session linked"
+	fi
+}
+
+############################################################
+# wezterm
+
+function wezterm_config {
+	WEZ_TARGET_DIR="$DOT_DIR/.config/wezterm"
+
+	WEZTERM_DIR="$HOME/.config/wezterm"
+
+	if [ -d "$WEZTERM_DIR" ]; then
+		BACKUP_DIR="$HOME/.config/wezterm_backup_$(date +"%Y%m%d_%H%M%S")"
+		cp -r "$WEZTERM_DIR"/* "$BACKUP_DIR" || { echo ".wezterm backup faild"; exit 1; }
+		echo "wezterm config backup done"
+	else
+		# mkdir -p "$WEZTERM_DIR"
+		ln -s "$WEZ_TARGET_DIR"/ "$HOME/.config/" || { echo ".wezterm link faild"; exit 1; }
+		echo "wezterm linked"
+	fi
+}
+
+############################################################
+# lazygit
+
+function lazygit_config {
+	LAZY_TARGET_DIR="$HOME/Library/Application Support/lazygit"
+	LAGY_CONFIG="$DOT_DIR/.config/lazygit/config.yml"
+
+	if [ -f "$LAZY_TARGET_DIR/config.yml" ]; then
+		BACKUP_FILE="$LAZY_TARGET_DIR/config.$(date +"%Y%m%d_%H%M%S").yml"
+		cp -r "$LAZY_TARGET_DIR/config.yml" "$BACKUP_FILE" || { echo "lazygit backup faild"; exit 1; }
+		echo "lazygit config backuped"
+	else
+		ln -s "$LAGY_CONFIG" "$LAZY_TARGET_DIR/config.yml" || { echo "lazygit link faild"; exit 1; }
+		echo "lazygit config linked"
+	fi
+}
+
+############################################################
+# vims
+
+function vim_config {
+	NVIM_TARGET_DIR="$DOT_DIR/.config/nvim"
+	NVIM_DIR="$HOME/.config/nvim"
+
+	# neovim link
+	if [ -d "$NVIM_DIR" ]; then
+		BACKUP_DIR="$HOME/.config/nvim_backup_$(date +"%Y%m%d_%H%M%S")"
+		cp -r "$NVIM_DIR" "$BACKUP_DIR" || { echo "nvim backup faild"; exit 1; }
+		echo "nvim backup done"
+	else
+		mkdir -p "$NVIM_DIR"
+		ln -s "$NVIM_TARGET_DIR"/* "$NVIM_DIR" || { echo "nvim link faild"; exit 1; }
+		echo "nvim linked"
+	fi
+
+	# vim link
+	if [ -f "$HOME/.vimrc" ]; then
+		BACKUP_FILE="$HOME/.vimrc_backup_$(date +"%Y%m%d_%H%M%S")"
+		cp -r "$HOME/.vimrc" "$BACKUP_FILE" || { echo "vim backup faild"; exit 1; }
+		echo ".vimrc backup done"
+	else
+		touch .vimrc
+		ln -s "$DOT_DIR/.vimrc" "$HOME/.vimrc" || { echo "vim link faild"; exit 1; }
+		echo ".vimrc linked"
+	fi
+}
+
+############################################################
+# setup
+
+function setup() {
+	if [[ ! -f "$HOME/commands/setup" ]]; then
+		ln -s "$DOT_DIR/setup" "$HOME/commands/setup" || { echo "setup.sh link faild"; exit 1; }
+		echo "setup linked"
+	else
+		echo "setup already linked"
+	fi
+}
+
+############################################################
+# usage
+
+function usage() {
+	cat <<EOM
+Usage: $(basename "$0") [OPTIONS]
+	-h  Show this help text
+	-t  Tmux config load
+	-z  Zsh config load
+	-w  Wezterm config load
+	-v  Vim config load
+EOM
+  exit 2
+}
+
+############################################################
+# main
+
+if [[ $1 = "" ]]; then
+	echo "no args"
+fi
+
+
+while getopts ":lzstwvh" optKey; do
+	case "$optKey" in
+		t)
+			echo "load tmux config"
+			tmux_config
+			;;
+		z)
+			echo "load zsh config"
+			zsh_confing
+			;;
+		w)
+			echo "load wezterm config"
+			wezterm_config
+			;;
+		l)
+			echo "load lazygit config"
+			lazygit_config
+			;;
+		v)
+			echo "load vim config"
+			vim_config
+			;;
+		s)
+			echo "setup"
+			setup
+			;;
+		'-h'|'--help'|* )
+			usage
+			;;
+	esac
+done
+
+############################################################
+
+# end of script
+

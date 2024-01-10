@@ -1,5 +1,3 @@
-# Fig pre block. Keep at the top of this file.
-[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -75,12 +73,12 @@ export ZSH="$HOME/.oh-my-zsh"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-      git
-      zsh-syntax-highlighting
-      zsh-completions
-      zsh-autosuggestions
-      zsh-history-substring-search
-	  z
+	git
+	zsh-syntax-highlighting
+	zsh-completions
+	zsh-autosuggestions
+	zsh-history-substring-search
+	z
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -113,10 +111,21 @@ source $ZSH/oh-my-zsh.sh
 
 ### locale ###
 export LANG="en_US.UTF-8"
+export LC_COLLATE="en_US.UTF-8"
+export LC_CTYPE="en_US.UTF-8"
+export LC_MESSAGES="en_US.UTF-8"
+export LC_MONETARY="en_US.UTF-8"
+export LC_NUMERIC="en_US.UTF-8"
 
 ### homebrew ###
-eval "$(/opt/homebrew/bin/brew shellenv)"
-
+if uname -a | grep -sq "Linux"; then
+	export PATH=$HOME/lazygit:$PATH
+	export PATH=/snap/bin:$PATH
+	export PATH=$HOME/node-v21.5.0-linux-armv7l/bin:$PATH
+	echo "ok"
+elif [ "$(uname)" = "Darwin" ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
 ### Node.js ###
 export NVM_DIR="$HOME/.nvm"
@@ -129,8 +138,20 @@ export PATH="$HOME/.pyenv/versions/3.11.3/bin:$PATH"
 ### pyenv-virtualenv ###
 if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 
+### rye ###
+source "$HOME/.rye/env"
+
 
 ### Golang ###
+if uname -a | grep -sq "Linux"; then
+	export PATH=$PATH:/usr/local/go/bin
+elif [ "$(uname)" = "Darwin" ]; then
+	export GOPATH=$HOME/go
+	export GOBIN=$GOPATH/bin
+	export PATH=$PATH:$GOBIN
+	export PATH=$PATH:$(go env GOPATH)/bin
+fi
+
 export GOPATH=$HOME/go
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
@@ -156,6 +177,8 @@ function peco-select-history() {
 zle -N peco-select-history
 bindkey '^r' peco-select-history
 
+# export commands
+export PATH="$HOME/commands:$PATH"
 
 
 ### Starship ###
@@ -163,6 +186,7 @@ eval "$(starship init zsh)"
 
 
 ##### alias #####
+alias ls='lsd'
 alias ll='ls -l'
 alias la='ls -al'
 alias cp='cp -i'
@@ -171,6 +195,7 @@ alias rm='rm -i'
 alias prp='poetry run python'
 alias gp="git pull"
 alias gf='git flow'
+alias v='nvim'
 alias vim='nvim'
 alias vi='vi'
 alias lg='lazygit'
@@ -180,24 +205,82 @@ alias ac='sh ~/commands/auto_commit.sh'
 alias memo='sh ~/commands/create_memo.sh'
 alias めも='sh ~/commands/create_memo.sh'
 alias tmuxer='tmux new -s \; source-file ~/.tmux.session.conf'
+alias g='cd $(ghq list -p | fzf)'
 
 if [ -f "$HOME/.env" ]; then
-    source "$HOME/.env"
+	source "$HOME/.env"
 
-    if [ "$LOCAL_NAME" = "macbook" ]; then
+	if [ "$LOCAL_NAME" = "macbook" ]; then
 		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_book/Brewfile"
 		alias brewd="brew bundle dump --force --file=$bfifle"
-		if [ ! -f "$HOME/Brewfile" ]; then
-			cp -f "$bfile" "$HOME/Brewfile"
-		fi
-    elif [ "$LOCAL_NAME" = "macmini" ]; then
+	elif [ "$LOCAL_NAME" = "macmini" ]; then
 		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_mini/Brewfile"
 		alias brewd="brew bundle dump --force --file=$bfile"
-		if [ ! -f "$HOME/Brewfile" ]; then
-			cp -f "$bfile" "$HOME/Brewfile"
-		fi
-    fi
+	fi
 fi
+
+
+##### fzf #####
+
+export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
+export FZF_DEFAULT_OPTS="--height 50% --layout=reverse --border --inline-info --preview 'head -100 {}'"
+# using ripgrep combined with preview
+# find-in-file - usage: fif <searchTerm>
+fif() {
+	if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+	rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
+}
+# fd - cd to selected directory
+# https://qiita.com/kamykn/items/aa9920f07487559c0c7e
+fcd() {
+local dir
+	dir=$(find ${1:-.} -path '*/\.*' -prune \
+		-o -type d -print 2> /dev/null | fzf +m) &&
+	cd "$dir"
+}
+# docker container rm
+# ref: https://momozo.tech/2021/03/10/fzf%E3%81%A7zsh%E3%82%BF%E3%83%BC%E3%83%9F%E3%83%8A%E3%83%AB%E4%BD%9C%E6%A5%AD%E3%82%92%E5%8A%B9%E7%8E%87%E5%8C%96/
+fdcntrm() {
+	local cid
+	cid=$(docker ps -a | sed 1d | fzf -m -q "$1" | awk '{print $1}')
+	[ -n "$cid" ] && echo $cid | xargs docker container rm -f
+}
+# docker image rm
+fdimgrm() {
+	local cid
+	# get image id from docker image ls
+	cid=$(docker image ls -a | sed 1d | fzf -m -q "$1" | awk '{print $3}')
+	echo $cid
+	[ -n "$cid" ] && echo $cid | xargs docker image rm -f
+}
+# vim with fzf
+vf() {
+	local file
+	file=$(fzf --preview 'bat --style=numbers --color=always {}' --query="$1") &&
+	nvim "${file}" || return 1
+}
+# fh - repeat history
+fh() {
+	eval $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//')
+}
+# fdg - ghq
+fgh() {
+	local selected
+	selected=$(ghq list | fzf)
+
+	if [ "x$selected" != "x" ]; then
+		cd $(ghq root)/$selected
+	fi
+}
+fkill() {
+	local pid
+	pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+
+	if [ "x$pid" != "x" ]
+	then
+		echo $pid | xargs kill -${1:-9}
+	fi
+}
 
 
 # bun completions
@@ -207,7 +290,6 @@ fi
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# Fig
-[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
-
-
+# mise -- runtime version manager
+eval "$(/opt/homebrew/bin/mise activate zsh)"
+export PATH="/opt/homebrew/bin/mise/shims:$PATH"

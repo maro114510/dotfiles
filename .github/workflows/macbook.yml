@@ -3,7 +3,6 @@ name: macbook
 on:
   pull_request:
     branches: [ main ]
-
 jobs:
   macos-test:
     runs-on: macos-latest

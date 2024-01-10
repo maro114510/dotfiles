@@ -1,16 +1,8 @@
 
--- NerdTree
-vim.api.nvim_create_autocmd('VimEnter', {
-	callback = function()
-		vim.cmd('NERDTree')
-		vim.cmd('wincmd p')
-	end,
-})
-
 -- Change Color Scheme
 vim.cmd[[colorscheme tokyonight-night]]
 
--- when leave
+-- when leave cursor setting
 vim.cmd([[
 	augroup RestoreCursorShapeOnExit
 		autocmd!

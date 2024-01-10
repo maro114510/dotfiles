@@ -1,4 +1,5 @@
-local wezterm = require('wezterm')
+
+local wezterm = require 'wezterm'
 local act = wezterm.action
 
 local mod = {}
@@ -10,6 +11,9 @@ local keys = {
 	-- copy/paste --
 	{ key = 'c', mods = 'CTRL|SHIFT', action = act.CopyTo('Clipboard') },
 	{ key = 'v', mods = 'CTRL|SHIFT', action = act.PasteFrom('Clipboard') },
+
+	-- close window with 1sec cmd + w
+	{ key = 'w', mods = 'CMD', action = act.CloseCurrentTab { confirm = true } },
 	-- window --
 	-- spawn window
 	{ key = 'n', mods = mod.SUPER, action = act.SpawnWindow },
@@ -24,26 +28,26 @@ local keys = {
 	{ key = 'j', mods = mod.SUPER_REV, action = act.ActivatePaneDirection('Down') },
 	{ key = 'h', mods = mod.SUPER_REV, action = act.ActivatePaneDirection('Left') },
 	{ key = 'l', mods = mod.SUPER_REV, action = act.ActivatePaneDirection('Right') },
-    {
-        key = 'f',
-        mods = 'SHIFT|META',
-        action = wezterm.action.ToggleFullScreen,
-    },
-    -- Ctrl+Shift+d create new pane
-    {
-        key = 'd',
-        mods = 'SHIFT|CMD',
-        action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
-    },
+	{
+		key = 'f',
+		mods = 'SHIFT|META',
+		action = wezterm.action.ToggleFullScreen,
+	},
+	-- Ctrl+Shift+d create new pane
+	{
+		key = 'd',
+		mods = 'SHIFT|CMD',
+		action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
+	},
 }
 
 wezterm.font {
-    -- family = 'font-anonymice-nerd-font'
-    family = 'font-Hack-nerd-font'
+	-- family = 'font-anonymice-nerd-font'
+	family = 'font-Hack-nerd-font'
 }
 
 local home = os.getenv( "HOME" )
-local background_path = home .. '/.config/wezterm/config/background.jpg'
+-- local background_path = home .. '/.config/wezterm/config/background.jpg'
 
 ---@class Config
 ---@field options table
@@ -53,12 +57,16 @@ local Config = {
 	front_end = 'WebGpu',
 	webgpu_power_preference = 'HighPerformance',
 
-	color_scheme = 'tokyonight_night',
+	-- color_scheme = 'tokyonight_night',
+	color_scheme = 'Molokai',
+	-- color_scheme = 'tokyonight_storm',
 	window_background_opacity = 0.85,
 
 	-- cursor
 	default_cursor_style = 'SteadyUnderline',
 
+	-- background
+	-- background_image = background_path,
 	-- scrollbar
 	enable_scroll_bar = true,
 
@@ -72,3 +80,4 @@ local Config = {
 }
 
 return Config
+
