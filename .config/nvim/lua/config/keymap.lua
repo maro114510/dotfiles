@@ -53,6 +53,14 @@ vim.api.nvim_set_keymap(
 	{ noremap = true, silent = true }
 )
 
+-- NeoTree
+vim.api.nvim_set_keymap(
+	"n",
+	"<M-n>",
+	":Neotree float<CR>",
+	{ noremap = true, silent = true }
+)
+
 -- COC
 -- when normal mode
 -- double space
