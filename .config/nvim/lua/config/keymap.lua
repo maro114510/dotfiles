@@ -21,6 +21,7 @@ vim.api.nvim_set_keymap('n', 'Y', 'y$', { noremap = true })
 
 -- Esc
 vim.api.nvim_set_keymap('i', 'jj', '<ESC>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', 'っj', '<ESC>', { noremap = true, silent = true })
 
 -- Exchange ;:
 vim.api.nvim_set_keymap('', ';',':', { noremap = true })
