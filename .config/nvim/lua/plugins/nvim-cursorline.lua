@@ -1,10 +1,9 @@
--- https://github.com/yamatsum/nvim-cursorline.git
 
 return {
 	-- cursorline
 	{
 		'yamatsum/nvim-cursorline',
-		config = function()
+		opts = function()
 			require('nvim-cursorline').setup {
 				cursorline = {
 					enable = true,
