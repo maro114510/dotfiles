@@ -1,3 +1,5 @@
+-- https://github.com/nvim-treesitter/nvim-treesitter.git
+
 return {
 	{
 		'nvim-treesitter/nvim-treesitter',
@@ -5,6 +7,9 @@ return {
 			local ts_update = require("nvim-treesitter.install").update({ with_sync = true })
 			ts_update()
 			require('nvim-treesitter.configs').setup({
+				auto_tag = {
+					enable = true,
+				},
 				auto_install = true,
 				highlight = {
 					enable = true,
