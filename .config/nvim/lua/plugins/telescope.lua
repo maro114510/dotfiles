@@ -4,25 +4,50 @@ return {
 	'nvim-telescope/telescope.nvim',
 	tag = '0.1.5',
 	dependencies = { 'nvim-lua/plenary.nvim' },
-	opt = function()
+	config = function()
 		require('telescope').setup {
+			live_grep = {
+				only_sort_text = true,
+				theme = "dropdown",
+			},
+			extensions = {
+				fzf = {
+					fuzzy = true, -- false will only do exact matching
+					override_generic_sorter = false,
+					override_file_sorter = true,
+					case_mode = "smart_case", -- or "ignore_case" or "respect_case"
+					-- the default case_mode is "smart_case"
+				},
+			},
 			defaults = {
 				vimgrep_arguments = {
 					"rg",
-					"-L",
 					"--color=never",
 					"--no-heading",
 					"--with-filename",
 					"--line-number",
 					"--column",
 					"--smart-case",
+					"--hidden",
 				},
-				prompt_prefix = "   ",
-				selection_caret = "  ",
+				prompt_prefix = " 🔭 ",
+				selection_caret = "→ ",
 				entry_prefix = "  ",
+				pickers = {
+					find_files = { hidden = true, find_command = { "fd", "--type", "f", "--hidden", "--follow", "-E", ".git/*" }},
+					file_browser = { hidden = true },
+					live_grep = { hidden = true },
+					oldfiles = { hidden = true },
+					git_files = { hidden = true },
+					buffers = { hidden = true },
+				},
 				layout_strategy = "horizontal",
 				selection_strategy = "reset",
 				sorting_strategy = "ascending",
+				file_browser = {
+					hidden = true,
+					ignore_patterns = { "node_modules", ".git" },
+				},
 				layout_config = {
 					horizontal = {
 						prompt_position = "top",
@@ -36,21 +61,12 @@ return {
 					preview_cutoff = 120,
 				},
 				mappings = {
-					n = {
-						["q"] = require("telescope.actions").close,
-						["<C-j>"] = require("telescope.actions").move_selection_next,
-						["<C-k>"] = require("telescope.actions").move_selection_previous,
-						["<C-c>"] = require("telescope.actions").close,
-						["<C-q>"] = require("telescope.actions").smart_send_to_qflist + require("telescope.actions").open_qflist,
-						["<CR>"] = require("telescope.actions").select_default + require("telescope.actions").center,
+					i = {
+						["<q>"] = require("telescope.actions").close,
 						["<esc>"] = require("telescope.actions").close,
 					},
-					i = {
-						["<C-j"] = require("telescope.actions").move_selection_next,
-						["<C-k>"] = require("telescope.actions").move_selection_previous,
-						["<C-c>"] = require("telescope.actions").close,
-						["<C-q>"] = require("telescope.actions").smart_send_to_qflist + require("telescope.actions").open_qflist,
-						["<CR>"] = require("telescope.actions").select_default + require("telescope.actions").center,
+					n = {
+						["q"] = require("telescope.actions").close,
 						["<esc>"] = require("telescope.actions").close,
 					},
 				},

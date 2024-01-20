@@ -31,20 +31,21 @@ vim.api.nvim_set_keymap('', ';',':', { noremap = true })
 vim.keymap.set(
 	"n",
 	"<c-P>",
-	"<cmd>Telescope find_files<cr>",
+	"<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<cr>",
 		-- "<cmd>lua require('fzf-lua').files()<CR>",
 	{ silent = true }
 )
 vim.api.nvim_set_keymap(
 	'n',
-	'<C-f>',
-	'<cmd>lua require("fzf-lua").lsp_live_workspace_symbols()<CR>',
+	'<M-f>',
+	'<cmd>Telescope lsp_dynamic_workspace_symbols find_command=rg,--files,--hidden,--glob,!*.git<cr>',
+	-- '<cmd>lua require("fzf-lua").lsp_live_workspace_symbols()<CR>',
 	{ noremap = true, silent = true }
 )
 vim.api.nvim_set_keymap(
 	'n',
 	'<C-g>',
-	'<cmd>lua require("fzf-lua").grep()<CR>',
+	'<cmd>Telescope live_grep<cr>',
 	{ noremap = true, silent = true }
 )
 
@@ -61,6 +62,12 @@ vim.api.nvim_set_keymap(
 	"n",
 	"<M-n>",
 	":Neotree<CR>",
+	{ noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+	"n",
+	"<M-c>",
+	":Neotree close<CR>",
 	{ noremap = true, silent = true }
 )
 
@@ -94,3 +101,4 @@ vim.api.nvim_set_keymap('n', '<space>rn', '<Plug>(coc-rename)', { noremap = true
 -- word jump
 vim.api.nvim_set_keymap('n', '<S-C-h>', "<cmd>lua require'hop'.hint_words()<cr>", {})
 
+return M
