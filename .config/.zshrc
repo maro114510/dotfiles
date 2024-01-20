@@ -1,3 +1,6 @@
+
+# calculate the time it takes to load zshrc
+# zmodload zsh/zprof
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -124,13 +127,20 @@ if uname -a | grep -sq "Linux"; then
 	export PATH=$HOME/node-v21.5.0-linux-armv7l/bin:$PATH
 	echo "ok"
 elif [ "$(uname)" = "Darwin" ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+	eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
 ### Node.js ###
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+function load-nvim() {
+	export NVM_DIR="$HOME/.nvm"
+	[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+	[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+}
+load-nvim() {
+	export NVM_DIR="$HOME/.nvm"
+	[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+	[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+}
 
 ### pyenv ###
 export PATH="$HOME/.pyenv/versions/3.11.3/bin:$PATH"
@@ -293,3 +303,5 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # mise -- runtime version manager
 eval "$(/opt/homebrew/bin/mise activate zsh)"
 export PATH="/opt/homebrew/bin/mise/shims:$PATH"
+
+# zprof
