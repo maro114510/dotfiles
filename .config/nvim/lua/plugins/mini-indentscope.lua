@@ -1,8 +1,9 @@
+-- https://github.com/echasnovski/mini.indentscope.git
 
 return {
 	{
 		'echasnovski/mini.indentscope',
-		opts = function()
+		config = function()
 			require('mini.indentscope').setup({
 				symbol = '▏',
 			})

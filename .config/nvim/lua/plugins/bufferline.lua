@@ -1,9 +1,11 @@
+-- https://github.com/akinsho/bufferline.nvim.git
+
 return {
 	{
 		'akinsho/bufferline.nvim',
 		version = "*",
 		dependencies = 'nvim-tree/nvim-web-devicons',
-		opts = function()
+		config = function()
 			require("bufferline").setup({
 				options = {
 					mode = "tabs",
@@ -13,9 +15,7 @@ return {
 						{ filetype = "NvimTree", text = "", padding =1 },
 					},
 					max_name_length = 14,
-					buffer_close_icon = "",
 					modified_icon = "",
-					close_icon = "",
 					left_trunc_marker = "",
 					right_trunc_marker = "",
 					max_name_length = 18,
