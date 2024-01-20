@@ -1,3 +1,4 @@
+local M = {n = {}, i = {}, v = {}, t = {}}
 
 -- clipboard copy setting
 vim.api.nvim_set_keymap('n', 'x', '"_x', { noremap = true })
@@ -23,7 +24,7 @@ vim.api.nvim_set_keymap('n', 'Y', 'y$', { noremap = true })
 vim.api.nvim_set_keymap('i', 'jj', '<ESC>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('i', 'っj', '<ESC>', { noremap = true, silent = true })
 
--- Exchange ;:
+-- Exchange
 vim.api.nvim_set_keymap('', ';',':', { noremap = true })
 
 -- fzf
@@ -35,7 +36,7 @@ vim.keymap.set(
 )
 vim.api.nvim_set_keymap(
 	'n',
-	'<C-w>',
+	'<C-f>',
 	'<cmd>lua require("fzf-lua").lsp_live_workspace_symbols()<CR>',
 	{ noremap = true, silent = true }
 )
@@ -58,7 +59,21 @@ vim.api.nvim_set_keymap(
 vim.api.nvim_set_keymap(
 	"n",
 	"<M-n>",
-	":Neotree float<CR>",
+	":Neotree<CR>",
+	{ noremap = true, silent = true }
+)
+
+-- multiple-cursors
+vim.api.nvim_set_keymap(
+	"n",
+	"<A-K>",
+	"<cmd>call vm#commands#add_cursor_up(0, v:count1)<cr>",
+	{ noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+	"n",
+	"<A-J>",
+	"<cmd>call vm#commands#add_cursor_down(0, v:count1)<cr>",
 	{ noremap = true, silent = true }
 )
 
