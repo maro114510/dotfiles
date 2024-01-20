@@ -1,3 +1,4 @@
+-- https://github.com/keaising/im-select.nvim.git
 
 -- Japanese Input Source
 return {

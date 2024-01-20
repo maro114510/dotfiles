@@ -1,3 +1,5 @@
+-- https://github.com/goolord/alpha-nvim.git
+
 return {
 	{
 		'goolord/alpha-nvim',

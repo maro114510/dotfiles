@@ -1,3 +1,5 @@
+-- https://github.com/folke/noice.nvim.git
+
 return {
 	-- lazy.nvim
 	{

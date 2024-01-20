@@ -1,3 +1,5 @@
+-- https://github.com/RRethy/nvim-treesitter-endwise.git
+
 return {
 	{
 		'RRethy/nvim-treesitter-endwise',

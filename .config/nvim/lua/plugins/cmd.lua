@@ -1,3 +1,4 @@
+-- https://github.com/hrsh7th/cmp-nvim-lsp.git
 
 return {
 	-- commandline complete

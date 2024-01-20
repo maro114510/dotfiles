@@ -1,3 +1,4 @@
+-- https://github.com/iamcco/markdown-preview.nvim.git
 
 return {
 	-- markdown preview
@@ -5,6 +6,5 @@ return {
 		"iamcco/markdown-preview.nvim",
 		build = function() vim.fn["mkdp#util#install"]() end,
 	},
-
 }
 

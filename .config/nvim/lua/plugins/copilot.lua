@@ -1,3 +1,4 @@
+-- https://github.com/github/copilot.vim.git
 
 return {
 	{

@@ -1,3 +1,4 @@
+-- https://github.com/windwp/nvim-autopairs.git
 
 return {
 	{
