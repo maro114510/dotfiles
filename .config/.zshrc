@@ -215,7 +215,6 @@ alias ac='sh ~/commands/auto_commit.sh'
 alias memo='sh ~/commands/create_memo.sh'
 alias めも='sh ~/commands/create_memo.sh'
 alias tmuxer='tmux new -s \; source-file ~/.tmux.session.conf'
-alias g='cd $(ghq list -p | fzf)'
 
 if [ -f "$HOME/.env" ]; then
 	source "$HOME/.env"
@@ -243,7 +242,7 @@ fif() {
 # fd - cd to selected directory
 # https://qiita.com/kamykn/items/aa9920f07487559c0c7e
 fcd() {
-local dir
+	local dir
 	dir=$(find ${1:-.} -path '*/\.*' -prune \
 		-o -type d -print 2> /dev/null | fzf +m) &&
 	cd "$dir"
