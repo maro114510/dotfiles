@@ -3,7 +3,7 @@
 -- Japanese Input Source
 return {
 	'keaising/im-select.nvim',
-	opts = function()
+	config = function()
 		require('im_select').setup {
 			default_im_select = 'com.apple.keylayout.ABC'
 		}
