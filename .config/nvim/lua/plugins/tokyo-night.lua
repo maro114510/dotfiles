@@ -1,3 +1,4 @@
+-- https://github.com/folke/tokyonight.nvim.git
 
 return {
 	-- color scheme
