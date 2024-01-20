@@ -31,7 +31,8 @@ vim.api.nvim_set_keymap('', ';',':', { noremap = true })
 vim.keymap.set(
 	"n",
 	"<c-P>",
-	"<cmd>lua require('fzf-lua').files()<CR>",
+	"<cmd>Telescope find_files<cr>",
+		-- "<cmd>lua require('fzf-lua').files()<CR>",
 	{ silent = true }
 )
 vim.api.nvim_set_keymap(
