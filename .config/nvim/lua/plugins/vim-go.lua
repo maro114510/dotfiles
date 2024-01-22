@@ -3,5 +3,6 @@
 return {
 	-- golang language server
 	'fatih/vim-go',
+	ft = {'go'},
 }
 

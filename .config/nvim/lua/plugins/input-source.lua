@@ -7,6 +7,30 @@ return {
 		require('im_select').setup {
 			default_im_select = 'com.apple.keylayout.ABC'
 		}
-	end
+	end,
+	ft = {
+		'go',
+		'javascript',
+		'javascriptreact',
+		'typescript',
+		'typescriptreact',
+		'vue',
+		'html',
+		'css',
+		'json',
+		'yaml',
+		'lua',
+		'python',
+		'rust',
+		'java',
+		'c',
+		'cpp',
+		'php',
+		'ruby',
+		'vim',
+		'sql',
+		'bash',
+		'zsh',
+	}
 }
 
