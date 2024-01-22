@@ -11,13 +11,13 @@ return {
 	config = function()
 		require('telescope').setup {
 			extensions = {
-				fzf = {
+				--[[ fzf = {
 					fuzzy = true, -- false will only do exact matching
 					override_generic_sorter = false,
 					override_file_sorter = true,
 					case_mode = "smart_case", -- or "ignore_case" or "respect_case"
 					-- the default case_mode is "smart_case"
-				},
+				}, ]]
 				git_worktree = {
 					-- show_untracked = true,
 					show_index = true,
@@ -81,7 +81,7 @@ return {
 				grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
 			},
 		}
-		require('telescope').load_extension('fzf')
+		-- require('telescope').load_extension('fzf')
 		require('telescope').load_extension('gh')
 	end,
 }
