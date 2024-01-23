@@ -75,6 +75,9 @@ export ZSH="$HOME/.oh-my-zsh"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+export NVM_LAZY_LOAD=true
+export NVM_COMPLETION=true
+
 plugins=(
 	git
 	zsh-syntax-highlighting
@@ -82,6 +85,7 @@ plugins=(
 	zsh-autosuggestions
 	zsh-history-substring-search
 	z
+	zsh-nvm
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -131,12 +135,7 @@ elif [ "$(uname)" = "Darwin" ]; then
 fi
 
 ### Node.js ###
-function load-nvim() {
-	export NVM_DIR="$HOME/.nvm"
-	[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-	[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-}
-load-nvim() {
+function load-node() {
 	export NVM_DIR="$HOME/.nvm"
 	[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
 	[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
@@ -302,5 +301,6 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # mise -- runtime version manager
 eval "$(/opt/homebrew/bin/mise activate zsh)"
 export PATH="/opt/homebrew/bin/mise/shims:$PATH"
+
 
 # zprof
