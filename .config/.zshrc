@@ -86,6 +86,7 @@ plugins=(
 	zsh-history-substring-search
 	z
 	zsh-nvm
+	zsh-wakatime
 )
 
 source $ZSH/oh-my-zsh.sh
