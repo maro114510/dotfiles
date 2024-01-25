@@ -9,6 +9,10 @@ vim.api.nvim_set_keymap('x', 'd', '"_d', { noremap = true })
 
 vim.api.nvim_set_keymap('n', 'ciw', 'viw"_c', { noremap = true })
 
+-- window split
+vim.api.nvim_set_keymap('n', 'ss', ':split<Return><C-w>w', { noremap = true })
+vim.api.nvim_set_keymap('n', 'sv', ':vsplit<Return><C-w>w', { noremap = true })
+
 -- change buffer files
 vim.api.nvim_set_keymap('n', '<C-j>', '<cmd>bprev<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<C-k>', '<cmd>bnext<CR>', { noremap = true, silent = true })
@@ -31,7 +35,7 @@ vim.api.nvim_set_keymap('', ';',':', { noremap = true })
 vim.keymap.set(
 	"n",
 	"<c-P>",
-	"<cmd>Telescope git_files find_command=rg,--files,--hidden,--glob,!*.git<cr>",
+	"<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<cr>",
 		-- "<cmd>lua require('fzf-lua').files()<CR>",
 	{ silent = true }
 )
