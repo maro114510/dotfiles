@@ -8,6 +8,7 @@ return {
 			default_im_select = 'com.apple.keylayout.ABC'
 		}
 	end,
+	-- TODO
 	ft = {
 		'go',
 		'javascript',
