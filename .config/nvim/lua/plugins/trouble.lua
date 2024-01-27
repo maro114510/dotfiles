@@ -12,7 +12,13 @@ return {
 		vim.api.nvim_set_keymap(
 			"n",
 			"<space>xx",
-			"<cmd>TroubleToggle document_diagnostics<cr>",
+			"<cmd>TroubleToggle workspace_diagnostics<cr>",
+			{ noremap = true, silent = true }
+		)
+		vim.api.nvim_set_keymap(
+			"n",
+			"<space>xw",
+			"<cmd>TroubleToggle quickfix<cr>",
 			{ noremap = true, silent = true }
 		)
 	end,
