@@ -9,8 +9,8 @@ vim.api.nvim_set_keymap('x', 'd', '"_d', { noremap = true })
 
 vim.api.nvim_set_keymap('n', 'ciw', 'viw"_c', { noremap = true })
 
-vim.api.nvim_set_keymap('n', 'ss', ':split<CR><C-w>w', {noremap = true})
-vim.api.nvim_set_keymap('n', 'sv', ':vsplit<CR><C-w>w', {noremap = true})
+vim.api.nvim_set_keymap('n', 'ss', ':split<Return><C-w>w', {noremap = true})
+vim.api.nvim_set_keymap('n', 'sv', ':vsplit<Return><C-w>w', {noremap = true})
 
 -- change buffer files
 vim.api.nvim_set_keymap('n', '<C-j>', '<cmd>bprev<CR>', { noremap = true, silent = true })
