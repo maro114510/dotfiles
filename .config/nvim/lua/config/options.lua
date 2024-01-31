@@ -32,7 +32,7 @@ vim.api.nvim_set_option('termguicolors', true)
 vim.opt.winblend = 20
 
 -- Disable wrap test
-vim.opt.wrap = true
+vim.opt.wrap = false
 -- Display tabline
 vim.opt.showtabline = 2 
 -- highlights
