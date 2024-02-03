@@ -152,8 +152,17 @@ end
 local TAB_EDGE_RIGHT = wezterm.nerdfonts.ple_right_half_circle_thick
 local TAB_EDGE_LEFT = wezterm.nerdfonts.ple_left_half_circle_thick
 
+local HEADER = ''
+
+local SYMBOL_COLOR = { '#ffb2cc', '#a4a4a4' }
+local FONT_COLOR = { '#dddddd', '#888888' }
+local BACK_COLOR = '#2d2d2d'
+local HOVER_COLOR = '#434343'
+
 wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
-	local edge_background = title_color_bg
+	local index = tab.is_active and 1 or 2
+
+	--[[ local edge_background = title_color_bg
 	local background = title_coor_bg:lighten(0.05)
 	local foreground = title_color_fg
 	
@@ -168,13 +177,14 @@ wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
 	local edge_foreground = background
 
 	local title = BaseName(tab.active_pane.foregraound_process_name)
-
+	]]
 	-- ensure that the title fit in the availavle space,
 	-- and that we have room for the edges.
 	-- title = wezterm.truncate_right(title, max_width - 2)
 
+	local bg = hover and HOVER_COLOR or BACK_COLOR
 	return {
-		{ Background = { Color = edge_background } },
+		--[[ { Background = { Color = edge_background } },
 		{ Foreground = { Color = edge_foreground } },
 		{ Text = TAB_EDGE_LEFT },
 		{ Background = { Color = background } },
@@ -182,7 +192,14 @@ wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
 		{ Text = title },
 		{ Background = { Color = edge_background } },
 		{ Foreground = { Color = edge_foreground } },
-		{ Text = TAB_EDGE_RIGHT },
+		{ Text = TAB_EDGE_RIGHT }, ]]
+		{ Foreground = { Color = SYMBOL_COLOR[index] } },
+		{ Background = { Color = bg } },
+		{ Text = HEADER  },
+
+		{ Foreground = { Color = FONT_COLOR[index] } },
+		{ Background = { Color = bg } },
+		{ Text = BaseName(tab.active_pane.title) },
 	}
 end)
 
