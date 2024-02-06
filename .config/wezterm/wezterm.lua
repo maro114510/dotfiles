@@ -24,4 +24,3 @@ end
 local merged_conf = table_merge(config, tab_conf)
 
 return merged_conf
-
