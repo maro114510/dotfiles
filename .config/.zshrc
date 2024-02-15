@@ -136,11 +136,11 @@ elif [ "$(uname)" = "Darwin" ]; then
 fi
 
 ### Node.js ###
-function load-node() {
-	export NVM_DIR="$HOME/.nvm"
-	[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-	[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-}
+# function load-node() {
+# 	export NVM_DIR="$HOME/.nvm"
+# 	[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+# 	[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+# }
 
 ### pyenv ###
 export PATH="$HOME/.pyenv/versions/3.11.3/bin:$PATH"
@@ -301,9 +301,11 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 # mise -- runtime version manager
-eval "$(/opt/homebrew/bin/mise activate zsh)"
-export PATH="/opt/homebrew/bin/mise/shims:$PATH"
+# eval "$(/opt/homebrew/bin/mise activate zsh)"
+# export PATH="/opt/homebrew/bin/mise/shims:$PATH"
 
+### asdf ###
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 # zprof
 
