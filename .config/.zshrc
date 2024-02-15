@@ -75,8 +75,8 @@ export ZSH="$HOME/.oh-my-zsh"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-export NVM_LAZY_LOAD=true
-export NVM_COMPLETION=true
+# export NVM_LAZY_LOAD=true
+# export NVM_COMPLETION=true
 
 plugins=(
 	git
@@ -85,7 +85,7 @@ plugins=(
 	zsh-autosuggestions
 	zsh-history-substring-search
 	z
-	zsh-nvm
+	# zsh-nvm
 	zsh-wakatime
 )
 
@@ -159,13 +159,14 @@ elif [ "$(uname)" = "Darwin" ]; then
 	export GOPATH=$HOME/go
 	export GOBIN=$GOPATH/bin
 	export PATH=$PATH:$GOBIN
-	export PATH=$PATH:$(go env GOPATH)/bin
+	# export PATH=$PATH:$(go env GOPATH)/bin
+	export PATH=$PATH:$HOME/.asdf/shims
 fi
 
 export GOPATH=$HOME/go
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
-export PATH=$PATH:$(go env GOPATH)/bin
+# export PATH=$PATH:$(go env GOPATH)/bin
 
 ### Rust ###
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -214,7 +215,7 @@ alias cl='clear'
 alias ac='sh ~/commands/auto_commit.sh'
 alias memo='sh ~/commands/create_memo.sh'
 alias めも='sh ~/commands/create_memo.sh'
-alias tmuxer='tmux new -s \; source-file ~/.tmux.session.conf'
+alias tmuxer='tmux new -s newsession \; source-file ~/.tmux.session.conf'
 
 if [ -f "$HOME/.env" ]; then
 	source "$HOME/.env"
@@ -305,3 +306,5 @@ export PATH="/opt/homebrew/bin/mise/shims:$PATH"
 
 
 # zprof
+
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
