@@ -3,5 +3,7 @@
 return {
 	-- auto brackets close
 	'cohama/lexima.vim'
+
+	evet = 'VeryLazy',
 }
 

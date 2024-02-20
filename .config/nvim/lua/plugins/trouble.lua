@@ -22,4 +22,9 @@ return {
 			{ noremap = true, silent = true }
 		)
 	end,
+
+	lazy = true,
+	keys = {
+		"<space>xx",
+	},
 }
