@@ -135,13 +135,6 @@ elif [ "$(uname)" = "Darwin" ]; then
 	eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-### Node.js ###
-# function load-node() {
-# 	export NVM_DIR="$HOME/.nvm"
-# 	[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-# 	[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-# }
-
 ### pyenv ###
 export PATH="$HOME/.pyenv/versions/3.11.3/bin:$PATH"
 
@@ -166,7 +159,6 @@ fi
 export GOPATH=$HOME/go
 export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
-# export PATH=$PATH:$(go env GOPATH)/bin
 
 ### Rust ###
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -207,7 +199,6 @@ alias prp='poetry run python'
 alias gp="git pull"
 alias gf='git flow'
 alias v='nvim'
-alias vim='nvim'
 alias vi='vi'
 alias lg='lazygit'
 alias cl='clear'
