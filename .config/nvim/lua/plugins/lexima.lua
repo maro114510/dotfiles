@@ -2,8 +2,8 @@
 
 return {
 	-- auto brackets close
-	'cohama/lexima.vim'
+	'cohama/lexima.vim',
 
-	evet = 'VeryLazy',
+	event = 'VeryLazy',
 }
 
