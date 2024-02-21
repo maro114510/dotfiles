@@ -198,6 +198,7 @@ alias rm='rm -i'
 alias prp='poetry run python'
 alias gp="git pull"
 alias gf='git flow'
+alias vim='nvim'
 alias v='nvim'
 alias vi='vi'
 alias lg='lazygit'
