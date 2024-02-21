@@ -29,5 +29,7 @@ return {
 				end
 			)
 		end,
+
+		cmd = "ToggleTerm",
 	},
 }

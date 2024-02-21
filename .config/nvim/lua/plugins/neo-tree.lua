@@ -77,5 +77,7 @@ return {
 				},
 			},
 		}
-	}
+	},
+
+	event = "VimEnter",
 }

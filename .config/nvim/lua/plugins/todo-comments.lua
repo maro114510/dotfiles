@@ -23,5 +23,7 @@ return {
 				TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
 			},
 		}
-	}
+	},
+
+	event = "UIEnter",
 }

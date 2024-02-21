@@ -9,7 +9,6 @@ return {
 		},
 		build = ':call fzf#install()',
 
-		lazy = true,
 		event = 'VimEnter',
 	},
 	{
@@ -19,7 +18,6 @@ return {
 			-- 'kyazdani42/nvim-web-devicons',
 			'nvim-tree/nvim-web-devicons',
 		},
-		lazy = true,
 		event = 'VimEnter',
 	},
 }

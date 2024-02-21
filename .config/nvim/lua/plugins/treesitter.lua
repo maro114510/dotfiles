@@ -34,6 +34,8 @@ return {
 					'yaml',
 				},
 			})
-		end
+		end,
+
+		event = 'VimEnter'
 	},
 }

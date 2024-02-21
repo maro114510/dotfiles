@@ -5,9 +5,6 @@ return {
 	requires = {
 		"nvim-tree/nvim-web-devicons",
 	},
-	keys = {
-		"<space>xx",
-	},
 	config = function()
 		vim.api.nvim_set_keymap(
 			"n",
@@ -23,7 +20,6 @@ return {
 		)
 	end,
 
-	lazy = true,
 	keys = {
 		"<space>xx",
 	},

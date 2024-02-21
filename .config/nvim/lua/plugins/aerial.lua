@@ -18,5 +18,7 @@ return {
 		end,
 		})
 	end,
+
+	event = "VimEnter",
 }
 

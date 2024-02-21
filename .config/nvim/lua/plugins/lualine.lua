@@ -12,5 +12,6 @@ return {
 			require("lualine").setup({})
 		end
 	},
+	event = 'VimEnter',
 }
 

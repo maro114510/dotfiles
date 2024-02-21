@@ -6,4 +6,6 @@ return {
 		vim.g.Illuminate_delay = 1000
 		vim.g.Illuminate_ftblacklist = { "NvimTree", "packer" }
 	end,
+
+	event = "UIEnter"
 }
