@@ -302,3 +302,4 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # zprof
 
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
+source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
