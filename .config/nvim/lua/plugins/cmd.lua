@@ -1,13 +1,24 @@
 -- https://github.com/hrsh7th/cmp-nvim-lsp.git
 
 return {
-	-- commandline complete
-	'hrsh7th/cmp-nvim-lsp',
-	'hrsh7th/cmp-buffer',
-	'hrsh7th/cmp-path',
-	'hrsh7th/cmp-cmdline',
-	'hrsh7th/nvim-cmp',
-
-	event = 'VimEnter',
+    {
+        'hrsh7th/cmp-nvim-lsp',
+        event = 'BufRead',
+    },
+    {
+        'hrsh7th/cmp-buffer',
+        event = 'BufRead',
+    },
+    {
+        'hrsh7th/cmp-path',
+        event = 'BufRead',
+    },
+    {
+        'hrsh7th/cmp-cmdline',
+        event = 'CmdlineEnter',
+    },
+    {
+        'hrsh7th/nvim-cmp',
+        event = 'InsertEnter',
+    },
 }
-

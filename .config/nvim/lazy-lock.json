@@ -8,7 +8,6 @@
   "cmp-nvim-lsp": { "branch": "main", "commit": "5af77f54de1b16c34b23cba810150689a3a90312" },
   "cmp-path": { "branch": "main", "commit": "91ff86cd9c29299a64f968ebb45846c485725f23" },
   "coc.nvim": { "branch": "release", "commit": "7b9e1ef0a1399907c51d23b6080b94a5aba4a654" },
-  "colorful-winsep.nvim": { "branch": "main", "commit": "e1b72c498f25c1fc37a7e9913332c137f753a90a" },
   "copilot.vim": { "branch": "release", "commit": "1a284014d2e0baf367706a94b2a9ee5fd56fd457" },
   "denops.vim": { "branch": "main", "commit": "ebda886f724fa2eb8aaa51d569903d5c359f0887" },
   "flash.nvim": { "branch": "main", "commit": "48817af25f51c0590653bbc290866e4890fe1cbe" },
