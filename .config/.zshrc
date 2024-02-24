@@ -88,6 +88,7 @@ plugins=(
 	# zsh-nvm
 	zsh-wakatime
 	asdf
+	1password
 )
 
 source $ZSH/oh-my-zsh.sh
