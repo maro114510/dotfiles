@@ -87,6 +87,7 @@ plugins=(
 	z
 	# zsh-nvm
 	zsh-wakatime
+	asdf
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -296,10 +297,4 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # eval "$(/opt/homebrew/bin/mise activate zsh)"
 # export PATH="/opt/homebrew/bin/mise/shims:$PATH"
 
-### asdf ###
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
-
 # zprof
-
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
-source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
