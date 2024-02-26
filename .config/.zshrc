@@ -209,7 +209,8 @@ alias cl='clear'
 alias ac='sh ~/commands/auto_commit.sh'
 alias memo='sh ~/commands/create_memo.sh'
 alias めも='sh ~/commands/create_memo.sh'
-alias tmuxer='tmux new -s newsession \; source-file ~/.tmux.session.conf'
+SESSION_NAME="$(date | md5)"
+alias tmuxer='tmux new -s $SESSION_NAME \; source-file ~/.tmux.session.conf'
 
 if [ -f "$HOME/.env" ]; then
 	source "$HOME/.env"
