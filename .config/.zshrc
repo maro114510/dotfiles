@@ -288,6 +288,10 @@ fkill() {
 		echo $pid | xargs kill -${1:-9}
 	fi
 }
+# Delete multiple files with FZF
+frm() {
+    ls -al | fzf -m | xargs -I {} rm {}
+}
 
 
 # bun completions

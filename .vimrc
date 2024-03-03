@@ -92,6 +92,9 @@ noremap ; :
 set whichwrap+=b,s,h,l,<,>,[,]
 set backspace=start,eol,indent
 
+" memo
+let g:memolist_path = '~/memo'
+
 
 " ===== Apppearance =====
 set termguicolors
@@ -147,6 +150,7 @@ call jetpack#begin()
 	Jetpack 'gelguy/wilder.nvim'
 	Jetpack 'ghifarit53/tokyonight-vim'
 	Jetpack 'sheerun/vim-polyglot'
+	Jetpack 'glidenote/memolist.vim'
 call jetpack#end()
 
 " Unite settings
