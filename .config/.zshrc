@@ -207,7 +207,7 @@ alias lg='lazygit'
 alias cl='clear'
 
 alias ac='sh ~/commands/auto_commit.sh'
-alias memo='sh ~/commands/create_memo.sh'
+# alias memo='sh ~/commands/create_memo.sh'
 alias めも='sh ~/commands/create_memo.sh'
 # SESSION_NAME="$(date | md5 | cut -c 1-16)"
 SESSION_NAME="$(date)"
