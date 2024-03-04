@@ -210,9 +210,9 @@ alias ac='sh ~/commands/auto_commit.sh'
 # alias memo='sh ~/commands/create_memo.sh'
 alias めも='sh ~/commands/create_memo.sh'
 # SESSION_NAME="$(date | md5 | cut -c 1-16)"
-SESSION_NAME="$(date)"
+SESSION_NAME="$(date +'%Y/%m/%d_%H;%M;%S')"
 alias tmuxer='tmux new -s $SESSION_NAME \; source-file ~/.tmux.session.conf'
-alias tmux='tmux new -s $SESSION_NAME'
+alias tmuxx='tmux new -s $SESSION_NAME'
 
 if [ -f "$HOME/.env" ]; then
 	source "$HOME/.env"
