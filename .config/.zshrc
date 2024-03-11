@@ -207,10 +207,8 @@ alias lg='lazygit'
 alias cl='clear'
 
 alias ac='sh ~/commands/auto_commit.sh'
-# alias memo='sh ~/commands/create_memo.sh'
 alias めも='sh ~/commands/create_memo.sh'
-# SESSION_NAME="$(date | md5 | cut -c 1-16)"
-SESSION_NAME="$(date +'%Y/%m/%d_%H;%M;%S')"
+SESSION_NAME="$(date +'%m/%d_%H%M%S')"
 alias tmuxer='tmux new -s $SESSION_NAME \; source-file ~/.tmux.session.conf'
 alias tmuxx='tmux new -s $SESSION_NAME'
 
