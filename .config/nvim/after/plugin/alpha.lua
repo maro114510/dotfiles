@@ -26,6 +26,7 @@ dashboard.section.header.val = {
 dashboard.section.buttons.val = {
 	dashboard.button("n", "  New file", ":ene <BAR> startinsert <CR>"),
 	dashboard.button("r", "  Recent file", ":FzfLua oldfiles <CR>"),
+	dashboard.button("p", "󰏒  Recent file", ":Telescope frecency <CR>"),
 	dashboard.button("f", "󰥨  Find file", ":FzfLua files <CR>"),
 	dashboard.button("g", "󰱼  Find text", ":FzfLua live_grep <CR>"),
 	dashboard.button('l', '󰒲  Lazy', ':Lazy<CR>'),
