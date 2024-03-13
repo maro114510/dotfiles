@@ -85,7 +85,6 @@ plugins=(
 	zsh-autosuggestions
 	zsh-history-substring-search
 	z
-	# zsh-nvm
 	zsh-wakatime
 	asdf
 	1password
@@ -158,9 +157,6 @@ elif [ "$(uname)" = "Darwin" ]; then
 	export PATH=$PATH:$(go env GOPATH)/bin
 fi
 
-export GOPATH=$HOME/go
-export GOBIN=$GOPATH/bin
-export PATH=$PATH:$GOBIN
 
 ### Rust ###
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -208,7 +204,7 @@ alias cl='clear'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias めも='sh ~/commands/create_memo.sh'
-SESSION_NAME="$(date +'%m/%d_%H%M%S')"
+SESSION_NAME="$(date +'%H%M%S_%m/%d')"
 alias tmuxer='tmux new -s $SESSION_NAME \; source-file ~/.tmux.session.conf'
 alias tmuxx='tmux new -s $SESSION_NAME'
 
@@ -291,16 +287,11 @@ frm() {
     ls -al | fzf -m | xargs -I {} rm {}
 }
 
-
 # bun completions
 [ -s "/Users/atsuki/.bun/_bun" ] && source "/Users/atsuki/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-
-# mise -- runtime version manager
-# eval "$(/opt/homebrew/bin/mise activate zsh)"
-# export PATH="/opt/homebrew/bin/mise/shims:$PATH"
 
 # zprof
