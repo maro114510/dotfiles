@@ -12,5 +12,5 @@ return {
 			},
 		}
 	end,
-	event = 'UIEnter',
+	-- event = 'UIEnter',
 }

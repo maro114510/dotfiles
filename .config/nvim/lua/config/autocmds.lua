@@ -1,6 +1,8 @@
 
 -- Change Color Scheme
-vim.cmd[[colorscheme tokyonight-night]]
+-- vim.cmd[[colorscheme tokyonight-night]]
+-- nightfox, dayfox, dawnfox, duskfox, nordfox,terafox, carbonfox
+vim.cmd[[colorscheme duskfox]]
 
 -- when leave cursor setting
 vim.cmd([[
