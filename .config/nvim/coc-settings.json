@@ -23,8 +23,18 @@
 	},
   "python.jediEnabled": false,
   "cSpell.userWords": [
+    "",
+    "case",
+    "client",
+    "ecintelligenceclient",
+    "ecopoclient",
+    "homiclient",
     "junegunn",
-    "shogo"
+    "komtar",
+    "meguri",
+    "offmallv",
+    "shogo",
+    "use"
   ]
 }
 
