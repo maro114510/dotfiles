@@ -7,6 +7,6 @@ return {
 	event = 'VimEnter',
 
 	keys = {
-		{ "<space>dict", "<CMD>CocCommand cSpell.addWordToDictionary<CR>", desc = "Add dictionary to cSpell"},
+		{ "<space>dict", "<CMD>CocCommand cSpell.addWordToUserDictionary<CR>", desc = "Add dictionary to cSpell"},
 	},
 }
