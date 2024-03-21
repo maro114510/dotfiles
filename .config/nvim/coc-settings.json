@@ -28,6 +28,8 @@
     "client",
     "ecintelligenceclient",
     "ecopoclient",
+    "etag",
+    "fail",
     "homiclient",
     "junegunn",
     "komtar",
