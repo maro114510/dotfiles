@@ -1,3 +1,5 @@
+# zmodload zsh/zprof && zprof
+
 # CodeWhisperer pre block. Keep at the top of this file.
 [[ -f "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.pre.zsh"
 # calculate the time it takes to load zshrc
@@ -84,11 +86,8 @@ plugins=(
 	zsh-syntax-highlighting
 	zsh-completions
 	zsh-autosuggestions
-	zsh-history-substring-search
 	z
-	zsh-wakatime
 	asdf
-	1password
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -137,11 +136,6 @@ elif [ "$(uname)" = "Darwin" ]; then
 	eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-### pyenv ###
-export PATH="$HOME/.pyenv/versions/3.11.3/bin:$PATH"
-
-### pyenv-virtualenv ###
-if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 
 ### rye ###
 source "$HOME/.rye/env"
@@ -194,7 +188,6 @@ alias la='ls -al'
 alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -i'
-alias prp='poetry run python'
 alias gp="git pull"
 alias gf='git flow'
 alias vim='nvim'
@@ -295,7 +288,10 @@ frm() {
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# zprof
-
 # CodeWhisperer post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh"
+
+# if (which zprof > /dev/null 2>&1) ;then
+# 	zprof
+# fi
+
