@@ -81,6 +81,7 @@ plugins=(
 	zsh-autosuggestions
 	zsh-history-substring-search
 	z
+	asdf
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -116,22 +117,20 @@ export LANG="en_US.UTF-8"
 
 ### homebrew ###
 if uname -a | grep -sq "Linux"; then
-    echo "ok"
-    export PATH=$HOME/lazygit:$PATH
-    export PATH=/snap/bin:$PATH
-    export PATH=$HOME/node-v21.5.0-linux-armv7l/bin:$PATH
+	echo "ok"
+	export PATH=$HOME/lazygit:$PATH
+	export PATH=$HOME/dagu:$PATH
+	export PATH=/snap/bin:$PATH
 	export EDIOR=nvim
 elif [ "$(uname)" = "Darwin" ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+	eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-### Node.js ###
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
 ### pyenv ###
-export PATH="$HOME/.pyenv/versions/3.11.3/bin:$PATH"
+# export PATH="$HOME/.pyenv/versions/3.11.3/bin:$PATH"
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
 
 ### pyenv-virtualenv ###
 if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
@@ -147,13 +146,12 @@ elif [ "$(uname)" = "Darwin" ]; then
 	export PATH=$PATH:$(go env GOPATH)/bin
 fi
 
-export GOPATH=$HOME/go
-export GOBIN=$GOPATH/bin
-export PATH=$PATH:$GOBIN
-export PATH=$PATH:$(go env GOPATH)/bin
-
 ### Rust ###
 export PATH="$HOME/.cargo/bin:$PATH"
+
+### rye ###
+
+source "$HOME/.rye/env"
 
 ### peco ###
 function peco-select-history() {
@@ -197,31 +195,14 @@ alias lg='lazygit'
 alias cl='clear'
 
 alias ac='sh ~/commands/auto_commit.sh'
-alias memo='sh ~/commands/create_memo.sh'
-alias めも='sh ~/commands/create_memo.sh'
 alias tmuxer='tmux new -s \; source-file ~/.tmux.session.conf'
-
-if [ -f "$HOME/.env" ]; then
-	source "$HOME/.env"
-
-	if [ "$LOCAL_NAME" = "macbook" ]; then
-		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_book/Brewfile"
-		alias brewd="brew bundle dump --force --file=$bfifle"
-	elif [ "$LOCAL_NAME" = "macmini" ]; then
-		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_mini/Brewfile"
-		alias brewd="brew bundle dump --force --file=$bfile"
-	fi
-fi
-
-
-# bun completions
-[ -s "/Users/atsuki/.bun/_bun" ] && source "/Users/atsuki/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# Fig
-[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
+. $HOME/.asdf/asdf.sh
 
-
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
