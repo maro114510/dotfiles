@@ -23,6 +23,7 @@ brew "fd"
 brew "harfbuzz"
 brew "tesseract"
 brew "ffmpeg"
+brew "fish"
 brew "fzf"
 brew "gat"
 brew "genact"
@@ -67,6 +68,7 @@ brew "pyenv-virtualenv"
 brew "reattach-to-user-namespace"
 brew "ripgrep"
 brew "rustup-init"
+brew "rye"
 brew "sheldon"
 brew "sl"
 brew "speedtest-cli"
@@ -79,6 +81,7 @@ brew "universal-ctags", args: ["HEAD"]
 brew "vim"
 brew "virtualenv"
 brew "wakatime-cli"
+brew "wget"
 brew "xclip"
 brew "zsh-completions"
 brew "daipeihust/tap/im-select"
@@ -89,10 +92,8 @@ cask "aerial"
 cask "alt-tab"
 cask "amorphousdiskmark"
 cask "android-studio"
-cask "aquaskk"
 cask "audacity"
 cask "autodesk-fusion"
-cask "brave-browser"
 cask "canva"
 cask "cheatsheet"
 cask "codewhisperer"
@@ -102,7 +103,6 @@ cask "discord"
 cask "docker"
 cask "fig"
 cask "figma"
-cask "firefox"
 cask "flutter"
 cask "font-3270-nerd-font"
 cask "font-agave-nerd-font"
@@ -162,13 +162,13 @@ cask "font-ubuntu-nerd-font"
 cask "font-victor-mono-nerd-font"
 cask "gather"
 cask "gimp"
-cask "github"
 cask "grandperspective"
 cask "iina"
 cask "iterm2"
 cask "jordanbaird-ice"
 cask "karabiner-elements"
 cask "keyboardcleantool"
+cask "kitty"
 cask "logi-options-plus"
 cask "mendeley"
 cask "microsoft-auto-update"
@@ -180,7 +180,6 @@ cask "neat"
 cask "notion"
 cask "notion-calendar"
 cask "obsidian"
-cask "opera"
 cask "postman"
 cask "prusaslicer"
 cask "raindropio"
@@ -191,14 +190,14 @@ cask "steam"
 cask "ticktick"
 cask "tor-browser"
 cask "visual-studio-code"
-cask "vivaldi"
 cask "wakatime"
 cask "warp"
 cask "wezterm"
 cask "whatsapp"
 cask "wireshark"
-cask "zed"
 cask "zoom"
+mas "1Password for Safari", id: 1569813296
+mas "AdBlock", id: 1402042596
 mas "DaVinci Resolve", id: 571213070
 mas "Day One", id: 1055511498
 mas "Drafts", id: 1435957248
@@ -206,13 +205,13 @@ mas "FlipClock", id: 1181028777
 mas "G2FA", id: 6444865161
 mas "Goodnotes", id: 1444383602
 mas "Hand Mirror", id: 1502839586
-mas "Journey", id: 1300202543
 mas "Kindle", id: 302584613
 mas "LINE", id: 539883307
 mas "RunCat", id: 1429033973
 mas "Spark", id: 1176895641
 mas "Tunacan", id: 980577198
 mas "Unsplash Wallpapers", id: 1284863847
+mas "Velja", id: 1607635845
 mas "Xcode", id: 497799835
 vscode "alexcvzz.vscode-sqlite"
 vscode "alexisvt.flutter-snippets"
