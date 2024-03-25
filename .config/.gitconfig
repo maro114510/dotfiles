@@ -1,0 +1,29 @@
+[user]
+	name = maro114510
+	email = atumaro114510@icloud.com
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+[commit]
+	verbose = true
+
+[core]
+	pager = delta
+	excludesfile = /Users/nohira/.gitignore_global
+
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true    # use n and N to move between diff sections
+	light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
+	line-numbers = true
+	side-by-side = true
+	syntax-theme = Monokai Extended
+[merge]
+	conflictstyle = diff3
+[diff]
+	colorMoved = default
+
