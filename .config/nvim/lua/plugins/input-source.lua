@@ -32,6 +32,9 @@ return {
 		'sql',
 		'bash',
 		'zsh',
+		'fish',
+		'md',
+		'markdown',
 	}
 }
 
