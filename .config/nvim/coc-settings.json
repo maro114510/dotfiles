@@ -47,8 +47,11 @@
     "image",
     "junegunn",
     "jwks",
+    "kobayashi",
     "komtar",
+    "maro",
     "meguri",
+    "morimori",
     "mrkdwn",
     "nolint",
     "notif",
@@ -59,7 +62,8 @@
     "sota",
     "url",
     "use",
-    "yasdk"
+    "yasdk",
+    "yoshikawa"
   ]
 }
 
