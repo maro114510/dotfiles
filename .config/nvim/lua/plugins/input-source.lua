@@ -33,8 +33,8 @@ return {
 		'bash',
 		'zsh',
 		'fish',
-		'md',
-		'markdown',
+		--[[ 'md',
+		'markdown', ]]
 	}
 }
 
