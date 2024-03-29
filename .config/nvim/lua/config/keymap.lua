@@ -36,7 +36,6 @@ vim.keymap.set(
 	"<c-P>",
 	-- "<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<cr>",
 	"<cmd>Telescope smart_open<CR>",
-		-- "<cmd>lua require('fzf-lua').files()<CR>",
 	{ silent = true }
 )
 vim.api.nvim_set_keymap(

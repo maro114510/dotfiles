@@ -1,8 +1,9 @@
 -- https://github.com/junegunn/fzf.vim.git
+-- Deleted 2024/03/29
 
 return {
 	-- fzf
-	{
+	--[[ {
 		'junegunn/fzf.vim',
 		dependencies = {
 			'junegunn/fzf',
@@ -19,6 +20,6 @@ return {
 			'nvim-tree/nvim-web-devicons',
 		},
 		event = 'VimEnter',
-	},
+	}, ]]
 }
 
