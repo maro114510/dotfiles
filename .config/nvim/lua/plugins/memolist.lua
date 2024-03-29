@@ -10,7 +10,7 @@ return {
 		vim.g.memolist_prompt_tags = 1
 		vim.g.memolist_prompt_categories = 1
 		vim.g.memolist_fzf = 1
-		vim.g.memolist_ex_cmd = 'NERDTree'
-		vim.g.memolist_template_dir_path = '~/memo'
+		vim.g.memolist_ex_cmd = 'NeoTree'
+		vim.g.memolist_template_dir_path = '~/memo/memo_templates'
 	end,
 }
