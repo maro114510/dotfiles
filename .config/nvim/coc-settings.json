@@ -46,6 +46,7 @@
     "host",
     "ifnull",
     "image",
+    "interactor",
     "junegunn",
     "jwks",
     "kobayashi",
@@ -66,6 +67,8 @@
     "sota",
     "url",
     "use",
+    "usecase",
+    "webapi",
     "yasdk",
     "yoshikawa"
   ]
