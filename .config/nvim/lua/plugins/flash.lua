@@ -1,7 +1,7 @@
 -- https://github.com/folke/flash.nvim.git
 
 return {
-	'folke/flash.nvim',
+	--[[ 'folke/flash.nvim',
 	keys = {
 		{
 			's',
@@ -19,5 +19,5 @@ return {
 			mode = { 'n', 'x', 'o' },
 			desc = 'Jump backwards',
 		},
-	},
+	}, ]]
 }
