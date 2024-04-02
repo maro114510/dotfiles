@@ -20,8 +20,8 @@ vim.opt.incsearch = true
 vim.opt.matchtime = 1
 
 -- Color Scheme
-vim.opt.termguicolors = true -- 24bit Color
-vim.opt.background = "dark" -- Using dark Color
+vim.opt.termguicolors = true
+vim.opt.background = "dark"
 
 -- Display
 -- Indent
@@ -29,6 +29,7 @@ vim.o.smartindent = true
 vim.o.list = true
 vim.o.listchars = 'tab:>>-,trail:-'
 vim.api.nvim_set_option('termguicolors', true)
+vim.opt.winblend = 20
 
 -- Disable wrap test
 vim.opt.wrap = false

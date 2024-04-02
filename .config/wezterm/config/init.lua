@@ -77,6 +77,8 @@ local Config = {
 	inactive_pane_hsb = { saturation = 1.0, brightness = 1.0 },
 	leader = { key = 'Space', mods = 'CTRL|SHIFT' },
 	keys = keys,
+
+	macos_forward_to_ime_modifier_mask = "SHIFT|CTRL"
 }
 
 return Config

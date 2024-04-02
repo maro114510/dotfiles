@@ -1,10 +1,15 @@
+-- https://github.com/nvim-treesitter/nvim-treesitter.git
+
 return {
 	{
 		'nvim-treesitter/nvim-treesitter',
-		opts = function()
+		config = function()
 			local ts_update = require("nvim-treesitter.install").update({ with_sync = true })
 			ts_update()
 			require('nvim-treesitter.configs').setup({
+				auto_tag = {
+					enable = true,
+				},
 				auto_install = true,
 				highlight = {
 					enable = true,
@@ -14,8 +19,8 @@ return {
 				},
 				ensure_installed = {
 					'bash',
-					'c',
-					'cpp',
+					--[[ 'c',
+					'cpp', ]]
 					'css',
 					'go',
 					'html',
@@ -29,6 +34,8 @@ return {
 					'yaml',
 				},
 			})
-		end
+		end,
+
+		event = 'VimEnter'
 	},
 }

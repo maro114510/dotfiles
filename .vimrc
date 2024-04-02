@@ -52,7 +52,7 @@ nnoremap <Up>   gk
 nnoremap gj j
 nnoremap gk k
 
-" ===== blackets =====
+" ===== brackets =====
 inoremap ( ()<left>
 inoremap [ []<left>
 inoremap { {}<left>
@@ -63,9 +63,9 @@ inoremap ' ''<left>
 set history=300
 " using global clipboard
 set clipboard+=unnamed
-" disaple backupfile
+" disable backupfile
 set nobackup
-" disaple swapfile
+" disable swapfile
 set noswapfile
 set autoread
 
@@ -91,6 +91,9 @@ noremap ; :
 " set
 set whichwrap+=b,s,h,l,<,>,[,]
 set backspace=start,eol,indent
+
+" memo
+let g:memolist_path = '~/memo'
 
 
 " ===== Apppearance =====
@@ -147,6 +150,7 @@ call jetpack#begin()
 	Jetpack 'gelguy/wilder.nvim'
 	Jetpack 'ghifarit53/tokyonight-vim'
 	Jetpack 'sheerun/vim-polyglot'
+	Jetpack 'glidenote/memolist.vim'
 call jetpack#end()
 
 " Unite settings

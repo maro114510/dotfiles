@@ -368,14 +368,18 @@
 	<key>DisableFullscreenTransparency</key>
 	<false/>
 	<key>EnableDivisionView</key>
-	<true/>
+	<false/>
 	<key>EnableProxyIcon</key>
 	<false/>
 	<key>HapticFeedbackForEsc</key>
 	<false/>
+	<key>HideActivityIndicator</key>
+	<true/>
 	<key>HideScrollbar</key>
-	<false/>
+	<true/>
 	<key>HideTab</key>
+	<true/>
+	<key>HideTabNumber</key>
 	<true/>
 	<key>HotkeyMigratedFromSingleToMulti</key>
 	<true/>
@@ -545,8 +549,8 @@
 				<key>Red Component</key>
 				<real>0.0</real>
 			</dict>
-			<key>Background Image Location</key>
-			<string></string>
+			<key>Background Image Mode</key>
+			<integer>0</integer>
 			<key>Badge Color</key>
 			<dict>
 				<key>Alpha Component</key>
@@ -963,6 +967,8 @@
 			<true/>
 			<key>Normal Font</key>
 			<string>HackNF-Regular 11</string>
+			<key>Open Toolbelt</key>
+			<false/>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
 			<key>Prompt Before Closing 2</key>
@@ -1194,7 +1200,7 @@
 			<key>Visual Bell</key>
 			<true/>
 			<key>Window Type</key>
-			<integer>0</integer>
+			<integer>12</integer>
 			<key>Working Directory</key>
 			<string>/Users/nohira</string>
 		</dict>
@@ -2040,14 +2046,18 @@
 	<false/>
 	<key>ShowFullScreenTabBar</key>
 	<false/>
+	<key>ShowNewOutputIndicator</key>
+	<false/>
 	<key>SoundForEsc</key>
 	<false/>
 	<key>StatusBarPosition</key>
 	<integer>1</integer>
 	<key>TabStyleWithAutomaticOption</key>
-	<integer>4</integer>
+	<integer>5</integer>
 	<key>TabViewType</key>
 	<integer>0</integer>
+	<key>TabsHaveCloseButton</key>
+	<false/>
 	<key>TmuxUsesDedicatedProfile</key>
 	<false/>
 	<key>TmuxWarnBeforePausing</key>
@@ -2059,7 +2069,7 @@
 	<key>VisualIndicatorForEsc</key>
 	<false/>
 	<key>WindowNumber</key>
-	<true/>
+	<false/>
 	<key>findMode_iTerm</key>
 	<integer>0</integer>
 	<key>kCPFavoritesUserDefaultsKey</key>

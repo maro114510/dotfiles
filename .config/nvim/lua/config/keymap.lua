@@ -1,3 +1,4 @@
+local M = {n = {}, i = {}, v = {}, t = {}}
 
 -- clipboard copy setting
 vim.api.nvim_set_keymap('n', 'x', '"_x', { noremap = true })
@@ -7,6 +8,9 @@ vim.api.nvim_set_keymap('n', 'D', '"_D', { noremap = true })
 vim.api.nvim_set_keymap('x', 'd', '"_d', { noremap = true })
 
 vim.api.nvim_set_keymap('n', 'ciw', 'viw"_c', { noremap = true })
+
+vim.api.nvim_set_keymap('n', 'ss', ':split<Return><C-w>w', {noremap = true})
+vim.api.nvim_set_keymap('n', 'sv', ':vsplit<Return><C-w>w', {noremap = true})
 
 -- change buffer files
 vim.api.nvim_set_keymap('n', '<C-j>', '<cmd>bprev<CR>', { noremap = true, silent = true })
@@ -21,27 +25,30 @@ vim.api.nvim_set_keymap('n', 'Y', 'y$', { noremap = true })
 
 -- Esc
 vim.api.nvim_set_keymap('i', 'jj', '<ESC>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', 'っj', '<ESC>', { noremap = true, silent = true })
 
--- Exchange ;:
+-- Exchange
 vim.api.nvim_set_keymap('', ';',':', { noremap = true })
 
 -- fzf
 vim.keymap.set(
 	"n",
 	"<c-P>",
-	"<cmd>lua require('fzf-lua').files()<CR>",
+	-- "<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<cr>",
+	"<cmd>Telescope smart_open<CR>",
 	{ silent = true }
 )
 vim.api.nvim_set_keymap(
 	'n',
-	'<C-w>',
-	'<cmd>lua require("fzf-lua").lsp_live_workspace_symbols()<CR>',
+	'<M-f>',
+	'<cmd>Telescope lsp_dynamic_workspace_symbols find_command=rg,--files,--hidden,--glob,!*.git<cr>',
+	-- '<cmd>lua require("fzf-lua").lsp_live_workspace_symbols()<CR>',
 	{ noremap = true, silent = true }
 )
 vim.api.nvim_set_keymap(
 	'n',
 	'<C-g>',
-	'<cmd>lua require("fzf-lua").grep()<CR>',
+	'<cmd>Telescope live_grep<cr>',
 	{ noremap = true, silent = true }
 )
 
@@ -50,6 +57,34 @@ vim.api.nvim_set_keymap(
 	'n',
 	'<C-T>',
 	'<cmd>exe v:count1 . "ToggleTerm"<CR>',
+	{ noremap = true, silent = true }
+)
+
+-- NeoTree
+vim.api.nvim_set_keymap(
+	"n",
+	"<M-n>",
+	":Neotree<CR>",
+	{ noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+	"n",
+	"<M-c>",
+	":Neotree close<CR>",
+	{ noremap = true, silent = true }
+)
+
+-- multiple-cursors
+vim.api.nvim_set_keymap(
+	"n",
+	"<A-K>",
+	"<cmd>call vm#commands#add_cursor_up(0, v:count1)<cr>",
+	{ noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+	"n",
+	"<A-J>",
+	"<cmd>call vm#commands#add_cursor_down(0, v:count1)<cr>",
 	{ noremap = true, silent = true }
 )
 
@@ -69,3 +104,4 @@ vim.api.nvim_set_keymap('n', '<space>rn', '<Plug>(coc-rename)', { noremap = true
 -- word jump
 vim.api.nvim_set_keymap('n', '<S-C-h>', "<cmd>lua require'hop'.hint_words()<cr>", {})
 
+return M

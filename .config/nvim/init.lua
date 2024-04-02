@@ -13,6 +13,9 @@ if not vim.loop.fs_stat(lazypath) then
 end
 
 local opts = {
+	defaults = {
+		lazy = true,
+	},
 	checker = {
 		enabled = true,
 	},
@@ -39,11 +42,11 @@ require("lazy").setup("plugins", opts)
 require("lualine").setup({
 	sections = {
 		lualine_x = {
-		{
-			require("lazy.status").updates,
-			cond = require("lazy.status").has_updates,
-			color = { fg = "#ff9e64" },
-		},
+			{
+				require("lazy.status").updates,
+				cond = require("lazy.status").has_updates,
+				color = { fg = "#ff9e64" },
+			},
 		},
 	},
 })

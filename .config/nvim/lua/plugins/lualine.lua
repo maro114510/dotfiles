@@ -1,3 +1,5 @@
+-- https://github.com/nvim-tree/nvim-web-devicons.git
+
 return {
 	'nvim-tree/nvim-web-devicons',
 	{
@@ -6,9 +8,10 @@ return {
 			'nvim-tree/nvim-web-devicons',
 			opt = true
 		},
-		opts = function()
+		config = function()
 			require("lualine").setup({})
 		end
 	},
+	event = 'VimEnter',
 }
 

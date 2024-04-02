@@ -1,3 +1,9 @@
+# zmodload zsh/zprof && zprof
+
+# CodeWhisperer pre block. Keep at the top of this file.
+[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.pre.zsh"
+# calculate the time it takes to load zshrc
+# zmodload zsh/zprof
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -72,13 +78,16 @@ export ZSH="$HOME/.oh-my-zsh"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+# export NVM_LAZY_LOAD=true
+# export NVM_COMPLETION=true
+
 plugins=(
 	git
 	zsh-syntax-highlighting
 	zsh-completions
 	zsh-autosuggestions
-	zsh-history-substring-search
 	z
+	asdf
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -124,22 +133,10 @@ if uname -a | grep -sq "Linux"; then
 	export PATH=$HOME/node-v21.5.0-linux-armv7l/bin:$PATH
 	echo "ok"
 elif [ "$(uname)" = "Darwin" ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+	eval "$(/opt/homebrew/bin/brew shellenv)"
+	### rye ###
+	source "$HOME/.rye/env"
 fi
-
-### Node.js ###
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
-### pyenv ###
-export PATH="$HOME/.pyenv/versions/3.11.3/bin:$PATH"
-
-### pyenv-virtualenv ###
-if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
-
-### rye ###
-source "$HOME/.rye/env"
 
 
 ### Golang ###
@@ -149,13 +146,10 @@ elif [ "$(uname)" = "Darwin" ]; then
 	export GOPATH=$HOME/go
 	export GOBIN=$GOPATH/bin
 	export PATH=$PATH:$GOBIN
+	export PATH=$PATH:$HOME/.asdf/shims
 	export PATH=$PATH:$(go env GOPATH)/bin
 fi
 
-export GOPATH=$HOME/go
-export GOBIN=$GOPATH/bin
-export PATH=$PATH:$GOBIN
-export PATH=$PATH:$(go env GOPATH)/bin
 
 ### Rust ###
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -192,20 +186,19 @@ alias la='ls -al'
 alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -i'
-alias prp='poetry run python'
 alias gp="git pull"
 alias gf='git flow'
-alias v='nvim'
 alias vim='nvim'
+alias v='nvim'
 alias vi='vi'
 alias lg='lazygit'
 alias cl='clear'
 
 alias ac='sh ~/commands/auto_commit.sh'
-alias memo='sh ~/commands/create_memo.sh'
 alias めも='sh ~/commands/create_memo.sh'
-alias tmuxer='tmux new -s \; source-file ~/.tmux.session.conf'
-alias g='cd $(ghq list -p | fzf)'
+SESSION_NAME="$(date +'%H%M%S_%m/%d')"
+alias tmuxer='tmux new -s $SESSION_NAME \; source-file ~/.tmux.session.conf'
+alias tmuxx='tmux new -s $SESSION_NAME'
 
 if [ -f "$HOME/.env" ]; then
 	source "$HOME/.env"
@@ -233,7 +226,7 @@ fif() {
 # fd - cd to selected directory
 # https://qiita.com/kamykn/items/aa9920f07487559c0c7e
 fcd() {
-local dir
+	local dir
 	dir=$(find ${1:-.} -path '*/\.*' -prune \
 		-o -type d -print 2> /dev/null | fzf +m) &&
 	cd "$dir"
@@ -261,7 +254,7 @@ vf() {
 }
 # fh - repeat history
 fh() {
-	eval $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//')
+	eval $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//' | sed 's/\\/\\\\/g' | awk '{print "echo exec: " $0 "; " $0}')
 }
 # fdg - ghq
 fgh() {
@@ -281,7 +274,10 @@ fkill() {
 		echo $pid | xargs kill -${1:-9}
 	fi
 }
-
+# Delete multiple files with FZF
+frm() {
+    ls -al | fzf -m | xargs -I {} rm {}
+}
 
 # bun completions
 [ -s "/Users/atsuki/.bun/_bun" ] && source "/Users/atsuki/.bun/_bun"
@@ -290,6 +286,10 @@ fkill() {
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# mise -- runtime version manager
-eval "$(/opt/homebrew/bin/mise activate zsh)"
-export PATH="/opt/homebrew/bin/mise/shims:$PATH"
+# CodeWhisperer post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh"
+
+# if (which zprof > /dev/null 2>&1) ;then
+# 	zprof
+# fi
+

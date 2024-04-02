@@ -1,6 +1,6 @@
 local status, alpha = pcall(require, "alpha")
 if not status then
-  return
+	return
 end
 
 local dashboard = require("alpha.themes.dashboard")
@@ -25,9 +25,9 @@ dashboard.section.header.val = {
 -- Set menu
 dashboard.section.buttons.val = {
 	dashboard.button("n", "  New file", ":ene <BAR> startinsert <CR>"),
-	dashboard.button("r", "  Recent file", ":FzfLua oldfiles <CR>"),
-	dashboard.button("f", "󰥨  Find file", ":FzfLua files <CR>"),
-	dashboard.button("g", "󰱼  Find text", ":FzfLua live_grep <CR>"),
+	dashboard.button("r", "  Recent file", ":Telescope smart_open <CR>"),
+	dashboard.button("f", "󰥨  Find file", ":Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<CR>"),
+	dashboard.button("g", "󰱼  Find text", ":Telescope live_grep <CR>"),
 	dashboard.button('l', '󰒲  Lazy', ':Lazy<CR>'),
 	dashboard.button("q", "  Quit", ":qa<CR>"),
 }

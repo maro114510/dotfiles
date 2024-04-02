@@ -13,23 +13,29 @@ lualine.setup({
 	},
 	sections = {
 		lualine_a = { "mode" },
-		lualine_b = { "branch" },
-		lualine_c = { {
-			"filename",
-			file_status = true,
-			path = 0,
-		} },
+		lualine_b = {
+			"branch",
+			{
+				"filename",
+				file_status = true,
+				path = 0,
+			},
+		},
+		lualine_c = {
+			{
+				"diff",
+				symbols = {added = ' ', modified = ' ', removed = ' '},
+			}
+		},
 		lualine_x = {
 			{
 				"diagnostics",
-				sources = { "nvim_diagnostic" },
+				sources = { "nvim_lsp" },
 				symbols = { error = " ", warn = " ", info = " ", hint = " " },
 			},
-			"encoding",
-			"filetype",
 		},
-		lualine_y = { "progress" },
-		lualine_z = { "location" },
+		lualine_y = { "encoding", "fileformat" },
+		lualine_z = { "filetype", "searchcount" }
 	},
 	inactive_sections = {
 		lualine_a = {},

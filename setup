@@ -61,8 +61,8 @@ function wezterm_config {
 	WEZTERM_DIR="$HOME/.config/wezterm"
 
 	if [ -d "$WEZTERM_DIR" ]; then
-		BACKUP_DIR="$HOME/.config/wezterm_backup_$(date +"%Y%m%d_%H%M%S")"
-		cp -r "$WEZTERM_DIR"/* "$BACKUP_DIR" || { echo ".wezterm backup faild"; exit 1; }
+		BACKUP_DIR="$HOME/.config/wezterm_backup"
+		cp -r "$WEZTERM_DIR" "$BACKUP_DIR" || { echo ".wezterm backup faild"; exit 1; }
 		echo "wezterm config backup done"
 	else
 		# mkdir -p "$WEZTERM_DIR"
@@ -92,17 +92,17 @@ function lazygit_config {
 # vims
 
 function vim_config {
-	NVIM_TARGET_DIR="$DOT_DIR/.config/nvim"
-	NVIM_DIR="$HOME/.config/nvim"
+	NVIM_TARGET_DIR="$DOT_DIR/.config/nvim/"
+	NVIM_DIR="$HOME/.config"
 
 	# neovim link
-	if [ -d "$NVIM_DIR" ]; then
+	if [ -d "$NVIM_DIR/nvim" ]; then
 		BACKUP_DIR="$HOME/.config/nvim_backup_$(date +"%Y%m%d_%H%M%S")"
 		cp -r "$NVIM_DIR" "$BACKUP_DIR" || { echo "nvim backup faild"; exit 1; }
 		echo "nvim backup done"
 	else
 		mkdir -p "$NVIM_DIR"
-		ln -s "$NVIM_TARGET_DIR"/* "$NVIM_DIR" || { echo "nvim link faild"; exit 1; }
+		ln -s "$NVIM_TARGET_DIR" "$NVIM_DIR" || { echo "nvim link faild"; exit 1; }
 		echo "nvim linked"
 	fi
 
@@ -112,7 +112,7 @@ function vim_config {
 		cp -r "$HOME/.vimrc" "$BACKUP_FILE" || { echo "vim backup faild"; exit 1; }
 		echo ".vimrc backup done"
 	else
-		touch .vimrc
+		echo "$DOT_DIR/.vimrc to $HOME/.vimrc"
 		ln -s "$DOT_DIR/.vimrc" "$HOME/.vimrc" || { echo "vim link faild"; exit 1; }
 		echo ".vimrc linked"
 	fi
@@ -142,7 +142,7 @@ Usage: $(basename "$0") [OPTIONS]
 	-w  Wezterm config load
 	-v  Vim config load
 EOM
-  exit 2
+	exit 2
 }
 
 ############################################################

@@ -1,3 +1,4 @@
+-- https://github.com/github/copilot.vim.git
 
 return {
 	{
@@ -8,6 +9,7 @@ return {
 		-- opts = function()
 		-- 	require("copilot").setup({})
 		-- end,
+		event = "VimEnter",
 	},
 	-- {
 	-- 	"zbirenbaum/copilot-cmp",

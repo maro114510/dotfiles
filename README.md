@@ -10,13 +10,13 @@ $ ./setup -s
 The operating environment is as follows
 If necessary, install the software with the following commands.
 
-* neovim v0.9.4
+* neovim v0.9.5
     * `brew install neovim`
 * plugin manager
-    * JetPack
+    * JetPack → vim
         * https://github.com/tani/vim-jetpack
-    * packer.nvim 
-        * https://github.com/wbthomason/packer.nvim
+    * lazy.nvim → nvim
+        * https://github.com/folke/lazy.nvim.git
 * tmux
     * `brew install tmux`
 * oh-my-zsh
