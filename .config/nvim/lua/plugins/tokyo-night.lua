@@ -2,7 +2,7 @@
 
 return {
 	-- color scheme
-	'folke/tokyonight.nvim',
+	--[[ 'folke/tokyonight.nvim',
 	config = function()
 		require('tokyonight').setup {
 			transparent = true,
@@ -11,6 +11,6 @@ return {
 				floats = 'transparent',
 			},
 		}
-	end,
+	end, ]]
 	-- event = 'UIEnter',
 }

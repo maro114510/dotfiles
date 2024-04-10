@@ -138,6 +138,7 @@ call jetpack#begin()
 	Jetpack 'ctrlpvim/ctrlp.vim'
 	" window size
 	Jetpack 'simeji/winresizer'
+	" tokyonight
 	Jetpack 'ghifarit53/tokyonight-vim'
 	Jetpack 'neoclide/coc.nvim', {'branch': 'release'}
 	Jetpack 'hrsh7th/cmp-path'
