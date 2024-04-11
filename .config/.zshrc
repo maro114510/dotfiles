@@ -259,7 +259,7 @@ fh() {
 # fdg - ghq
 fgh() {
 	local selected
-	selected=$(ghq list | fzf)
+	selected=$(ghq list | fzf --preview 'bat --color=always --style=header,grid --line-range :500 $(ghq root)/{}/README.*')
 
 	if [ "x$selected" != "x" ]; then
 		cd $(ghq root)/$selected
