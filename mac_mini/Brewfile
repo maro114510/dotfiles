@@ -45,12 +45,14 @@ brew "jq"
 brew "lazydocker"
 brew "lazygit"
 brew "libpq"
+brew "litecli"
 brew "lolcat"
 brew "lsd"
 brew "luajit"
 brew "luarocks"
 brew "mas"
 brew "mise"
+brew "mycli"
 brew "neofetch"
 brew "tree-sitter"
 brew "neovim"
@@ -59,6 +61,7 @@ brew "no-more-secrets"
 brew "nyancat"
 brew "onefetch"
 brew "peco"
+brew "pgcli"
 brew "php"
 brew "pict"
 brew "poetry"
@@ -84,6 +87,7 @@ brew "virtualenv"
 brew "wakatime-cli"
 brew "wget"
 brew "xclip"
+brew "xh"
 brew "zsh-completions"
 brew "daipeihust/tap/im-select"
 brew "k1low/tap/octocov"
@@ -101,10 +105,10 @@ cask "canva"
 cask "cheatsheet"
 cask "codewhisperer"
 cask "coteditor"
+cask "dash"
 cask "deepl"
 cask "discord"
 cask "docker"
-cask "fig"
 cask "figma"
 cask "flutter"
 cask "font-3270-nerd-font"
@@ -166,6 +170,7 @@ cask "font-victor-mono-nerd-font"
 cask "gather"
 cask "gimp"
 cask "grandperspective"
+cask "hot"
 cask "iina"
 cask "iterm2"
 cask "jordanbaird-ice"
@@ -182,12 +187,12 @@ cask "neat"
 cask "notion"
 cask "notion-calendar"
 cask "obsidian"
-cask "postman"
 cask "prusaslicer"
 cask "raindropio"
 cask "raycast"
 cask "slack"
 cask "spectacle"
+cask "stats"
 cask "steam"
 cask "ticktick"
 cask "tor-browser"
@@ -203,16 +208,21 @@ mas "AdBlock", id: 1402042596
 mas "DaVinci Resolve", id: 571213070
 mas "Day One", id: 1055511498
 mas "Drafts", id: 1435957248
-mas "FlipClock", id: 1181028777
-mas "G2FA", id: 6444865161
 mas "Goodnotes", id: 1444383602
 mas "Hand Mirror", id: 1502839586
 mas "Kindle", id: 302584613
 mas "LINE", id: 539883307
+mas "Momentum", id: 1564329434
+mas "OneTab", id: 1540160809
 mas "RunCat", id: 1429033973
+mas "Save to Raindrop.io", id: 1549370672
 mas "Spark", id: 1176895641
+mas "Step Two", id: 1448916662
 mas "Tunacan", id: 980577198
 mas "Unsplash Wallpapers", id: 1284863847
+mas "Velja", id: 1607635845
+mas "Wappalyzer - Technology profiler", id: 1520333300
+mas "Web Translator", id: 6443492610
 mas "Xcode", id: 497799835
 vscode "alexcvzz.vscode-sqlite"
 vscode "alexisvt.flutter-snippets"
