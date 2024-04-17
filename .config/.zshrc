@@ -293,3 +293,9 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # 	zprof
 # fi
 
+
+## [Completion]
+## Completion scripts setup. Remove the following line to uninstall
+[[ -f /Users/atsuki/.dart-cli-completion/zsh-config.zsh ]] && . /Users/atsuki/.dart-cli-completion/zsh-config.zsh || true
+## [/Completion]
+

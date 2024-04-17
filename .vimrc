@@ -163,6 +163,8 @@ nnoremap <silent> ur :<C-u>Unite -buffer-name=register register<CR>
 
 au FileType * set fo-=c fo-=r fo-=o
 
+let g:denops_disable_version_check = 1
+
 " fzf
 " fzf settings
 let $FZF_DEFAULT_OPTS="--layout=reverse"
