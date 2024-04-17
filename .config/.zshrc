@@ -199,6 +199,7 @@ alias めも='sh ~/commands/create_memo.sh'
 SESSION_NAME="$(date +'%H%M%S_%m/%d')"
 alias tmuxer='tmux new -s $SESSION_NAME \; source-file ~/.tmux.session.conf'
 alias tmuxx='tmux new -s $SESSION_NAME'
+alias fzc="git branch --list | cut -c 3- | fzf --preview \"git log --pretty=format:'%h %cd %s' --date=format:'%Y-%m-%d %H:%M' {}\" | xargs git checkout"
 
 if [ -f "$HOME/.env" ]; then
 	source "$HOME/.env"
@@ -259,7 +260,7 @@ fh() {
 # fdg - ghq
 fgh() {
 	local selected
-	selected=$(ghq list | fzf)
+	selected=$(ghq list | fzf --preview 'bat --color=always --style=header,grid --line-range :500 $(ghq root)/{}/README.*')
 
 	if [ "x$selected" != "x" ]; then
 		cd $(ghq root)/$selected

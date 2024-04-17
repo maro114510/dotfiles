@@ -6,11 +6,8 @@ return {
 	config = function()
 		require('nightfox').setup {
 			transparent = true,
-			styles = {
-				sidebars = 'transparent',
-				floats = 'transparent',
-			},
 		}
+		require('nightfox').load()
 	end,
 
 	event = "UIEnter",

@@ -6,7 +6,9 @@ return {
 			require('mini.indentscope').setup({
 				symbol = '▏',
 			})
-		end
+		end,
+
+		event = 'UIEnter',
 	}
 }
 
