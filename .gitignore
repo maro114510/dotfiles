@@ -36,5 +36,7 @@
 # *.json
 *_compiled.lua
 
+.DS_Store
+
 
 # End Of Ignore

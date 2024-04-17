@@ -138,6 +138,7 @@ call jetpack#begin()
 	Jetpack 'ctrlpvim/ctrlp.vim'
 	" window size
 	Jetpack 'simeji/winresizer'
+	" tokyonight
 	Jetpack 'ghifarit53/tokyonight-vim'
 	Jetpack 'neoclide/coc.nvim', {'branch': 'release'}
 	Jetpack 'hrsh7th/cmp-path'
@@ -162,6 +163,8 @@ nnoremap <silent> umru :<C-u>Unite file_mru<CR>
 nnoremap <silent> ur :<C-u>Unite -buffer-name=register register<CR>
 
 au FileType * set fo-=c fo-=r fo-=o
+
+let g:denops_disable_version_check = 1
 
 " fzf
 " fzf settings

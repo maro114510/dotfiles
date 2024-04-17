@@ -15,6 +15,7 @@ function fish_user_key_bindings
 end
 
 set -Ux EDITOR /usr/bin/nvim
+set -U fish_cursor_normal line
 
 # export commands
 export PATH="$HOME/commands:$PATH"

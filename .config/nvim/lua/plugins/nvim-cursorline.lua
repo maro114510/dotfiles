@@ -16,7 +16,9 @@ return {
 					hl = { underline = true },
 				}
 			}
-		end
+		end,
+
+		event = 'UIEnter',
 	}
 }
 

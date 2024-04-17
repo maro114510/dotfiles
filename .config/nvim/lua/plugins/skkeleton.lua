@@ -1,7 +1,7 @@
 -- https://github.com/vim-skk/skkeleton.git
 
 return {
-	--[[ {
+	{
 		"vim-skk/skkeleton",
 
 		dependencies = 'vim-denops/denops.vim',
@@ -14,6 +14,7 @@ return {
 				userDictionary = "~/.skk/USER-JISYO",
 				eggLikeNewline = true, -- 変換モードで改行したときに、確定だけ行う(改行しない)
 			})
+
 			vim.fn["skkeleton#register_kanatable"]("rom", {
 				jj = "escape",
 				ll = "disable",
@@ -29,7 +30,8 @@ return {
 				ltsu = { "っ" },
 			})
 		end,
-	}, ]]
+	},
+
 	--- Indicator
 	--[[ {
 
