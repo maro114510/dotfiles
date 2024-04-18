@@ -1,5 +1,3 @@
-local M = {n = {}, i = {}, v = {}, t = {}}
-
 -- clipboard copy setting
 vim.api.nvim_set_keymap('n', 'x', '"_x', { noremap = true })
 vim.api.nvim_set_keymap('n', 's', '"_s', { noremap = true })
@@ -30,10 +28,17 @@ vim.api.nvim_set_keymap('i', 'っj', '<ESC>', { noremap = true, silent = true })
 -- Exchange
 vim.api.nvim_set_keymap('', ';',':', { noremap = true })
 
--- fzf
+-- Telescope
 vim.keymap.set(
 	"n",
-	"<c-P>",
+	"<C-f>",
+	"<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<cr>",
+	{ noremap = true, silent = true }
+)
+
+vim.keymap.set(
+	"n",
+	"<C-P>",
 	-- "<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<cr>",
 	"<cmd>Telescope smart_open<CR>",
 	{ silent = true }
@@ -56,40 +61,15 @@ vim.api.nvim_set_keymap(
 vim.api.nvim_set_keymap(
 	'n',
 	'<C-T>',
-	'<cmd>exe v:count1 . "ToggleTerm"<CR>',
+	'<CMD>exe v:count1 . "ToggleTerm"<CR>',
 	{ noremap = true, silent = true }
 )
 
 -- NeoTree
 vim.api.nvim_set_keymap(
 	"n",
-	"<M-n>",
-	":Neotree<CR>",
-	{ noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-	"n",
-	"<M-c>",
-	":Neotree close<CR>",
-	{ noremap = true, silent = true }
-)
-
--- multiple-cursors
-vim.api.nvim_set_keymap(
-	"n",
-	"<A-K>",
-	"<cmd>call vm#commands#add_cursor_up(0, v:count1)<cr>",
-	{ noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-	"n",
-	"<A-J>",
-	"<cmd>call vm#commands#add_cursor_down(0, v:count1)<cr>",
-	{ noremap = true, silent = true }
-)
-
-vim.api.nvim_set_keymap(
-	"n", "<space>rf", "<cmd>lua vim.lsp.buf.references()<CR>",
+	"<C-n>",
+	"<CMD>Neotree<CR>",
 	{ noremap = true, silent = true }
 )
 
@@ -106,5 +86,3 @@ vim.api.nvim_set_keymap(
 -- space + rn = Rename
 -- vim.api.nvim_set_keymap('n', '<space>rn', '<Plug>(coc-rename)', { noremap = true, silent = true })
 
-
-return M
