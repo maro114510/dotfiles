@@ -7,7 +7,7 @@ local on_attach = function(client, bufnr)
 	set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
 	set("n", "<C-m>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
 	set("n", "gy", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
-	set("n", "rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
+	set("n", "nm", "<cmd>lua vim.lsp.buf.rename()<CR>", {noremap = true, silent = true})
 	set("n", "ma", "<cmd>lua vim.lsp.buf.code_action()<CR>")
 	set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
 	set("n", "<space>e", "<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>")
@@ -21,8 +21,8 @@ require("mason-lspconfig").setup()
 require("mason-lspconfig").setup_handlers {
 	function (server_name) 
 		require("lspconfig")[server_name].setup {
-		on_attach = on_attach, 
-		capabilities = capabilities, 
-	}
-end,
+			on_attach = on_attach, 
+			capabilities = capabilities, 
+		}
+	end,
 }
