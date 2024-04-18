@@ -3,5 +3,5 @@
 return {
 	"williamboman/mason.nvim",
 
-	event = "VimEnter",
+	event = "BufReadPre",
 }
