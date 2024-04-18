@@ -3,5 +3,5 @@
 return {
 	"williamboman/mason-lspconfig.nvim",
 
-	event = "VimEnter",
+	event = { "VimEnter" }
 }
