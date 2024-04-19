@@ -126,6 +126,8 @@ export LC_MESSAGES="en_US.UTF-8"
 export LC_MONETARY="en_US.UTF-8"
 export LC_NUMERIC="en_US.UTF-8"
 
+export EDITOR=nvim
+
 ### homebrew ###
 if uname -a | grep -sq "Linux"; then
 	export PATH=$HOME/lazygit:$PATH
@@ -193,6 +195,7 @@ alias v='nvim'
 alias vi='vi'
 alias lg='lazygit'
 alias cl='clear'
+alias xh='xh -s monokai'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias めも='sh ~/commands/create_memo.sh'
@@ -300,3 +303,7 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 [[ -f /Users/atsuki/.dart-cli-completion/zsh-config.zsh ]] && . /Users/atsuki/.dart-cli-completion/zsh-config.zsh || true
 ## [/Completion]
 
+source ~/.config/op/plugins.sh
+
+# direnv
+eval "$(direnv hook zsh)"
