@@ -1,0 +1,15 @@
+-- https://github.com/nvimdev/lspsaga.nvim.git
+
+return {
+	--[[ 'nvimdev/lspsaga.nvim',
+    config = function()
+        require('lspsaga').setup({})
+    end,
+    dependencies = {
+        'nvim-treesitter/nvim-treesitter',
+        'nvim-tree/nvim-web-devicons',
+    },
+
+	event = {'BufReadPre', 'BufNewFile'}, ]]
+}
+
