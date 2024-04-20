@@ -193,6 +193,8 @@ alias v='nvim'
 alias vi='vi'
 alias lg='lazygit'
 alias cl='clear'
+alias f='fvm flutter'
+alias d='fvm dart'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias めも='sh ~/commands/create_memo.sh'
