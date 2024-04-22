@@ -1,5 +1,3 @@
-local M = {n = {}, i = {}, v = {}, t = {}}
-
 -- clipboard copy setting
 vim.api.nvim_set_keymap('n', 'x', '"_x', { noremap = true })
 vim.api.nvim_set_keymap('n', 's', '"_s', { noremap = true })
@@ -30,10 +28,17 @@ vim.api.nvim_set_keymap('i', 'っj', '<ESC>', { noremap = true, silent = true })
 -- Exchange
 vim.api.nvim_set_keymap('', ';',':', { noremap = true })
 
--- fzf
+-- Telescope
 vim.keymap.set(
 	"n",
-	"<c-P>",
+	"<C-f>",
+	"<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<cr>",
+	{ noremap = true, silent = true }
+)
+
+vim.keymap.set(
+	"n",
+	"<C-P>",
 	-- "<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<cr>",
 	"<cmd>Telescope smart_open<CR>",
 	{ silent = true }
@@ -56,52 +61,51 @@ vim.api.nvim_set_keymap(
 vim.api.nvim_set_keymap(
 	'n',
 	'<C-T>',
-	'<cmd>exe v:count1 . "ToggleTerm"<CR>',
+	'<CMD>exe v:count1 . "ToggleTerm"<CR>',
+	{ noremap = true, silent = true }
+)
+-- exit terminal mode
+vim.api.nvim_set_keymap(
+	't',
+	'<Esc>',
+	'<C-\\><C-n>',
+	{ noremap = true, silent = true }
+)
+
+-- Oil
+vim.api.nvim_set_keymap(
+	'n',
+	'<C-o>',
+	'<CMD>Oil .<CR>',
 	{ noremap = true, silent = true }
 )
 
 -- NeoTree
 vim.api.nvim_set_keymap(
 	"n",
-	"<M-n>",
-	":Neotree<CR>",
-	{ noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-	"n",
-	"<M-c>",
-	":Neotree close<CR>",
+	"<C-n>",
+	"<CMD>Neotree<CR>",
 	{ noremap = true, silent = true }
 )
 
--- multiple-cursors
+-- Oil
 vim.api.nvim_set_keymap(
 	"n",
-	"<A-K>",
-	"<cmd>call vm#commands#add_cursor_up(0, v:count1)<cr>",
-	{ noremap = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-	"n",
-	"<A-J>",
-	"<cmd>call vm#commands#add_cursor_down(0, v:count1)<cr>",
+	"<C-o>",
+	"<CMD>Oil .<CR>",
 	{ noremap = true, silent = true }
 )
 
 -- COC
 -- when normal mode
 -- double space
-vim.api.nvim_set_keymap('n', '<space><space>', '<Cmd>CocList<CR>', { noremap = true, silent = true })
--- space + hover = Hover
-vim.api.nvim_set_keymap('n', '<space>h', '<Cmd>call CocAction("doHover")<CR>', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<space><space>', '<Cmd>CocList<CR>', { noremap = true, silent = true })
+-- space + hwover = Hover
+-- vim.api.nvim_set_keymap('n', '<space>h', '<Cmd>call CocAction("doHover")<CR>', { noremap = true, silent = true })
 -- space + df = Definition
-vim.api.nvim_set_keymap('n', '<space>df', '<Plug>(coc-definition)', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<space>df', '<Plug>(coc-definition)', { noremap = true, silent = true })
 -- space + rf = References
-vim.api.nvim_set_keymap('n', '<space>rf', '<Plug>(coc-references)', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<space>rf', '<Plug>(coc-references)', { noremap = true, silent = true })
 -- space + rn = Rename
-vim.api.nvim_set_keymap('n', '<space>rn', '<Plug>(coc-rename)', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '<space>rn', '<Plug>(coc-rename)', { noremap = true, silent = true })
 
--- word jump
-vim.api.nvim_set_keymap('n', '<S-C-h>', "<cmd>lua require'hop'.hint_words()<cr>", {})
-
-return M
