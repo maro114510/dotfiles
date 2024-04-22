@@ -88,6 +88,14 @@ vim.api.nvim_set_keymap(
 	{ noremap = true, silent = true }
 )
 
+-- Oil
+vim.api.nvim_set_keymap(
+	"n",
+	"<C-o>",
+	"<CMD>Oil .<CR>",
+	{ noremap = true, silent = true }
+)
+
 -- COC
 -- when normal mode
 -- double space
