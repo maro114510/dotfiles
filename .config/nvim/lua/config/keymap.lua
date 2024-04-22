@@ -64,6 +64,21 @@ vim.api.nvim_set_keymap(
 	'<CMD>exe v:count1 . "ToggleTerm"<CR>',
 	{ noremap = true, silent = true }
 )
+-- exit terminal mode
+vim.api.nvim_set_keymap(
+	't',
+	'<Esc>',
+	'<C-\\><C-n>',
+	{ noremap = true, silent = true }
+)
+
+-- Oil
+vim.api.nvim_set_keymap(
+	'n',
+	'<C-o>',
+	'<CMD>Oil .<CR>',
+	{ noremap = true, silent = true }
+)
 
 -- NeoTree
 vim.api.nvim_set_keymap(
