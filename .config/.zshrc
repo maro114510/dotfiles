@@ -300,3 +300,6 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 [[ -f /Users/atsuki/.dart-cli-completion/zsh-config.zsh ]] && . /Users/atsuki/.dart-cli-completion/zsh-config.zsh || true
 ## [/Completion]
 
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /opt/homebrew/bin/terraform terraform
