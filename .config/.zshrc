@@ -126,6 +126,8 @@ export LC_MESSAGES="en_US.UTF-8"
 export LC_MONETARY="en_US.UTF-8"
 export LC_NUMERIC="en_US.UTF-8"
 
+export EDITOR=nvim
+
 ### homebrew ###
 if uname -a | grep -sq "Linux"; then
 	export PATH=$HOME/lazygit:$PATH
@@ -193,6 +195,9 @@ alias v='nvim'
 alias vi='vi'
 alias lg='lazygit'
 alias cl='clear'
+alias xh='xh -s monokai'
+alias f='fvm flutter'
+alias d='fvm dart'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias めも='sh ~/commands/create_memo.sh'
@@ -294,12 +299,3 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # 	zprof
 # fi
 
-
-## [Completion]
-## Completion scripts setup. Remove the following line to uninstall
-[[ -f /Users/atsuki/.dart-cli-completion/zsh-config.zsh ]] && . /Users/atsuki/.dart-cli-completion/zsh-config.zsh || true
-## [/Completion]
-
-
-autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /opt/homebrew/bin/terraform terraform
