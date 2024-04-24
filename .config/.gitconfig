@@ -13,6 +13,7 @@
 [core]
 	pager = delta
 	excludesfile = /Users/nohira/.gitignore_global
+	editor = nvim
 
 [interactive]
 	diffFilter = delta --color-only

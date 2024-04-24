@@ -296,16 +296,3 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # 	zprof
 # fi
 
-
-## [Completion]
-## Completion scripts setup. Remove the following line to uninstall
-[[ -f /Users/atsuki/.dart-cli-completion/zsh-config.zsh ]] && . /Users/atsuki/.dart-cli-completion/zsh-config.zsh || true
-## [/Completion]
-
-source ~/.config/op/plugins.sh
-
-# direnv
-eval "$(direnv hook zsh)"
-
-# CodeWhisperer post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh"
