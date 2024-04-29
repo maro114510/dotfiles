@@ -137,7 +137,7 @@ if uname -a | grep -sq "Linux"; then
 elif [ "$(uname)" = "Darwin" ]; then
 	eval "$(/opt/homebrew/bin/brew shellenv)"
 	### rye ###
-	source "$HOME/.rye/env"
+	# source "$HOME/.rye/env"
 fi
 
 
