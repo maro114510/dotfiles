@@ -1,7 +1,7 @@
-# zmodload zsh/zprof && zprof
-
 # CodeWhisperer pre block. Keep at the top of this file.
 [[ -f "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.pre.zsh"
+# zmodload zsh/zprof && zprof
+
 # calculate the time it takes to load zshrc
 # zmodload zsh/zprof
 # If you come from bash you might have to change your $PATH.
@@ -292,20 +292,9 @@ frm() {
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# CodeWhisperer post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh"
-
 # if (which zprof > /dev/null 2>&1) ;then
 # 	zprof
 # fi
 
-
-## [Completion]
-## Completion scripts setup. Remove the following line to uninstall
-[[ -f /Users/atsuki/.dart-cli-completion/zsh-config.zsh ]] && . /Users/atsuki/.dart-cli-completion/zsh-config.zsh || true
-## [/Completion]
-
-source ~/.config/op/plugins.sh
-
-# direnv
-eval "$(direnv hook zsh)"
+# CodeWhisperer post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh"
