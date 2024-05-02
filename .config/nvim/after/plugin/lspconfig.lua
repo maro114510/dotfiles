@@ -1,5 +1,5 @@
 -- setting of nvim-lspconfig
-
+--[[
 local on_attach = function(client, bufnr)
 	local set = vim.api.nvim_set_keymap
 
@@ -24,5 +24,5 @@ require("mason-lspconfig").setup_handlers {
 			on_attach = on_attach, 
 			capabilities = capabilities, 
 		}
-	end
-}
+	end,
+} ]]
