@@ -14,6 +14,9 @@ vim.opt.cmdheight = 1
 vim.opt.laststatus = 2
 vim.opt.showcmd = true
 
+-- Status Line
+vim.opt.laststatus = 3
+
 -- Search and Replace
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
