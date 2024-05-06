@@ -28,3 +28,7 @@
 [diff]
 	colorMoved = default
 
+[maintenance]
+	repo = /Users/nohira/ghq/github.com/maro114510/flutter_sandbox
+[column]
+	ui = auto
