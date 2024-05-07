@@ -29,7 +29,7 @@ return {
 			nmap("K", vim.lsp.buf.hover, "[K] [H]over")
 			nmap("gr", vim.lsp.buf.references, "[G]oto [R]references")
 			nmap("gI", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
-			nmap("rn", vim.lsp.buf.rename, "[R]rename [N]ame")
+			nmap("rnm", vim.lsp.buf.rename, "[R]rename [N]ame")
 
 			nmap("<space>D", vim.lsp.buf.type_definition, "[D]efinition")
 			nmap("gD", vim.lsp.buf.declearation, "[G]oto [D]eclaration")
@@ -79,5 +79,9 @@ return {
 		}
 
 		require("lspconfig").typos_lsp.setup {}
+		require("lspconfig").gopls.setup {
+			on_attach = on_attach,
+			capabilities = capabilities,
+		}
 	end,
 }
