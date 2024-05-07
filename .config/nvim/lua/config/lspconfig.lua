@@ -1,1 +1,0 @@
--- setting of nvim-lspconfig
