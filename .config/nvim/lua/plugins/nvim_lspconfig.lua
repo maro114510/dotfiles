@@ -29,6 +29,7 @@ return {
 			nmap("K", vim.lsp.buf.hover, "[K] [H]over")
 			nmap("gr", vim.lsp.buf.references, "[G]oto [R]references")
 			nmap("gI", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
+			nmap("rn", vim.lsp.buf.rename, "[R]rename [N]ame")
 
 			nmap("<space>D", vim.lsp.buf.type_definition, "[D]efinition")
 			nmap("gD", vim.lsp.buf.declearation, "[G]oto [D]eclaration")
