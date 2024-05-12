@@ -175,5 +175,3 @@ let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8,'yoffse
 let mapleader = "\<Space>"
 nnoremap <C-f> :Files <CR>
 nnoremap <silent> <leader>f :Files<CR>
-
-
