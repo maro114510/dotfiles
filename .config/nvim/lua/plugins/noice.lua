@@ -11,5 +11,5 @@ return {
 		--   If not available, we use `mini` as the fallback
 		-- "rcarriga/nvim-notify",
 	},
-	-- event = "VimEnter",
+	event = "BufRead",
 }
