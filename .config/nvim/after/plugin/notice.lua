@@ -1,4 +1,5 @@
 local status, noice = pcall(require, "noice")
+
 if not status then
 	return
 end
@@ -26,7 +27,7 @@ noice.setup({
 		-- warning = false,
 		-- information = false,
 		-- hint = false,
-		enabled = true,
+		enabled = false,
 		view_error = "notify",
 		view_warning = "notify",
 		view_search = "notify",

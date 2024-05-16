@@ -1,5 +1,5 @@
-# CodeWhisperer pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.pre.zsh"
+# Q pre block. Keep at the top of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
 # zmodload zsh/zprof && zprof
 
 # calculate the time it takes to load zshrc
@@ -137,7 +137,7 @@ if uname -a | grep -sq "Linux"; then
 elif [ "$(uname)" = "Darwin" ]; then
 	eval "$(/opt/homebrew/bin/brew shellenv)"
 	### rye ###
-	source "$HOME/.rye/env"
+	# source "$HOME/.rye/env"
 fi
 
 
@@ -296,5 +296,5 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # 	zprof
 # fi
 
-# CodeWhisperer post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh"
+# Q post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"

@@ -19,9 +19,6 @@ return {
 				},
 				ensure_installed = {
 					'bash',
-					--[[ 'c',
-					'cpp', ]]
-					'css',
 					'go',
 					'html',
 					'javascript',

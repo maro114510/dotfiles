@@ -9,6 +9,7 @@
 
 [commit]
 	verbose = true
+	template = /Users/nohira/ghq/gist.github.com/maro114510/251fd3aae9a321b14fc1fabfd84debd0/.commit_template
 
 [core]
 	pager = delta
@@ -28,3 +29,7 @@
 [diff]
 	colorMoved = default
 
+[maintenance]
+	repo = /Users/nohira/ghq/github.com/maro114510/flutter_sandbox
+[column]
+	ui = auto

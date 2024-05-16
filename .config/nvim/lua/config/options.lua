@@ -14,6 +14,9 @@ vim.opt.cmdheight = 1
 vim.opt.laststatus = 2
 vim.opt.showcmd = true
 
+-- Status Line
+vim.opt.laststatus = 3
+
 -- Search and Replace
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
@@ -45,7 +48,7 @@ vim.opt.listchars = { tab = '>>', trail = '-', nbsp = '+' }
 vim.opt.winblend = 20
 -- Opacity
 vim.opt.pumblend = 20
--- Sub Coloums
+-- Sub Columns
 vim.opt.showtabline = 2
 vim.opt.signcolumn = "yes"
 

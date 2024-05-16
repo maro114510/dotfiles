@@ -9,7 +9,11 @@ return {
 			opt = true
 		},
 		config = function()
-			require("lualine").setup({})
+			require("lualine").setup({
+				options = {
+					globalstatus = true,
+				}
+			})
 		end
 	},
 	event = 'VimEnter',
