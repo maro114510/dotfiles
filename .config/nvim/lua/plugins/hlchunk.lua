@@ -3,7 +3,7 @@
 return {
 	"shellRaining/hlchunk.nvim",
 	config = function()
-		require("hlchunk").setup({})
+		require("hlchunk").setup{}
 	end,
 
 	event = { "UIEnter" },

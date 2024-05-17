@@ -83,6 +83,5 @@ return {
 			on_attach = on_attach,
 			capabilities = capabilities,
 		}
-		require("lspconfig").cfn_lint.setup {}
 	end,
 }
