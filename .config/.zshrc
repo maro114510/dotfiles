@@ -301,3 +301,5 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
 
 export GPG_TTY=$(tty)
+
+export GPG_TTY=$(tty)
