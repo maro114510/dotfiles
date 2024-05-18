@@ -9,7 +9,6 @@
 	required = true
 
 [commit]
-	verbose = true
 	template = ~/ghq/gist.github.com/b679da26e7c683179714671e576bb482/.commit_template
 	gpgsign = true
 
