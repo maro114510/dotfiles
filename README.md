@@ -23,3 +23,4 @@ If necessary, install the software with the following commands.
     * https://github.com/ohmyzsh/ohmyzsh
 
 Please contact me if you need anything else.
+
