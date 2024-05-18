@@ -10,7 +10,6 @@
 
 [commit]
 	template = /Users/nohira/.gitmessage.txt
-	gpgsign = true
 
 [core]
 	pager = delta
