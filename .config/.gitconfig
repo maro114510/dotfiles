@@ -9,7 +9,7 @@
 	required = true
 
 [commit]
-	template = /Users/nohira/ghq/gist.github.com/b679da26e7c683179714671e576bb482/.commit_template
+	template = /Users/nohira/.gitmessage.txt
 	gpgsign = true
 
 [core]
