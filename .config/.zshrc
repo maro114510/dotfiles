@@ -198,6 +198,7 @@ alias cl='clear'
 alias xh='xh -s monokai'
 alias f='fvm flutter'
 alias d='fvm dart'
+alias git commit='git commit -S'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias めも='sh ~/commands/create_memo.sh'
@@ -298,3 +299,7 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 # Q post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
+
+export GPG_TTY=$(tty)
+
+export GPG_TTY=$(tty)
