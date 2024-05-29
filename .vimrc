@@ -176,5 +176,3 @@ let mapleader = "\<Space>"
 nnoremap <C-f> :Files <CR>
 nnoremap <silent> <leader>f :Files<CR>
 
-
-
