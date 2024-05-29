@@ -5,6 +5,6 @@ return {
 	config = function()
 		require("which-key").setup({})
 	end,
-	
+
 	cmd = "WhichKey"
 }
