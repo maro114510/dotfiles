@@ -284,6 +284,24 @@ fkill() {
 frm() {
     ls -al | fzf -m | xargs -I {} rm {}
 }
+# Search with Browser
+# https://s10i.me/whitenote/post/40
+gog() {
+    if [ $(echo $1 | grep "^-[cfs]$") ]; then
+        local opt=$1
+        shift
+    fi
+    local url="https://google.co.jp/search?q=${*// /+}"
+    local c="Google Chrome"
+    local f="Firefox"
+    local s="Safari"
+    case $opt in
+        -c ) open $url -a $c;;
+        -f ) open $url -a $f;;
+        -s ) open $url -a $s;;
+        * ) open $url;;
+    esac
+}
 
 # bun completions
 [ -s "/Users/atsuki/.bun/_bun" ] && source "/Users/atsuki/.bun/_bun"
