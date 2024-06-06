@@ -95,7 +95,6 @@ set backspace=start,eol,indent
 " memo
 let g:memolist_path = '~/memo'
 
-
 " ===== Apppearance =====
 set termguicolors
 let g:tokyonight_style = 'storm' " available: night, storm
