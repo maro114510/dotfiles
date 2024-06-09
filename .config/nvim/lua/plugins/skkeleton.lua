@@ -1,7 +1,7 @@
 -- https://github.com/vim-skk/skkeleton.git
 
 return {
-	{
+	--[[ {
 		"vim-skk/skkeleton",
 
 		dependencies = 'vim-denops/denops.vim',
@@ -30,7 +30,7 @@ return {
 				ltsu = { "っ" },
 			})
 		end,
-	},
+	}, ]]
 
 	--- Indicator
 	--[[ {
