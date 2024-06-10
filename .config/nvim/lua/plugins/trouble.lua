@@ -2,25 +2,31 @@
 
 return {
 	"folke/trouble.nvim",
+
 	requires = {
 		"nvim-tree/nvim-web-devicons",
 	},
-	config = function()
+
+	--[[ config = function()
 		vim.api.nvim_set_keymap(
 			"n",
 			"<space>xx",
-			"<cmd>TroubleToggle workspace_diagnostics<cr>",
+			"<cmd>Trouble diagnostics<cr>",
 			{ noremap = true, silent = true }
 		)
 		vim.api.nvim_set_keymap(
 			"n",
 			"<space>xw",
-			"<cmd>TroubleToggle quickfix<cr>",
+			"<cmd>Trouble quickfix<cr>",
 			{ noremap = true, silent = true }
 		)
 	end,
 
 	keys = {
 		"<space>xx",
+	}, ]]
+
+	event = {
+		"BufWinEnter",
 	},
 }
