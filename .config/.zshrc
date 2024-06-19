@@ -325,3 +325,4 @@ export GPG_TTY=$(tty)
 
 export GPG_TTY=$(tty)
 export HOMEBREW_NO_AUTO_UPDATE=true
+
