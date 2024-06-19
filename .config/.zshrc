@@ -83,13 +83,13 @@ export ZSH="$HOME/.oh-my-zsh"
 
 plugins=(
   git
-  autojump
+  # autojump
   urltools
   bgnotify
   zsh-autosuggestions
   zsh-syntax-highlighting
-  zsh-history-enquirer
-  jovial
+  # zsh-history-enquirer
+  # jovial
   z
 )
 
@@ -201,7 +201,7 @@ alias cl='clear'
 alias xh='xh -s monokai'
 alias f='fvm flutter'
 alias d='fvm dart'
-alias gitmo='gitmoji -c'
+# alias gitmo='gitmoji -c'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias めも='sh ~/commands/create_memo.sh'
@@ -325,4 +325,3 @@ export GPG_TTY=$(tty)
 
 export GPG_TTY=$(tty)
 export HOMEBREW_NO_AUTO_UPDATE=true
-

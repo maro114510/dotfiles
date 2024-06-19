@@ -21,109 +21,109 @@ customCommands:
         title: 'Stash Message'
         initialValue: 'WIP'
 
-  - key: "<c-c>"
-    context: "files"
-    description: 'commit files with format'
-    prompts:
-      - type: "menu"
-        title: "What kind of commit type is it?"
-        key: "Type"
-        options:
-          - name: "fix"
-            description: "Fix a bug"
-            value: "fix"
-          - name: "feat"
-            description: "Add a new feature"
-            value: "feat"
-          - name: "docs"
-            description: "Documentation only changes"
-            value: "docs"
-          - name: "style"
-            description: "Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)"
-            value: "style"
-          - name: "refactor"
-            description: "A code change that neither fixes a bug nor adds a feature"
-            value: "refactor"
-          - name: "test"
-            description: "Add tests"
-            value: "test"
-          - name: "perf"
-            description: "Improve performance"
-            value: "perf"
-          - name: "chore"
-            description: "Changes to the build process or auxiliary tools and libraries such as documentation generation"
-            value: "chore"
-          - name: "wip"
-            description: "Work in progress"
-            value: "wip"
+  # - key: "<c-c>"
+  #   context: "files"
+  #   description: 'commit files with format'
+  #   prompts:
+  #     - type: "menu"
+  #       title: "What kind of commit type is it?"
+  #       key: "Type"
+  #       options:
+  #         - name: "fix"
+  #           description: "Fix a bug"
+  #           value: "fix"
+  #         - name: "feat"
+  #           description: "Add a new feature"
+  #           value: "feat"
+  #         - name: "docs"
+  #           description: "Documentation only changes"
+  #           value: "docs"
+  #         - name: "style"
+  #           description: "Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)"
+  #           value: "style"
+  #         - name: "refactor"
+  #           description: "A code change that neither fixes a bug nor adds a feature"
+  #           value: "refactor"
+  #         - name: "test"
+  #           description: "Add tests"
+  #           value: "test"
+  #         - name: "perf"
+  #           description: "Improve performance"
+  #           value: "perf"
+  #         - name: "chore"
+  #           description: "Changes to the build process or auxiliary tools and libraries such as documentation generation"
+  #           value: "chore"
+  #         - name: "wip"
+  #           description: "Work in progress"
+  #           value: "wip"
 
-      - type: "input"
-        title: "(Optional) Enter the scope"
-        key: "Scope"
-        initialValue: ""
+  #     - type: "input"
+  #       title: "(Optional) Enter the scope"
+  #       key: "Scope"
+  #       initialValue: ""
 
-      - type: "input"
-        title: "Enter the Message"
-        key: "Message"
-        initialValue: ""
+  #     - type: "input"
+  #       title: "Enter the Message"
+  #       key: "Message"
+  #       initialValue: ""
 
-      - type: "menu"
-        title: "Choice the emoji"
-        key: "Emoji"
-        options:
-          - name: '(empty)'
-            description: ''
-            value: ''
-          - name: ':ambulance:'
-            description: '(fix)🚑 Fix Fatal Error'
-            value: ':ambulance:'
-          - name: ':bug:'
-            description: '(fix)🐛 Fix Bug'
-            value: ':bug:'
-          - name: ':cop:'
-            description: '(fix)👮 Fix Security Issue'
-            value: ':cop:'
-          - name: ':tada'
-            description: '(feat)🎉 Initial Commit'
-            value: ':tada:'
-          - name: ':sparkles:'
-            description: '(feat)✨ Add New Feature'
-            value: ':sparkles:'
-          - name: ':up:'
-            description: '(feat)🆙 Update Dependencies'
-            value: ':up:'
-          - name: ':memo:'
-            description: '(docs)📝 Document In Source Code'
-            value: ':memo:'
-          - name: ':bulb'
-            description: '(docs)💡 Add Comment'
-            value: ':bulb:'
-          - name: ':art:'
-            description: '(style)🎨 Layout Change'
-            value: ':art:'
-          - name: ':recycle:'
-            description: '(refactor)♻️  Refactor Code'
-            value: ':recycle:'
-          - name: ':fire:'
-            description: '(refactor)🔥 Remove Code'
-            value: ':fire:'
-          - name: ':green_heart:'
-            description: '(test)💚 Add Test or CI'
-            value: ':green_heart:'
-          - name: ':rocket:'
-            description: '(perf)🚀 Improve Performance'
-            value: ':rocket:'
-          - name: ':wrench:'
-            description: '(chore)🔧 Change Configuration'
-            value: ':wrench:'
-          - name: ':construction:'
-            description: '(wip)🚧 Work In Progress'
-            value: ':construction:'
+  #     - type: "menu"
+  #       title: "Choice the emoji"
+  #       key: "Emoji"
+  #       options:
+  #         - name: '(empty)'
+  #           description: ''
+  #           value: ''
+  #         - name: ':ambulance:'
+  #           description: '(fix)🚑 Fix Fatal Error'
+  #           value: ':ambulance:'
+  #         - name: ':bug:'
+  #           description: '(fix)🐛 Fix Bug'
+  #           value: ':bug:'
+  #         - name: ':cop:'
+  #           description: '(fix)👮 Fix Security Issue'
+  #           value: ':cop:'
+  #         - name: ':tada:'
+  #           description: '(feat)🎉 Initial Commit'
+  #           value: ':tada:'
+  #         - name: ':sparkles:'
+  #           description: '(feat)✨ Add New Feature'
+  #           value: ':sparkles:'
+  #         - name: ':up:'
+  #           description: '(feat)🆙 Update Dependencies'
+  #           value: ':up:'
+  #         - name: ':memo:'
+  #           description: '(docs)📝 Document In Source Code'
+  #           value: ':memo:'
+  #         - name: ':bulb'
+  #           description: '(docs)💡 Add Comment'
+  #           value: ':bulb:'
+  #         - name: ':art:'
+  #           description: '(style)🎨 Layout Change'
+  #           value: ':art:'
+  #         - name: ':recycle:'
+  #           description: '(refactor)♻️  Refactor Code'
+  #           value: ':recycle:'
+  #         - name: ':fire:'
+  #           description: '(refactor)🔥 Remove Code'
+  #           value: ':fire:'
+  #         - name: ':green_heart:'
+  #           description: '(test)💚 Add Test or CI'
+  #           value: ':green_heart:'
+  #         - name: ':rocket:'
+  #           description: '(perf)🚀 Improve Performance'
+  #           value: ':rocket:'
+  #         - name: ':wrench:'
+  #           description: '(chore)🔧 Change Configuration'
+  #           value: ':wrench:'
+  #         - name: ':construction:'
+  #           description: '(wip)🚧 Work In Progress'
+  #           value: ':construction:'
 
-      - type: "confirm"
-        title: "Commit"
-        body: "Commit with the message '{{.Form.Type}}{{.Form.Scope}}: {{.Form.Message}} {{.Form.Emoji}}'?"
-        # command: "bash -c 'type=\"{{.Form.Type}}\"; scope=\"{{.Form.Scope}}\"; message=\"{{.Form.Message}}\"; emoji=\"{{.Form.Emoji}}\"; commit_message=\"$type$emoji ${scope:+($scope)}: $message\"; git commit -m \"$commit_message\"'"
-        command: "bash -c 'type=\"{{.Form.Type}}\"; scope=\"{{.Form.Scope}}\"; message=\"{{.Form.Message}}\"; emoji=\"{{.Form.Emoji}}\"; commit_message=\"$type${scope:+($scope)}: $message $emoji\"; git commit -m \"$commit_message\"'"
+  #     - type: "confirm"
+  #       title: "Commit"
+  #       body: "Commit with the message '{{.Form.Type}}{{.Form.Scope}}{{end}}: {{.Form.Message}} {{.Form.Emoji}}'?"
+  #       # command: "bash -c 'type=\"{{.Form.Type}}\"; scope=\"{{.Form.Scope}}\"; message=\"{{.Form.Message}}\"; emoji=\"{{.Form.Emoji}}\"; commit_message=\"$type$emoji ${scope:+($scope)}: $message\"; git commit -m \"$commit_message\"'"
+  #       command: "bash -c 'type=\"{{.Form.Type}}\"; scope=\"{{.Form.Scope}}\"; message=\"{{.Form.Message}}\"; emoji=\"{{.Form.Emoji}}\"; commit_message=\"$type${scope:+($scope)}: $message $emoji\"; git commit -m \"$commit_message\"'"
 
-    loadingText: "Committing..."
+  #       loadingText: "Committing..."
