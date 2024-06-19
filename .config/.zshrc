@@ -82,12 +82,15 @@ export ZSH="$HOME/.oh-my-zsh"
 # export NVM_COMPLETION=true
 
 plugins=(
-	git
-	zsh-syntax-highlighting
-	zsh-completions
-	zsh-autosuggestions
-	z
-	asdf
+  git
+  autojump
+  urltools
+  bgnotify
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+  zsh-history-enquirer
+  jovial
+  z
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -321,3 +324,4 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 export GPG_TTY=$(tty)
 
 export GPG_TTY=$(tty)
+export HOMEBREW_NO_AUTO_UPDATE=true
