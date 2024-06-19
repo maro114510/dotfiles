@@ -64,7 +64,7 @@ customCommands:
         key: "Message"
         initialValue: ""
       - type: "menu"
-        title: "Choise the emoji"
+        title: "Choice the emoji"
         key: "Emoji"
         options:
           - name: '(empty)'
@@ -128,4 +128,4 @@ customCommands:
         title: "Commit"
         body: "Commit with the message '{{.Form.Type}}{{.Form.Scope}}: {{.Form.Message}}{{.Form.Emoji}}'. Is this okay?"
     command: "bash -c 'type=\"{{.Form.Type}}\"; scope=\"{{.Form.Scope}}\"; message=\"{{.Form.Message}}\"; emoji=\"{{.Form.Emoji}}\"; commit_message=\"$type${scope:+($scope)}: $message $emoji\"; git commit -m \"$commit_message\"'"
-    loadingText: "Commiting..."
+    loadingText: "Committing..."
