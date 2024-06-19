@@ -20,6 +20,7 @@ customCommands:
       - type: 'input'
         title: 'Stash Message'
         initialValue: 'WIP'
+
   - key: "<c-c>"
     context: "files"
     description: 'commit files with format'
@@ -55,14 +56,17 @@ customCommands:
           - name: "wip"
             description: "Work in progress"
             value: "wip"
+
       - type: "input"
         title: "(Optional) Enter the scope"
         key: "Scope"
         initialValue: ""
+
       - type: "input"
         title: "Enter the Message"
         key: "Message"
         initialValue: ""
+
       - type: "menu"
         title: "Choice the emoji"
         key: "Emoji"
@@ -115,8 +119,11 @@ customCommands:
           - name: ':construction:'
             description: '(wip)🚧 Work In Progress'
             value: ':construction:'
+
       - type: "confirm"
         title: "Commit"
         body: "Commit with the message '{{.Form.Type}}{{.Form.Scope}}: {{.Form.Message}} {{.Form.Emoji}}'?"
-        command: "bash -c 'type=\"{{.Form.Type}}\"; scope=\"{{.Form.Scope}}\"; message=\"{{.Form.Message}}\"; emoji=\"{{.Form.Emoji}}\"; commit_message=\"$type$emoji${scope:+($scope)}: $message\"; git commit -m \"$commit_message\"'"
+        # command: "bash -c 'type=\"{{.Form.Type}}\"; scope=\"{{.Form.Scope}}\"; message=\"{{.Form.Message}}\"; emoji=\"{{.Form.Emoji}}\"; commit_message=\"$type$emoji ${scope:+($scope)}: $message\"; git commit -m \"$commit_message\"'"
+        command: "bash -c 'type=\"{{.Form.Type}}\"; scope=\"{{.Form.Scope}}\"; message=\"{{.Form.Message}}\"; emoji=\"{{.Form.Emoji}}\"; commit_message=\"$type${scope:+($scope)}: $message $emoji\"; git commit -m \"$commit_message\"'"
+
     loadingText: "Committing..."
