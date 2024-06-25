@@ -67,63 +67,10 @@ customCommands:
         key: "Message"
         initialValue: ""
 
-      - type: "menu"
-        title: "Choice the emoji"
-        key: "Emoji"
-        options:
-          - name: '(empty)'
-            description: ''
-            value: ''
-          - name: ':ambulance:'
-            description: '(fix)🚑 Fix Fatal Error'
-            value: ':ambulance:'
-          - name: ':bug:'
-            description: '(fix)🐛 Fix Bug'
-            value: ':bug:'
-          - name: ':cop:'
-            description: '(fix)👮 Fix Security Issue'
-            value: ':cop:'
-          - name: ':tada'
-            description: '(feat)🎉 Initial Commit'
-            value: ':tada:'
-          - name: ':sparkles:'
-            description: '(feat)✨ Add New Feature'
-            value: ':sparkles:'
-          - name: ':up:'
-            description: '(feat)🆙 Update Dependencies'
-            value: ':up:'
-          - name: ':memo:'
-            description: '(docs)📝 Document In Source Code'
-            value: ':memo:'
-          - name: ':bulb'
-            description: '(docs)💡 Add Comment'
-            value: ':bulb:'
-          - name: ':art:'
-            description: '(style)🎨 Layout Change'
-            value: ':art:'
-          - name: ':recycle:'
-            description: '(refactor)♻️  Refactor Code'
-            value: ':recycle:'
-          - name: ':fire:'
-            description: '(refactor)🔥 Remove Code'
-            value: ':fire:'
-          - name: ':green_heart:'
-            description: '(test)💚 Add Test or CI'
-            value: ':green_heart:'
-          - name: ':rocket:'
-            description: '(perf)🚀 Improve Performance'
-            value: ':rocket:'
-          - name: ':wrench:'
-            description: '(chore)🔧 Change Configuration'
-            value: ':wrench:'
-          - name: ':construction:'
-            description: '(wip)🚧 Work In Progress'
-            value: ':construction:'
-
       - type: "confirm"
         title: "Commit"
-        body: "Commit with the message '{{.Form.Type}}{{.Form.Scope}}: {{.Form.Message}} {{.Form.Emoji}}'?"
+        body: "Commit with the message '{{.Form.Type}}{{.Form.Scope}}: {{.Form.Message}}'?"
         # command: "bash -c 'type=\"{{.Form.Type}}\"; scope=\"{{.Form.Scope}}\"; message=\"{{.Form.Message}}\"; emoji=\"{{.Form.Emoji}}\"; commit_message=\"$type$emoji ${scope:+($scope)}: $message\"; git commit -m \"$commit_message\"'"
-        command: "bash -c 'type=\"{{.Form.Type}}\"; scope=\"{{.Form.Scope}}\"; message=\"{{.Form.Message}}\"; emoji=\"{{.Form.Emoji}}\"; commit_message=\"$type${scope:+($scope)}: $message $emoji\"; git commit -m \"$commit_message\"'"
+        command: "bash -c 'type=\"{{.Form.Type}}\"; scope=\"{{.Form.Scope}}\"; message=\"{{.Form.Message}}\"; commit_message=\"$type${scope:+($scope)}: $message\"; git commit -m \"$commit_message\"'"
 
-    loadingText: "Committing..."
+        loadingText: "Committing..."
