@@ -11,6 +11,7 @@
   "copilot.vim": { "branch": "release", "commit": "0668308e68b0ac28b332b204b469fbe04601536a" },
   "dial.nvim": { "branch": "master", "commit": "750f802879c90ea51f92b68c35fa562ee575804a" },
   "gitsigns.nvim": { "branch": "main", "commit": "d0db8ef6a0489ed6af0baacb101a7b733c5d5de1" },
+  "hererocks": { "branch": "master", "commit": "ec640f26e25f4a8e16f236d78bf35ab72b197b29" },
   "hlchunk.nvim": { "branch": "main", "commit": "930fe6262f87d66ca0c85dada3bb7c2a8cb6ec3e" },
   "im-select.nvim": { "branch": "master", "commit": "ca1aebb8f5c8a0342ae99a0fcc8ebc49b5f2201e" },
   "indent-blankline.nvim": { "branch": "master", "commit": "4036c8ae9cc29faf8e6443fa5b23e679db055d24" },
