@@ -307,6 +307,9 @@ gog() {
     esac
 }
 
+### Android Studio ###
+export PATH=$PATH:/Users/nohira/Library/Android/sdk/platform-tools
+
 # bun completions
 [ -s "/Users/atsuki/.bun/_bun" ] && source "/Users/atsuki/.bun/_bun"
 
