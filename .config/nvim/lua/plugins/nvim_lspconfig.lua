@@ -9,6 +9,7 @@ return {
 		{ 'williamboman/mason.nvim', config = true },
 		'williamboman/mason-lspconfig.nvim',
 		'folke/neodev.nvim',
+		'jose-elias-alvarez/null-ls.nvim',
 	},
 	config = function()
 		local on_attach = function(_, bufnr)
@@ -78,6 +79,19 @@ return {
 			end
 		}
 
+		-- Prettier を null-ls を通して利用するようにする
+		local null_ls = require("null-ls")
+		null_ls.setup({
+			sources = {
+				null_ls.builtins.formatting.prettier,
+			},
+			on_attach = on_attach,
+		})
+
+		require("lspconfig").tsserver.setup {
+			on_attach = on_attach,
+			capabilities = capabilities,
+		}
 		require("lspconfig").typos_lsp.setup {}
 		require("lspconfig").gopls.setup {
 			on_attach = on_attach,
