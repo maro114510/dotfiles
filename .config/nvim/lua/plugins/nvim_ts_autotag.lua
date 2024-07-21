@@ -13,4 +13,6 @@ return {
 			},
 		})
 	end,
+
+	ft = { 'html', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'svelte', 'vue' },
 }
