@@ -20,7 +20,7 @@ vim.opt.wrapscan = true
 vim.opt.whichwrap = 'b', 's', 'h', 'l', '<', '>', '[', ']'
 
 -- EditorConfig
-vim.opt.editorconfig = true
+vim.g.editorconfig = true
 
 -- Target at deletion
 -- vim.opt.backspace = 'start', 'eol', 'indent'
