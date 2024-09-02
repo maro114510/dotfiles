@@ -18,12 +18,12 @@ return {
 					desc = "LSP: " .. desc
 				end
 
-				vim.keymap.set(
+				--[[ vim.keymap.set(
 					"n",
 					keys,
 					func,
 					{ buffer = bufnr, description = desc }
-				)
+				) ]]
 			end
 
 			nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
