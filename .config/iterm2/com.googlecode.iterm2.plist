@@ -383,6 +383,10 @@
 	<true/>
 	<key>HotkeyMigratedFromSingleToMulti</key>
 	<true/>
+	<key>NeverWarnAboutShortLivedSessions_B55CEE3B-2F74-4C24-9ECE-210874109199</key>
+	<true/>
+	<key>NeverWarnAboutShortLivedSessions_B55CEE3B-2F74-4C24-9ECE-210874109199_selection</key>
+	<integer>0</integer>
 	<key>New Bookmarks</key>
 	<array>
 		<dict>
@@ -2045,7 +2049,7 @@
 	<key>PromptOnQuit</key>
 	<false/>
 	<key>ShowFullScreenTabBar</key>
-	<false/>
+	<true/>
 	<key>ShowNewOutputIndicator</key>
 	<false/>
 	<key>SoundForEsc</key>

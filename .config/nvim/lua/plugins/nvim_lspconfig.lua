@@ -18,12 +18,13 @@ return {
 					desc = "LSP: " .. desc
 				end
 
-				--[[ vim.keymap.set(
+				vim.keymap.set(
 					"n",
 					keys,
 					func,
 					{ buffer = bufnr, description = desc }
-				) ]]
+					{ buffer = bufnr, noremap = true, silent = true, desc = desc }
+				)
 			end
 
 			nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
@@ -33,7 +34,7 @@ return {
 			nmap("rnm", vim.lsp.buf.rename, "[R]rename [N]ame")
 
 			nmap("<space>D", vim.lsp.buf.type_definition, "[D]efinition")
-			nmap("gD", vim.lsp.buf.declearation, "[G]oto [D]eclaration")
+			-- nmap("gD", vim.lsp.buf.declearation, "[G]oto [D]eclaration")
 
 			nmap("<space>wl", function()
 				print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
