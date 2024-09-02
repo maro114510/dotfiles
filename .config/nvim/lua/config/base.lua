@@ -19,6 +19,9 @@ vim.opt.wrapscan = true
 -- Moving across lines
 vim.opt.whichwrap = 'b', 's', 'h', 'l', '<', '>', '[', ']'
 
+-- EditorConfig
+vim.g.editorconfig = true
+
 -- Target at deletion
 -- vim.opt.backspace = 'start', 'eol', 'indent'
 
