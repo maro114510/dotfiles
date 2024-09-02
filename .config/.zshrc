@@ -85,7 +85,7 @@ plugins=(
   git
   # autojump
   urltools
-  bgnotify
+  # bgnotify
   zsh-autosuggestions
   zsh-syntax-highlighting
   # zsh-history-enquirer
@@ -151,7 +151,7 @@ elif [ "$(uname)" = "Darwin" ]; then
 	export GOPATH=$HOME/go
 	export GOBIN=$GOPATH/bin
 	export PATH=$PATH:$GOBIN
-	export PATH=$PATH:$HOME/.asdf/shims
+	# export PATH=$PATH:$HOME/.asdf/shims
 	export PATH=$PATH:$(go env GOPATH)/bin
 fi
 
@@ -328,3 +328,6 @@ export GPG_TTY=$(tty)
 
 export GPG_TTY=$(tty)
 export HOMEBREW_NO_AUTO_UPDATE=true
+
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
+eval "$(atuin init zsh)"
