@@ -22,7 +22,6 @@ return {
 					"n",
 					keys,
 					func,
-					{ buffer = bufnr, description = desc }
 					{ buffer = bufnr, noremap = true, silent = true, desc = desc }
 				)
 			end
