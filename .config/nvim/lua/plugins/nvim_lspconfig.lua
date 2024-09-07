@@ -22,7 +22,6 @@ return {
 					"n",
 					keys,
 					func,
-					{ buffer = bufnr, description = desc }
 					{ buffer = bufnr, noremap = true, silent = true, desc = desc }
 				)
 			end
@@ -58,7 +57,8 @@ return {
 					telemetry = { enable = false },
 				},
 			},
-			tsserver = {},
+			-- ts_ls = {},
+			-- tsserver = {},
 		}
 
 		local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -71,6 +71,10 @@ return {
 
 		mason_lspconfig.setup_handlers {
 			function(server_name)
+				--[[ if server_name == "tsserver" then
+					server_name = "ts_ls"
+				end ]]
+
 				require("lspconfig")[server_name].setup {
 					on_attach = on_attach,
 					capabilities = capabilities,
@@ -90,10 +94,10 @@ return {
 			on_attach = on_attach,
 		})
 
-		require("lspconfig").tsserver.setup {
+		--[[ require("lspconfig").ts_ls.setup {
 			on_attach = on_attach,
 			capabilities = capabilities,
-		}
+		} ]]
 		require("lspconfig").typos_lsp.setup {}
 		require("lspconfig").gopls.setup {
 			on_attach = on_attach,
