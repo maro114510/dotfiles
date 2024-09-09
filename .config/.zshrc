@@ -331,3 +331,4 @@ export HOMEBREW_NO_AUTO_UPDATE=true
 
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
 eval "$(atuin init zsh)"
+eval "$(direnv hook zsh)"
