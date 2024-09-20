@@ -78,8 +78,10 @@ local Config = {
 	leader = { key = 'Space', mods = 'CTRL|SHIFT' },
 	keys = keys,
 
-	macos_forward_to_ime_modifier_mask = "SHIFT|CTRL"
+	macos_forward_to_ime_modifier_mask = "SHIFT|CTRL",
+
+	-- use_ime = true
+	use_ime = true
 }
 
 return Config
-
