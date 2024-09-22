@@ -151,6 +151,9 @@ call jetpack#begin()
 	Jetpack 'ghifarit53/tokyonight-vim'
 	Jetpack 'sheerun/vim-polyglot'
 	Jetpack 'glidenote/memolist.vim'
+
+	" comment
+	Jetpack 'tomtom/tcomment_vim'
 call jetpack#end()
 
 " Unite settings
