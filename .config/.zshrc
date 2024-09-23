@@ -1,5 +1,6 @@
-# Q pre block. Keep at the top of this file.
+# Amazon Q pre block. Keep at the top of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
+# Q pre block. Keep at the top of this file.
 # zmodload zsh/zprof && zprof
 
 # calculate the time it takes to load zshrc
@@ -322,8 +323,6 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # fi
 
 # Q post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
-
 export GPG_TTY=$(tty)
 
 export GPG_TTY=$(tty)
@@ -331,3 +330,7 @@ export HOMEBREW_NO_AUTO_UPDATE=true
 
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
 eval "$(atuin init zsh)"
+eval "$(direnv hook zsh)"
+
+# Amazon Q post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
