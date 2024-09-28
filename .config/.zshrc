@@ -153,7 +153,7 @@ elif [ "$(uname)" = "Darwin" ]; then
 	export GOBIN=$GOPATH/bin
 	export PATH=$PATH:$GOBIN
 	# export PATH=$PATH:$HOME/.asdf/shims
-	export PATH=$PATH:$(go env GOPATH)/bin
+	# export PATH=$PATH:$(go env GOPATH)/bin
 fi
 
 

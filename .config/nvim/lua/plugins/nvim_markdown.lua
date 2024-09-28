@@ -1,7 +1,7 @@
 -- https://github.com/ixru/nvim-markdown.git
 
 return {
-	'ixru/nvim-markdown',
+	--[[ 'ixru/nvim-markdown',
 
-	ft = "markdown",
+	ft = "markdown", ]]
 }
