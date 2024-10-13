@@ -152,7 +152,6 @@ elif [ "$(uname)" = "Darwin" ]; then
 	export GOPATH=$HOME/go
 	export GOBIN=$GOPATH/bin
 	export PATH=$PATH:$GOBIN
-	# export PATH=$PATH:$HOME/.asdf/shims
 	# export PATH=$PATH:$(go env GOPATH)/bin
 fi
 
@@ -328,9 +327,9 @@ export GPG_TTY=$(tty)
 export GPG_TTY=$(tty)
 export HOMEBREW_NO_AUTO_UPDATE=true
 
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
 eval "$(atuin init zsh)"
 eval "$(direnv hook zsh)"
 
 # Amazon Q post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
+eval "$(/opt/homebrew/bin/mise activate zsh)"
