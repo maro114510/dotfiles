@@ -332,4 +332,5 @@ eval "$(direnv hook zsh)"
 
 # Amazon Q post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
-eval "$(/opt/homebrew/bin/mise activate zsh)"
+# eval "$(/opt/homebrew/bin/mise activate zsh)"
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
