@@ -1,4 +1,4 @@
---[[ local status, noice = pcall(require, "noice")
+local status, noice = pcall(require, "noice")
 
 if not status then
 	return
@@ -33,4 +33,4 @@ noice.setup({
 		-- view_search = "notify",
 	},
 })
- ]]
+
