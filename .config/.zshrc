@@ -157,7 +157,8 @@ fi
 
 
 ### Rust ###
-export PATH="$HOME/.cargo/bin:$PATH"
+# export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$(asdf where rust)/bin:$PATH"
 
 ### peco ###
 function peco-select-history() {
