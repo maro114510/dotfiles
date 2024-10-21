@@ -307,6 +307,15 @@ gog() {
         * ) open $url;;
     esac
 }
+# Search branch
+function select-git-branch() {
+  selected_branch=$(git branch | cut -c 3- | peco)
+  BUFFER="${LBUFFER}${selected_branch}${RBUFFER}"
+  CURSOR=$#LBUFFER+$#selected_branch
+  zle redisplay
+}
+zle -N select-git-branch
+bindkey '^b' select-git-branch
 
 ### Android Studio ###
 export PATH=$PATH:/Users/nohira/Library/Android/sdk/platform-tools
@@ -335,3 +344,5 @@ eval "$(direnv hook zsh)"
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
 # eval "$(/opt/homebrew/bin/mise activate zsh)"
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
+
+NODE_OPTIONS="--no-deprecation"
