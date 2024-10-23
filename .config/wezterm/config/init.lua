@@ -85,3 +85,4 @@ local Config = {
 	use_ime = true
 }
 
+return Config

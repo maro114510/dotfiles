@@ -10,16 +10,16 @@ local color = (function()
 	local COLOR = require "config.color"
 
 	local coolors = {
-		COLOR.VERIDIAN,
+		--[[ COLOR.VERIDIAN,
 		COLOR.PAYNE,
-		COLOR.INDIGO,
+		COLOR.INDIGO, ]]
 		COLOR.CAROLINA,
-		COLOR.FLAME,
+		--[[ COLOR.FLAME,
 		COLOR.JET,
 		COLOR.TAUPE,
 		COLOR.ECRU,
 		COLOR.VIOLET,
-		COLOR.VERDIGRIS
+		COLOR.VERDIGRIS ]]
 	}
 
 	return coolors[math.random(#coolors)]
