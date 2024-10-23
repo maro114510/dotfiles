@@ -46,7 +46,7 @@ wezterm.font {
 	family = 'font-Hack-nerd-font'
 }
 
-local home = os.getenv( "HOME" )
+-- local home = os.getenv( "HOME" )
 -- local background_path = home .. '/.config/wezterm/config/background.jpg'
 
 ---@class Config
@@ -61,7 +61,7 @@ local Config = {
 	color_scheme = 'Molokai',
 	-- color_scheme = 'tokyonight_storm',
 	window_background_opacity = 0.85,
-	macos_window_background_blur = 20,
+	macos_window_background_blur = 15,
 	hide_tab_bar_if_only_one_tab = true,
 
 	-- cursor
@@ -75,15 +75,13 @@ local Config = {
 	-- hide_tab_bar_if_only_one_tab = true,
 
 	-- window
-	window_background_image = background_path,
-	inactive_pane_hsb = { saturation = 1.0, brightness = 1.0 },
+	-- window_background_image = background_path,
+	-- inactive_pane_hsb = { saturation = 1.0, brightness = 1.0 },
 	leader = { key = 'Space', mods = 'CTRL|SHIFT' },
 	keys = keys,
 
 	macos_forward_to_ime_modifier_mask = "SHIFT|CTRL",
 
-	-- use_ime = true
 	use_ime = true
 }
 
-return Config
