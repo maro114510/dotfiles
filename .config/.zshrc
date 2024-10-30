@@ -1,10 +1,5 @@
 # Amazon Q pre block. Keep at the top of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
-# Q pre block. Keep at the top of this file.
-# zmodload zsh/zprof && zprof
-
-# calculate the time it takes to load zshrc
-# zmodload zsh/zprof
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -140,8 +135,6 @@ if uname -a | grep -sq "Linux"; then
 	echo "ok"
 elif [ "$(uname)" = "Darwin" ]; then
 	eval "$(/opt/homebrew/bin/brew shellenv)"
-	### rye ###
-	# source "$HOME/.rye/env"
 fi
 
 
@@ -152,7 +145,6 @@ elif [ "$(uname)" = "Darwin" ]; then
 	export GOPATH=$HOME/go
 	export GOBIN=$GOPATH/bin
 	export PATH=$PATH:$GOBIN
-	# export PATH=$PATH:$(go env GOPATH)/bin
 fi
 
 
@@ -206,7 +198,7 @@ alias gitmo='gitmoji -c'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias めも='sh ~/commands/create_memo.sh'
-SESSION_NAME="$(date +'%H%M%S_%m/%d')"
+SESSION_NAME="$(date +'%H%M%S_%m-%d')"
 alias tmuxer='tmux new -s $SESSION_NAME \; source-file ~/.tmux.session.conf'
 alias tmuxx='tmux new -s $SESSION_NAME'
 alias fzc="git branch --list | cut -c 3- | fzf --preview \"git log --pretty=format:'%h %cd %s' --date=format:'%Y-%m-%d %H:%M' {}\" | xargs git checkout"
@@ -216,7 +208,7 @@ if [ -f "$HOME/.env" ]; then
 
 	if [ "$LOCAL_NAME" = "macbook" ]; then
 		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_book/Brewfile"
-		alias brewd="brew bundle dump --force --file=$bfifle"
+		alias brewd="brew bundle dump --force --file=$bfife"
 	elif [ "$LOCAL_NAME" = "macmini" ]; then
 		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_mini/Brewfile"
 		alias brewd="brew bundle dump --force --file=$bfile"
@@ -267,7 +259,7 @@ vf() {
 fh() {
 	eval $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//' | sed 's/\\/\\\\/g' | awk '{print "echo exec: " $0 "; " $0}')
 }
-# fdg - ghq
+# fgh - ghq
 fgh() {
 	local selected
 	selected=$(ghq list | fzf --preview 'bat --color=always --style=header,grid --line-range :500 $(ghq root)/{}/README.*')
@@ -307,37 +299,12 @@ gog() {
         * ) open $url;;
     esac
 }
-# Search branch
-function select-git-branch() {
-  selected_branch=$(git branch | cut -c 3- | peco)
-  BUFFER="${LBUFFER}${selected_branch}${RBUFFER}"
-  CURSOR=$#LBUFFER+$#selected_branch
-  zle redisplay
-}
-zle -N select-git-branch
-bindkey '^b' select-git-branch
-
-### Android Studio ###
-export PATH=$PATH:/Users/nohira/Library/Android/sdk/platform-tools
 
 # bun completions
 [ -s "/Users/atsuki/.bun/_bun" ] && source "/Users/atsuki/.bun/_bun"
 
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-# if (which zprof > /dev/null 2>&1) ;then
-# 	zprof
-# fi
-
 # Q post block. Keep at the bottom of this file.
-export GPG_TTY=$(tty)
 
-export GPG_TTY=$(tty)
-export HOMEBREW_NO_AUTO_UPDATE=true
-
-eval "$(atuin init zsh)"
 eval "$(direnv hook zsh)"
 
 # Amazon Q post block. Keep at the bottom of this file.
