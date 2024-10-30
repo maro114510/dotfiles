@@ -28,4 +28,3 @@ setopt hist_save_no_dups
 # other
 # not to use beep
 setopt no_beep
-
