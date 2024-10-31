@@ -79,13 +79,9 @@ export ZSH="$HOME/.oh-my-zsh"
 
 plugins=(
   git
-  # autojump
   urltools
-  # bgnotify
   zsh-autosuggestions
   zsh-syntax-highlighting
-  # zsh-history-enquirer
-  # jovial
   z
 )
 
@@ -147,9 +143,7 @@ elif [ "$(uname)" = "Darwin" ]; then
 	export PATH=$PATH:$GOBIN
 fi
 
-
 ### Rust ###
-# export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$(asdf where rust)/bin:$PATH"
 
 ### peco ###
@@ -175,7 +169,6 @@ export PATH="$HOME/commands:$PATH"
 
 ### Starship ###
 eval "$(starship init zsh)"
-
 
 ##### alias #####
 alias ls='lsd'
@@ -217,38 +210,9 @@ fi
 
 
 ##### fzf #####
-
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
 export FZF_DEFAULT_OPTS="--height 50% --layout=reverse --border --inline-info --preview 'head -100 {}'"
 # using ripgrep combined with preview
-# find-in-file - usage: fif <searchTerm>
-fif() {
-	if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-	rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
-}
-# fd - cd to selected directory
-# https://qiita.com/kamykn/items/aa9920f07487559c0c7e
-fcd() {
-	local dir
-	dir=$(find ${1:-.} -path '*/\.*' -prune \
-		-o -type d -print 2> /dev/null | fzf +m) &&
-	cd "$dir"
-}
-# docker container rm
-# ref: https://momozo.tech/2021/03/10/fzf%E3%81%A7zsh%E3%82%BF%E3%83%BC%E3%83%9F%E3%83%8A%E3%83%AB%E4%BD%9C%E6%A5%AD%E3%82%92%E5%8A%B9%E7%8E%87%E5%8C%96/
-fdcntrm() {
-	local cid
-	cid=$(docker ps -a | sed 1d | fzf -m -q "$1" | awk '{print $1}')
-	[ -n "$cid" ] && echo $cid | xargs docker container rm -f
-}
-# docker image rm
-fdimgrm() {
-	local cid
-	# get image id from docker image ls
-	cid=$(docker image ls -a | sed 1d | fzf -m -q "$1" | awk '{print $3}')
-	echo $cid
-	[ -n "$cid" ] && echo $cid | xargs docker image rm -f
-}
 # vim with fzf
 vf() {
 	local file
@@ -303,13 +267,11 @@ gog() {
 # bun completions
 [ -s "/Users/atsuki/.bun/_bun" ] && source "/Users/atsuki/.bun/_bun"
 
-# Q post block. Keep at the bottom of this file.
-
+# direnv
 eval "$(direnv hook zsh)"
 
 # Amazon Q post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
-# eval "$(/opt/homebrew/bin/mise activate zsh)"
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 NODE_OPTIONS="--no-deprecation"
