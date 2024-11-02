@@ -124,15 +124,7 @@ export LC_NUMERIC="en_US.UTF-8"
 export EDITOR=nvim
 
 ### homebrew ###
-if uname -a | grep -sq "Linux"; then
-	export PATH=$HOME/lazygit:$PATH
-	export PATH=/snap/bin:$PATH
-	export PATH=$HOME/node-v21.5.0-linux-armv7l/bin:$PATH
-	echo "ok"
-elif [ "$(uname)" = "Darwin" ]; then
-	eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
-
+#eval "$(/opt/homebrew/bin/brew shellenv)"
 
 ### Golang ###
 if uname -a | grep -sq "Linux"; then
@@ -162,16 +154,19 @@ function peco-select-history() {
 }
 zle -N peco-select-history
 bindkey '^r' peco-select-history
+#function peco-history-selection() {
+#    BUFFER=`history -n 1 | tac  | awk '!a[$0]++' | peco`
+#    CURSOR=$#BUFFER
+#    zle reset-prompt
+#}
 
 # export commands
 export PATH="$HOME/commands:$PATH"
-
 
 ### Starship ###
 eval "$(starship init zsh)"
 
 ##### alias #####
-alias ls='lsd'
 alias ll='ls -l'
 alias la='ls -al'
 alias cp='cp -i'
@@ -223,7 +218,6 @@ vf() {
 fh() {
 	eval $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//' | sed 's/\\/\\\\/g' | awk '{print "echo exec: " $0 "; " $0}')
 }
-# fgh - ghq
 fgh() {
 	local selected
 	selected=$(ghq list | fzf --preview 'bat --color=always --style=header,grid --line-range :500 $(ghq root)/{}/README.*')
