@@ -167,8 +167,8 @@ export PATH="$HOME/commands:$PATH"
 eval "$(starship init zsh)"
 
 ##### alias #####
-alias ll='ls -l'
-alias la='ls -al'
+alias ll='lsd -l'
+alias la='lsd -al'
 alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -i'
