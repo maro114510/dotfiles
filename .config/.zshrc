@@ -200,6 +200,9 @@ if [ -f "$HOME/.env" ]; then
 	elif [ "$LOCAL_NAME" = "macmini" ]; then
 		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_mini/Brewfile"
 		alias brewd="brew bundle dump --force --file=$bfile"
+	elif [ "$LOCAL_NAME" = "job" ]; then
+		bfile="$HOME/ghq/github.com/maro114510/dotfiles/job_macbook/Brewfile"
+		alias brewd="brew bundle dump --force --file=$bfile"
 	fi
 fi
 
