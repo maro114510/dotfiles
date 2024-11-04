@@ -80,7 +80,7 @@ export ZSH="$HOME/.oh-my-zsh"
 plugins=(
   git
   urltools
-  # zsh-autosuggestions
+  zsh-autosuggestions
   zsh-syntax-highlighting
   z
 )
