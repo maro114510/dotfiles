@@ -136,7 +136,7 @@ elif [ "$(uname)" = "Darwin" ]; then
 fi
 
 ### Rust ###
-export PATH="$(asdf where rust)/bin:$PATH"
+# export PATH="$(asdf where rust)/bin:$PATH"
 
 ### peco ###
 function peco-select-history() {
@@ -265,7 +265,7 @@ gog() {
 [ -s "/Users/atsuki/.bun/_bun" ] && source "/Users/atsuki/.bun/_bun"
 
 # direnv
-eval "$(direnv hook zsh)"
+# eval "$(direnv hook zsh)"
 
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
 
