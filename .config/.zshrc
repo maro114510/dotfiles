@@ -187,6 +187,7 @@ alias gitmo='gitmoji -c'
 alias ac='sh ~/commands/auto_commit.sh'
 alias めも='sh ~/commands/create_memo.sh'
 SESSION_NAME="$(date +'%H%M%S_%m-%d')"
+alias memo='cd ~/memo && memo n'
 alias tmuxer='tmux new -s $SESSION_NAME \; source-file ~/.tmux.session.conf'
 alias tmuxx='tmux new -s $SESSION_NAME'
 alias fzc="git branch --list | cut -c 3- | fzf --preview \"git log --pretty=format:'%h %cd %s' --date=format:'%Y-%m-%d %H:%M' {}\" | xargs git checkout"
@@ -259,6 +260,10 @@ gog() {
         -s ) open $url -a $s;;
         * ) open $url;;
     esac
+}
+# weather
+function wtr(){
+    curl "https://ja.wttr.in/$1?2nF"
 }
 
 # bun completions
