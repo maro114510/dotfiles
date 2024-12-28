@@ -183,6 +183,7 @@ alias xh='xh -s monokai'
 alias f='fvm flutter'
 alias d='fvm dart'
 alias gitmo='gitmoji -c'
+alias proot='cd $(git rev-parse --show-toplevel)'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias めも='sh ~/commands/create_memo.sh'
