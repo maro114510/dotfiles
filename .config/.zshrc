@@ -270,9 +270,6 @@ function wtr(){
 # bun completions
 [ -s "/Users/atsuki/.bun/_bun" ] && source "/Users/atsuki/.bun/_bun"
 
-# direnv
-# eval "$(direnv hook zsh)"
-
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 NODE_OPTIONS="--no-deprecation"
