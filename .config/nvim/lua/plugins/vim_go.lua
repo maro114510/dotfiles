@@ -5,5 +5,6 @@ return {
 	'fatih/vim-go',
 
 	ft = {'go'},
-}
 
+	build = ':silent :GoUpdateBinaries',
+}

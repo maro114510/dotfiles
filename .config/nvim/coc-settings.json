@@ -1,29 +1,40 @@
-
 {
-	"suggest.echodocSupport": true,
-	"suggest.noselect": true,
-	"suggest.triggerAfterInsertEnter": true,
-	"suggest.minTriggerInputLength": 2,
-	"suggest.snippetIndicator": " ►",
-	"coc.preferences.hoverTarget": "float",
-	"coc.preferences.formatOnSaveFileTypes": [ "go" ],
-	"suggest.preferCompleteThanJumpPlaceholder": true,
-	"diagnostic.virtualText": true,
-	"diagnostic.virtualTextCurrentLineOnly": false,
-	"diagnostic.infoSign": "",
-	"diagnostic.hintSign": "",
-	"diagnostic.warningSign": "",
-	"diagnostic.errorSign": "",
-	"languageserver": {
-		"dockerfile": {
-			"command": "docker-langserver",
-			"filetypes": ["dockerfile"],
-			"args": ["--stdio"]
-		}
-	},
+  "suggest.echodocSupport": true,
+  "suggest.noselect": true,
+  "suggest.triggerAfterInsertEnter": true,
+  "suggest.minTriggerInputLength": 2,
+  "suggest.snippetIndicator": " ►",
+  "coc.preferences.hoverTarget": "float",
+  "coc.preferences.formatOnSaveFileTypes": ["go", "rust"],
+  "suggest.preferCompleteThanJumpPlaceholder": true,
+  "diagnostic.virtualText": true,
+  "diagnostic.virtualTextCurrentLineOnly": false,
+  "diagnostic.infoSign": "",
+  "diagnostic.hintSign": "",
+  "diagnostic.warningSign": "",
+  "diagnostic.errorSign": "",
+  "languageserver": {
+    "dockerfile": {
+      "command": "docker-langserver",
+      "filetypes": ["dockerfile"],
+      "args": ["--stdio"]
+    }
+  },
+  "rust-analyzer": {
+    "checkOnSave": {
+      "allTargets": true
+    },
+    "completion": {
+      "autoimport": {
+        "enable": true
+      }
+    },
+    "diagnostics": {
+      "enabled": true
+    }
+  },
   "python.jediEnabled": false,
   "cSpell.userWords": [
-    "",
     "atsushi",
     "case",
     "chooblarin",
@@ -76,6 +87,33 @@
     "webapi",
     "yasdk",
     "yoshikawa"
+  ],
+  "yaml.customTags": [
+    "!And",
+    "!And sequence",
+    "!If",
+    "!If sequence",
+    "!Not",
+    "!Not sequence",
+    "!Equals",
+    "!Equals sequence",
+    "!Or",
+    "!Or sequence",
+    "!FindInMap sequence",
+    "!Base64",
+    "!Base64 mapping",
+    "!Cidr",
+    "!Cidr sequence",
+    "!Ref",
+    "!Sub",
+    "!Sub sequence",
+    "!GetAtt",
+    "!GetAZs",
+    "!ImportValue",
+    "!Select",
+    "!Select sequence",
+    "!Split",
+    "!Split sequence",
+    "!Join sequence"
   ]
 }
-

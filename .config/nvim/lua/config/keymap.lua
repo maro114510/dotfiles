@@ -75,7 +75,7 @@ vim.api.nvim_set_keymap(
 -- Oil
 vim.api.nvim_set_keymap(
 	'n',
-	'<C-o>',
+	'<C-l>',
 	'<CMD>Oil .<CR>',
 	{ noremap = true, silent = true }
 )
@@ -91,13 +91,13 @@ vim.api.nvim_set_keymap(
 -- COC
 -- when normal mode
 -- double space
--- vim.api.nvim_set_keymap('n', '<space><space>', '<Cmd>CocList<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<space><space>', '<Cmd>CocList<CR>', { noremap = true, silent = true })
 -- space + hwover = Hover
--- vim.api.nvim_set_keymap('n', '<space>h', '<Cmd>call CocAction("doHover")<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<space>h', '<Cmd>call CocAction("doHover")<CR>', { noremap = true, silent = true })
 -- space + df = Definition
--- vim.api.nvim_set_keymap('n', '<space>df', '<Plug>(coc-definition)', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<space>df', '<Plug>(coc-definition)', { noremap = true, silent = true })
 -- space + rf = References
--- vim.api.nvim_set_keymap('n', '<space>rf', '<Plug>(coc-references)', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<space>rf', '<Plug>(coc-references)', { noremap = true, silent = true })
 -- space + rn = Rename
--- vim.api.nvim_set_keymap('n', '<space>rn', '<Plug>(coc-rename)', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<space>rn', '<Plug>(coc-rename)', { noremap = true, silent = true })
 
