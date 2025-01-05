@@ -1,0 +1,27 @@
+[user]
+	name = maro114510
+	email = atumaro114510@icloud.com
+[core]
+	pager = delta
+	excludesfile = /Users/atsuki/.gitignore
+
+[commit]
+	verbose = true
+	template = /Users/atsuki/ghq/gist.github.com/b679da26e7c683179714671e576bb482/.commit_template
+
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true    # use n and N to move between diff sections
+	light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
+	line-numbers = true
+	side-by-side = true
+	syntax-theme = Monokai Extended
+[merge]
+	conflictstyle = diff3
+[diff]
+	colorMoved = default
+[alias]
+	a = add
+	m = commit -m
+	ll = log --graph --date=relative --name-status --abbrev-commit

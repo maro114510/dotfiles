@@ -1,0 +1,19 @@
+. "$HOME/.cargo/env"
+# lang
+export LANGUAGE="en_US.UTF-8"
+export LANG="${LANGUAGE}"
+export LC_ALL="${LANGUAGE}"
+export LC_CTYPE="${LANGUAGE}"
+
+# history
+# don't save douplicate
+setopt hist_ignore_dups
+# record start & end
+setopt EXTENDED_HISTORY
+# same command is not saved
+setopt hist_save_no_dups
+# not beep
+setopt no_beep
+
+# angigen
+export _ANTIGEN_INSTALL_DIR=${HOME}/.local/bin
