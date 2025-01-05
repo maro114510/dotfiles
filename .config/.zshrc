@@ -83,6 +83,7 @@ plugins=(
   zsh-autosuggestions
   zsh-syntax-highlighting
   z
+  zsh-bat
 )
 
 source $ZSH/oh-my-zsh.sh
