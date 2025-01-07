@@ -1,0 +1,32 @@
+theme = nightfox
+
+window-padding-x = 20
+window-padding-y = 5
+window-padding-balance = true
+window-theme = ghostty
+
+background-opacity = 0.80
+background-blur-radius = 20
+
+macos-titlebar-style = tabs
+
+font-family = RobotoMono Nerd Font
+
+cursor-style = underline
+
+auto-update = check
+
+macos-icon-frame = plastic
+
+resize-overlay = never
+
+font-feature = -calt
+font-feature = -dlig
+
+keybind = ctrl+p=unbind
+keybind = ctrl+n=unbind
+
+mouse-hide-while-typing = true
+mouse-scroll-multiplier = 2
+
+font-size =11
