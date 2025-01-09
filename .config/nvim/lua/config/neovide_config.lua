@@ -1,5 +1,4 @@
 if vim.g.neovide then
-vim.print(vim.g.neovide_version)
     ---- ディスプレイの設定
     -- フォントの設定
     -- リフレッシュレート
