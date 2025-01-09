@@ -51,4 +51,5 @@ require("lualine").setup({
 	},
 })
 
+vim.print(vim.api.nvim_get_chan_info(vim.g.neovide_channel_id))
 require("config")
