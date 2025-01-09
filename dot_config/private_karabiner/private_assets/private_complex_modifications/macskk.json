@@ -1,0 +1,36 @@
+{
+	"title": "macSKK for Terminal/iTerm2",
+	"rules": [
+		{
+			"description": "macSKK for Terminal/iTerm2",
+			"manipulators": [
+				{
+					"conditions": [
+						{
+							"bundle_identifiers": [
+								"^com\\.googlecode\\.iterm2",
+								"^com\\.apple\\.Terminal",
+								"^com\\.github\\.wez\\.wezterm"
+							],
+							"type": "frontmost_application_if"
+						}
+					],
+					"from": {
+						"key_code": "j",
+						"modifiers": {
+							"mandatory": [
+								"left_control"
+							]
+						}
+					},
+					"to": [
+						{
+							"key_code": "japanese_kana"
+						}
+					],
+					"type": "basic"
+				}
+			]
+		}
+	]
+}
