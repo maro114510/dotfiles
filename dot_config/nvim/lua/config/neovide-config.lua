@@ -1,5 +1,6 @@
 if vim.g.neovide then
-vim.print(vim.g.neovide_version)
+	--- このプロファイラが表示されていることを確認のため、メッセージ
+	vim.print(vim.g.neovide_version)
     ---- ディスプレイの設定
     -- フォントの設定
     -- リフレッシュレート
@@ -51,6 +52,22 @@ vim.print(vim.g.neovide_version)
 	-- カーソルの点滅をアニメーション化
 	vim.g.neovide_cursor_smooth_blink = true
 
+	-- 粒子
+	-- 粒子の種類
+	vim.g.neovide_cursor_vfx_mode = "railgun"
+	-- パーティクルの透明度
+	vim.g.neovide_cursor_vfx_opacity = 200.0
+	-- パーティクルが存続する時間
+	vim.g.neovide_cursor_vfx_particle_lifetime = 1.2
+	-- パーティクルの数
+	vim.g.neovide_cursor_vfx_particle_density = 9.0
+	-- パーティクルの速度
+	vim.g.neovide_cursor_vfx_particle_speed = 10.0
+	-- パーティクルの質量移動
+	vim.g.neovide_cursor_vfx_particle_phase = 1.5
+	-- パーティクルの回転速度
+	vim.g.neovide_cursor_vfx_particle_curl = 1.0
+
 	--- Neovideを透明にする設定
 	-- 不透明度の設定
 	vim.g.neovide_transparency = 0.8
@@ -67,5 +84,5 @@ vim.print(vim.g.neovide_version)
 	vim.opt.winblend = 20
 	vim.opt.pumblend = 20
 
-	-- vim.g.neovide_profiler = true
+	vim.g.neovide_profiler = true
 end
