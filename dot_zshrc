@@ -174,9 +174,9 @@ alias mv='mv -i'
 alias rm='rm -i'
 alias gp="git pull"
 alias gf='git flow'
-alias vim='nvim'
-alias v='nvim'
-alias vi='vi'
+alias vim='vimcheck nvim'
+alias v='vimcheck nvim'
+alias vi='vimcheck vi'
 alias lg='lazygit'
 alias cl='clear'
 alias xh='xh -s monokai'
@@ -213,6 +213,14 @@ if [ -f "$HOME/.env" ]; then
 	fi
 fi
 
+#### vim check ####
+function vimcheck() {
+	if git status > /dev/null 2>&1; then
+		cd "$(git rev-parse --show-toplevel)" && $1
+	else
+		$1
+	fi
+}
 
 ##### fzf #####
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
@@ -296,3 +304,4 @@ function ya() {
 	fi
 	rm -f -- "$tmp"
 }
+
