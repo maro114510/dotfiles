@@ -139,7 +139,6 @@ cask "amorphousdiskmark"
 cask "autodesk-fusion"
 cask "cursor"
 cask "deepl"
-cask "displaylink"
 cask "flutter"
 cask "gcc-aarch64-embedded"
 cask "ghostty"
@@ -153,7 +152,7 @@ cask "macfuse"
 cask "microsoft-auto-update"
 cask "microsoft-onenote"
 cask "neovide"
-cask "orbstack"
+cask "shottr"
 cask "whatsapp"
 cask "zoom"
 mas "1Password for Safari", id: 1569813296
@@ -171,8 +170,6 @@ mas "OneTab", id: 1540160809
 mas "Pages", id: 409201541
 mas "RunCat", id: 1429033973
 mas "Save to Raindrop.io", id: 1549370672
-mas "Skitch", id: 425955336
-mas "SnippetsLab", id: 1006087419
 mas "Spark", id: 1176895641
 mas "Step Two", id: 1448916662
 mas "Structured", id: 1499198946
@@ -211,9 +208,11 @@ vscode "marp-team.marp-vscode"
 vscode "ms-vscode.makefile-tools"
 vscode "ms-vsliveshare.vsliveshare"
 vscode "oderwat.indent-rainbow"
+vscode "panicbit.cargo"
 vscode "pkief.material-icon-theme"
 vscode "prisma.prisma"
 vscode "renesaarsoo.sql-formatter-vsc"
+vscode "rust-lang.rust-analyzer"
 vscode "rvest.vs-code-prettier-eslint"
 vscode "ryuta46.multi-command"
 vscode "shd101wyy.markdown-preview-enhanced"
