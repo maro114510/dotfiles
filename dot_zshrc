@@ -187,6 +187,8 @@ alias proot='cd $(git rev-parse --show-toplevel)'
 alias sb='sunbeam'
 alias ch='chezmoi'
 alias nv='neovide'
+alias zj='zellij'
+alias cz='chezmoi'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias めも='sh ~/commands/create_memo.sh'
