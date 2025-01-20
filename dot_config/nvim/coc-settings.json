@@ -39,6 +39,10 @@
     "case",
     "chooblarin",
     "client",
+    "clippy",
+    "cmds",
+    "deps",
+    "dotenvx",
     "dotfiles",
     "ecintelligence",
     "ecintelligenceclient",
@@ -56,6 +60,7 @@
     "homi",
     "homiclient",
     "host",
+    "hostedzone",
     "ifnull",
     "image",
     "interactor",
@@ -86,7 +91,8 @@
     "usecase",
     "webapi",
     "yasdk",
-    "yoshikawa"
+    "yoshikawa",
+    "youtube"
   ],
   "yaml.customTags": [
     "!And",
