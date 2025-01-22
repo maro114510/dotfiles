@@ -175,6 +175,7 @@ alias rm='rm -i'
 alias gp="git pull"
 alias gf='git flow'
 alias vim='vimcheck nvim'
+alias nvim='nvim'
 alias v='vimcheck nvim'
 alias vi='vimcheck vi'
 alias lg='lazygit'
