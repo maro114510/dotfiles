@@ -1,6 +1,5 @@
 -- https://github.com/rachartier/tiny-inline-diagnostic.nvim.git
 
--- https://github.com/rachartier/tiny-inline-diagnostic.nvim#%EF%B8%8F-setup
 vim.diagnostic.config({ virtual_text = false })
 return {
     "rachartier/tiny-inline-diagnostic.nvim",

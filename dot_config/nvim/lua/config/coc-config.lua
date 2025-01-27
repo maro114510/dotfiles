@@ -153,24 +153,24 @@ keyset("o", "ac", "<Plug>(coc-classobj-a)", opts)
 ---@diagnostic disable-next-line: redefined-local
 
 local opts = {silent = true, nowait = true, expr = true}
-keyset("n", "<C-f>", 'coc#float#has_scroll() ? coc#float#scroll(1) : "<C-f>"', opts)
+--keyset("n", "<C-f>", 'coc#float#has_scroll() ? coc#float#scroll(1) : "<C-f>"', opts)
 keyset("n", "<C-b>", 'coc#float#has_scroll() ? coc#float#scroll(0) : "<C-b>"', opts)
-keyset("i", "<C-f>",
-	'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(1)<cr>" : "<Right>"', opts)
+--keyset("i", "<C-f>",
+--	'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(1)<cr>" : "<Right>"', opts)
 keyset("i", "<C-b>",
 	'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(0)<cr>" : "<Left>"', opts)
-keyset("v", "<C-f>", 'coc#float#has_scroll() ? coc#float#scroll(1) : "<C-f>"', opts)
+--keyset("v", "<C-f>", 'coc#float#has_scroll() ? coc#float#scroll(1) : "<C-f>"', opts)
 keyset("v", "<C-b>", 'coc#float#has_scroll() ? coc#float#scroll(0) : "<C-b>"', opts)
 
 -- scroll float popups
 -- NormalモードでCtrl + fでスクロールダウン
-vim.api.nvim_set_keymap('n', '<C-f>', 'coc#float#has_scroll() ? coc#float#scroll(1) : "<C-f>"', {noremap = true, silent = true, expr = true})
+--vim.api.nvim_set_keymap('n', '<C-f>', 'coc#float#has_scroll() ? coc#float#scroll(1) : "<C-f>"', {noremap = true, silent = true, expr = true})
 
 -- NormalモードでCtrl + bでスクロールアップ
 vim.api.nvim_set_keymap('n', '<C-b>', 'coc#float#has_scroll() ? coc#float#scroll(0) : "<C-b>"', {noremap = true, silent = true, expr = true})
 
 -- InsertモードでCtrl + fでスクロールダウン
-vim.api.nvim_set_keymap('i', '<C-f>', 'coc#float#has_scroll() ? "<C-r>=coc#float#scroll(1)<CR>" : "<Right>"', {noremap = true, silent = true, expr = true})
+--vim.api.nvim_set_keymap('i', '<C-f>', 'coc#float#has_scroll() ? "<C-r>=coc#float#scroll(1)<CR>" : "<Right>"', {noremap = true, silent = true, expr = true})
 
 -- InsertモードでCtrl + bでスクロールアップ
 vim.api.nvim_set_keymap('i', '<C-b>', 'coc#float#has_scroll() ? "<C-r>=coc#float#scroll(0)<CR>" : "<Left>"', {noremap = true, silent = true, expr = true})

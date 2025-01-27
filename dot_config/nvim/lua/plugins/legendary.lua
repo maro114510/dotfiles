@@ -1,4 +1,5 @@
 -- https://github.com/mrjones2014/legendary.nvim.git
+-- 外部依存
 
 return {
 	'mrjones2014/legendary.nvim',
