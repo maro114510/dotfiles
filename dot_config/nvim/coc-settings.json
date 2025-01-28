@@ -7,6 +7,7 @@
   "coc.preferences.hoverTarget": "float",
   "coc.preferences.formatOnSaveFileTypes": ["go", "rust"],
   "suggest.preferCompleteThanJumpPlaceholder": true,
+  "diagnostic.enable": true,
   "diagnostic.virtualText": true,
   "diagnostic.virtualTextCurrentLineOnly": false,
   "diagnostic.infoSign": "",
