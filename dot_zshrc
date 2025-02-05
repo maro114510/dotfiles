@@ -187,7 +187,7 @@ alias gitmo='gitmoji -c'
 alias proot='cd $(git rev-parse --show-toplevel)'
 alias sb='sunbeam'
 alias ch='chezmoi'
-alias nv='neovide'
+alias nv='nohup neovide > /dev/null 2>&1 &'
 alias zj='zellij'
 alias cz='chezmoi'
 
