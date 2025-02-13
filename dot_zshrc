@@ -166,11 +166,6 @@ function peco-select-history() {
 }
 zle -N peco-select-history
 bindkey '^r' peco-select-history
-#function peco-history-selection() {
-#    BUFFER=`history -n 1 | tac  | awk '!a[$0]++' | peco`
-#    CURSOR=$#BUFFER
-#    zle reset-prompt
-#}
 
 # export commands
 export PATH="$HOME/commands:$PATH"
@@ -294,11 +289,6 @@ function wtr(){
     curl "https://ja.wttr.in/$1?2nF"
 }
 
-# bun completions
-[ -s "/Users/atsuki/.bun/_bun" ] && source "/Users/atsuki/.bun/_bun"
-
-NODE_OPTIONS="--no-deprecation"
-
 # Amazon Q post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
 
@@ -316,4 +306,3 @@ function ya() {
 	fi
 	rm -f -- "$tmp"
 }
-
