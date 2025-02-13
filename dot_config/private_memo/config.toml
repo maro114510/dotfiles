@@ -1,0 +1,11 @@
+memodir = "~/memo"
+editor = "nvim"
+column = 20
+width = 0
+selectcmd = "fzf"
+grepcmd = "grep -nH ${PATTERN} ${FILES}"
+memotemplate = "~/memo/memo.template.md"
+assetsdir = "~/.config/memo/assets"
+pluginsdir = "~/.config/memo/plugins"
+templatedirfile = ""
+templatebodyfile = ""
