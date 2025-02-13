@@ -3,9 +3,7 @@
 return {
 	"tamton-aquib/mpv.nvim",
 
-	config = function()
-		require("mpv").setup(),
-	end,
+	config = true,
 
 	cmd = "MpvToggle",
 }

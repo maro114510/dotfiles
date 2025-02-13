@@ -162,6 +162,7 @@ bindkey '^r' peco-select-history
 
 # export commands
 export PATH="$HOME/commands:$PATH"
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 ### Starship ###
 eval "$(starship init zsh)"
@@ -283,8 +284,6 @@ function wtr(){
 
 # bun completions
 [ -s "/Users/atsuki/.bun/_bun" ] && source "/Users/atsuki/.bun/_bun"
-
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 NODE_OPTIONS="--no-deprecation"
 
