@@ -8,7 +8,6 @@ Ubuntu = "  " # nf-linux-ubuntu
 Debian = "  " # nf-linux-debian
 
 [golang]
-symbol = ""
 format = '(via [$symbol($version )]($style))'
 
 [nodejs]
