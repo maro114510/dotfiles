@@ -52,3 +52,4 @@ require("lualine").setup({
 })
 
 require("config")
+require("user")

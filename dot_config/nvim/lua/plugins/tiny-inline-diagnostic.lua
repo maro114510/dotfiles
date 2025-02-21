@@ -11,9 +11,9 @@ return {
 
 		require('tiny-inline-diagnostic').setup({
 			preset = 'ghost',
-			options = {
+			--[[ options = {
 				overwrite_events = { "DiagnosticChanged" },
-			}
+			} ]]
 		})
 	end
 }
