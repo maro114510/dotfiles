@@ -14,6 +14,7 @@ return {
 
 	-- event = "BufRead",
 	-- event = "VeryLazy",
+	-- yakiii
 
 	config = function()
 		require("noice").setup({
