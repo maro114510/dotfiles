@@ -17,8 +17,7 @@ return {
 		},
 	},
 	keys = {
-		{ "<C-x><C-x>", "<cmd>'<,'>y<CR><cmd>CopilotChat<CR>", mode = { "v" } },
-		{ "<C-x><C-x>", "<cmd>CopilotChat<CR>", mode = { "n" } },
+		{ "<C-x><C-x>", "<cmd>CopilotChat<CR>", mode = { "n", "v" } },
 	},
 	cmd = "CopilotChat",
 }
