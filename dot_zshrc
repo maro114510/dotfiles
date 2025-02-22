@@ -306,3 +306,6 @@ function ya() {
 	fi
 	rm -f -- "$tmp"
 }
+
+### zozide
+eval "$(zoxide init zsh)"
