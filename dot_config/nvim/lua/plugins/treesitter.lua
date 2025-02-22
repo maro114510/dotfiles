@@ -10,7 +10,7 @@ return {
 			auto_tag = {
 				enable = true,
 			},
-			auto_install = true,
+			auto_install = false,
 			highlight = {
 				enable = true,
 			},
@@ -18,13 +18,8 @@ return {
 				enable = true,
 			},
 			ensure_installed = {
-				'bash',
 				'go',
-				'html',
-				'javascript',
-				'json',
 				'lua',
-				'python',
 				'rust',
 				'toml',
 				'typescript',
@@ -33,5 +28,12 @@ return {
 		})
 	end,
 
-	event = 'VimEnter'
+	ft = {
+		'go',
+		'lua',
+		'rust',
+		'toml',
+		'typescript',
+		'yaml',
+	},
 }
