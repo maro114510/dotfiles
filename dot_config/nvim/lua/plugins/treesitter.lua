@@ -4,13 +4,13 @@ return {
 	'nvim-treesitter/nvim-treesitter',
 
 	config = function()
-		local ts_update = require("nvim-treesitter.install").update({ with_sync = true })
+		local ts_update = require("nvim-treesitter.install").update({ with_sync = true, silent = true })
 		ts_update()
 		require('nvim-treesitter.configs').setup({
 			auto_tag = {
 				enable = true,
 			},
-			auto_install = false,
+			auto_install = true,
 			highlight = {
 				enable = true,
 			},
@@ -25,6 +25,7 @@ return {
 				'typescript',
 				'yaml',
 			},
+			notify = false,
 		})
 	end,
 
