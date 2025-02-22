@@ -36,6 +36,6 @@ require("mason-lspconfig").setup_handlers {
 }
 require("lspconfig").typos_lsp.setup({
 	init_options = {
-		config = "~/.config/nvim/spell/.typos.toml",
+		config = vim.fn.expand("~/.config/nvim/spell/.typos.toml"),
 	},
 })
