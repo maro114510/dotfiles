@@ -13,11 +13,12 @@ return {
 		window = {
 			layout = 'vertical',
 			width = 0.3,
-			height = 0.5, 
+			height = 0.5,
 		},
 	},
 	keys = {
-		{ "<C-x><C-x>", "<cmd>CopilotChat<CR>", mode = { "n", "v" } }
+		{ "<C-x><C-x>", "<cmd>'<,'>y<CR><cmd>CopilotChat<CR>", mode = { "v" } },
+		{ "<C-x><C-x>", "<cmd>CopilotChat<CR>", mode = { "n" } },
 	},
 	cmd = "CopilotChat",
 }
