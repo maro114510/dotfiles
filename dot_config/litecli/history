@@ -1,0 +1,38 @@
+
+# 2025-02-24 06:15:36.306278
++SELECT
++  p.id, p.title, p.playlist_id, p.created_at AS registered_at
++FROM
++  playlists AS p
++LEFT JOIN
++  user_playlists AS up
++ON
++  p.id = up.playlist_id
++WHERE
++  up.user_id = 1
++ORDER BY
++  p.id DESC;
++
+
+# 2025-02-24 06:17:57.956452
++SELECT
++  p.id, p.title, p.playlist_id, COUNT(pi.id) AS item_count,
++  p.created_at AS registered_at
++FROM
++  playlists AS p
++LEFT JOIN
++  user_playlists AS up
++ON
++  p.id = up.playlist_id
++LEFT JOIN
++  playlist_items AS pi
++ON
++  p.id = pi.playlist_id
++WHERE
++  up.user_id = 1
++ORDER BY
++  p.id DESC;
++
+
+# 2025-02-24 06:18:19.299186
++.exit
