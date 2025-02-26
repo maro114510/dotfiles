@@ -15,10 +15,19 @@ return {
 			formatter_by_ft = {
 				rust = formatters.lsp,
 			},
+			fallback_formatter = {
+				formatters.remove_trailing_whitespace,
+				formatters.remove_trailing_newlines,
+			},
 		})
 	end,
 
 	ft = {
 		"rust",
+		"sh",
+		"lua",
+		"json",
+		"yaml",
+		"toml",
 	},
 }
