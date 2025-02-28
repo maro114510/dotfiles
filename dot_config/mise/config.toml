@@ -1,5 +1,6 @@
 [tools]
 go = "latest"
 java = "latest"
+neovim = "latest"
 node = "latest"
 starship = "latest"
