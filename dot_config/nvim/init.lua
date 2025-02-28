@@ -35,7 +35,6 @@ local opts = {
 	},
 }
 
-
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup("plugins", opts)
 
@@ -52,3 +51,4 @@ require("lualine").setup({
 })
 
 require("config")
+require("user")

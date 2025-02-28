@@ -8,5 +8,5 @@ return {
 		require('close_buffers').delete({ type = 'nameless' })
 	end,
 
-	cmd = { 'Bdelete', 'Bwipeout' },
+	cmd = { 'BDelete' },
 }

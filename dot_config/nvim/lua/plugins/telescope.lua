@@ -2,13 +2,16 @@
 
 return {
 	'nvim-telescope/telescope.nvim',
+
 	tag = '0.1.5',
+
 	dependencies = {
 		'nvim-lua/plenary.nvim',
-		'nvim-telescope/telescope-fzf-native.nvim', 
+		'nvim-telescope/telescope-fzf-native.nvim',
 		'delphinus/telescope-memo.nvim',
-		'nvim-telescope/telescope-github.nvim' 
+		'nvim-telescope/telescope-github.nvim'
 	},
+
 	config = function()
 		require('telescope').setup {
 			extensions = {
@@ -87,5 +90,5 @@ return {
 		require('telescope').load_extension('memo')
 	end,
 
-	event = 'VimEnter',
+	event = 'VeryLazy',
 }

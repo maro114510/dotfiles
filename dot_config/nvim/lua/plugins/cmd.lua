@@ -1,24 +1,39 @@
 -- https://github.com/hrsh7th/cmp-nvim-lsp.git
 
 return {
-    {
+	{
+		-- LSPを補完候補に追加
 		'hrsh7th/cmp-nvim-lsp',
 		event = 'BufRead',
-    },
-    {
-        'hrsh7th/cmp-buffer',
-        event = 'BufRead',
-    },
-    {
-        'hrsh7th/cmp-path',
-        event = 'BufRead',
-    },
-    {
-        'hrsh7th/cmp-cmdline',
-        event = 'CmdlineEnter',
-    },
-    {
-        'hrsh7th/nvim-cmp',
-        event = 'InsertEnter',
-    },
+	},
+	{
+		-- バッファの補完候補を追加
+		'hrsh7th/cmp-buffer',
+		event = 'BufRead',
+	},
+	{
+		-- パスの補完候補を追加
+		'hrsh7th/cmp-path',
+		event = 'BufRead',
+	},
+	{
+		-- コマンドラインの補完候補を追加
+		'hrsh7th/cmp-cmdline',
+		event = 'CmdlineEnter',
+	},
+	{
+		-- スニペットエンジン本体
+		'hrsh7th/vim-vsnip',
+		event = 'InsertCharPre',
+	},
+	{
+		-- スニペットエンジンの補完候補を追加
+		'hrsh7th/cmp-vsnip',
+		event = 'InsertEnter',
+	},
+	{
+		-- 補完エンジン本体
+		'hrsh7th/nvim-cmp',
+		event = 'InsertEnter',
+	},
 }
