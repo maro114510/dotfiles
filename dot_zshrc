@@ -148,7 +148,6 @@ elif [ "$(uname)" = "Darwin" ]; then
 fi
 
 ### Rust ###
-# export PATH="$(asdf where rust)/bin:$PATH"
 
 ### peco ###
 function peco-select-history() {
@@ -169,10 +168,9 @@ bindkey '^r' peco-select-history
 
 # export commands
 export PATH="$HOME/commands:$PATH"
-export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 ### Starship ###
-eval "$(starship init zsh)"
+eval "$(mise exec -- starship init zsh)"
 
 ##### alias #####
 alias ll='lsd -l'
@@ -289,8 +287,8 @@ function wtr(){
     curl "https://ja.wttr.in/$1?2nF"
 }
 
-# Amazon Q post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
+# mise for language version management
+eval "$(mise activate zsh)"
 
 tere() {
     local result=$(command tere "$@")
@@ -317,3 +315,6 @@ function bmb() {
 	bookmark_url=$(bmm list | fzf --preview 'bmm show {}')
 	open -a "Google Chrome" "$bookmark_url"
 }
+
+# Amazon Q post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
