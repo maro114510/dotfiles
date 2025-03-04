@@ -25,3 +25,9 @@
 	a = add
 	m = commit -m
 	ll = log --graph --date=relative --name-status --abbrev-commit
+[fetch]
+	prune = true
+	pruneTags = true
+	all = true
+[help]
+	autocorrect = prompt
