@@ -90,5 +90,5 @@ return {
 		require('telescope').load_extension('memo')
 	end,
 
-	event = 'VeryLazy',
+	event = 'VimEnter',
 }

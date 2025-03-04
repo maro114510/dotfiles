@@ -23,13 +23,8 @@ return {
 	},
 	{
 		-- スニペットエンジン本体
-		'hrsh7th/vim-vsnip',
-		event = 'InsertCharPre',
-	},
-	{
-		-- スニペットエンジンの補完候補を追加
-		'hrsh7th/cmp-vsnip',
-		event = 'InsertEnter',
+		-- 'hrsh7th/vim-vsnip',
+		-- event = 'InsertCharPre',
 	},
 	{
 		-- 補完エンジン本体
