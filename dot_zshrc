@@ -196,6 +196,7 @@ alias ch='chezmoi'
 alias nv='nohup neovide > /dev/null 2>&1 &'
 alias zj='zellij'
 alias cz='chezmoi'
+alias awsts='aws sts get-caller-identity'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias めも='sh ~/commands/create_memo.sh'
