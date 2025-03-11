@@ -310,6 +310,8 @@ function ya() {
 eval "$(zoxide init zsh)"
 eval "$(mise activate --shims)"
 
+eval "$(direnv hook zsh)"
+
 ### bmm
 function bmb() {
 	# ブラウザでfzfで選択したブックマーク(URL)を開く
