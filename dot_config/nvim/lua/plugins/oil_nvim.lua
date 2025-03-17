@@ -1,21 +1,20 @@
 -- https://github.com/stevearc/oil.nvim.git
+-- A vim-vinegar like file explorer that lets you edit your filesystem like a normal Neovim buffer.
 
 return {
-	'stevearc/oil.nvim',
-	opts = {},
-	-- Optional dependencies
-	dependencies = { "nvim-tree/nvim-web-devicons" },
+  'stevearc/oil.nvim',
 
-	config = function()
-		require('oil').setup({
-			--[[ buf_options = {
-				bufhidden = "wipe",
-			}, ]]
-			view_options = {
-				show_hidden = true,
-			}
-		})
-	end,
+  opts = {},
 
-	event = "UIEnter",
+  dependencies = { "nvim-tree/nvim-web-devicons" },
+
+  config = function()
+    require('oil').setup({
+      view_options = {
+        show_hidden = true,
+      }
+    })
+  end,
+
+  event = "UIEnter",
 }
