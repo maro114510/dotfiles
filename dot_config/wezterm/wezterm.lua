@@ -198,6 +198,7 @@ return {
     inactive_titlebar_bg = title_color_bg,
     font_size = 10.0,
   },
+  font = wezterm.font("Hack Nerd Font"),
 
   default_cursor_style = 'SteadyUnderline',
 
