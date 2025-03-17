@@ -13,6 +13,8 @@ macos-titlebar-style = tabs
 font-family = RobotoMono Nerd Font
 
 cursor-style = underline
+cursor-style-blink = false
+shell-integration-features = no-cursor
 
 auto-update = check
 
