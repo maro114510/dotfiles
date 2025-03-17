@@ -92,9 +92,9 @@ end)
 wezterm.on('gui-startup', function(cmd)
   local mux = wezterm.mux
 
-  local padSize = 80
-  local screenWidth = 2560
-  local screenHeight = 1600
+  -- local padSize = 80
+  -- local screenWidth = 2560
+  -- local screenHeight = 1600
 
   local tab, pane, window = mux.spawn_window(cmd or {
     workspace = 'main',
@@ -120,11 +120,11 @@ wezterm.on('gui-startup', function(cmd)
 
   tab:set_title('  ' .. icons[math.random(#icons)] .. '  ')
 
-  if window ~= nil then
-    wezterm.sleep_ms(3200)
-    window:gui_window():set_position(padSize, padSize)
-    window:gui_window():set_inner_size(screenWidth - (padSize * 2), screenHeight - (padSize * 2) - 48)
-  end
+  -- if window ~= nil then
+  --   wezterm.sleep_ms(3200)
+  --   window:gui_window():set_position(padSize, padSize)
+  --   window:gui_window():set_inner_size(screenWidth - (padSize * 2), screenHeight - (padSize * 2) - 48)
+  -- end
 end)
 
 local TAB_EDGE_LEFT = wezterm.nerdfonts.ple_left_half_circle_thick
@@ -199,7 +199,9 @@ return {
     font_size = 10.0,
   },
 
---  window_decorations = 'RESIZE',
+  default_cursor_style = 'SteadyUnderline',
+
+  window_decorations = 'RESIZE',
   win32_system_backdrop = "Acrylic",
   show_tab_index_in_tab_bar = false,
   show_new_tab_button_in_tab_bar = false,
