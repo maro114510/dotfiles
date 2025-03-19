@@ -1,4 +1,5 @@
 -- https://github.com/goolord/alpha-nvim.git
+-- initial dashboard
 
 return {
 	-- 'goolord/alpha-nvim',

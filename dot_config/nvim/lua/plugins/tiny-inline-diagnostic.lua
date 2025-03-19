@@ -1,22 +1,23 @@
 -- https://github.com/rachartier/tiny-inline-diagnostic.nvim.git
 
 return {
-	"rachartier/tiny-inline-diagnostic.nvim",
+  "rachartier/tiny-inline-diagnostic.nvim",
 
-	event = "VeryLazy", -- Or `LspAttach`
-	priority = 1000, -- needs to be loaded in first
+  event = "VeryLazy", -- Or `LspAttach`
 
-	config = function()
-		vim.diagnostic.config({ virtual_text = false })
+  priority = 1000, -- needs to be loaded in first
 
-		require('tiny-inline-diagnostic').setup({
-			preset = 'ghost',
-			options = {
-				multilines = {
-					enabled = true,
-					always_show = true,
-				},
-			}
-		})
-	end
+  config = function()
+    vim.diagnostic.config({ virtual_text = false })
+
+    require('tiny-inline-diagnostic').setup({
+      preset = 'ghost',
+      options = {
+        multilines = {
+          enabled = true,
+          always_show = true,
+        },
+      }
+    })
+  end
 }

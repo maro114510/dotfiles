@@ -1,9 +1,9 @@
 -- https://github.com/nvim-telescope/telescope-frecency.nvim.git
 
 return {
-	"nvim-telescope/telescope-frecency.nvim",
+  "nvim-telescope/telescope-frecency.nvim",
 
-	config = function()
-		require("telescope").load_extension "frecency"
-	end,
+  config = function()
+    require("telescope").load_extension "frecency"
+  end,
 }

@@ -1,10 +1,12 @@
 -- https://github.com/lewis6991/gitsigns.nvim.git
+-- Deep buffer integration for Git
 
 return {
-	'lewis6991/gitsigns.nvim',
-	event = { 'BufReadPre' },
+  'lewis6991/gitsigns.nvim',
 
-	config = function()
-		require('gitsigns').setup()
-	end
+  event = { 'BufReadPre' },
+
+  config = function()
+    require('gitsigns').setup()
+  end
 }

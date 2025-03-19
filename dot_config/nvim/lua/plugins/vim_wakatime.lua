@@ -1,11 +1,11 @@
 -- https://github.com/wakatime/vim-wakatime.git
 
 return {
-	"wakatime/vim-wakatime",
+  "wakatime/vim-wakatime",
 
-	lazy=false,
+  lazy = false,
 
-	setup=function()
-		vim.cmd([[packadd wakatime/vim-wakatime]])
-	end,
+  setup = function()
+    vim.cmd([[packadd wakatime/vim-wakatime]])
+  end,
 }

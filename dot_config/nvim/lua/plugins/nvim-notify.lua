@@ -1,20 +1,22 @@
 -- https://github.com/rcarriga/nvim-notify
 
 return {
-	'rcarriga/nvim-notify',
+  'rcarriga/nvim-notify',
 
-	config = function()
-		local notify = require('notify')
-		notify.setup({
-			-- Animation style (see below for details)
-			animation_style = 'slide',
+  config = function()
+    local notify = require('notify')
+      notify.setup({
+        -- Animation style (see below for details)
+        animation_style = 'slide',
 
-			max_width = 50,
-			timeout = 1000,
-		})
+        max_width = 50,
+        timeout = 1000,
 
-		vim.notify = notify
-	end,
+        background_colour = '#282c34',
+      })
 
-	event = 'UIEnter',
+    vim.notify = notify
+  end,
+
+  event = 'UIEnter',
 }

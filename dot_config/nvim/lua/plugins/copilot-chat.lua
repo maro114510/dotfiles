@@ -3,27 +3,27 @@
 vim.opt.splitright = true
 
 return {
-	"CopilotC-Nvim/CopilotChat.nvim",
+  "CopilotC-Nvim/CopilotChat.nvim",
 
-	dependencies = {
-		{ "github/copilot.vim" }, -- or zbirenbaum/copilot.lua
-		{ "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
-	},
+  dependencies = {
+    { "github/copilot.vim" }, -- or zbirenbaum/copilot.lua
+    { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
+  },
 
-	build = "make tiktoken", -- Only on MacOS or Linux
+  build = "make tiktoken", -- Only on MacOS or Linux
 
-	opts = {
-		window = {
-			layout = 'vertical',
-			width = 0.3,
-			height = 0.5,
-		},
-		model = "claude-3.7-sonnet",
-	},
+  opts = {
+    window = {
+    layout = 'vertical',
+      width = 0.3,
+      height = 0.5,
+    },
+    model = "claude-3.7-sonnet",
+  },
 
-	keys = {
-		{ "<C-x><C-x>", "<cmd>CopilotChat<CR>", mode = { "n", "v" } },
-	},
+  keys = {
+    { "<C-x><C-x>", "<cmd>CopilotChat<CR>", mode = { "n", "v" } },
+  },
 
-	cmd = "CopilotChat",
+  cmd = "CopilotChat",
 }

@@ -2,15 +2,18 @@
 -- https://github.com/williamboman/mason-lspconfig.nvim.git
 
 return {
-	{
-		"williamboman/mason.nvim",
+  -- Mason
+  {
+    "williamboman/mason.nvim",
 
-		-- Config
-		config = function()
-			require("mason").setup()
-		end,
-	},
-	{
-		"williamboman/mason-lspconfig.nvim",
-	}
+    -- Config
+    config = function()
+      require("mason").setup()
+    end,
+  },
+
+  -- Mason LSPConfig
+  {
+    "williamboman/mason-lspconfig.nvim",
+  }
 }
