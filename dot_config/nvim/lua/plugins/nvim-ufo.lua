@@ -39,7 +39,9 @@ return {
     {
       mode = { 'n' },
       'zp',
-      '<cmd>lua require("ufo").peekFoldedLinesUnderCursor()<cr>',
+      function()
+        require('ufo').peekFoldedLinesUnderCursor()
+      end,
       desc = 'Peek folded lines under cursor',
     },
   },
