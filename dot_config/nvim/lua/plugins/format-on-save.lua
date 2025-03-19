@@ -32,5 +32,12 @@ return {
     "json",
     "yaml",
     "toml",
+    "make",
+    "dockerfile",
+    "vim",
+    "markdown",
+    "javascript",
+    "typescript",
+    "kotlin",
   },
 }

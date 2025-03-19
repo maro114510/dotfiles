@@ -9,7 +9,8 @@ return {
 		'nvim-lua/plenary.nvim',
 		'nvim-telescope/telescope-fzf-native.nvim',
 		'delphinus/telescope-memo.nvim',
-		'nvim-telescope/telescope-github.nvim'
+		'nvim-telescope/telescope-github.nvim',
+    'nvim-telescope/telescope-media-files.nvim'
 	},
 
 	config = function()
@@ -22,6 +23,7 @@ return {
 					case_mode = "smart_case", -- or "ignore_case" or "respect_case"
 					-- the default case_mode is "smart_case"
 				}, ]]
+
 				git_worktree = {
 					-- show_untracked = true,
 					show_index = true,
@@ -29,6 +31,11 @@ return {
 					-- results_title = false,
 					-- cwd = "~/dev/src/github.com/nvim-telescope/telescope.nvim",
 				},
+
+        media_files = {
+          filetypes = {"png", "webp", "jpg", "jpeg"},
+          find_cmd = "rg" -- find command (defaults to `fd`)
+        },
 			},
 			defaults = {
 				vimgrep_arguments = {
@@ -41,6 +48,7 @@ return {
 					"--smart-case",
 					"--hidden",
 				},
+
 				prompt_prefix = " 🔭 ",
 				selection_caret = "→ ",
 				entry_prefix = "  ",
