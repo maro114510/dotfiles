@@ -15,13 +15,17 @@ return {
     -- refer to the configuration section below
     bigfile = { enabled = true, hidden = true },
     dashboard = { enabled = true },
-    explorer = { enabled = true, hidden = true },
+    explorer = {
+      enabled = true,
+      hidden = true,
+    },
     indent = { enabled = true },
     input = { enabled = true },
     picker = {
       enabled = true,
       sources = {
         files = { hidden = true },
+        explorer = { hidden = true },
       },
     },
     notifier = { enabled = false },
