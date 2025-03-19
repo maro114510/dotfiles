@@ -196,8 +196,12 @@ return {
   window_frame = {
     active_titlebar_bg = title_color_bg,
     inactive_titlebar_bg = title_color_bg,
-    font_size = 10.0,
+    font_size = 5.0,
   },
+
+  -- Default DPI at macOS is 72.0
+  dpi = 144.0,
+  font_size = 6.0,
   font = wezterm.font("Hack Nerd Font"),
 
   default_cursor_style = 'SteadyUnderline',
