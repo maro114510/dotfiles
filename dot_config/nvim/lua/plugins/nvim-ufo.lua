@@ -16,7 +16,6 @@ return {
     vim.o.foldlevelstart = 99
     vim.o.foldenable = true
     vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
-    vim.keymap.set("n", "zp", require("ufo").peekFoldedLinesUnderCursor)
 
     vim.api.nvim_create_autocmd("FileType", {
       pattern = { "neo-tree" },
@@ -35,4 +34,13 @@ return {
       end,
     })
   end,
+
+  keys = {
+    {
+      mode = { 'n' },
+      'zp',
+      '<cmd>lua require("ufo").peekFoldedLinesUnderCursor()<cr>',
+      desc = 'Peek folded lines under cursor',
+    },
+  },
 }
