@@ -45,5 +45,9 @@ return {
     "json",
     "toml",
     "html",
+    "jsx",
+    "tsx",
+    "javascript",
+    "typescript",
   }
 }
