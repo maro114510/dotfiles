@@ -228,3 +228,7 @@ run = 'layout floating'
 [[on-window-detected]]
 if.app-id = 'com.readdle.smartemail-Mac'
 run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.tinyspeck.slackmacgap'
+laun = 'move-node-to-workspace 1'
