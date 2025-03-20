@@ -220,3 +220,11 @@ run = 'layout floating'
 [[on-window-detected]]
 if.app-id = 'app.zen-browser.zen'
 run = 'move-node-to-workspace 2'
+
+[[on-window-detected]]
+if.app-id = 'com.postmanlabs.mac'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.readdle.smartemail-Mac'
+run = 'layout floating'
