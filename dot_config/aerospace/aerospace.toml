@@ -240,3 +240,11 @@ run = 'layout floating'
 [[on-window-detected]]
 if.app-id = 'com.apple.AppStore'
 run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'io.raindrop.macapp'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+run = 'layout floating'
