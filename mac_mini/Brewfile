@@ -187,11 +187,8 @@ mas "1Password for Safari", id: 1569813296
 mas "AdBlock", id: 1402042596
 mas "Day One", id: 1055511498
 mas "Drafts", id: 1435957248
-mas "Goodnotes", id: 1444383602
 mas "Hand Mirror", id: 1502839586
 mas "Kindle", id: 302584613
-mas "Koi Pond 3D Lite", id: 534867956
-mas "LadioCast", id: 411213048
 mas "LINE", id: 539883307
 mas "Momentum", id: 1564329434
 mas "OneTab", id: 1540160809
@@ -200,13 +197,10 @@ mas "RunCat", id: 1429033973
 mas "Save to Raindrop.io", id: 1549370672
 mas "Spark", id: 1176895641
 mas "Step Two", id: 1448916662
-mas "Structured", id: 1499198946
-mas "Tunacan", id: 980577198
 mas "Unsplash Wallpapers", id: 1284863847
 mas "Velja", id: 1607635845
 mas "Wappalyzer - Technology profiler", id: 1520333300
 mas "Web Translator", id: 6443492610
-mas "WebP Converter", id: 1522368690
 mas "Xcode", id: 497799835
 vscode "adpyke.codesnap"
 vscode "alefragnani.project-manager"
