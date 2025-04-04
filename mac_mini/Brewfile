@@ -45,6 +45,7 @@ brew "crosstool-ng"
 brew "ctop"
 brew "deno"
 brew "direnv"
+brew "fastfetch"
 brew "fd"
 brew "harfbuzz"
 brew "tesseract"
@@ -160,6 +161,7 @@ cask "affinity-photo"
 cask "amazon-photos"
 cask "amorphousdiskmark"
 cask "chatgpt"
+cask "claude"
 cask "cursor"
 cask "deepl"
 cask "flutter"
@@ -193,6 +195,7 @@ mas "LINE", id: 539883307
 mas "Momentum", id: 1564329434
 mas "OneTab", id: 1540160809
 mas "Pages", id: 409201541
+mas "Perplexity", id: 6714467650
 mas "RunCat", id: 1429033973
 mas "Save to Raindrop.io", id: 1549370672
 mas "Spark", id: 1176895641
