@@ -14,6 +14,8 @@ font-family = RobotoMono Nerd Font
 
 cursor-style = underline
 cursor-style-blink = false
+cursor-color = #52AD70
+cursor-opacity = 0.8
 shell-integration-features = no-cursor
 
 auto-update = check
