@@ -1,4 +1,5 @@
 theme = Dracula+
+foreground = #52AD70
 
 window-padding-x = 20
 window-padding-y = 5
