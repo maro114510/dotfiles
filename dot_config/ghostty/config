@@ -35,4 +35,5 @@ mouse-scroll-multiplier = 2
 
 font-size =11
 
+macos-icon = "holographic"
 macos-icon-frame = "plastic"
