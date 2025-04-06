@@ -52,7 +52,7 @@ if vim.g.neovide then
   -- Animation
   vim.g.neovide_cursor_vfx_mode = "sonicboom"
 
-  vim.cmd("highlight! Normal guifg=#52AD70")
+  -- vim.cmd("highlight! Normal guifg=#52AD70")
 
   --- Neovideを透明にする設定
   -- 不透明度の設定
