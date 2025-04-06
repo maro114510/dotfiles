@@ -34,3 +34,5 @@ mouse-hide-while-typing = true
 mouse-scroll-multiplier = 2
 
 font-size =11
+
+macos-icon-frame = "plastic"
