@@ -56,7 +56,7 @@ if vim.g.neovide then
 
   --- Neovideを透明にする設定
   -- 不透明度の設定
-  vim.g.neovide_transparency = 0.75
+  vim.g.neovide_opacity = 0.75
   -- 境界線を表示(不透明なウィンドウの周囲にのみ灰色の境界線を表示)
   vim.g.neovide_show_border = true
 
