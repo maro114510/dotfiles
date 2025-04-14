@@ -1,4 +1,6 @@
 theme = Dracula+
+# foreground = #52AD70
+selection-background = #52AD70
 
 window-padding-x = 20
 window-padding-y = 5
@@ -9,6 +11,7 @@ background-opacity = 0.73
 background-blur-radius = 20
 
 macos-titlebar-style = tabs
+macos-titlebar-proxy-icon = visible
 
 font-family = RobotoMono Nerd Font
 
@@ -34,3 +37,9 @@ mouse-hide-while-typing = true
 mouse-scroll-multiplier = 2
 
 font-size =11
+
+macos-icon = "holographic"
+macos-icon-frame = "plastic"
+
+keybind = ctrl+option+h=goto_split:left
+keybind = ctrl+option+l=goto_split:right
