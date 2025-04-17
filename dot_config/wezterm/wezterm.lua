@@ -200,8 +200,8 @@ return {
   },
 
   -- Default DPI at macOS is 72.0
-  dpi = 144.0,
-  font_size = 6.0,
+  -- dpi = 144.0,
+  -- font_size = 6.0,
   font = wezterm.font("Hack Nerd Font"),
 
   default_cursor_style = 'SteadyUnderline',
