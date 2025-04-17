@@ -1,0 +1,9 @@
+Q	[Q]	名詞
+IMO	[IMO]	名詞
+FYI	[FYI]	名詞
+NIT	[NITS]	名詞
+NR	[NR]	名詞
+MUST	[MUST]	名詞
+Shou	[Should]	名詞
+Could	[Could]	名詞
+Would	[Would]	名詞
