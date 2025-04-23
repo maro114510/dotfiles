@@ -5,15 +5,15 @@ local color = (function()
 
   local coolors = {
     COLOR.VERIDIAN,
-    COLOR.PAYNE,
-    COLOR.INDIGO,
-    COLOR.CAROLINA,
-    COLOR.FLAME,
-    COLOR.JET,
-    COLOR.TAUPE,
-    COLOR.ECRU,
-    COLOR.VIOLET,
-    COLOR.VERDIGRIS
+    -- COLOR.PAYNE,
+    -- COLOR.INDIGO,
+    -- COLOR.CAROLINA,
+    -- COLOR.FLAME,
+    -- COLOR.JET,
+    -- COLOR.TAUPE,
+    -- COLOR.ECRU,
+    -- COLOR.VIOLET,
+    -- COLOR.VERDIGRIS
   }
 
   return coolors[math.random(#coolors)]
@@ -196,7 +196,7 @@ return {
   window_frame = {
     active_titlebar_bg = title_color_bg,
     inactive_titlebar_bg = title_color_bg,
-    -- font_size = 5.0,
+    font_size = 10.0,
   },
 
   -- Default DPI at macOS is 72.0
