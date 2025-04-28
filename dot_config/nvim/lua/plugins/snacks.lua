@@ -1,6 +1,39 @@
 -- https://github.com/folke/snacks.nvim.git
 -- Fuzzy Finder
 
+-- ロゴを文字列で定義
+local logo = [[
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━ ▄▄    ▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄   ▄▄ ▄▄ ▄▄   ▄▄ ━━━━━━━━
+━━━━━━━━█  █  █ █       █       █  █ █  █  █  █▄█  █━━━━━━━━
+━━━━━━━━█   █▄█ █    ▄▄▄█   ▄   █  █▄█  █  █       █━━━━━━━━
+━━━━━━━━█       █   █▄▄▄█  █ █  █       █  █       █━━━━━━━━
+━━━━━━━━█  ▄    █    ▄▄▄█  █▄█  █       █  █       █━━━━━━━━
+━━━━━━━━█ █ █   █   █▄▄▄█       ██     ██  █ ██▄██ █━━━━━━━━
+━━━━━━━━█▄█  █▄▄█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█ █▄▄▄█ █▄▄█▄█   █▄█━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━略
+]]
+-- 表示に使う`tte`のサブコマンド（アニメーション指定）
+local subcommands = {
+  'middleout --center-movement-speed 0.8 --full-movement-speed 0.2',
+  'slide --merge --movement-speed 0.8',
+  'beams --beam-delay 5 --beam-row-speed-range 20-60 --beam-column-speed-range 8-12',
+}
+-- 候補のサブコマンドからランダムに1個を使用
+math.randomseed(os.time())
+local subcommand = subcommands[math.random(#subcommands)]
+-- Neovimのjobで実行するコマンド
+local cmd = {
+  'sh',
+  '-c',
+  'echo -e '
+  .. vim.fn.shellescape(vim.trim(logo))
+  .. ' | tte --anchor-canvas s ' .. subcommand
+  .. ' --final-gradient-direction diagonal'
+}
+
 return {
   "folke/snacks.nvim",
 
@@ -14,7 +47,13 @@ return {
     -- or leave it empty to use the default settings
     -- refer to the configuration section below
     bigfile = { enabled = true, hidden = true },
-    dashboard = { enabled = true },
+    dashboard = {
+      enabled = true,
+      sections = {
+        cmd = cmd,
+      },
+      pane_gap = 0.2,
+    },
     explorer = {
       enabled = true,
       hidden = true,
