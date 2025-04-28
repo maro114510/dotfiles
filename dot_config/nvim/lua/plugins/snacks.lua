@@ -13,7 +13,7 @@ local logo = [[
 ━━━━━━━━█ █ █   █   █▄▄▄█       ██     ██  █ ██▄██ █━━━━━━━━
 ━━━━━━━━█▄█  █▄▄█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█ █▄▄▄█ █▄▄█▄█   █▄█━━━━━━━━
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━略
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ]]
 -- 表示に使う`tte`のサブコマンド（アニメーション指定）
 local subcommands = {
@@ -28,7 +28,7 @@ local subcommand = subcommands[math.random(#subcommands)]
 local cmd = {
   'sh',
   '-c',
-  'echo -e '
+  'echo '
   .. vim.fn.shellescape(vim.trim(logo))
   .. ' | tte --anchor-canvas s ' .. subcommand
   .. ' --final-gradient-direction diagonal'
@@ -50,9 +50,20 @@ return {
     dashboard = {
       enabled = true,
       sections = {
-        cmd = cmd,
+        {
+          section = "terminal",
+          cmd = cmd,
+          random = 10,
+          pane = 1,
+          padding = 0.6,
+          height = 10,
+          width = 60,
+          gap = 1,
+        },
+        { section = "keys", gap = 1, padding = 1 },
+        { section = "startup" },
       },
-      pane_gap = 0.2,
+      pane_gap = 1.0,
     },
     explorer = {
       enabled = true,
@@ -127,6 +138,19 @@ return {
   },
 
   init = function()
+    -- Vimがスタートしたら、ロゴを表示する関数を呼び出す
+    vim.api.nvim_create_autocmd("VimEnter", {
+      callback = function()
+        -- ダッシュボードが表示されるまで少し待ってから実行
+        vim.defer_fn(function()
+          if vim.bo.filetype == "dashboard" then
+            -- ロゴを描画（ダッシュボードの上に重なって表示される）
+            display_logo(logo)
+          end
+        end, 100)
+      end,
+    })
+
     vim.api.nvim_create_autocmd("User", {
     pattern = "VeryLazy",
     callback = function()
