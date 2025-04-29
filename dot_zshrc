@@ -168,6 +168,7 @@ bindkey '^r' peco-select-history
 
 # export commands
 export PATH="$HOME/commands:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 ### Starship ###
 eval "$(mise exec -- starship init zsh)"
