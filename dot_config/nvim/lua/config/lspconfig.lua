@@ -1,41 +1,70 @@
 local on_attach = function(client, bufnr)
+  -- LSPが持つフォーマット機能を無効化する
+  -- →例えばtsserverはデフォルトでフォーマット機能を提供しますが、利用したくない場合はコメントアウトを解除してください
+  --client.server_capabilities.documentFormattingProvider = false
 
-	-- LSPが持つフォーマット機能を無効化する
-	-- →例えばtsserverはデフォルトでフォーマット機能を提供しますが、利用したくない場合はコメントアウトを解除してください
-	--client.server_capabilities.documentFormattingProvider = false
+  -- 下記ではデフォルトのキーバインドを設定しています
+  -- ほかのLSPプラグインを使う場合（例：Lspsaga）は必要ないこともあります
 
-	-- 下記ではデフォルトのキーバインドを設定しています
-	-- ほかのLSPプラグインを使う場合（例：Lspsaga）は必要ないこともあります
-
-	local set = vim.keymap.set
-	-- set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
-	set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
-	set("n", "<C-m>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
-	set("n", "gy", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
-	set("n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
-	set("n", "ma", "<cmd>lua vim.lsp.buf.code_action()<CR>")
-	set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
-	set("n", "<space>e", "<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>")
-	set("n", "[d", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>")
-	set("n", "]d", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>")
+  local set = vim.keymap.set
+  -- set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
+  set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
+  set("n", "<C-m>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
+  set("n", "gy", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
+  set("n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
+  set("n", "ma", "<cmd>lua vim.lsp.buf.code_action()<CR>")
+  set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
+  set("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<CR>")
+  set("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
+  set("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>")
 end
 
--- 補完プラグインであるcmp_nvim_lspをLSPと連携させています（後述）
+-- 補完プラグインであるcmp_nvim_lspをLSPと連携させています
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
--- この一連の記述で、mason.nvimでインストールしたLanguage Serverが自動的に個別にセットアップされ、利用可能になります
+-- まず mason をセットアップ
 require("mason").setup()
-require("mason-lspconfig").setup()
-require("mason-lspconfig").setup_handlers {
-	function (server_name) -- default handler (optional)
-		require("lspconfig")[server_name].setup {
-			on_attach = on_attach, --keyバインドなどの設定を登録
-			capabilities = capabilities, --cmpを連携
-		}
-	end,
-}
-require("lspconfig").typos_lsp.setup({
-	init_options = {
-		config = vim.fn.expand("~/.config/nvim/spell/.typos.toml"),
-	},
+
+-- mason-lspconfigが読み込めるか確認
+local mason_lspconfig_status, mason_lspconfig = pcall(require, "mason-lspconfig")
+if not mason_lspconfig_status then
+  print("mason-lspconfig is not installed or not found")
+  return
+end
+
+-- LSPconfigをロード
+local lspconfig = require("lspconfig")
+
+-- Mason-lspconfigをセットアップ
+mason_lspconfig.setup()
+
+-- 最新のAPIに合わせた方法でハンドラーをセットアップ
+-- 方法1: on_server_readyを使用
+if mason_lspconfig.setup_handlers then
+  -- 古いAPI用
+  mason_lspconfig.setup_handlers({
+    function(server_name)
+      lspconfig[server_name].setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
+      })
+    end,
+  })
+else
+  -- 新しいAPI用
+  mason_lspconfig.setup_handlers = {
+    function(server_name)
+      lspconfig[server_name].setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
+      })
+    end,
+  }
+end
+
+-- typos_lspのセットアップはそのまま
+lspconfig.typos_lsp.setup({
+  init_options = {
+    config = vim.fn.expand("~/.config/nvim/spell/.typos.toml"),
+  },
 })
