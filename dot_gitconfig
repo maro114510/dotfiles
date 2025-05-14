@@ -3,7 +3,7 @@
 	email = atumaro114510@icloud.com
 [core]
 	pager = delta
-	excludesfile = /Users/atsuki/.gitignore
+	excludesfile = ~/.config/git/ignore
 
 [commit]
 	verbose = true
