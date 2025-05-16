@@ -35,20 +35,16 @@ end
 -- LSPconfigをロード
 local lspconfig = require("lspconfig")
 
--- Mason-lspconfigをセットアップ (オプションを変更)
 mason_lspconfig.setup({
-  -- automatic_enableは使わず、必要ならensure_installedを使う
-  -- ensure_installed = { "lua_ls", "tsserver" }, -- 必要なサーバーをリストアップ
-})
-
--- ハンドラーを正しく設定 (古い/新しいAPIの判定を削除)
-mason_lspconfig.setup_handlers({
-  function(server_name)
-    lspconfig[server_name].setup({
-      on_attach = on_attach,
-      capabilities = capabilities,
-    })
-  end,
+  --ensure_installed = { "lua_ls", "tsserver", "rust_analyzer", "gopls"},
+  handlers = {
+    function(server_name)
+      lspconfig[server_name].setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
+      })
+    end,
+  }
 })
 
 -- typos_lspのセットアップはそのまま
