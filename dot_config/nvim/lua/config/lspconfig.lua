@@ -35,24 +35,9 @@ end
 -- LSPconfigをロード
 local lspconfig = require("lspconfig")
 
--- Mason-lspconfigをセットアップ
-mason_lspconfig.setup()
-
--- 最新のAPIに合わせた方法でハンドラーをセットアップ
--- 方法1: on_server_readyを使用
-if mason_lspconfig.setup_handlers then
-  -- 古いAPI用
-  mason_lspconfig.setup_handlers({
-    function(server_name)
-      lspconfig[server_name].setup({
-        on_attach = on_attach,
-        capabilities = capabilities,
-      })
-    end,
-  })
-else
-  -- 新しいAPI用
-  mason_lspconfig.setup_handlers = {
+mason_lspconfig.setup({
+  --ensure_installed = { "lua_ls", "tsserver", "rust_analyzer", "gopls"},
+  handlers = {
     function(server_name)
       lspconfig[server_name].setup({
         on_attach = on_attach,
@@ -60,7 +45,7 @@ else
       })
     end,
   }
-end
+})
 
 -- typos_lspのセットアップはそのまま
 lspconfig.typos_lsp.setup({

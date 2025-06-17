@@ -5,6 +5,7 @@ return {
   -- Mason
   {
     "williamboman/mason.nvim",
+    dependencies = { 'mason-org/mason-registry' },
 
     -- Config
     config = function()
