@@ -1,14 +1,16 @@
 [tools]
+bun = "latest"
 deno = "latest"
 direnv = "latest"
 fzf = "latest"
 gh = "latest"
-go = "latest"
+go = "1.24.4"
 java = "latest"
 lazygit = "latest"
 lsd = "latest"
 neovim = "latest"
 node = "latest"
+npm = "latest"
 peco = "latest"
 pipx = "latest"
 rg = "latest"
@@ -16,6 +18,10 @@ rust = "latest"
 starship = "latest"
 task = "latest"
 terraform = "latest"
+tfenv = "latest"
 tmux = "latest"
 typos = "latest"
 zellij = "latest"
+
+[settings]
+idiomatic_version_file_enable_tools = ["terraform"]
