@@ -1,6 +1,7 @@
 [user]
 	name = maro114510
-	email = atumaro114510@icloud.com
+	email = atsuki.nohira@fuller.co.jp
+	mail = atsuki.nohira@fuller.co.jp
 [core]
 	pager = delta
 	excludesfile = ~/.config/git/ignore
