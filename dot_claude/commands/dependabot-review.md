@@ -15,3 +15,7 @@ Are there any changes to dependabot's PR that are destructive to backward compat
 ## Target
 
 $ARGUMENTS
+
+## MUST
+
+* Answer language: Japanese only
