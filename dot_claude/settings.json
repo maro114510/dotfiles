@@ -6,8 +6,8 @@
       "Bash(rg:*)",
       "Bash(gh pr view:*)",
       "Bash(gh pr diff:*)",
-
-      "WebFetch(domain:github.com)",
+      "Bash(serena:*)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [
       "Bash(sudo:*)",
@@ -31,10 +31,10 @@
       "Bash(npm remove:*)",
       "Bash(psql:*)",
       "Bash(mysql:*)",
-      "Bash(mongod:*)",
-    ],
+      "Bash(mongod:*)"
+    ]
   },
   "feedbackSurveyState": {
-    "lastShownTime": 1753976286896
+    "lastShownTime": 1753989253554
   }
 }
