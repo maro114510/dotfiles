@@ -1,6 +1,7 @@
 ---
 allowed-tools: WebFetch, Bash(gh pr view:*), Bash(gh pr diff:*), Bash(gh pr checks:*), Bash(gh pr review:*)
 description: Review dependabot's pull request for backward compatibility issues
+argument-hint: [pr-url]
 ---
 
 # Context
@@ -19,3 +20,4 @@ $ARGUMENTS
 ## MUST
 
 * Answer language: Japanese only
+* Use the `gh` command to check the PR.
