@@ -8,6 +8,8 @@
       "Bash(gh pr diff:*)",
       "Bash(serena:*)",
       "serena:*",
+      "mcp__serena:*",
+      "search_for_pattern:*",
       "WebFetch(domain:github.com)"
     ],
     "deny": [
