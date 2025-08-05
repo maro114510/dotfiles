@@ -6,10 +6,8 @@
       "Bash(rg:*)",
       "Bash(gh pr view:*)",
       "Bash(gh pr diff:*)",
-      "Bash(serena:*)",
-      "serena:*",
-      "mcp__serena*",
-      "search_for_pattern:*",
+      "mcp__serena",
+      "mcp__context7",
       "WebFetch(domain:github.com)"
     ],
     "deny": [
