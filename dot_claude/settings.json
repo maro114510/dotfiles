@@ -6,10 +6,12 @@
       "Bash(rg:*)",
       "Bash(gh pr view:*)",
       "Bash(gh pr diff:*)",
+      "Bash(git status:*)",
       "mcp__serena",
       "mcp__context7",
       "mcp__playwright",
       "mcp__brave_web_search",
+      "mcp__sequential-thinking",
       "WebFetch(domain:github.com)"
     ],
     "deny": [
@@ -38,5 +40,6 @@
   },
   "feedbackSurveyState": {
     "lastShownTime": 1753989253554
-  }
+  },
+  "model": "opusplan"
 }
