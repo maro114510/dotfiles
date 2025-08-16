@@ -43,3 +43,4 @@ macos-icon-frame = "plastic"
 
 keybind = ctrl+option+h=goto_split:left
 keybind = ctrl+option+l=goto_split:right
+keybind = shift+enter=text:\n
