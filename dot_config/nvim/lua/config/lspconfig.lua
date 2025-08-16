@@ -11,7 +11,7 @@ local on_attach = function(client, bufnr)
   set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
   set("n", "<C-m>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
   set("n", "gy", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
-  set("n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
+  -- LSP Rename は keymap.lua で安全な実装を使用
   set("n", "ma", "<cmd>lua vim.lsp.buf.code_action()<CR>")
   set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
   set("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<CR>")
