@@ -6,5 +6,5 @@ return {
 
   ft = {'go'},
 
-  build = ':silent :GoUpdateBinaries',
+  build = ':GoUpdateBinaries',
 }
