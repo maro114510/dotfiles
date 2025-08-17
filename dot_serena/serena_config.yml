@@ -15,7 +15,7 @@ gui_log_window: false
 # window being updated. Since we can't control how agno or Claude Desktop start Serena,
 # we have to live with this limitation for now.
 
-web_dashboard: False
+web_dashboard: false
 # whether to open the Serena web dashboard (which will be accessible through your web browser) that
 # shows Serena's current session logs - as an alternative to the GUI log window which
 # is supported on all platforms.
@@ -70,5 +70,7 @@ token_count_estimator: TIKTOKEN_GPT4O
 # instruct Serena to activate the project by its path for first-time activation.
 # NOTE: Make sure there are no name collisions in the names of registered projects.
 projects:
+- /Users/nohira/.local/share/chezmoi
+- /Users/nohira/ghq/github.com/maro114510/golang_notion_api
 - /Users/nohira/ghq/github.com/maro114510/one-click-ticktick
 - /Users/nohira/ghq/github.com/maro114510/youtube_check
