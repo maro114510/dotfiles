@@ -3,4 +3,13 @@
 
 return {
   "neovim/nvim-lspconfig",
+  config = function()
+    settings = {
+      Lua = {
+        diagnostics = {
+          globals = { "vim" },
+        },
+      }
+    }
+  end
 }

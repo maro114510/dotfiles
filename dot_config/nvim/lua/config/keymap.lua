@@ -100,5 +100,15 @@ vim.keymap.set("n", "gd", "<CMD>Glance definitions<CR>", { desc = "Glance defini
 -- vim.api.nvim_set_keymap('n', '<space>df', '<Plug>(coc-definition)', { noremap = true, silent = true })
 -- space + rf = References
 -- vim.api.nvim_set_keymap('n', '<space>rf', '<Plug>(coc-references)', { noremap = true, silent = true })
--- space + rn = Rename
+-- LSP Rename (Global mapping to ensure availability)
+vim.keymap.set("n", "<space>rn", function()
+  local clients = vim.lsp.get_clients({ bufnr = 0 })
+  if #clients > 0 then
+    vim.lsp.buf.rename()
+  else
+    vim.notify("No LSP client attached to current buffer", vim.log.levels.WARN)
+  end
+end, { noremap = true, silent = true, desc = "LSP Rename" })
+
+-- COC Rename (Legacy - commented out)
 -- vim.api.nvim_set_keymap('n', '<space>rn', '<Plug>(coc-rename)', { noremap = true, silent = true })

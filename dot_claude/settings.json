@@ -1,0 +1,50 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(git status:*)",
+      "mcp__serena",
+      "mcp__context7",
+      "mcp__playwright",
+      "mcp__brave_web_search",
+      "mcp__awslabs-aws-documentation-mcp-server",
+      "mcp__sequential-thinking",
+      "WebFetch(domain:github.com)"
+    ],
+    "deny": [
+      "Bash(sudo:*)",
+      "Bash(rm:*)",
+      "Bash(rm -rf:*)",
+      "Bash(git push:*)",
+      "Bash(git reset:*)",
+      "Bash(git rebase:*)",
+      "Read(.env.*)",
+      "Read(id_rsa)",
+      "Read(id_ed25519)",
+      "Read(**/*token*)",
+      "Read(**/*key*)",
+      "Write(.env*)",
+      "Write(**/secrets/**)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(nc:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm remove:*)",
+      "Bash(psql:*)",
+      "Bash(mysql:*)",
+      "Bash(mongod:*)"
+    ]
+  },
+  "feedbackSurveyState": {
+    "lastShownTime": 1753989253554
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node ~/.claude/statusline.js"
+  },
+  "model": "opusplan"
+}
