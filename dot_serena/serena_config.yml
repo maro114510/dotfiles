@@ -72,5 +72,7 @@ token_count_estimator: TIKTOKEN_GPT4O
 projects:
 - /Users/nohira/.local/share/chezmoi
 - /Users/nohira/ghq/github.com/maro114510/golang_notion_api
+- /Users/nohira/ghq/github.com/maro114510/moto-weather-index
+- /Users/nohira/ghq/github.com/maro114510/moto-weather-index-front
 - /Users/nohira/ghq/github.com/maro114510/one-click-ticktick
 - /Users/nohira/ghq/github.com/maro114510/youtube_check
