@@ -11,6 +11,7 @@
       "mcp__context7",
       "mcp__playwright",
       "mcp__brave_web_search",
+      "mcp__awslabs-aws-documentation-mcp-server",
       "mcp__sequential-thinking",
       "WebFetch(domain:github.com)"
     ],
@@ -40,6 +41,10 @@
   },
   "feedbackSurveyState": {
     "lastShownTime": 1753989253554
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node ~/.claude/statusline.js"
   },
   "model": "opusplan"
 }

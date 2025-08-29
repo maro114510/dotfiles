@@ -1,4 +1,4 @@
-## プリンシパルエンジニアレビュー
+## Principal Engineer Pull Request Review
 
 GitHub Pull Request の内容を確認し、コードレビューを実施してください。
 レビュー対象が指定されていない場合は尋ねてください。
