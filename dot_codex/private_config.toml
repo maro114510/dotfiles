@@ -1,0 +1,6 @@
+[projects."/Users/nohira/ghq/github.com/maro114510/moto-weather-index"]
+trust_level = "trusted"
+
+[mcp_servers.serena]
+command = "uvx"
+args = ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "codex"]
