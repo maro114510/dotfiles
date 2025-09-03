@@ -1,6 +1,16 @@
+model_reasoning_effort = "high"
+hide_agent_reasoning = true
+network_access = true
+
 [projects."/Users/nohira/ghq/github.com/maro114510/moto-weather-index"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/moto-weather-index-front"]
 trust_level = "trusted"
 
 [mcp_servers.serena]
 command = "uvx"
 args = ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "codex"]
+
+[tools]
+web_search = true
