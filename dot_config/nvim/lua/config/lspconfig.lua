@@ -49,6 +49,8 @@ mason_lspconfig.setup({
 
 -- typos_lspのセットアップはそのまま
 lspconfig.typos_lsp.setup({
+  on_attach = on_attach,
+  capabilities = capabilities,
   init_options = {
     config = vim.fn.expand("~/.config/nvim/spell/.typos.toml"),
   },
