@@ -44,7 +44,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "node ~/.claude/statusline.js"
+    "command": "npx ccusage@latest statusline"
   },
   "model": "opusplan"
 }
