@@ -22,6 +22,17 @@ end
 -- 補完プラグインであるcmp_nvim_lspをLSPと連携させています
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+-- LSP共通オプションを適用しつつvim.lsp.config経由で有効化するユーティリティ
+local function configure(server_name, opts)
+  local config = vim.tbl_deep_extend("force", {
+    on_attach = on_attach,
+    capabilities = capabilities,
+  }, opts or {})
+
+  vim.lsp.config[server_name] = config
+  vim.lsp.enable(server_name)
+end
+
 -- まず mason をセットアップ
 require("mason").setup()
 
@@ -32,25 +43,17 @@ if not mason_lspconfig_status then
   return
 end
 
--- LSPconfigをロード
-local lspconfig = require("lspconfig")
-
 mason_lspconfig.setup({
   --ensure_installed = { "lua_ls", "tsserver", "rust_analyzer", "gopls"},
-  handlers = {
-    function(server_name)
-      lspconfig[server_name].setup({
-        on_attach = on_attach,
-        capabilities = capabilities,
-      })
-    end,
-  }
+  automatic_enable = false,
 })
 
--- typos_lspのセットアップはそのまま
-lspconfig.typos_lsp.setup({
-  on_attach = on_attach,
-  capabilities = capabilities,
+for _, server_name in ipairs(mason_lspconfig.get_available_servers()) do
+  configure(server_name)
+end
+
+-- mason管理外のサーバーも個別設定
+configure("typos_lsp", {
   init_options = {
     config = vim.fn.expand("~/.config/nvim/spell/.typos.toml"),
   },
