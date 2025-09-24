@@ -70,8 +70,19 @@ set autoread
 set scrolloff=8
 set nomodeline
 set updatetime=300
-set timeoutlen=500
+set timeoutlen=300
 set ttimeoutlen=0
+
+" ===== Command Line Completion =====
+" Command line completion and history
+set wildmenu
+set wildmode=longest:full,full
+set wildoptions=pum
+set history=1000
+
+" Enhanced completion settings
+set completeopt=menu,menuone,noselect
+set complete=.,w,b,u,t,i
 
 " ===== Auto Commands =====
 " Auto-open NERDTree on startup (with error handling)
@@ -138,14 +149,6 @@ call jetpack#begin()
 	Jetpack 'ghifarit53/tokyonight-vim'
 	" LSP and completion
 	Jetpack 'neoclide/coc.nvim', {'branch': 'release'}
-	Jetpack 'hrsh7th/cmp-path'
-	Jetpack 'hrsh7th/cmp-cmdline'
-	Jetpack 'Shougo/ddc.vim'
-	Jetpack 'vim-denops/denops.vim'
-	Jetpack 'ervandew/supertab'
-	Jetpack 'Shougo/pum.vim'
-	Jetpack 'tani/ddc-fuzzy'
-	Jetpack 'gelguy/wilder.nvim'
 	" syntax highlighting
 	Jetpack 'sheerun/vim-polyglot'
 	" memo
@@ -157,7 +160,7 @@ call jetpack#end()
 
 au FileType * set fo-=c fo-=r fo-=o
 
-let g:denops_disable_version_check = 1
+
 
 " ===== Plugin Settings =====
 
