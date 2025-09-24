@@ -3,25 +3,25 @@
 set fileencodings=utf-8,cp932,sjis
 " file encoding
 set encoding=utf-8
-" indicate file formant
+" indicate file format
 set fileformat=unix
 
 " ===== memo =====
 " line number
 set number
 " show invisible character
-set list 
+set list
 set listchars=tab:│·,extends:⟩,precedes:⟨,trail:·,eol:↴,nbsp:%
 " show window title
 set title
 " show statusline
-set laststatus=2 
+set laststatus=2
 " show cursor
 set ruler
 " double width character
 " "set ambiwidth=double
 " syntax highlight
-syntax on 
+syntax on
 highlight LineNr guifg=#a89984 ctermfg=241
 
 " ===== figure =====
@@ -32,13 +32,12 @@ set smartindent
 set tabstop=4
 set shiftwidth=4
 set expandtab
-"let g:indent_guides_enable_on_vim_startup = 1
 
 "===== search =====
 " search ignore upper-case lower-case character
 set ignorecase
 " return to start, when reach end
-set wrapscan 
+set wrapscan
 " highlight word
 set hlsearch
 " increment
@@ -68,10 +67,18 @@ set nobackup
 " disable swapfile
 set noswapfile
 set autoread
+set relativenumber
+set scrolloff=8
+set nomodeline
+set lazyredraw
+set ttyfast
+set updatetime=300
+set timeoutlen=500
+set ttimeoutlen=0
 
-" ===== plugin settings =====
-autocmd VimEnter * NERDTree | wincmd p
-let NERDTreeShowHidden=1
+" ===== Auto Commands =====
+" Auto-open NERDTree on startup (with error handling)
+autocmd VimEnter * if exists(':NERDTree') | NERDTree | wincmd p | endif
 
 " ===== editing settings =====
 " Delete without yanking
@@ -95,15 +102,12 @@ set backspace=start,eol,indent
 " memo
 let g:memolist_path = '~/memo'
 
-" ===== Apppearance =====
+" ===== Appearance =====
 set termguicolors
-let g:tokyonight_style = 'storm' " available: night, storm
+let g:tokyonight_style = 'night' " available: night, storm
 let g:tokyonight_enable_italic = 1
 
 colorscheme tokyonight
-
-let g:tokyonight_style = 'night' " available: night, storm
-let g:tokyonight_enable_italic = 1
 
 if has('vim_starting')
     let &t_SI .= "\e[6 q"
@@ -118,7 +122,7 @@ augroup END
 "===== Vim-jetpack =====
 packadd vim-jetpack
 call jetpack#begin()
-	" plugin managr
+	" plugin manager
 	Jetpack 'tani/vim-jetpack', {'opt': 1} "bootstrap
 	" vim indent guides
 	Jetpack 'nathanaelkane/vim-indent-guides'
@@ -131,14 +135,11 @@ call jetpack#begin()
 	Jetpack 'unblevable/quick-scope'
 	" nerdtree
 	Jetpack 'preservim/nerdtree'
-	" Unite
-	Jetpack 'Shougo/unite.vim'
-	" ctrlp
-	Jetpack 'ctrlpvim/ctrlp.vim'
 	" window size
 	Jetpack 'simeji/winresizer'
 	" tokyonight
 	Jetpack 'ghifarit53/tokyonight-vim'
+	" LSP and completion
 	Jetpack 'neoclide/coc.nvim', {'branch': 'release'}
 	Jetpack 'hrsh7th/cmp-path'
 	Jetpack 'hrsh7th/cmp-cmdline'
@@ -148,33 +149,100 @@ call jetpack#begin()
 	Jetpack 'Shougo/pum.vim'
 	Jetpack 'tani/ddc-fuzzy'
 	Jetpack 'gelguy/wilder.nvim'
-	Jetpack 'ghifarit53/tokyonight-vim'
+	" syntax highlighting
 	Jetpack 'sheerun/vim-polyglot'
+	" memo
 	Jetpack 'glidenote/memolist.vim'
-
 	" comment
 	Jetpack 'tomtom/tcomment_vim'
 call jetpack#end()
 
-" Unite settings
-nnoremap <silent> un :<C-u>Unite buffer<CR>
-nnoremap <silent> unf :<C-u>Unite file<CR>
-nnoremap <silent> ufr :<C-u>Unite file_rec<CR>
-nnoremap <silent> ub :<C-u>Unite bookmark<CR>
-nnoremap <silent> umru :<C-u>Unite file_mru<CR>
-nnoremap <silent> ur :<C-u>Unite -buffer-name=register register<CR>
 
 au FileType * set fo-=c fo-=r fo-=o
 
 let g:denops_disable_version_check = 1
 
-" fzf
+" ===== Plugin Settings =====
+
 " fzf settings
-let $FZF_DEFAULT_OPTS="--layout=reverse"
+let $FZF_DEFAULT_OPTS="--layout=reverse --border --preview-window=right:50%"
 let $FZF_DEFAULT_COMMAND="rg --files --hidden --glob '!.git/**'"
 let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8,'yoffset':0.5,'xoffset': 0.5, 'border': 'sharp' } }
+let g:fzf_preview_window = ['right:50%', 'ctrl-/']
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
 
-let mapleader = "\<Space>"
-nnoremap <C-f> :Files <CR>
+" NERDTree settings
+let NERDTreeShowHidden=1
+let NERDTreeIgnore=['\.git$', '\.DS_Store$', 'node_modules$']
+let NERDTreeWinSize=30
+let NERDTreeQuitOnOpen=1
+
+" coc.nvim settings
+let g:coc_global_extensions = [
+  \ 'coc-json',
+  \ 'coc-tsserver',
+  \ 'coc-python',
+  \ 'coc-rust-analyzer',
+  \ 'coc-go',
+  \ 'coc-clangd'
+  \ ]
+let g:coc_disable_startup_warning = 1
+
+" vim-fugitive settings
+let g:fugitive_legacy_commands = 0
+
+" quick-scope settings
+let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+let g:qs_max_chars=150
+
+" indent guides settings
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_auto_colors = 0
+let g:indent_guides_guide_size = 1
+
+let mapleader = "\\"
+
+" ===== Key Mappings =====
+
+" File operations
 nnoremap <silent> <leader>f :Files<CR>
+nnoremap <silent> <leader>b :Buffers<CR>
+nnoremap <silent> <leader>r :Rg<CR>
+nnoremap <silent> <leader>h :History<CR>
+nnoremap <silent> <leader>um :Marks<CR>
+nnoremap <silent> <leader>ur :Registers<CR>
+nnoremap <silent> <leader>uc :Commands<CR>
+nnoremap <silent> <leader>ul :Lines<CR>
 
+" Git operations
+nnoremap <silent> <leader>gs :Git<CR>
+nnoremap <silent> <leader>gc :Git commit<CR>
+nnoremap <silent> <leader>gp :Git push<CR>
+nnoremap <silent> <leader>gl :Git log<CR>
+nnoremap <silent> <leader>gd :Gdiff<CR>
+
+" NERDTree operations
+nnoremap <silent> <leader>n :NERDTreeToggle<CR>
+nnoremap <silent> <leader>nf :NERDTreeFind<CR>
+
+" Window operations
+nnoremap <silent> <leader>w :w<CR>
+nnoremap <silent> <leader>q :q<CR>
+nnoremap <silent> <leader>x :x<CR>
+
+" coc.nvim key mappings
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nmap <silent> <leader>rn <Plug>(coc-rename)
+nmap <silent> <leader>ac <Plug>(coc-codeaction)
+nmap <silent> <leader>qf <Plug>(coc-fix-current)
+nmap <silent> <leader>d :CocDiagnostics<CR>
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#pum#confirm() : "\<TAB>"
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
