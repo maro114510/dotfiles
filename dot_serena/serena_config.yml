@@ -70,11 +70,11 @@ token_count_estimator: TIKTOKEN_GPT4O
 # instruct Serena to activate the project by its path for first-time activation.
 # NOTE: Make sure there are no name collisions in the names of registered projects.
 projects:
-- /Users/nohira/.config/nvim
-- /Users/nohira/ghq/github.com/fuller-inc/gerber_webapi
-- /Users/nohira/ghq/github.com/fuller-inc/informant
-- /Users/nohira/ghq/github.com/fuller-inc/mees_web
-- /Users/nohira/ghq/github.com/fuller-inc/mees_webapi
-- /Users/nohira/ghq/github.com/fuller-inc/stats_webapi
-- /Users/nohira/ghq/github.com/fuller-inc/zaha_web
+- /Users/nohira/.local/share/chezmoi
+- /Users/nohira/ghq/github.com/maro114510/Obsidian
+- /Users/nohira/ghq/github.com/maro114510/dotfiles
+- /Users/nohira/ghq/github.com/maro114510/golang_notion_api
+- /Users/nohira/ghq/github.com/maro114510/moto-weather-index
+- /Users/nohira/ghq/github.com/maro114510/moto-weather-index-front
 - /Users/nohira/ghq/github.com/maro114510/one-click-ticktick
+- /Users/nohira/ghq/github.com/maro114510/youtube_check

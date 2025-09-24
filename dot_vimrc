@@ -225,6 +225,7 @@ nnoremap <silent> <leader>gl :Git log<CR>
 nnoremap <silent> <leader>gd :Gdiff<CR>
 
 " NERDTree operations
+nnoremap <silent> <leader>e :NERDTreeToggle<CR>
 nnoremap <silent> <leader>n :NERDTreeToggle<CR>
 nnoremap <silent> <leader>nf :NERDTreeFind<CR>
 
