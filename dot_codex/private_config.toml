@@ -1,7 +1,6 @@
 hide_agent_reasoning = true
 model = "gpt-5-codex"
 network_access = true
-model_reasoning_effort = "high"
 ask_for_approval = "never"
 
 [mcp_servers.playwright]
@@ -27,10 +26,35 @@ args = [
 ]
 command = "npx"
 
+[servers.ultracite]
+command = "npx"
+args = ["-y", "mcp-remote", "https://www.ultracite.ai/api/mcp/mcp"]
+
 [projects."/Users/nohira/ghq/github.com/maro114510/moto-weather-index"]
 trust_level = "trusted"
 
 [projects."/Users/nohira/ghq/github.com/maro114510/moto-weather-index-front"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/.local/share/chezmoi"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/golang_notion_api"]
+trust_level = "trusted"
+
+[projects."/Users/nohira"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/sample"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/youtube_check"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/Obsidian"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/.codex"]
 trust_level = "trusted"
 
 [tools]
