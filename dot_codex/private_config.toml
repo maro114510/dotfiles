@@ -2,6 +2,17 @@ hide_agent_reasoning = true
 model = "gpt-5-codex"
 network_access = true
 ask_for_approval = "never"
+model_responding_effort = "medium"
+
+[mcp_servers]
+context7.command = "npx"
+context7.args = ["-y", "@upstash/context7-mcp@latest"]
+everything.command = "npx"
+everything.args = ["-y", "@modelcontextprotocol/server-everything@latest"]
+aws-knowledge-mcp-server.command = "uvx"
+aws-knowledge-mcp-server.args = ["fastmcp", "run", "https://knowledge-mcp.global.api.aws"]
+chrome-devtools.command = "npx"
+chrome-devtools.args = ["-y", "chrome-devtools-mcp@latest"]
 
 [mcp_servers.playwright]
 args = ["@playwright/mcp@latest"]
@@ -55,6 +66,9 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/Users/nohira/.codex"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/dotfiles"]
 trust_level = "trusted"
 
 [tools]
