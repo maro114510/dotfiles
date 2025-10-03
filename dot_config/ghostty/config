@@ -38,9 +38,15 @@ mouse-scroll-multiplier = 2
 
 font-size =11
 
-macos-icon = "holographic"
+macos-icon = "xray"
 macos-icon-frame = "plastic"
 
 keybind = ctrl+option+h=goto_split:left
 keybind = ctrl+option+l=goto_split:right
 keybind = shift+enter=text:\n
+
+# background-image = "/Users/nohira/Downloads/wall_material/ben-harritt-baB_X9G7y2I.jpg"
+# rackground-image-opacity = "0.6"
+# background-image-fit = "cover"
+
+macos-window-buttons = "hidden"

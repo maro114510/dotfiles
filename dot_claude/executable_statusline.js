@@ -56,7 +56,7 @@ process.stdin.on('end', async () => {
     if (percentage >= 90) percentageColor = '\x1b[31m'; // Red
 
     // Build status line
-    const statusLine = `[${model}] 📁 ${currentDir} | 🪙 ${tokenDisplay} | ${percentageColor}${percentage}%\x1b[0m`;
+    const statusLine = `[${model}] 📁 ${currentDir} | 🐦 ${tokenDisplay} | ${percentageColor}${percentage}%\x1b[0m`;
 
     console.log(statusLine);
   } catch (error) {
