@@ -149,22 +149,22 @@ fi
 
 ### Rust ###
 
-### peco ###
-function peco-select-history() {
-	local tac
-	if which tac > /dev/null; then
-		tac="tac"
-	else
-		tac="tail -r"
-	fi
-	BUFFER=$(\history -n 1 | \
-	eval $tac | \
-		peco --query "$LBUFFER")
+### fzf history search ###
+function fzf-select-history() {
+	BUFFER=$(history -n 1 | \
+		tail -r | \
+		awk '!seen[$0]++' | \
+		fzf --height=40% \
+			--reverse \
+			--border \
+			--no-preview \
+			--query="$LBUFFER" \
+			--prompt="History > ")
 	CURSOR=$#BUFFER
-	zle clear-screen
+	zle reset-prompt
 }
-zle -N peco-select-history
-bindkey '^r' peco-select-history
+zle -N fzf-select-history
+bindkey '^r' fzf-select-history
 
 # export commands
 export PATH="$HOME/commands:$PATH"
@@ -235,7 +235,7 @@ function vimcheck() {
 
 ##### fzf #####
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
-export FZF_DEFAULT_OPTS="--height 50% --layout=reverse --border --inline-info --preview 'head -100 {}'"
+export FZF_DEFAULT_OPTS="--height 50% --layout=reverse --border --inline-info"
 # using ripgrep combined with preview
 # vim with fzf
 vf() {
@@ -354,7 +354,12 @@ function y() {
 }
 
 function paws {
-    local profile=$(perl -nle 'print $1 if /^[[](?:profile\s+)?([^]]+)/' ~/.aws/config | peco)
+    local profile=$(aws configure list-profiles | \
+        grep -v "default" | \
+        sort | \
+        fzf --prompt "Select AWS PROFILE > " \
+            --height 50% --layout=reverse --border \
+            --preview "grep {} -A5 ~/.aws/config")
     if [ -n "$profile" ]; then
         AWS_PROFILE=$profile
         export AWS_PROFILE
@@ -363,7 +368,9 @@ function paws {
 }
 
 function penv {
-    local appenv=$( (echo development; echo staging; echo production) | peco)
+    local appenv=$(echo -e "development\nstaging\nproduction" | \
+        fzf --prompt "Select APP_ENV > " \
+            --height 30% --layout=reverse --border)
     if [ -n "$appenv" ]; then
         APP_ENV=$appenv
         export APP_ENV
