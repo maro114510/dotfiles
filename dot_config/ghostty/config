@@ -2,6 +2,9 @@ theme = Dracula+
 # foreground = #52AD70
 selection-background = #52AD70
 
+# Default shell
+command = /bin/zsh
+
 window-padding-x = 20
 window-padding-y = 5
 window-padding-balance = true
