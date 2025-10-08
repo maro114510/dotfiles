@@ -13,6 +13,8 @@ aws-knowledge-mcp-server.command = "uvx"
 aws-knowledge-mcp-server.args = ["fastmcp", "run", "https://knowledge-mcp.global.api.aws"]
 chrome-devtools.command = "npx"
 chrome-devtools.args = ["-y", "chrome-devtools-mcp@latest"]
+linear.command = "npx"
+linear.args = ["-y", "mcp-remote", "https://mcp.linear.app/sse"]
 
 [mcp_servers.playwright]
 args = ["@playwright/mcp@latest"]
@@ -28,14 +30,6 @@ args = [
     "codex",
 ]
 command = "uvx"
-
-[mcp_servers.vibe_kanban]
-args = [
-    "-y",
-    "vibe-kanban",
-    "--mcp",
-]
-command = "npx"
 
 [servers.ultracite]
 command = "npx"
@@ -69,6 +63,12 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/Users/nohira/ghq/github.com/maro114510/dotfiles"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/python_sandbox"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/golang_sandbox"]
 trust_level = "trusted"
 
 [tools]
