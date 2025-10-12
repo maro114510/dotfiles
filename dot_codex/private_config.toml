@@ -71,5 +71,11 @@ trust_level = "trusted"
 [projects."/Users/nohira/ghq/github.com/maro114510/golang_sandbox"]
 trust_level = "trusted"
 
+[projects."/Users/nohira/ghq/github.com/maro114510/googlecloud_project"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/stock_turnback"]
+trust_level = "trusted"
+
 [tools]
 web_search = true
