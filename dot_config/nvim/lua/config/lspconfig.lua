@@ -49,7 +49,11 @@ mason_lspconfig.setup({
 })
 
 for _, server_name in ipairs(mason_lspconfig.get_available_servers()) do
-  configure(server_name)
+  -- glintはcmd関数でconfigパラメータを必要とするが、Neovim 0.11の新しいLSP設定システムでは
+  -- 正しく渡されないため、スキップする（Ember/Glimmerプロジェクトで必要な場合は個別設定が必要）
+  if server_name ~= "glint" then
+    configure(server_name)
+  end
 end
 
 -- mason管理外のサーバーも個別設定
