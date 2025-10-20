@@ -62,3 +62,30 @@ configure("typos_lsp", {
     config = vim.fn.expand("~/.config/nvim/spell/.typos.toml"),
   },
 })
+
+-- Ruff LSP サーバー設定（フォーマット + リンティング）
+-- ruff または ruff-lsp がインストールされている場合に有効化
+local ruff_available = false
+for _, available_server in ipairs(mason_lspconfig.get_available_servers()) do
+  if available_server == "ruff" or available_server == "ruff_lsp" then
+    ruff_available = true
+    break
+  end
+end
+
+if ruff_available then
+  configure("ruff", {
+    init_options = {
+      settings = {
+        -- Ruff のリンティング設定
+        lint = {
+          enable = true,
+        },
+        -- フォーマット設定
+        format = {
+          docstring_code_format = true,
+        },
+      },
+    },
+  })
+end
