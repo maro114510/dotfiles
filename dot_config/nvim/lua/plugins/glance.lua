@@ -12,8 +12,10 @@ return {
   },
 
   config = function()
+    require("glance").setup()
+
     vim.api.nvim_create_autocmd("FileType", {
-      pattern = "go",
+      pattern = { "go", "python", "rust", "javascript", "typescript", "lua" },
 
       callback = function()
         vim.api.nvim_del_keymap("n", "gd")
