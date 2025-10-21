@@ -27,8 +27,6 @@ vim.opt.background = "dark"
 
 -- Display
 -- Indent
-vim.o.list = true
-vim.api.nvim_set_option('termguicolors', true)
 
 -- Disable wrap test
 vim.opt.wrap = false
