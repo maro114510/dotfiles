@@ -63,6 +63,19 @@ configure("typos_lsp", {
   },
 })
 
+-- Pylsp サーバー設定（E501抑制）
+configure("pylsp", {
+  settings = {
+    pylsp = {
+      plugins = {
+        pycodestyle = {
+          ignore = {"E501"},
+        }
+      }
+    }
+  }
+})
+
 -- Ruff LSP サーバー設定（フォーマット + リンティング）
 -- ruff または ruff-lsp がインストールされている場合に有効化
 local ruff_available = false
@@ -80,6 +93,7 @@ if ruff_available then
         -- Ruff のリンティング設定
         lint = {
           enable = true,
+          ignore = {"E501"},
         },
         -- フォーマット設定
         format = {
