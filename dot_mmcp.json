@@ -36,6 +36,15 @@
         "chrome-devtools-mcp@latest"
       ],
       "env": {}
+    },
+    "linear": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.linear.app/sse"
+      ],
+      "env": {}
     }
   }
 }

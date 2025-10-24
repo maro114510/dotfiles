@@ -49,7 +49,11 @@ mason_lspconfig.setup({
 })
 
 for _, server_name in ipairs(mason_lspconfig.get_available_servers()) do
-  configure(server_name)
+  -- glintはcmd関数でconfigパラメータを必要とするが、Neovim 0.11の新しいLSP設定システムでは
+  -- 正しく渡されないため、スキップする（Ember/Glimmerプロジェクトで必要な場合は個別設定が必要）
+  if server_name ~= "glint" then
+    configure(server_name)
+  end
 end
 
 -- mason管理外のサーバーも個別設定
@@ -58,3 +62,44 @@ configure("typos_lsp", {
     config = vim.fn.expand("~/.config/nvim/spell/.typos.toml"),
   },
 })
+
+-- Pylsp サーバー設定（E501抑制）
+configure("pylsp", {
+  settings = {
+    pylsp = {
+      plugins = {
+        pycodestyle = {
+          ignore = {"E501"},
+        }
+      }
+    }
+  }
+})
+
+-- Ruff LSP サーバー設定（フォーマット + リンティング）
+-- ruff または ruff-lsp がインストールされている場合に有効化
+local ruff_available = false
+for _, available_server in ipairs(mason_lspconfig.get_available_servers()) do
+  if available_server == "ruff" or available_server == "ruff_lsp" then
+    ruff_available = true
+    break
+  end
+end
+
+if ruff_available then
+  configure("ruff", {
+    init_options = {
+      settings = {
+        -- Ruff のリンティング設定
+        lint = {
+          enable = true,
+          ignore = {"E501"},
+        },
+        -- フォーマット設定
+        format = {
+          docstring_code_format = true,
+        },
+      },
+    },
+  })
+end
