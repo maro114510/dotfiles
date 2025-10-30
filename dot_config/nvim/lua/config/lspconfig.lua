@@ -23,13 +23,14 @@ end
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 -- LSP共通オプションを適用しつつvim.lsp.config経由で有効化するユーティリティ
+-- vim.lsp.config()関数を使用してnvim-lspconfigのデフォルト設定（filetypes等）とマージする
 local function configure(server_name, opts)
   local config = vim.tbl_deep_extend("force", {
     on_attach = on_attach,
     capabilities = capabilities,
   }, opts or {})
 
-  vim.lsp.config[server_name] = config
+  vim.lsp.config(server_name, config)
   vim.lsp.enable(server_name)
 end
 
@@ -48,7 +49,10 @@ mason_lspconfig.setup({
   automatic_enable = false,
 })
 
-for _, server_name in ipairs(mason_lspconfig.get_available_servers()) do
+-- インストール済みのサーバーのみを設定
+-- get_available_servers()ではなくget_installed_servers()を使用することで、
+-- インストールされていないサーバーの設定ファイルが読み込まれることを防ぐ
+for _, server_name in ipairs(mason_lspconfig.get_installed_servers()) do
   -- glintはcmd関数でconfigパラメータを必要とするが、Neovim 0.11の新しいLSP設定システムでは
   -- 正しく渡されないため、スキップする（Ember/Glimmerプロジェクトで必要な場合は個別設定が必要）
   if server_name ~= "glint" then
@@ -79,8 +83,8 @@ configure("pylsp", {
 -- Ruff LSP サーバー設定（フォーマット + リンティング）
 -- ruff または ruff-lsp がインストールされている場合に有効化
 local ruff_available = false
-for _, available_server in ipairs(mason_lspconfig.get_available_servers()) do
-  if available_server == "ruff" or available_server == "ruff_lsp" then
+for _, installed_server in ipairs(mason_lspconfig.get_installed_servers()) do
+  if installed_server == "ruff" or installed_server == "ruff_lsp" then
     ruff_available = true
     break
   end
