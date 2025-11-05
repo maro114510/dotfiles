@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -euo pipefail
+
+DEFAULT_BRANCHES="main master"
+
+remote_ref=$2
+pushed_branch=${remote_ref##refs/heads/}
+
+for blocked in ${DEFAULT_BRANCHES}; do
+    if [ "$pushed_branch" = "$blocked" ]; then
+        echo "!!  Error: Not permitted to push default branch !!"
+        exit 1
+    fi
+done
+
+exit 0
