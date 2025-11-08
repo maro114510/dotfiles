@@ -3,6 +3,7 @@ model = "gpt-5-codex"
 network_access = true
 ask_for_approval = "never"
 model_responding_effort = "medium"
+web_search_request = true
 
 [mcp_servers.serena]
 args = [
@@ -60,5 +61,8 @@ trust_level = "trusted"
 [projects."/Users/nohira/ghq/github.com/maro114510/python-clean-architecture"]
 trust_level = "trusted"
 
-[tools]
-web_search = true
+[projects."/Users/nohira/ghq/github.com/maro114510/peco"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/slides_memo"]
+trust_level = "trusted"
