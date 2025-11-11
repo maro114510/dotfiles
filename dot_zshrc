@@ -159,7 +159,8 @@ function fzf-select-history() {
 			--border \
 			--no-preview \
 			--query="$LBUFFER" \
-			--prompt="History > ")
+			--prompt="History > " \
+			--tiebreak=begin,index)
 	CURSOR=$#BUFFER
 	zle reset-prompt
 }
