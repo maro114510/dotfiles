@@ -1,5 +1,5 @@
-# Amazon Q pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
+# Kiro CLI pre block. Keep at the top of this file.
+[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh"
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -159,8 +159,7 @@ function fzf-select-history() {
 			--border \
 			--no-preview \
 			--query="$LBUFFER" \
-			--prompt="History > " \
-			--tiebreak=begin,index)
+			--prompt="History > ")
 	CURSOR=$#BUFFER
 	zle reset-prompt
 }
@@ -197,7 +196,7 @@ alias ch='chezmoi'
 alias nv='nohup neovide > /dev/null 2>&1 &'
 alias zj='zellij'
 alias cz='chezmoi'
-alias awsts='aws sts get-caller-identity --no-cli-pager'
+alias awsts='aws sts get-caller-identity'
 
 alias ac='sh ~/commands/auto_commit.sh'
 alias めも='sh ~/commands/create_memo.sh'
@@ -321,12 +320,7 @@ function bmb() {
 	local bookmark_url
 	bookmark_url=$(bmm list | fzf --preview 'bmm show {}')
 	open -a "Google Chrome" "$bookmark_url"
-}
-
-# Amazon Q post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
-
-### aws profile
+}### aws profile
 alias awsp=set_aws_profile
 
 function set_aws_profile() {
@@ -377,3 +371,9 @@ function penv {
         echo "APP_ENV is now $APP_ENV"
     fi
 }
+
+# Added by Antigravity
+export PATH="/Users/nohira/.antigravity/antigravity/bin:$PATH"
+
+# Kiro CLI post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
