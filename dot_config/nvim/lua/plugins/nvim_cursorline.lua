@@ -7,8 +7,8 @@ return {
   config = function()
     require('nvim-cursorline').setup {
       cursorline = {
-        enable = true,
-        timeout = 1000,
+        enable = false,
+        timeout = 0,
         number = false,
       },
 
