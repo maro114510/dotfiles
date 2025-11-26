@@ -1,9 +1,10 @@
 hide_agent_reasoning = true
-model = "gpt-5-codex"
+model = "gpt-5.1-codex-max"
 network_access = true
 ask_for_approval = "never"
 model_responding_effort = "medium"
 web_search_request = true
+model_reasoning_effort = "medium"
 
 [mcp_servers.serena]
 args = [
@@ -66,3 +67,19 @@ trust_level = "trusted"
 
 [projects."/Users/nohira/ghq/github.com/maro114510/slides_memo"]
 trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/moto-weather-index-memo"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/one-click-ticktick"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/youtube_check_front"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/voice_resume"]
+trust_level = "trusted"
+
+[notice]
+hide_gpt5_1_migration_prompt = true
+"hide_gpt-5.1-codex-max_migration_prompt" = true
