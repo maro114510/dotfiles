@@ -17,4 +17,12 @@ return {
   end,
 
   event = "UIEnter",
+
+  keys = {
+    {
+      "-",
+      "<cmd>Oil<CR>",
+      mode = "n",
+    },
+  },
 }
