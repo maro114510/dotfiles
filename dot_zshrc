@@ -187,22 +187,16 @@ alias vi='vi'
 alias lg='lazygit'
 alias cl='clear'
 alias xh='xh -s monokai'
-alias f='fvm flutter'
-alias d='fvm dart'
 alias gitmo='gitmoji -c'
 alias proot='cd $(git rev-parse --show-toplevel)'
 alias sb='sunbeam'
 alias ch='chezmoi'
 alias nv='nohup neovide > /dev/null 2>&1 &'
-alias zj='zellij'
 alias cz='chezmoi'
-alias awsts='aws sts get-caller-identity'
+alias awsts='aws sts get-caller-identity --no-cli-pager'
 
-alias ac='sh ~/commands/auto_commit.sh'
 alias めも='sh ~/commands/create_memo.sh'
 SESSION_NAME="$(date +'%H%M%S_%m-%d')"
-# alias memo='cd ~/memo && memo n'
-# alias memol='memo list | fzf | xargs -I {} sh -c "echo ~/memo/{} | xargs open -a CotEditor"'
 alias memol='memo list | fzf --preview "head ~/memo/{}" | xargs -I {} sh -c "open ~/memo/{} -a CotEditor"'
 alias tmuxer='tmux new -s $SESSION_NAME \; source-file ~/.tmux.session.conf'
 alias tmuxx='tmux new -s $SESSION_NAME'
@@ -223,18 +217,10 @@ if [ -f "$HOME/.env" ]; then
 	fi
 fi
 
-#### vim check ####
-function vimcheck() {
-	if git status > /dev/null 2>&1; then
-		cd "$(git rev-parse --show-toplevel)" && $1
-	else
-		$1
-	fi
-}
-
 ##### fzf #####
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
 export FZF_DEFAULT_OPTS="--height 50% --layout=reverse --border --inline-info"
+
 # using ripgrep combined with preview
 # vim with fzf
 vf() {
