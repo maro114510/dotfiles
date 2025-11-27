@@ -320,7 +320,9 @@ function bmb() {
 	local bookmark_url
 	bookmark_url=$(bmm list | fzf --preview 'bmm show {}')
 	open -a "Google Chrome" "$bookmark_url"
-}### aws profile
+}
+
+### aws profile
 alias awsp=set_aws_profile
 
 function set_aws_profile() {
