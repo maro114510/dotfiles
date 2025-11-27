@@ -147,8 +147,6 @@ elif [ "$(uname)" = "Darwin" ]; then
 	export PATH=$PATH:$GOBIN
 fi
 
-### Rust ###
-
 ### fzf history search ###
 function fzf-select-history() {
 	BUFFER=$(history -n 1 | \
@@ -195,7 +193,6 @@ alias nv='nohup neovide > /dev/null 2>&1 &'
 alias cz='chezmoi'
 alias awsts='aws sts get-caller-identity --no-cli-pager'
 
-alias めも='sh ~/commands/create_memo.sh'
 SESSION_NAME="$(date +'%H%M%S_%m-%d')"
 alias memol='memo list | fzf --preview "head ~/memo/{}" | xargs -I {} sh -c "open ~/memo/{} -a CotEditor"'
 alias tmuxer='tmux new -s $SESSION_NAME \; source-file ~/.tmux.session.conf'
@@ -279,11 +276,6 @@ function wtr(){
 # mise for language version management
 eval "$(mise activate zsh)"
 
-tere() {
-    local result=$(command tere "$@")
-    [ -n "$result" ] && cd -- "$result"
-}
-
 ### yazi
 function ya() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
@@ -291,7 +283,6 @@ function ya() {
 	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
 		builtin cd -- "$cwd"
 	fi
-	rm -f -- "$tmp"
 }
 
 ### zozide
