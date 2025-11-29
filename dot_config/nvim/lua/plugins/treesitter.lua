@@ -3,11 +3,11 @@
 return {
   'nvim-treesitter/nvim-treesitter',
 
+  build = ':TSUpdate',
+
+  event = { "BufReadPost", "BufNewFile" },
+
   config = function()
-    local ts_update = require("nvim-treesitter.install").update({ with_sync = true, silent = true })
-
-    ts_update()
-
     require('nvim-treesitter.configs').setup({
       auto_tag = {
         enable = true,

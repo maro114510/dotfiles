@@ -8,5 +8,5 @@ return {
     require('numb').setup()
   end,
 
-  event = { 'VimEnter' },
+  event = { 'BufReadPost', 'BufNewFile' },
 }

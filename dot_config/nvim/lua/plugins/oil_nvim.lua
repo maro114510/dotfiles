@@ -16,7 +16,7 @@ return {
     })
   end,
 
-  event = "UIEnter",
+  cmd = { "Oil" },
 
   keys = {
     {

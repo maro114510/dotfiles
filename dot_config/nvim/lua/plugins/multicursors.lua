@@ -4,8 +4,6 @@
 return {
   "smoka7/multicursors.nvim",
 
-  event = "VeryLazy",
-
   dependencies = {
     'nvimtools/hydra.nvim',
   },
@@ -20,6 +18,14 @@ return {
       '<Leader>m',
       '<cmd>MCstart<cr>',
       desc = 'Create a selection for selected text or word under the cursor',
+    },
+    {
+      "<C-n>",
+      mode = { "n", "v" },
+      function()
+        require("multicursors").start()
+      end,
+      desc = "Start multicursor",
     },
   },
 }

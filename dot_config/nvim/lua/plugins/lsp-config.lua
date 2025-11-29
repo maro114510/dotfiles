@@ -3,7 +3,9 @@
 
 return {
   "neovim/nvim-lspconfig",
-  lazy = false,
+
+  event = { "BufReadPre", "BufNewFile" },
+
   config = function()
     settings = {
       Lua = {

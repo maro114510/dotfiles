@@ -7,5 +7,5 @@ return {
     require'nvim-autopairs'.setup {}
   end,
 
-  event = 'VimEnter',
+  event = {"InsertEnter"},
 }

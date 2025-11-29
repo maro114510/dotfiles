@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(nvim:*)",
+      "WebSearch",
+      "Bash(cfn-lint:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

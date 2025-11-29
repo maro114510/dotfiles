@@ -8,5 +8,5 @@ return {
     require('scrollbar.handlers.search').setup()
   end,
 
-  event = "VimEnter"
+  event = { "BufReadPost", "BufNewFile" },
 }

@@ -14,5 +14,5 @@ return {
     })
   end,
 
-  event = { "UIEnter" },
+  event = { "BufReadPost", "BufNewFile" },
 }

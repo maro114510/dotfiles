@@ -22,7 +22,7 @@ return {
       -- ESCでターミナルモードからノーマルモードへ
       function(term)
         vim.api.nvim_buf_set_keymap(
-          term.bufnr,
+          trm.bufnr,
           "t",
           "<Esc>",
           "<C-\\><C-n>",

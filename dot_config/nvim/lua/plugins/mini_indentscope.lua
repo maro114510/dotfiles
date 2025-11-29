@@ -9,5 +9,5 @@ return {
     })
   end,
 
-  event = 'UIEnter',
+  event = {'BufReadPre', 'BufNewFile'},
 }

@@ -98,5 +98,25 @@ return {
 		require('telescope').load_extension('memo')
 	end,
 
-	event = 'VimEnter',
+  cmd = { "Telescope" },
+
+  keys = {
+    {
+      "<C-f>",
+      function()
+        require("telescope.builtin").find_files({
+          hidden = true,
+          find_command = { "fd", "--type", "f", "--hidden", "--follow", "-E", ".git/*" },
+        })
+      end,
+      desc = "Find files",
+    },
+    {
+      "<C-g>",
+      function()
+        require("telescope.builtin").live_grep()
+      end,
+      desc = "Live grep",
+    }
+  }
 }

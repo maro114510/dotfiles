@@ -15,7 +15,7 @@ return {
   },
 
   -- event = "BufRead",
-  -- event = "VeryLazy",
+  event = "VeryLazy",
 
   config = function()
     require("noice").setup({
