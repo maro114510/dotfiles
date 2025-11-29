@@ -39,17 +39,5 @@ local opts = {
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup("plugins", opts)
 
-require("lualine").setup({
-	sections = {
-		lualine_x = {
-			{
-				require("lazy.status").updates,
-				cond = require("lazy.status").has_updates,
-				color = { fg = "#ff9e64" },
-			},
-		},
-	},
-})
-
 require("config")
 require("user")

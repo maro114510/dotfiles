@@ -1,38 +1,12 @@
 -- https://github.com/folke/snacks.nvim.git
 -- Fuzzy Finder
 
--- ロゴを文字列で定義
 local logo = [[
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-━━━━━━━━ ▄▄    ▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄   ▄▄ ▄▄ ▄▄   ▄▄ ━━━━━━━━
-━━━━━━━━█  █  █ █       █       █  █ █  █  █  █▄█  █━━━━━━━━
-━━━━━━━━█   █▄█ █    ▄▄▄█   ▄   █  █▄█  █  █       █━━━━━━━━
-━━━━━━━━█       █   █▄▄▄█  █ █  █       █  █       █━━━━━━━━
-━━━━━━━━█  ▄    █    ▄▄▄█  █▄█  █       █  █       █━━━━━━━━
-━━━━━━━━█ █ █   █   █▄▄▄█       ██     ██  █ ██▄██ █━━━━━━━━
-━━━━━━━━█▄█  █▄▄█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█ █▄▄▄█ █▄▄█▄█   █▄█━━━━━━━━
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ____  ___  ____ _   __(_)___ ___
+  / __ \/ _ \/ __ \ | / / / __ `__ \
+ / / / /  __/ /_/ / |/ / / / / / / /
+/_/ /_/\___/\____/|___/_/_/ /_/ /_/
 ]]
--- 表示に使う`tte`のサブコマンド（アニメーション指定）
-local subcommands = {
-  'middleout --center-movement-speed 0.8 --full-movement-speed 0.2',
-  'slide --merge --movement-speed 0.8',
-  'beams --beam-delay 5 --beam-row-speed-range 20-60 --beam-column-speed-range 8-12',
-}
--- 候補のサブコマンドからランダムに1個を使用
-math.randomseed(os.time())
-local subcommand = subcommands[math.random(#subcommands)]
--- Neovimのjobで実行するコマンド
-local cmd = {
-  'sh',
-  '-c',
-  'echo '
-  .. vim.fn.shellescape(vim.trim(logo))
-  .. ' | tte --anchor-canvas s ' .. subcommand
-  .. ' --final-gradient-direction diagonal'
-}
 
 return {
   "folke/snacks.nvim",
@@ -49,21 +23,14 @@ return {
     bigfile = { enabled = true, hidden = true },
     dashboard = {
       enabled = true,
+      preset = {
+        header = logo,
+      },
       sections = {
-        {
-          section = "terminal",
-          cmd = cmd,
-          random = 10,
-          pane = 1,
-          padding = 0.6,
-          height = 10,
-          width = 60,
-          gap = 1,
-        },
+        { section = "header", padding = 1 },
         { section = "keys", gap = 1, padding = 1 },
         { section = "startup" },
       },
-      pane_gap = 1.0,
     },
     explorer = {
       enabled = true,
@@ -138,19 +105,6 @@ return {
   },
 
   init = function()
-    -- Vimがスタートしたら、ロゴを表示する関数を呼び出す
-    vim.api.nvim_create_autocmd("VimEnter", {
-      callback = function()
-        -- ダッシュボードが表示されるまで少し待ってから実行
-        vim.defer_fn(function()
-          if vim.bo.filetype == "dashboard" then
-            -- ロゴを描画（ダッシュボードの上に重なって表示される）
-            display_logo(logo)
-          end
-        end, 100)
-      end,
-    })
-
     vim.api.nvim_create_autocmd("User", {
     pattern = "VeryLazy",
     callback = function()
