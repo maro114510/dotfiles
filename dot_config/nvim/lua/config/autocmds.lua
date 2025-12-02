@@ -1,4 +1,3 @@
-
 -- Change Color Scheme
 -- vim.cmd[[colorscheme tokyonight-night]]
 -- nightfox, dayfox, dawnfox, duskfox, nordfox,terafox, carbonfox
@@ -14,4 +13,3 @@ vim.cmd([[
 
 vim.cmd [[highlight Normal ctermbg=NONE guibg=NONE]]
 vim.cmd[[highlight Comment cterm=italic gui=italic guifg=#ffd700 ctermfg=226]]
-

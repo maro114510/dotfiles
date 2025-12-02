@@ -7,7 +7,7 @@ return {
   event = { "BufReadPre", "BufNewFile" },
 
   config = function()
-    settings = {
+    local settings = {
       Lua = {
         diagnostics = {
           globals = { "vim" },

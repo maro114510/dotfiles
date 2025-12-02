@@ -4,7 +4,6 @@
 return {
   'j-hui/fidget.nvim',
 
-  -- Event
   event = {
     "BufReadPre",
     "BufNewFile",

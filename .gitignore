@@ -12,9 +12,9 @@
 # poetry.lock
 # poetry.toml
 
-### Golang ### 
+### Golang ###
 # Unignore all with extensions
-# * 
+# *
 # !*/
 # !*.*
 # *.txt

@@ -87,5 +87,5 @@ return {
     }
   },
 
-  EVENT = "VIMENTER",
+  EVENT = "VeryLazy",
 }
