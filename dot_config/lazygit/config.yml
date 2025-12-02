@@ -80,3 +80,15 @@ customCommands:
         command: "bash -c 'type=\"{{.Form.Type}}\"; scope=\"{{.Form.Scope}}\"; message=\"{{.Form.Message}}\"; commit_message=\"$type${scope:+($scope)}: $message\"; git commit -m \"$commit_message\"'"
 
         loadingText: "Committing..."
+
+os:
+  editPreset: "nvim-remote"
+  edit: >
+    nvr -cc "execute 'wincmd p | drop ' . fnameescape('{{filename}}')
+    | lua _G._SNACKS_LG_CLOSE()"
+  editAtLine: >
+    nvr -cc "execute 'wincmd p | drop ' . fnameescape('{{filename}}')
+    | {{line}} | lua _G._SNACKS_LG_CLOSE()"
+  editAtLineAndWait: >
+    nvr -cc "execute 'wincmd p | drop ' . fnameescape('{{filename}}')
+    | {{line}} | lua _G._SNACKS_LG_CLOSE()" --remote-wait-silent
