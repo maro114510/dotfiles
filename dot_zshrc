@@ -1,5 +1,6 @@
 ### Sheldon plugin manager ###
 eval "$(sheldon source)"
+bindkey -e
 
 # Cached compinit - only regenerate once per day
 autoload -Uz compinit
