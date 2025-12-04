@@ -1,0 +1,23 @@
+shell = "zsh"
+
+# Deferred loading for better performance
+[templates]
+defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
+
+# zsh-defer - enables deferred loading
+[plugins.zsh-defer]
+github = "romkatv/zsh-defer"
+
+# Completions (load early)
+[plugins.zsh-completions]
+github = "zsh-users/zsh-completions"
+
+# Autosuggestions (deferred)
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+apply = ["defer"]
+
+# Syntax highlighting (deferred, must be last)
+[plugins.zsh-syntax-highlighting]
+github = "zsh-users/zsh-syntax-highlighting"
+apply = ["defer"]
