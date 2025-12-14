@@ -1,4 +1,5 @@
-theme = Dracula+
+theme = Night Owl
+# foreground = #52AD70
 selection-background = #52AD70
 
 # Default shell
@@ -46,5 +47,9 @@ macos-icon-frame = "plastic"
 keybind = ctrl+option+h=goto_split:left
 keybind = ctrl+option+l=goto_split:right
 keybind = shift+enter=text:\n
+
+# background-image = "/Users/nohira/Downloads/wall_material/ben-harritt-baB_X9G7y2I.jpg"
+# rackground-image-opacity = "0.6"
+# background-image-fit = "cover"
 
 macos-window-buttons = "hidden"
