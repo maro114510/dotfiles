@@ -104,7 +104,7 @@ shape = 'underline'
 # Whenever the key binding `OpenConfigEditor` is triggered it will
 # use the value of the editor along with the rio configuration path.
 [editor]
-program = "vi"
+program = "nvim"
 args = []
 
 # Window configuration
@@ -224,8 +224,7 @@ family = "RobotoMono Nerd Font"
 # ]
 #
 # Simple example:
-# [fonts]
-# size = 18
+size = 12.0
 #
 # [fonts.regular]
 # family = "cascadiamono"
@@ -325,10 +324,10 @@ family = "RobotoMono Nerd Font"
 # (considering if theme folder does exists and is being used)
 #
 # Example:
-# [colors]
+[colors]
 # background = '#0F0D0E'
 # foreground = '#F9F4DA'
-# cursor = '#F38BA3'
+cursor = '#52AD70'
 # tabs = '#443d40'
 # tabs-active = '#F38BA3'
 # green = '#0BA95B'
@@ -352,7 +351,7 @@ family = "RobotoMono Nerd Font"
 # Platform
 #
 # Rio now allows you to have different configurations per OS
-# You can write ovewrite properties like `Shell`, `Navigation`
+# You can write overwrite properties like `Shell`, `Navigation`
 # and `Window`.
 #
 # Example:
@@ -378,3 +377,6 @@ family = "RobotoMono Nerd Font"
 # [developer]
 # log-level = "OFF"
 # enable-log-file = false
+
+[bell]
+audio = false
