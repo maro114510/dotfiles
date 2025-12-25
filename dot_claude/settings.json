@@ -1,5 +1,16 @@
 {
   "permissions": {
+    "read": {
+      "deny": [
+        "**/.env*",
+        "**/*.pem",
+        "**/*.key",
+        "**/secrets/**",
+        "**/credentials/**",
+        "**/.aws/**",
+        "**/.ssh/**"
+      ]
+    },
     "allow": [
       "Bash(find:*)",
       "Bash(grep:*)",
