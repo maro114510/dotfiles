@@ -18,9 +18,11 @@ return {
       pattern = { "go", "python", "rust", "javascript", "typescript", "lua" },
 
       callback = function()
-        vim.api.nvim_del_keymap("n", "gd")
+        -- vim.api.nvim_del_keymap("n", "gd")
         vim.keymap.set("n", "gd", "<CMD>Glance definitions<CR>", { desc = "Glance definitions", silent = true })
       end,
     })
   end,
+
+  ft = { "go", "python", "rust", "javascript", "typescript", "lua" },
 }
