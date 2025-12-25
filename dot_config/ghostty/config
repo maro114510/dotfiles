@@ -53,3 +53,5 @@ keybind = shift+enter=text:\n
 # background-image-fit = "cover"
 
 macos-window-buttons = "hidden"
+
+unfocused-split-opacity = 0.7
