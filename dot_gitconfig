@@ -41,3 +41,7 @@
 	autoSquash = true
 	autoStash = true
 	updateRefs = true
+[gtr "ai"]
+	default = claude
+[gtr "editor"]
+	default = nvim
