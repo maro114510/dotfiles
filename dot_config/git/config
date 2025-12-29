@@ -1,0 +1,40 @@
+[user]
+	name = maro114510
+[core]
+	pager = delta
+	excludesfile = ~/.config/git/ignore
+
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+	light = false
+	line-numbers = true
+	side-by-side = true
+	syntax-theme = Monokai Extended
+[merge]
+	conflictstyle = diff3
+[diff]
+	colorMoved = default
+[alias]
+	a = add
+	m = commit -m
+	ll = log --graph --date=relative --name-status --abbrev-commit
+[fetch]
+	prune = true
+	pruneTags = true
+	all = true
+[help]
+	autocorrect = prompt
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
+[rebase]
+	autoSquash = true
+	autoStash = true
+	updateRefs = true
+[pager]
+	diff = diffnav
+[sequence]
+	editor = interactive-rebase-tool
