@@ -1,85 +1,55 @@
 hide_agent_reasoning = true
-model = "gpt-5.1-codex-max"
+model = "gpt-5.2-codex"
 network_access = true
 ask_for_approval = "never"
 model_responding_effort = "medium"
 web_search_request = true
 model_reasoning_effort = "medium"
+approval_policy = "on-failure"
 
-[mcp_servers.serena]
-args = [
-    "--from",
-    "git+https://github.com/oraios/serena",
-    "serena",
-    "start-mcp-server",
-    "--context",
-    "codex",
-]
-command = "uvx"
+[notice]
+hide_gpt5_1_migration_prompt = true
+"hide_gpt-5.1-codex-max_migration_prompt" = true
 
-[projects."/Users/nohira/ghq/github.com/maro114510/moto-weather-index"]
-trust_level = "trusted"
+[notice.model_migrations]
+"gpt-5.1-codex-max" = "gpt-5.2-codex"
 
-[projects."/Users/nohira/ghq/github.com/maro114510/moto-weather-index-front"]
-trust_level = "trusted"
-
-[projects."/Users/nohira/.local/share/chezmoi"]
-trust_level = "trusted"
-
-[projects."/Users/nohira/ghq/github.com/maro114510/golang_notion_api"]
-trust_level = "trusted"
-
-[projects."/Users/nohira"]
-trust_level = "trusted"
-
-[projects."/Users/nohira/sample"]
-trust_level = "trusted"
-
-[projects."/Users/nohira/ghq/github.com/maro114510/youtube_check"]
-trust_level = "trusted"
-
-[projects."/Users/nohira/ghq/github.com/maro114510/Obsidian"]
-trust_level = "trusted"
-
-[projects."/Users/nohira/.codex"]
-trust_level = "trusted"
-
-[projects."/Users/nohira/ghq/github.com/maro114510/dotfiles"]
-trust_level = "trusted"
-
-[projects."/Users/nohira/ghq/github.com/maro114510/python_sandbox"]
-trust_level = "trusted"
-
-[projects."/Users/nohira/ghq/github.com/maro114510/golang_sandbox"]
-trust_level = "trusted"
-
-[projects."/Users/nohira/ghq/github.com/maro114510/googlecloud_project"]
+[projects."/Users/nohira/ghq/github.com/maro114510/stock_with_me_alpha"]
 trust_level = "trusted"
 
 [projects."/Users/nohira/ghq/github.com/maro114510/stock_turnback"]
 trust_level = "trusted"
 
-[projects."/Users/nohira/ghq/github.com/maro114510/python-clean-architecture"]
+[projects."/Users/nohira/ghq/github.com/maro114510/googlecloud_project"]
 trust_level = "trusted"
 
-[projects."/Users/nohira/ghq/github.com/maro114510/peco"]
+[projects."/Users/nohira/.local/share/chezmoi"]
 trust_level = "trusted"
 
-[projects."/Users/nohira/ghq/github.com/maro114510/slides_memo"]
+[projects."/Users/nohira/ghq/github.com/kauche-interview/backend-maro114510"]
 trust_level = "trusted"
 
-[projects."/Users/nohira/ghq/github.com/maro114510/moto-weather-index-memo"]
+[projects."/Users/nohira/ghq/github.com/maro114510/Obsidian"]
 trust_level = "trusted"
 
-[projects."/Users/nohira/ghq/github.com/maro114510/one-click-ticktick"]
+[projects."/Users/nohira/ghq/github.com/maro114510/youtube_check"]
 trust_level = "trusted"
 
-[projects."/Users/nohira/ghq/github.com/maro114510/youtube_check_front"]
+[projects."/Users/nohira/ghq/github.com/maro114510/moto-weather-index-front"]
 trust_level = "trusted"
 
-[projects."/Users/nohira/ghq/github.com/maro114510/voice_resume"]
+[projects."/Users/nohira/ghq/github.com/maro114510/feedly-opener"]
 trust_level = "trusted"
 
-[notice]
-hide_gpt5_1_migration_prompt = true
-"hide_gpt-5.1-codex-max_migration_prompt" = true
+[mcp_servers.spec-workflow]
+command = "npx"
+args = ["-y", "@pimzino/spec-workflow-mcp@latest", "/Users/nohira/ghq/github.com/maro114510/feedly-opener"]
+
+[features]
+unified_exec = true
+shell_snapshot = true
+web_search_request = true
+rmcp_client = true
+
+[sandbox_workspace_write]
+network_access = true
