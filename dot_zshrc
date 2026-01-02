@@ -218,7 +218,9 @@ function y() {
 		builtin cd -- "$cwd"
 	fi
 
-	command trash -- "$tmp"
+	if [ -n "$tmp" ] && [ -e "$tmp" ]; then
+		command trash "$tmp"
+	fi
 }
 
 function paws {
