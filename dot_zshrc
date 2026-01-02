@@ -180,15 +180,6 @@ function wtr(){
 # mise for language version management (shims mode for faster startup)
 eval "$(mise activate zsh --shims)"
 
-### yazi
-function ya() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-		builtin cd -- "$cwd"
-	fi
-}
-
 ### zoxide
 eval "$(zoxide init zsh)"
 
@@ -218,15 +209,16 @@ function set_aws_profile() {
 }
 
 function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	local tmp cwd
+	tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
 
-	yazi "$@" --cwd-file="$tmp"
+	command yazi "$@" --cwd-file="$tmp"
 
-	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+	if IFS= read -r -d '' cwd < "$tmp" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
 		builtin cd -- "$cwd"
 	fi
 
-	rm -f -- "$tmp"
+	command trash -- "$tmp"
 }
 
 function paws {
@@ -256,4 +248,3 @@ function penv {
 
 # Added by Antigravity
 export PATH="/Users/nohira/.antigravity/antigravity/bin:$PATH"
-
