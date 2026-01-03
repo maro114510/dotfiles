@@ -2,6 +2,13 @@
 eval "$(sheldon source)"
 bindkey -e
 
+function backward-kill-word-no-slash() {
+  local WORDCHARS=${WORDCHARS//\/}
+  zle backward-kill-word
+}
+zle -N backward-kill-word-no-slash
+bindkey '^W' backward-kill-word-no-slash
+
 # Cached compinit - only regenerate once per day
 autoload -Uz compinit
 _comp_path="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}"
