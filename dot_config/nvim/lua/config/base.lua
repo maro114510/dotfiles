@@ -14,9 +14,11 @@ vim.opt.smartcase = true
 -- If the search reeach end, from the beginning
 vim.opt.wrapscan = true
 
--- Movin cursor
+-- Moving cursor
 -- Moving across lines
-vim.opt.whichwrap = "b", "s", "h", "l", "<", ">", "[", "]"
+vim.opt.whichwrap = { "b", "s", "h", "l", "<", ">", "[", "]" }
+vim.opt.scrolloff = 5
+vim.opt.sidescrolloff = 5
 
 -- EditorConfig
 vim.g.editorconfig = true
