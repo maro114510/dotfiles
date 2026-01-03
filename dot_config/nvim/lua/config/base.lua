@@ -1,4 +1,3 @@
-
 -- Setting Base Config
 -- Show number
 vim.opt.number = true
@@ -17,7 +16,7 @@ vim.opt.wrapscan = true
 
 -- Movin cursor
 -- Moving across lines
-vim.opt.whichwrap = 'b', 's', 'h', 'l', '<', '>', '[', ']'
+vim.opt.whichwrap = "b", "s", "h", "l", "<", ">", "[", "]"
 
 -- EditorConfig
 vim.g.editorconfig = true
@@ -36,18 +35,18 @@ vim.o.shiftwidth = 4
 vim.g.NERDTreeShowHidden = 1
 
 -- Link to clipboard
-vim.opt.clipboard:append { 'unnamed', 'unnamedplus' }
+vim.opt.clipboard:append({ "unnamed", "unnamedplus" })
 
 -- Able to mouse
-vim.opt.mouse = 'a'
+vim.opt.mouse = "a"
 
 -- Visualization of control characters
 vim.opt.list = true
 vim.opt.listchars = {
-	tab = '→-',
-	extends = '⟩',
-	precedes = '⟨',
-	trail = '·',
-	eol = '↴',
-	nbsp = '%'
+  tab = "→-",
+  extends = "⟩",
+  precedes = "⟨",
+  trail = "·",
+  eol = "↴",
+  nbsp = "%",
 }
