@@ -16,7 +16,7 @@ vim.opt.wrapscan = true
 
 -- Moving cursor
 -- Moving across lines
-vim.opt.whichwrap = { "b", "s", "h", "l", "<", ">", "[", "]" }
+vim.o.whichwrap = "b,s,h,l,<,>,[,]"
 vim.opt.scrolloff = 5
 vim.opt.sidescrolloff = 5
 
@@ -52,3 +52,4 @@ vim.opt.listchars = {
   eol = "↴",
   nbsp = "%",
 }
+vim.opt.signcolumn = "yes"
