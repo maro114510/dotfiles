@@ -1,4 +1,3 @@
-
 -- About File
 vim.opt.fileencoding = "utf-8"
 vim.opt.swapfile = false -- Do not create swapfiile
