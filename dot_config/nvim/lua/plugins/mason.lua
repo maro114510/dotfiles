@@ -42,6 +42,7 @@ return {
         "typos",
         "tflint",
         "tfsec",
+        "cfn-lint",
       },
       run_on_start = true,
     },
