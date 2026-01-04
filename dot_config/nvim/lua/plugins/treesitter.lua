@@ -1,71 +1,55 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter.git
 
+local languages = {
+  "go",
+  "lua",
+  "rust",
+  "toml",
+  "typescript",
+  "javascript",
+  "tsx",
+  "yaml",
+  "vim",
+  "vimdoc",
+  "html",
+  "css",
+  "json",
+  "markdown",
+  "markdown_inline",
+  "terraform",
+  "hcl",
+  "python",
+}
+
 return {
   "nvim-treesitter/nvim-treesitter",
 
   build = ":TSUpdate",
 
-  event = { "BufReadPost", "BufNewFile" },
+  lazy = false,
 
   config = function()
-    require("nvim-treesitter.configs").setup({
-      auto_tag = {
-        enable = true,
-      },
+    require("nvim-treesitter").setup({
+      install_dir = vim.fn.stdpath("data") .. "/site",
+    })
 
-      auto_install = true,
+    -- Install parsers
+    require("nvim-treesitter").install(languages)
 
-      highlight = {
-        enable = true,
-      },
+    -- Enable treesitter highlighting for filetypes
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = languages,
+      callback = function()
+        vim.treesitter.start()
+      end,
+    })
 
-      indent = {
-        enable = true,
-      },
-
-      ensure_installed = {
-        "go",
-        "lua",
-        "rust",
-        "toml",
-        "typescript",
-        "javascript",
-        "tsx",
-        "yaml",
-        "vim",
-        "vimdoc",
-        "html",
-        "css",
-        "json",
-        "markdown",
-        "markdown_inline",
-        "terraform",
-        "hcl",
-        "python",
-      },
-
-      notify = false,
+    -- Enable treesitter-based indentation
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = languages,
+      callback = function()
+        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+      end,
     })
   end,
-
-  ft = {
-    "go",
-    "lua",
-    "rust",
-    "toml",
-    "typescript",
-    "yaml",
-    "javascript",
-    "tsx",
-    "vim",
-    "vimdoc",
-    "html",
-    "css",
-    "json",
-    "markdown",
-    "markdown_inline",
-    "terraform",
-    "hcl",
-    "python",
-  },
 }
