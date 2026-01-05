@@ -155,7 +155,7 @@ call jetpack#begin()
 	Jetpack 'junegunn/fzf', { 'do': { -> fzf#install() } }
 	Jetpack 'junegunn/fzf.vim'
 	" using git
-	Jetpack 'tpope/vim-fugitive', { 'on': ['Git', 'Gdiff', 'Gstatus'] }
+	Jetpack 'tpope/vim-fugitive', { 'on': ['Git', 'Gdiff', 'Gblame'] }
 	" move fast
 	Jetpack 'unblevable/quick-scope'
 	" nerdtree
@@ -167,7 +167,7 @@ call jetpack#begin()
 	" LSP and completion
 	Jetpack 'neoclide/coc.nvim', {'branch': 'release', 'on_event': 'InsertEnter'}
 	" syntax highlighting
-	Jetpack 'sheerun/vim-polyglot', { 'opt': 1 }
+	Jetpack 'sheerun/vim-polyglot'
 	" memo
 	Jetpack 'glidenote/memolist.vim'
 	" comment
@@ -199,8 +199,7 @@ let NERDTreeIgnore=['\.git$', '\.DS_Store$', 'node_modules$']
 let NERDTreeWinSize=30
 let NERDTreeQuitOnOpen=1
 " If NERDTree is the only window left, close Vim
-autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1
-\ && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 
@@ -276,8 +275,8 @@ nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 " Add `:Format` command to format current buffer
 function! CheckBackspace() abort
-let col = col('.') - 1
-return !col || getline('.')[col - 1]  =~# '\s'
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 " TAB: Next candidate
 inoremap <silent><expr> <TAB>
