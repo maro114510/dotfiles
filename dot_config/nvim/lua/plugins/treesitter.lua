@@ -1,6 +1,7 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter.git
 
-local languages = {
+-- Parsers to install
+local parsers = {
   "go",
   "lua",
   "rust",
@@ -21,6 +22,28 @@ local languages = {
   "python",
 }
 
+-- Filetypes to enable treesitter highlighting
+local filetypes = {
+  "go",
+  "lua",
+  "rust",
+  "toml",
+  "typescript",
+  "javascript",
+  "typescriptreact",
+  "javascriptreact",
+  "yaml",
+  "vim",
+  "help",
+  "html",
+  "css",
+  "json",
+  "markdown",
+  "terraform",
+  "hcl",
+  "python",
+}
+
 return {
   "nvim-treesitter/nvim-treesitter",
 
@@ -29,25 +52,15 @@ return {
   lazy = false,
 
   config = function()
-    require("nvim-treesitter").setup({
-      install_dir = vim.fn.stdpath("data") .. "/site",
-    })
+    -- Install parsers and queries to site/ directory
+    -- This is a no-op if already installed
+    require("nvim-treesitter").install(parsers)
 
-    -- Install parsers
-    require("nvim-treesitter").install(languages)
-
-    -- Enable treesitter highlighting for filetypes
+    -- Enable treesitter highlighting and indentation
     vim.api.nvim_create_autocmd("FileType", {
-      pattern = languages,
+      pattern = filetypes,
       callback = function()
-        vim.treesitter.start()
-      end,
-    })
-
-    -- Enable treesitter-based indentation
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = languages,
-      callback = function()
+        pcall(vim.treesitter.start)
         vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
       end,
     })
