@@ -159,7 +159,7 @@ call jetpack#begin()
 	" move fast
 	Jetpack 'unblevable/quick-scope'
 	" nerdtree
-	Jetpack 'preservim/nerdtree', { 'on': ['NERDTree', 'NERDTreeToggle', 'NERDTreeFind'] }
+	Jetpack 'preservim/nerdtree'
 	" window size
 	Jetpack 'simeji/winresizer'
 	" tokyonight
