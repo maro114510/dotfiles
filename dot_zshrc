@@ -67,6 +67,7 @@ function fzf-select-history() {
 			--reverse \
 			--border \
 			--no-preview \
+			--scheme=history \
 			--query="$LBUFFER" \
 			--prompt="History > ")
 	CURSOR=$#BUFFER

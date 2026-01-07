@@ -1,71 +1,68 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter.git
 
+-- Parsers to install
+local parsers = {
+  "go",
+  "lua",
+  "rust",
+  "toml",
+  "typescript",
+  "javascript",
+  "tsx",
+  "yaml",
+  "vim",
+  "vimdoc",
+  "html",
+  "css",
+  "json",
+  "markdown",
+  "markdown_inline",
+  "terraform",
+  "hcl",
+  "python",
+}
+
+-- Filetypes to enable treesitter highlighting
+local filetypes = {
+  "go",
+  "lua",
+  "rust",
+  "toml",
+  "typescript",
+  "javascript",
+  "typescriptreact",
+  "javascriptreact",
+  "yaml",
+  "vim",
+  "help",
+  "html",
+  "css",
+  "json",
+  "markdown",
+  "terraform",
+  "hcl",
+  "python",
+}
+
 return {
   "nvim-treesitter/nvim-treesitter",
 
   build = ":TSUpdate",
 
-  event = { "BufReadPost", "BufNewFile" },
+  lazy = false,
 
   config = function()
-    require("nvim-treesitter.configs").setup({
-      auto_tag = {
-        enable = true,
-      },
+    -- Install parsers and queries to site/ directory
+    -- This is a no-op if already installed
+    require("nvim-treesitter").install(parsers)
 
-      auto_install = true,
-
-      highlight = {
-        enable = true,
-      },
-
-      indent = {
-        enable = true,
-      },
-
-      ensure_installed = {
-        "go",
-        "lua",
-        "rust",
-        "toml",
-        "typescript",
-        "javascript",
-        "tsx",
-        "yaml",
-        "vim",
-        "vimdoc",
-        "html",
-        "css",
-        "json",
-        "markdown",
-        "markdown_inline",
-        "terraform",
-        "hcl",
-        "python",
-      },
-
-      notify = false,
+    -- Enable treesitter highlighting and indentation
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = filetypes,
+      callback = function()
+        pcall(vim.treesitter.start)
+        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+      end,
     })
   end,
-
-  ft = {
-    "go",
-    "lua",
-    "rust",
-    "toml",
-    "typescript",
-    "yaml",
-    "javascript",
-    "tsx",
-    "vim",
-    "vimdoc",
-    "html",
-    "css",
-    "json",
-    "markdown",
-    "markdown_inline",
-    "terraform",
-    "hcl",
-    "python",
-  },
 }
