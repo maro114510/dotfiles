@@ -55,7 +55,8 @@ keybind = ctrl+p=unbind
 keybind = ctrl+n=unbind
 keybind = ctrl+option+h=goto_split:left
 keybind = ctrl+option+l=goto_split:right
-keybind = shift+enter=text:\n
+keybind = shift+enter=text:\x1b\r
+keybind = ctrl+j=text:\x0a
 
 # ------------------------------------------------ #
 # Mouse Settings
