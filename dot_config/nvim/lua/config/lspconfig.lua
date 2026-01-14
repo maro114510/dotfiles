@@ -55,10 +55,9 @@ mason_lspconfig.setup({
     "rust_analyzer",
     "bashls",
     "ruff",
-    "stylua",
     "html",
     "cssls",
-    "pyright",
+    "protols",
   },
   automatic_enable = false,
 })

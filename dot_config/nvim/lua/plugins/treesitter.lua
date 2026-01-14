@@ -20,6 +20,7 @@ local parsers = {
   "terraform",
   "hcl",
   "python",
+  "proto",
 }
 
 -- Filetypes to enable treesitter highlighting
@@ -42,6 +43,7 @@ local filetypes = {
   "terraform",
   "hcl",
   "python",
+  "proto",
 }
 
 return {
