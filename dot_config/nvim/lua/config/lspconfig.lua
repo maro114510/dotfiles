@@ -59,6 +59,7 @@ mason_lspconfig.setup({
     "html",
     "cssls",
     "pyright",
+    "protols",
   },
   automatic_enable = false,
 })
