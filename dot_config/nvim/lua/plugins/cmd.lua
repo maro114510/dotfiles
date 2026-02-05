@@ -13,6 +13,7 @@ return {
     "hrsh7th/cmp-vsnip",     -- vsnip 使ってるので
     "onsails/lspkind.nvim",  -- アイコン
     "hrsh7th/vim-vsnip",
+    "zbirenbaum/copilot-cmp",
   },
 
   config = function()
@@ -43,6 +44,7 @@ return {
       sources = cmp.config.sources({
         { name = "nvim_lsp" },
         { name = "vsnip" },
+        { name = "copilot" },
       }, {
         { name = "buffer" },
         { name = "path" },

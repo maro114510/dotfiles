@@ -25,5 +25,10 @@ return {
     },
   },
 
+  keys = {
+    { "<leader>xt", "<cmd>Trouble todo toggle<cr>", desc = "Todo (Trouble)" },
+    { "<leader>sT", "<cmd>TodoTelescope<cr>", desc = "Search TODOs" },
+  },
+
   event = { "BufReadPost", "BufNewFile" },
 }

@@ -45,7 +45,22 @@ if not mason_lspconfig_status then
 end
 
 mason_lspconfig.setup({
-  --ensure_installed = { "lua_ls", "tsserver", "rust_analyzer", "gopls"},
+  ensure_installed = {
+    "lua_ls",
+    "gopls",
+    "ts_ls",
+    "terraformls",
+    "jsonls",
+    "denols",
+    "rust_analyzer",
+    "bashls",
+    "ruff",
+    "stylua",
+    "html",
+    "cssls",
+    "pyright",
+    "protols",
+  },
   automatic_enable = false,
 })
 
@@ -73,11 +88,11 @@ configure("pylsp", {
     pylsp = {
       plugins = {
         pycodestyle = {
-          ignore = {"E501"},
-        }
-      }
-    }
-  }
+          ignore = { "E501" },
+        },
+      },
+    },
+  },
 })
 
 -- Ruff LSP サーバー設定（フォーマット + リンティング）
@@ -97,7 +112,7 @@ if ruff_available then
         -- Ruff のリンティング設定
         lint = {
           enable = true,
-          ignore = {"E501"},
+          ignore = { "E501" },
         },
         -- フォーマット設定
         format = {

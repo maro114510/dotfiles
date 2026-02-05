@@ -2,6 +2,13 @@
 eval "$(sheldon source)"
 bindkey -e
 
+function backward-kill-word-no-slash() {
+  local WORDCHARS=${WORDCHARS//\/}
+  zle backward-kill-word
+}
+zle -N backward-kill-word-no-slash
+bindkey '^W' backward-kill-word-no-slash
+
 # Cached compinit - only regenerate once per day
 autoload -Uz compinit
 _comp_path="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}"
@@ -60,6 +67,7 @@ function fzf-select-history() {
 			--reverse \
 			--border \
 			--no-preview \
+			--scheme=history \
 			--query="$LBUFFER" \
 			--prompt="History > ")
 	CURSOR=$#BUFFER
@@ -180,15 +188,6 @@ function wtr(){
 # mise for language version management (shims mode for faster startup)
 eval "$(mise activate zsh --shims)"
 
-### yazi
-function ya() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-		builtin cd -- "$cwd"
-	fi
-}
-
 ### zoxide
 eval "$(zoxide init zsh)"
 
@@ -218,15 +217,18 @@ function set_aws_profile() {
 }
 
 function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	local tmp cwd
+	tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
 
-	yazi "$@" --cwd-file="$tmp"
+	command yazi "$@" --cwd-file="$tmp"
 
-	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+	if IFS= read -r -d '' cwd < "$tmp" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
 		builtin cd -- "$cwd"
 	fi
 
-	rm -f -- "$tmp"
+	if [ -n "$tmp" ] && [ -e "$tmp" ]; then
+		command trash "$tmp"
+	fi
 }
 
 function paws {
@@ -257,4 +259,8 @@ function penv {
 # Added by Antigravity
 export PATH="/Users/nohira/.antigravity/antigravity/bin:$PATH"
 
+## zoxide with cd command
 eval "$(zoxide init zsh --cmd cd)"
+if [[ $- == *i* ]]; then
+  eval "$(zoxide init zsh --cmd cd)"
+fi

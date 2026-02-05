@@ -1,5 +1,4 @@
 -- https://github.com/folke/snacks.nvim.git
--- Fuzzy Finder
 
 local logo = [[
    ____  ___  ____ _   __(_)___ ___

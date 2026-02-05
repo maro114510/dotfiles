@@ -2,23 +2,46 @@
 
 return {
   {
-    'github/copilot.vim',
+    "github/copilot.vim",
 
-    -- "zbirenbaum/copilot.lua",
-    -- cmd = "Copilot",
-    -- event = "InsertEnter",
-    -- opts = function()
-    -- 	require("copilot").setup({})
-    -- end,
-
-    event = "VimEnter",
+    event = "BufRead",
   },
 
   -- {
+  --   "zbirenbaum/copilot.lua",
+  --
+  --   lazy = false,
+  --
+  --   dependencies = {
+  --     "copilotlsp-nvim/copilot-lsp",
+  --   },
+  --
+  --   config = function()
+  --     require("copilot").setup({
+  --       panel = {
+  --         enabled = false,
+  --       },
+  --       suggestion = {
+  --         enabled = true,
+  --         auto_trigger = true,
+  --       },
+  --       filetypes = { yaml = true, markdown = true, gitcommit = true, ["*"] = true },
+  --       keymaps = {
+  --         accept = "<C-l>",
+  --       },
+  --     })
+  --   end,
+  -- },
+
+  -- {
   -- 	"zbirenbaum/copilot-cmp",
-  -- 	dependencies = { "copilot.lua" },
+  --
+  -- 	dependencies = { "zbirenbaum/copilot.lua", "hrsh7th/nvim-cmp", },
+  --
   -- 	config = function ()
   -- 		require("copilot_cmp").setup()
-  -- 	end
+  -- 	end,
+  --
+  --   event = "BufRead",
   -- },
 }

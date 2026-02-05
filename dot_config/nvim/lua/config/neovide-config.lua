@@ -76,11 +76,11 @@ if vim.g.neovide then
 
   -- クリップボードのキーマッピング
   -- MacOS用のクリップボードのキーマッピング
-  vim.api.nvim_set_keymap('n', '<D-v>', '"+p', { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('i', '<D-v>', '<C-r>+', { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('v', '<D-v>', '"+p', { noremap = true, silent = true })
-  vim.api.nvim_set_keymap('c', '<D-v>', '<C-r>+', { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("n", "<D-v>", '"+p', { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("i", "<D-v>", "<C-r>+", { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("v", "<D-v>", '"+p', { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("c", "<D-v>", "<C-r>+", { noremap = true, silent = true })
 
   -- コピーのキーマッピングも追加しておくと便利です
-  vim.api.nvim_set_keymap('v', '<D-c>', '"+y', { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("v", "<D-c>", '"+y', { noremap = true, silent = true })
 end
