@@ -54,17 +54,29 @@ return {
   lazy = false,
 
   config = function()
-    -- Install parsers and queries to site/ directory
-    -- This is a no-op if already installed
-    require("nvim-treesitter").install(parsers)
+    local enabled_filetypes = {}
+    for _, ft in ipairs(filetypes) do
+      enabled_filetypes[ft] = true
+    end
 
-    -- Enable treesitter highlighting and indentation
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = filetypes,
-      callback = function()
-        pcall(vim.treesitter.start)
-        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-      end,
+    require("nvim-treesitter.configs").setup({
+      ensure_installed = parsers,
+      sync_install = false,
+      auto_install = true,
+      highlight = {
+        enable = true,
+        disable = function(_, bufnr)
+          local ft = vim.bo[bufnr].filetype
+          return not enabled_filetypes[ft]
+        end,
+      },
+      indent = {
+        enable = true,
+        disable = function(_, bufnr)
+          local ft = vim.bo[bufnr].filetype
+          return not enabled_filetypes[ft]
+        end,
+      },
     })
   end,
 }
