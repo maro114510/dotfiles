@@ -164,22 +164,22 @@ frm() {
 }
 # Search with Browser
 # https://s10i.me/whitenote/post/40
-gog() {
-    if [ $(echo $1 | grep "^-[cfs]$") ]; then
-        local opt=$1
-        shift
-    fi
-    local url="https://google.co.jp/search?q=${*// /+}"
-    local c="Google Chrome"
-    local f="Firefox"
-    local s="Safari"
-    case $opt in
-        -c ) open $url -a $c;;
-        -f ) open $url -a $f;;
-        -s ) open $url -a $s;;
-        * ) open $url;;
-    esac
-}
+# gog() {
+#     if [ $(echo $1 | grep "^-[cfs]$") ]; then
+#         local opt=$1
+#         shift
+#     fi
+#     local url="https://google.co.jp/search?q=${*// /+}"
+#     local c="Google Chrome"
+#     local f="Firefox"
+#     local s="Safari"
+#     case $opt in
+#         -c ) open $url -a $c;;
+#         -f ) open $url -a $f;;
+#         -s ) open $url -a $s;;
+#         * ) open $url;;
+#     esac
+# }
 # weather
 function wtr(){
     curl "https://ja.wttr.in/$1?2nF"
@@ -264,3 +264,6 @@ eval "$(zoxide init zsh --cmd cd)"
 if [[ $- == *i* ]]; then
   eval "$(zoxide init zsh --cmd cd)"
 fi
+
+# OpenClaw Completion
+source "/Users/nohira/.openclaw/completions/openclaw.zsh"
