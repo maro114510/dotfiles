@@ -54,29 +54,37 @@ return {
   lazy = false,
 
   config = function()
-    local enabled_filetypes = {}
-    for _, ft in ipairs(filetypes) do
-      enabled_filetypes[ft] = true
+    local ts = require("nvim-treesitter")
+
+    local installed = {}
+    local ok_installed, installed_list = pcall(ts.get_installed, "parsers")
+    if ok_installed and type(installed_list) == "table" then
+      for _, lang in ipairs(installed_list) do
+        installed[lang] = true
+      end
     end
 
-    require("nvim-treesitter.configs").setup({
-      ensure_installed = parsers,
-      sync_install = false,
-      auto_install = true,
-      highlight = {
-        enable = true,
-        disable = function(_, bufnr)
-          local ft = vim.bo[bufnr].filetype
-          return not enabled_filetypes[ft]
-        end,
-      },
-      indent = {
-        enable = true,
-        disable = function(_, bufnr)
-          local ft = vim.bo[bufnr].filetype
-          return not enabled_filetypes[ft]
-        end,
-      },
+    local missing = {}
+    for _, lang in ipairs(parsers) do
+      if not installed[lang] then
+        table.insert(missing, lang)
+      end
+    end
+
+    if #missing > 0 then
+      pcall(ts.install, missing)
+    end
+
+    local group = vim.api.nvim_create_augroup("UserTreesitterFeatures", { clear = true })
+    vim.api.nvim_create_autocmd("FileType", {
+      group = group,
+      pattern = filetypes,
+      callback = function(args)
+        local ok_start = pcall(vim.treesitter.start, args.buf)
+        if ok_start then
+          vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
+      end,
     })
   end,
 }
