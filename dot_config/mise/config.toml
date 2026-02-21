@@ -9,7 +9,7 @@ go = "latest"
 java = "latest"
 lazygit = "latest"
 lsd = "latest"
-neovim = "latest"
+"aqua:neovim/neovim" = "latest"
 node = "latest"
 npm = "latest"
 peco = "latest"
@@ -27,5 +27,8 @@ zellij = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = ["terraform"]
+
+[settings.aqua]
+baked_registry = true
 
 [env]
