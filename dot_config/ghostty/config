@@ -4,6 +4,7 @@
 auto-update = check
 auto-update-channel = tip
 command = /bin/zsh
+shell-integration-features = ssh-terminfo,ssh-env
 
 # ------------------------------------------------ #
 # Theme / Color Settings
@@ -73,3 +74,4 @@ macos-window-buttons = "hidden"
 macos-titlebar-style = tabs
 macos-titlebar-proxy-icon = visible
 macos-icon-frame = plastic
+macos-option-as-alt = true
