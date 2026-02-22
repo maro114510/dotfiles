@@ -50,13 +50,14 @@ setopt extended_glob
 #eval "$(/opt/homebrew/bin/brew shellenv)"
 
 ### Golang ###
-if uname -a | grep -sq "Linux"; then
-	export PATH=$PATH:/usr/local/go/bin
-elif [ "$(uname)" = "Darwin" ]; then
-	export GOPATH=$HOME/go
-	export GOBIN=$GOPATH/bin
-	export PATH=$PATH:$GOBIN
-fi
+case "$(uname -s)" in
+  Linux)  export PATH="$PATH:/usr/local/go/bin" ;;
+  Darwin)
+    export GOPATH="$HOME/go"
+    export GOBIN="$GOPATH/bin"
+    export PATH="$PATH:$GOBIN"
+    ;;
+esac
 
 ### fzf history search ###
 function fzf-select-history() {
@@ -77,11 +78,12 @@ zle -N fzf-select-history
 bindkey '^r' fzf-select-history
 
 # export commands
-export PATH="$HOME/commands:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/commands:$PATH"
 
 ### Starship ###
-eval "$(starship init zsh)"
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+fi
 
 ##### alias #####
 alias ll='lsd -l'
@@ -105,9 +107,7 @@ alias nv='nohup neovide > /dev/null 2>&1 &'
 alias cz='chezmoi'
 alias awsts='aws sts get-caller-identity --no-cli-pager'
 
-SESSION_NAME="$(date +'%H%M%S_%m-%d')"
 alias memol='memo list | fzf --preview "head ~/memo/{}" | xargs -I {} sh -c "open ~/memo/{} -a CotEditor"'
-alias tmuxer='tmux new -s $SESSION_NAME \; source-file ~/.tmux.session.conf'
 alias tmuxx='tmux new -s $SESSION_NAME'
 alias fzc="git branch --list | cut -c 3- | fzf --preview \"git log --pretty=format:'%h %cd %s' --date=format:'%Y-%m-%d %H:%M' {}\" | xargs git checkout"
 
@@ -189,9 +189,14 @@ function wtr(){
 eval "$(mise activate zsh --shims)"
 
 ### zoxide
-eval "$(zoxide init zsh)"
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+  z()  { builtin cd -- "$(zoxide query -i -- "$@")" }
+fi
 
-eval "$(direnv hook zsh)"
+if command -v direnv >/dev/null 2>&1; then
+  eval "$(direnv hook zsh)"
+fi
 
 ### bmm
 function bmb() {
@@ -255,15 +260,3 @@ function penv {
         echo "APP_ENV is now $APP_ENV"
     fi
 }
-
-# Added by Antigravity
-export PATH="/Users/nohira/.antigravity/antigravity/bin:$PATH"
-
-## zoxide with cd command
-eval "$(zoxide init zsh --cmd cd)"
-if [[ $- == *i* ]]; then
-  eval "$(zoxide init zsh --cmd cd)"
-fi
-
-# OpenClaw Completion
-source "/Users/nohira/.openclaw/completions/openclaw.zsh"
