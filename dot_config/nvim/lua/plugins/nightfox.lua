@@ -4,11 +4,13 @@ return {
   "EdenEast/nightfox.nvim",
 
   config = function()
-    require('nightfox').setup {
-      transparent = true,
-    }
+    require("nightfox").setup({
+      options = {
+        transparent = true,
+      },
+    })
 
-    require('nightfox').load()
+    require("nightfox").load("duskfox")
   end,
 
   event = "UIEnter",
