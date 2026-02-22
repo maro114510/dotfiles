@@ -55,6 +55,8 @@ return {
 
   config = function()
     local ts = require("nvim-treesitter")
+    -- NOTE: Parser compilation uses `tree-sitter build`, so tree-sitter CLI
+    -- must be installed and available in Neovim's PATH.
 
     local installed = {}
     local ok_installed, installed_list = pcall(ts.get_installed, "parsers")
