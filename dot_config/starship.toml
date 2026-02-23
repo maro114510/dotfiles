@@ -1,3 +1,5 @@
+command_timeout = 200
+
 [custom.os_version]
 command = "uname"
 format = ' [$symbol($output)]($style)'
@@ -27,3 +29,6 @@ discharging_symbol = '💀 '
 [[battery.display]]
 threshold = 10
 style = 'bold red'
+
+[git_metrics]
+disabled = true
