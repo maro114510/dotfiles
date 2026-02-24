@@ -132,8 +132,6 @@ set termguicolors
 let g:tokyonight_style = 'night' " available: night, storm
 let g:tokyonight_enable_italic = 1
 
-colorscheme tokyonight
-
 if has('vim_starting')
     let &t_SI .= "\e[6 q"
     let &t_EI .= "\e[2 q"
@@ -175,6 +173,12 @@ call jetpack#begin()
 	" editorconfig
 	Jetpack 'editorconfig/editorconfig-vim'
 call jetpack#end()
+
+" Apply colorscheme after plugins are loaded.
+silent! colorscheme tokyonight
+if !exists('g:colors_name') || g:colors_name !=# 'tokyonight'
+  silent! colorscheme default
+endif
 
 
 au FileType * set fo-=c fo-=r fo-=o
