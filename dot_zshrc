@@ -1,3 +1,17 @@
+### eval cache helper ###
+_zsh_cache_eval() {
+  local cmd="$1"
+  local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/eval-cache"
+  local cache_file="$cache_dir/$cmd"
+  local cmd_path
+  cmd_path="$(command -v "$cmd" 2>/dev/null)" || return
+  [[ -d "$cache_dir" ]] || mkdir -p "$cache_dir"
+  if [[ ! -f "$cache_file" || "$cmd_path" -nt "$cache_file" ]]; then
+    "${@:2}" > "$cache_file" 2>/dev/null
+  fi
+  source "$cache_file"
+}
+
 ### Sheldon plugin manager ###
 eval "$(sheldon source)"
 bindkey -e
@@ -21,14 +35,6 @@ else
 fi
 unset _comp_path
 
-### locale ###
-export LANG="en_US.UTF-8"
-export LC_COLLATE="en_US.UTF-8"
-export LC_CTYPE="en_US.UTF-8"
-export LC_MESSAGES="en_US.UTF-8"
-export LC_MONETARY="en_US.UTF-8"
-export LC_NUMERIC="en_US.UTF-8"
-
 export EDITOR=nvim
 
 ### history ###
@@ -45,6 +51,7 @@ setopt inc_append_history
 
 setopt auto_cd
 setopt extended_glob
+setopt no_beep
 
 ### homebrew ###
 #eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -77,12 +84,15 @@ function fzf-select-history() {
 zle -N fzf-select-history
 bindkey '^r' fzf-select-history
 
+# mise for language version management (shims mode for faster startup)
+eval "$(mise activate zsh --shims)"
+
 # export commands
 export PATH="$HOME/.local/bin:$HOME/commands:$(npm config get prefix)/bin:$PATH"
 
 ### Starship ###
 if command -v starship >/dev/null 2>&1; then
-  eval "$(starship init zsh)"
+  _zsh_cache_eval starship starship init zsh
 fi
 
 ##### alias #####
@@ -189,9 +199,6 @@ function wtr(){
     curl "https://ja.wttr.in/$1?2nF"
 }
 
-# mise for language version management (shims mode for faster startup)
-eval "$(mise activate zsh --shims)"
-
 ### zoxide
 if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init zsh)"
@@ -199,7 +206,7 @@ if command -v zoxide >/dev/null 2>&1; then
 fi
 
 if command -v direnv >/dev/null 2>&1; then
-  eval "$(direnv hook zsh)"
+  _zsh_cache_eval direnv direnv hook zsh
 fi
 
 ### bmm
