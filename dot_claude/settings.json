@@ -193,5 +193,11 @@
   "alwaysThinkingEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1753989253554
-  }
+  },
+  "voiceEnabled": true,
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "model": "sonnet"
 }
