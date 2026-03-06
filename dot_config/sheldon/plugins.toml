@@ -7,6 +7,7 @@ defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file 
 # zsh-defer - enables deferred loading
 [plugins.zsh-defer]
 github = "romkatv/zsh-defer"
+hooks.post = 'zsh-defer eval "$(git wt --init zsh)"'
 
 # Completions (load early)
 [plugins.zsh-completions]
@@ -15,11 +16,6 @@ github = "zsh-users/zsh-completions"
 # Autosuggestions (deferred)
 [plugins.zsh-autosuggestions]
 github = "zsh-users/zsh-autosuggestions"
-apply = ["defer"]
-
-# git wt initialization (deferred)
-[plugins.git-wt-init]
-inline = 'eval "$(git wt --init zsh)"'
 apply = ["defer"]
 
 # Syntax highlighting (deferred, must be last)
