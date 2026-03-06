@@ -1,19 +1,52 @@
-### eval cache helper ###
+# Cache invalidation key: real binary mtime. mise reshim does NOT invalidate caches.
 _zsh_cache_eval() {
-  local cmd="$1"
+  local name="$1"
   local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/eval-cache"
-  local cache_file="$cache_dir/$cmd"
-  local cmd_path
-  cmd_path="$(command -v "$cmd" 2>/dev/null)" || return
+  local cache_file="$cache_dir/$name"
+  local real_bin="" mise_base="$HOME/.local/share/mise/installs/$name"
+
+  if [[ -L "$mise_base/latest" ]]; then
+    local target
+    target=$(readlink "$mise_base/latest")
+    target="${target#./}"
+    if [[ -x "$mise_base/$target/$name" ]]; then
+      real_bin="$mise_base/$target/$name"
+    elif [[ -x "$mise_base/$target/bin/$name" ]]; then
+      real_bin="$mise_base/$target/bin/$name"
+    fi
+  fi
+
+  if [[ -z "$real_bin" ]]; then
+    real_bin="$(command -v "$name" 2>/dev/null)" || return 0
+  fi
+
+  [[ -x "$real_bin" ]] || return 0
   [[ -d "$cache_dir" ]] || mkdir -p "$cache_dir"
-  if [[ ! -f "$cache_file" || "$cmd_path" -nt "$cache_file" ]]; then
-    "${@:2}" > "$cache_file" 2>/dev/null
+
+  if [[ ! -f "$cache_file" || "$real_bin" -nt "$cache_file" ]]; then
+    "$real_bin" "${@:2}" > "$cache_file" 2>/dev/null
+    # starship embeds its own path (resolved via PATH) in PROMPT/PROMPT2 at init time.
+    # Replace shim path with the real binary so prompt rendering bypasses the shim.
+    local shim_path="$HOME/.local/share/mise/shims/$name"
+    [[ -f "$shim_path" && -f "$cache_file" ]] && \
+      sed -i '' "s|${shim_path}|${real_bin}|g" "$cache_file" 2>/dev/null
   fi
   source "$cache_file"
 }
 
 ### Sheldon plugin manager ###
-eval "$(sheldon source)"
+_sheldon_load() {
+  local cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/eval-cache/sheldon"
+  local toml="${XDG_CONFIG_HOME:-$HOME/.config}/sheldon/plugins.toml"
+  local lock="${XDG_DATA_HOME:-$HOME/.local/share}/sheldon/plugins.lock"
+  [[ -d "${cache:h}" ]] || mkdir -p "${cache:h}"
+  if [[ ! -f "$cache" || "$toml" -nt "$cache" || "$lock" -nt "$cache" ]]; then
+    sheldon source > "$cache" 2>/dev/null
+  fi
+  source "$cache"
+}
+_sheldon_load
+unfunction _sheldon_load
 bindkey -e
 
 function backward-kill-word-no-slash() {
@@ -23,11 +56,14 @@ function backward-kill-word-no-slash() {
 zle -N backward-kill-word-no-slash
 bindkey '^W' backward-kill-word-no-slash
 
-# Cached compinit - only regenerate once per day
+# extended_glob is required for the (Nm-1) glob qualifier below
+setopt extended_glob
+
 autoload -Uz compinit
 _comp_path="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}"
 [[ -d "${_comp_path:h}" ]] || mkdir -p "${_comp_path:h}"
-if [[ -f "$_comp_path" && $(date +'%j') == $(stat -f '%Sm' -t '%j' "$_comp_path" 2>/dev/null) ]]; then
+# (Nm-1): N=nullglob, m-1=modified within 1 day — no external process
+if [[ -f "${_comp_path}"(Nm-1) ]]; then
   compinit -C -d "$_comp_path"
 else
   compinit -d "$_comp_path"
@@ -50,16 +86,17 @@ setopt hist_save_no_dups
 setopt inc_append_history
 
 setopt auto_cd
-setopt extended_glob
 setopt no_beep
 
 ### homebrew ###
 #eval "$(/opt/homebrew/bin/brew shellenv)"
 
 ### Golang ###
-case "$(uname -s)" in
-  Linux)  export PATH="$PATH:/usr/local/go/bin" ;;
-  Darwin)
+case "$OSTYPE" in
+  linux*)
+    export PATH="$PATH:/usr/local/go/bin"
+    ;;
+  darwin*)
     export GOPATH="$HOME/go"
     export GOBIN="$GOPATH/bin"
     export PATH="$PATH:$GOBIN"
@@ -84,27 +121,23 @@ function fzf-select-history() {
 zle -N fzf-select-history
 bindkey '^r' fzf-select-history
 
-# mise for language version management (shims mode for faster startup)
-eval "$(mise activate zsh --shims)"
-
-# export commands
-export PATH="$HOME/.local/bin:$HOME/commands:$(npm config get prefix)/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/commands:$HOME/.local/share/mise/shims:$PATH"
 
 ### Starship ###
-if command -v starship >/dev/null 2>&1; then
-  _zsh_cache_eval starship starship init zsh
-fi
+_zsh_cache_eval starship init zsh
 
 ##### alias #####
 alias ll='lsd -l'
 alias la='lsd -al'
 alias cp='cp -i'
 alias mv='mv -i'
-alias rm='rm -i --preserve-root'
+case "$OSTYPE" in
+  darwin*) alias rm='rm -i' ;;
+  linux*)  alias rm='rm -i --preserve-root' ;;
+esac
 alias gp="git pull"
 alias gf='git flow'
 alias vim='nvim'
-alias nvim='nvim'
 alias vi='vi'
 alias lg='lazygit'
 alias cl='clear'
@@ -144,14 +177,11 @@ fi
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
 export FZF_DEFAULT_OPTS="--height 50% --layout=reverse --border --inline-info"
 
-# using ripgrep combined with preview
-# vim with fzf
 vf() {
 	local file
 	file=$(fzf --preview 'bat --style=numbers --color=always {}' --query="$1") &&
 	nvim "${file}" || return 1
 }
-# fh - repeat history
 fh() {
 	eval $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//' | sed 's/\\/\\\\/g' | awk '{print "echo exec: " $0 "; " $0}')
 }
@@ -172,65 +202,30 @@ fkill() {
 		echo $pid | xargs kill -${1:-9}
 	fi
 }
-# Delete multiple files with FZF
 frm() {
-    ls -al | fzf -m | xargs -I {} rm {}
+    ls | fzf -m | xargs rm -i
 }
-# Search with Browser
-# https://s10i.me/whitenote/post/40
-# gog() {
-#     if [ $(echo $1 | grep "^-[cfs]$") ]; then
-#         local opt=$1
-#         shift
-#     fi
-#     local url="https://google.co.jp/search?q=${*// /+}"
-#     local c="Google Chrome"
-#     local f="Firefox"
-#     local s="Safari"
-#     case $opt in
-#         -c ) open $url -a $c;;
-#         -f ) open $url -a $f;;
-#         -s ) open $url -a $s;;
-#         * ) open $url;;
-#     esac
-# }
-# weather
 function wtr(){
     curl "https://ja.wttr.in/$1?2nF"
 }
 
 ### zoxide
-if command -v zoxide >/dev/null 2>&1; then
-  eval "$(zoxide init zsh)"
-  z()  { builtin cd -- "$(zoxide query -i -- "$@")" }
+_zsh_cache_eval zoxide init zsh
+if (( ${+functions[__zoxide_z]} )); then
+  z() { builtin cd -- "$(zoxide query -i -- "$@")" }
 fi
 
-if command -v direnv >/dev/null 2>&1; then
-  _zsh_cache_eval direnv direnv hook zsh
-fi
+_zsh_cache_eval direnv hook zsh
 
 ### bmm
 function bmb() {
-	# ブラウザでfzfで選択したブックマーク(URL)を開く
 	local bookmark_url
 	bookmark_url=$(bmm list | fzf --preview 'bmm show {}')
 	open -a "Google Chrome" "$bookmark_url"
 }
 
 ### aws profile
-alias awsp=set_aws_profile
-
-function set_aws_profile() {
-	# Select AWS PROFILE
-	local selected_profile=$(aws configure list-profiles |
-		grep -v "default" |
-		sort |
-		fzf --prompt "Select PROFILE. If press Ctrl-C, unset PROFILE. > " \
-		--height 50% --layout=reverse --border --preview-window 'right:50%' \
-		--preview "grep {} -A5 ~/.aws/config")
-
-	export AWS_PROFILE=$selected_profile
-}
+alias awsp=paws
 
 function y() {
 	local tmp cwd
