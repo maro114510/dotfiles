@@ -17,6 +17,11 @@ github = "zsh-users/zsh-completions"
 github = "zsh-users/zsh-autosuggestions"
 apply = ["defer"]
 
+# git wt initialization (deferred)
+[plugins.git-wt-init]
+inline = 'eval "$(git wt --init zsh)"'
+apply = ["defer"]
+
 # Syntax highlighting (deferred, must be last)
 [plugins.zsh-syntax-highlighting]
 github = "zsh-users/zsh-syntax-highlighting"
