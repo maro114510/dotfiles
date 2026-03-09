@@ -18,6 +18,10 @@ github = "zsh-users/zsh-completions"
 github = "zsh-users/zsh-autosuggestions"
 apply = ["defer"]
 
+# Abbreviations (must be before syntax-highlighting)
+[plugins.zsh-abbr]
+github = "olets/zsh-abbr"
+
 # Syntax highlighting (deferred, must be last)
 [plugins.zsh-syntax-highlighting]
 github = "zsh-users/zsh-syntax-highlighting"

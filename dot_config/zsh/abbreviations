@@ -1,0 +1,27 @@
+# zsh-abbr abbreviations
+# Managed by chezmoi. Edit via: abbr edit
+# Apply changes: chezmoi apply
+
+# Git
+abbr -S -q -- gp="git pull"
+abbr -S -q -- gf="git flow"
+abbr -S -q -- lg="lazygit"
+abbr -S -q -- gitmo="gitmoji -c"
+
+# chezmoi
+abbr -S -q -- ch="chezmoi"
+abbr -S -q -- cz="chezmoi"
+
+# AWS
+abbr -S -q -- awsts="aws sts get-caller-identity --no-cli-pager"
+abbr -S -q -- awsp="paws"
+
+# Shell utilities
+abbr -S -q -- cl="clear"
+abbr -S -q -- srczh="source ~/.zshrc"
+abbr -S -q -- editzh="nvim ~/.zshrc"
+abbr -S -q -- proot="cd \$(git rev-parse --show-toplevel)"
+
+# Tools
+abbr -S -q -- sb="sunbeam"
+abbr -S -q -- xh="xh -s monokai"
