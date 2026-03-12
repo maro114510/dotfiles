@@ -48,7 +48,6 @@ mason_lspconfig.setup({
   ensure_installed = {
     "lua_ls",
     "gopls",
-    "ts_ls",
     "terraformls",
     "jsonls",
     "denols",
