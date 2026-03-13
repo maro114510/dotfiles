@@ -39,7 +39,6 @@ vim.opt.list = true
 -- Opacity
 vim.opt.pumblend = 20
 -- Sub Columns
-vim.opt.showtabline = 2
 vim.opt.signcolumn = "yes"
 
 -- Suppress

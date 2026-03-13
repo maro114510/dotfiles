@@ -180,9 +180,6 @@ vf() {
 	file=$(fzf --preview 'bat --style=numbers --color=always {}' --query="$1") &&
 	nvim "${file}" || return 1
 }
-fh() {
-	eval $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//' | sed 's/\\/\\\\/g' | awk '{print "echo exec: " $0 "; " $0}')
-}
 fgh() {
 	local selected
 	selected=$(ghq list | fzf --preview 'bat --color=always --style=header,grid --line-range :500 $(ghq root)/{}/README.*')
