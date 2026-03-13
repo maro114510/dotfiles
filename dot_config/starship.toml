@@ -1,8 +1,5 @@
 command_timeout = 500
 
-[git_status]
-scan_timeout = 300
-
 [golang]
 format = '(via [$symbol($version )]($style))'
 
