@@ -4,7 +4,7 @@
 auto-update = check
 auto-update-channel = tip
 command = /bin/zsh
-shell-integration-features = ssh-terminfo,ssh-env
+shell-integration-features = ssh-terminfo,ssh-env,no-cursor
 
 # ------------------------------------------------ #
 # Theme / Color Settings
@@ -47,7 +47,7 @@ cursor-style = underline
 cursor-style-blink = false
 cursor-color = #52AD70
 cursor-opacity = 0.8
-shell-integration-features = no-cursor
+
 
 # ------------------------------------------------ #
 # Keybindings 

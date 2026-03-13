@@ -183,7 +183,7 @@ fgh() {
 	selected=$(ghq list | fzf --preview 'bat --color=always --style=header,grid --line-range :500 $(ghq root)/{}/README.*')
 
 	if [ "x$selected" != "x" ]; then
-		cd $(ghq root)/$selected
+		cd "$(ghq root)/$selected"
 	fi
 }
 fkill() {
