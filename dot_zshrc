@@ -110,8 +110,6 @@ function fzf-select-history() {
 		tail -r | \
 		awk '!seen[$0]++' | \
 		fzf --height=40% \
-			--reverse \
-			--border \
 			--no-preview \
 			--scheme=history \
 			--query="$LBUFFER" \
@@ -247,7 +245,6 @@ function paws {
         grep -v "default" | \
         sort | \
         fzf --prompt "Select AWS PROFILE > " \
-            --height 50% --layout=reverse --border \
             --preview "grep {} -A5 ~/.aws/config")
     if [ -n "$profile" ]; then
         AWS_PROFILE=$profile
@@ -259,7 +256,7 @@ function paws {
 function penv {
     local appenv=$(echo -e "development\nstaging\nproduction" | \
         fzf --prompt "Select APP_ENV > " \
-            --height 30% --layout=reverse --border)
+            --height 30%)
     if [ -n "$appenv" ]; then
         APP_ENV=$appenv
         export APP_ENV
