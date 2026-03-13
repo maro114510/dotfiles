@@ -1,14 +1,5 @@
 command_timeout = 1000
 
-[custom.os_version]
-command = "uname"
-format = ' [$symbol($output)]($style)'
-
-[os.symbols]
-Macos = "  " # nf-fa-apple
-Ubuntu = "  " # nf-linux-ubuntu
-Debian = "  " # nf-linux-debian
-
 [golang]
 format = '(via [$symbol($version )]($style))'
 
