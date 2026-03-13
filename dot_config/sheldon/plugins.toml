@@ -21,6 +21,7 @@ apply = ["defer"]
 # Abbreviations (must be before syntax-highlighting)
 [plugins.zsh-abbr]
 github = "olets/zsh-abbr"
+apply = ["defer"]
 
 # Syntax highlighting (deferred, must be last)
 [plugins.zsh-syntax-highlighting]

@@ -1,4 +1,7 @@
-command_timeout = 1000
+command_timeout = 500
+
+[git_status]
+scan_timeout = 300
 
 [custom.os_version]
 command = "uname"
