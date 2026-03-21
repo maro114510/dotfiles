@@ -212,8 +212,13 @@ _zsh_cache_eval direnv hook zsh
 
 ### git-worktree-runner (gtr) ###
 _gtr_init="${XDG_CACHE_HOME:-$HOME/.cache}/gtr/init-gtr.zsh"
-[[ -f "$_gtr_init" ]] || eval "$(git gtr init zsh)" || true
-source "$_gtr_init" 2>/dev/null || true; unset _gtr_init
+# `git wt` is initialized via Sheldon. Only initialize optional `git gtr`
+# support when the git subcommand is actually available.
+if git gtr -h >/dev/null 2>&1; then
+  [[ -f "$_gtr_init" ]] || eval "$(git gtr init zsh)" || true
+  [[ -f "$_gtr_init" ]] && source "$_gtr_init" 2>/dev/null || true
+fi
+unset _gtr_init
 
 ### bmm
 function bmb() {
