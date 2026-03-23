@@ -24,7 +24,7 @@ fi
 
 # 最終的なファイル名に拡張子を追加
 DATE_FILE="${DATE_FILE}.md"
-MEMO_DIR="${HOME}/memo"
+MEMO_DIR="${HOME}/ghq/github.com/maro114510/Obsidian/memo"
 
 # メモディレクトリが存在しない場合は作成
 mkdir -p "${MEMO_DIR}"

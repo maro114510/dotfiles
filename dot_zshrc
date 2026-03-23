@@ -140,7 +140,7 @@ alias nv='nohup neovide > /dev/null 2>&1 &'
 # Remaining aliases kept as-is (safety flags or tool overrides)
 # git, chezmoi, aws, shell utils → managed by zsh-abbr (see ~/.config/zsh/abbreviations)
 
-alias memol='memo list | fzf --preview "head ~/memo/{}" | xargs -I {} sh -c "open ~/memo/{} -a CotEditor"'
+alias memol='memo list | fzf --preview "head ~/ghq/github.com/maro114510/Obsidian/memo/{}" | xargs -I {} sh -c "open ~/ghq/github.com/maro114510/Obsidian/memo/{} -a CotEditor"'
 alias fzc="git branch --list | cut -c 3- | fzf --preview \"git log --pretty=format:'%h %cd %s' --date=format:'%Y-%m-%d %H:%M' {}\" | xargs git checkout"
 
 function wt() {
