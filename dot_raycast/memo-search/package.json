@@ -3,7 +3,7 @@
   "name": "memo-search",
   "title": "Memo Search",
   "description": "Search and open Obsidian memo files",
-  "icon": "assets/icon.png",
+  "icon": "🐣",
   "author": "maro114510",
   "license": "MIT",
   "commands": [
