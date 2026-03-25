@@ -1,16 +1,10 @@
 {
+  "cleanupPeriodDays": 9999,
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "permissions": {
-    "read": {
-      "deny": [
-        "**/.env*",
-        "**/*.pem",
-        "**/*.key",
-        "**/secrets/**",
-        "**/credentials/**",
-        "**/.aws/**",
-        "**/.ssh/**"
-      ]
-    },
     "allow": [
       "Bash(find:*)",
       "Bash(grep:*)",
@@ -157,6 +151,10 @@
       "Bash(git push:*)"
     ],
     "deny": [
+      "Read(.env)",
+      "Read(secrets/**)",
+      "Read(config/credentials.json)",
+      "Read(**/*.pem)",
       "Bash(sudo:*)",
       "Bash(rm:*)",
       "Bash(rm -rf:*)",
@@ -178,26 +176,93 @@
       "Bash(mysql:*)",
       "Bash(mongod:*)"
     ],
-    "defaultMode": "default"
+    "defaultMode": "default",
+    "read": {
+      "deny": [
+        "**/.env*",
+        "**/*.pem",
+        "**/*.key",
+        "**/secrets/**",
+        "**/credentials/**",
+        "**/.aws/**",
+        "**/.ssh/**"
+      ]
+    }
+  },
+  "model": "sonnet",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | python3 -c \"import sys,json; cmd=json.load(sys.stdin).get(\\\"command\\\",\\\"\\\"); exit(0 if \\\"git commit\\\" in cmd else 1)\" 2>/dev/null; then staged=$(git diff --cached --name-only --diff-filter=d 2>/dev/null | grep \"\\.go$\"); if [ -n \"$staged\" ]; then echo \"$staged\" | xargs gofmt -w; git add $staged; fi; fi'"
+          }
+        ]
+      }
+    ]
   },
   "statusLine": {
     "type": "command",
-    "command": "npx ccusage@latest statusline"
+    "command": "bash ~/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
     "criticalthink@criticalthink": true,
     "gopls-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
-    "example-skills@anthropic-agent-skills": true
+    "example-skills@anthropic-agent-skills": true,
+    "document-skills@anthropic-agent-skills": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "hono-skill@hono-skill": true,
+    "skill-creator@claude-plugins-official": true,
+    "pm-toolkit@pm-skills": true,
+    "pm-product-strategy@pm-skills": true,
+    "pm-product-discovery@pm-skills": true,
+    "pm-market-research@pm-skills": true,
+    "pm-data-analytics@pm-skills": true,
+    "pm-marketing-growth@pm-skills": true,
+    "pm-go-to-market@pm-skills": true,
+    "pm-execution@pm-skills": true
+  },
+  "extraKnownMarketplaces": {
+    "anthropic-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/skills"
+      }
+    },
+    "voltagent-subagents": {
+      "source": {
+        "source": "github",
+        "repo": "VoltAgent/awesome-claude-code-subagents"
+      }
+    },
+    "hono-skill": {
+      "source": {
+        "source": "github",
+        "repo": "yusukebe/hono-skill"
+      }
+    },
+    "obsidian-skills": {
+      "source": {
+        "source": "github",
+        "repo": "kepano/obsidian-skills"
+      }
+    },
+    "pm-skills": {
+      "source": {
+        "source": "github",
+        "repo": "phuryn/pm-skills"
+      }
+    }
   },
   "alwaysThinkingEnabled": true,
+  "voiceEnabled": true,
+  "skipDangerousModePermissionPrompt": true,
   "feedbackSurveyState": {
     "lastShownTime": 1753989253554
-  },
-  "voiceEnabled": true,
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
-  "model": "sonnet"
+  }
 }
