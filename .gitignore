@@ -41,4 +41,9 @@ lazy-lock.json
 
 .serena
 
+# Raycast memo-search extension build artifacts
+dot_raycast/memo-search/node_modules/
+dot_raycast/memo-search/.build/
+dot_raycast/memo-search/bun.lockb
+
 # End Of Ignore
