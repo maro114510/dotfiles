@@ -7,6 +7,7 @@
 - 作業は原則として [git-worktree-runner](https://github.com/coderabbitai/git-worktree-runner) を使いワークツリー上で実施する
 - mainブランチへの直接変更は禁止。必ずワークツリー上で作業し、レビュー後にマージする
 - ワークツリーの作成・管理は git-worktree-runner に委譲し、手動操作は避ける
+- `EnterWorktree` ツールは使用しない
 
 ## このファイルの適用範囲
 
@@ -29,4 +30,4 @@
 ### コードレビュー・確認フェーズ
 - 変更内容の確認は `git diff origin/main...<branch>` でリモートブランチを対象にする
 - ローカルとリモートの一致は `git diff origin/<branch>` で確認する
-- 差分にロックや並列テストが含まれる場合、同一ジョブグループ内の競合ロックを必ず検索してから適用する
+- GitHub Actions の差分に `concurrency:` が含まれる場合、同一 `group:` 値を持つ他のジョブを検索して競合がないか確認する
