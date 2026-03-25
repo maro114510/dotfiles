@@ -23,3 +23,4 @@ bun run build
 
 echo "Raycast memo-search extension setup complete."
 echo "To register the extension in Raycast: Raycast -> Import Extension -> ${EXTENSION_DIR}"
+# v2: fix TypeScript version (5.9.3) and add @types/node
