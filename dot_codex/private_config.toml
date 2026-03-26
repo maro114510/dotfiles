@@ -1,11 +1,11 @@
 hide_agent_reasoning = true
-model = "gpt-5.2-codex"
+model = "gpt-5.4"
 network_access = true
 ask_for_approval = "never"
 model_responding_effort = "medium"
-web_search_request = true
+web_search = "live"
 model_reasoning_effort = "medium"
-approval_policy = "on-failure"
+approval_policy = "never"
 
 [notice]
 hide_gpt5_1_migration_prompt = true
@@ -13,6 +13,7 @@ hide_gpt5_1_migration_prompt = true
 
 [notice.model_migrations]
 "gpt-5.1-codex-max" = "gpt-5.2-codex"
+"gpt-5.2-codex" = "gpt-5.4"
 
 [projects."/Users/nohira/ghq/github.com/maro114510/stock_with_me_alpha"]
 trust_level = "trusted"
@@ -41,14 +42,17 @@ trust_level = "trusted"
 [projects."/Users/nohira/ghq/github.com/maro114510/feedly-opener"]
 trust_level = "trusted"
 
+[projects."/Users/atsuki.nohira/.local/share/chezmoi"]
+trust_level = "trusted"
+
 [mcp_servers.spec-workflow]
 command = "npx"
 args = ["-y", "@pimzino/spec-workflow-mcp@latest", "/Users/nohira/ghq/github.com/maro114510/feedly-opener"]
+enabled = false
 
 [features]
 unified_exec = true
 shell_snapshot = true
-web_search_request = true
 rmcp_client = true
 
 [sandbox_workspace_write]
