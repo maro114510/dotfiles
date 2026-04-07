@@ -201,6 +201,83 @@
           }
         ]
       }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.tmux/plugins/tmux-agent-sidebar/hook.sh claude notification"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.tmux/plugins/tmux-agent-sidebar/hook.sh claude stop"
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.tmux/plugins/tmux-agent-sidebar/hook.sh claude stop-failure"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.tmux/plugins/tmux-agent-sidebar/hook.sh claude user-prompt-submit"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.tmux/plugins/tmux-agent-sidebar/hook.sh claude session-start"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.tmux/plugins/tmux-agent-sidebar/hook.sh claude activity-log"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.tmux/plugins/tmux-agent-sidebar/hook.sh claude session-end"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
@@ -225,7 +302,9 @@
     "pm-data-analytics@pm-skills": true,
     "pm-marketing-growth@pm-skills": true,
     "pm-go-to-market@pm-skills": true,
-    "pm-execution@pm-skills": true
+    "pm-execution@pm-skills": true,
+    "pr-review@maro114510-pr-review": true,
+    "codex@openai-codex": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {
@@ -256,6 +335,18 @@
       "source": {
         "source": "github",
         "repo": "phuryn/pm-skills"
+      }
+    },
+    "maro114510-pr-review": {
+      "source": {
+        "source": "github",
+        "repo": "maro114510/pr-review"
+      }
+    },
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
       }
     }
   },
