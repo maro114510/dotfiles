@@ -164,7 +164,7 @@
       "Read(id_rsa)",
       "Read(id_ed25519)",
       "Read(**/*token*)",
-      "Read(**/*key*)",
+      "Read(**/*.key)",
       "Write(.env*)",
       "Write(**/secrets/**)",
       "Bash(curl:*)",
@@ -189,7 +189,6 @@
       ]
     }
   },
-  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
       {
