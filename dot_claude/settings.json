@@ -189,6 +189,7 @@
       ]
     }
   },
+  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
       {
@@ -284,7 +285,6 @@
     "command": "bash ~/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
-    "criticalthink@criticalthink": true,
     "gopls-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "example-skills@anthropic-agent-skills": true,
@@ -303,7 +303,8 @@
     "pm-go-to-market@pm-skills": true,
     "pm-execution@pm-skills": true,
     "pr-review@maro114510-pr-review": true,
-    "codex@openai-codex": true
+    "codex@openai-codex": true,
+    "skills@maro114510-agent-skills": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {
@@ -334,6 +335,12 @@
       "source": {
         "source": "github",
         "repo": "phuryn/pm-skills"
+      }
+    },
+    "maro114510-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "maro114510/skills"
       }
     },
     "maro114510-pr-review": {
