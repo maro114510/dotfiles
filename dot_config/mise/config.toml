@@ -31,6 +31,7 @@ zoxide = "0.9.9"
 lockfile = true
 idiomatic_version_file_enable_tools = ["terraform"]
 github.credential_command = ["gh", "auth", "token"]
+trusted_config_paths = ["~/ghq"]
 
 [settings.aqua]
 baked_registry = true
