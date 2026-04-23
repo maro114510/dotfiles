@@ -1,5 +1,6 @@
 #!/bin/bash
-# chezmoi run_once_after_ script: apply macOS system preferences
+# Invoked automatically by `chezmoi apply` via the run_once_after_ filename prefix.
+# Runs once per unique script content; re-runs only when this file is modified.
 
 set -euo pipefail
 
