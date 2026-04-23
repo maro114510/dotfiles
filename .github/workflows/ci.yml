@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    name: Validate templates and scripts
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+
+      # ── .chezmoi.toml.tmpl ───────────────────────────────────────────────
+
+      - name: Render .chezmoi.toml.tmpl and validate TOML
+        run: |
+          "$HOME/.local/bin/chezmoi" execute-template --init \
+            --promptString "Default git email=ci@example.com" \
+            --promptString "Work project directory (trailing slash; empty to skip)=~/work/" \
+            --promptString "Work git email (empty to skip)=ci-work@example.com" \
+            --promptString "Personal project directory (trailing slash; empty to skip)=~/personal/" \
+            --promptString "Personal git email (empty to skip)=ci-personal@example.com" \
+            -f .chezmoi.toml.tmpl | tee /tmp/chezmoi.toml
+          python3 - <<'PYEOF'
+          import tomllib
+          with open("/tmp/chezmoi.toml", "rb") as f:
+              data = tomllib.load(f)
+          d = data["data"]
+          assert d["gitEmail"] == "ci@example.com", f"gitEmail: {d['gitEmail']!r}"
+          assert d["gitWorkDir"] == "~/work/", f"gitWorkDir: {d['gitWorkDir']!r}"
+          assert d["gitWorkEmail"] == "ci-work@example.com", f"gitWorkEmail: {d['gitWorkEmail']!r}"
+          assert d["gitPersonalDir"] == "~/personal/", f"gitPersonalDir: {d['gitPersonalDir']!r}"
+          assert d["gitPersonalEmail"] == "ci-personal@example.com", f"gitPersonalEmail: {d['gitPersonalEmail']!r}"
+          print("chezmoi.toml.tmpl: OK")
+          PYEOF
+
+      # ── git config.tmpl ──────────────────────────────────────────────────
+
+      - name: Write test chezmoi configs
+        run: |
+          cat > /tmp/chezmoi-full.toml << 'EOF'
+          [data]
+            gitEmail         = "ci@example.com"
+            gitWorkDir       = "~/ghq/github.com/testorg/"
+            gitWorkEmail     = "ci-work@example.com"
+            gitPersonalDir   = "~/ghq/github.com/testuser/"
+            gitPersonalEmail = "ci-personal@example.com"
+          EOF
+
+          cat > /tmp/chezmoi-empty.toml << 'EOF'
+          [data]
+            gitEmail         = "ci@example.com"
+            gitWorkDir       = ""
+            gitWorkEmail     = ""
+            gitPersonalDir   = ""
+            gitPersonalEmail = ""
+          EOF
+
+      - name: Render git config.tmpl (with directories)
+        run: |
+          "$HOME/.local/bin/chezmoi" execute-template \
+            --config /tmp/chezmoi-full.toml \
+            -f dot_config/git/config.tmpl | tee /tmp/gitconfig-full
+          git config --file /tmp/gitconfig-full --list > /dev/null
+          grep -q "email = ci@example.com"                             /tmp/gitconfig-full
+          grep -q 'includeIf "gitdir:~/ghq/github.com/testorg/"'      /tmp/gitconfig-full
+          grep -q 'path = ~/.config/git/config.work'                  /tmp/gitconfig-full
+          grep -q 'includeIf "gitdir:~/ghq/github.com/testuser/"'     /tmp/gitconfig-full
+          grep -q 'path = ~/.config/git/config.personal'              /tmp/gitconfig-full
+          echo "git config.tmpl (with dirs): OK"
+
+      - name: Render git config.tmpl (without directories)
+        run: |
+          "$HOME/.local/bin/chezmoi" execute-template \
+            --config /tmp/chezmoi-empty.toml \
+            -f dot_config/git/config.tmpl | tee /tmp/gitconfig-empty
+          git config --file /tmp/gitconfig-empty --list > /dev/null
+          grep -q "email = ci@example.com" /tmp/gitconfig-empty
+          if grep -q "includeIf" /tmp/gitconfig-empty; then
+            echo "ERROR: includeIf must not be rendered when directories are empty"
+            exit 1
+          fi
+          echo "git config.tmpl (without dirs): OK"
+
+      # ── run_once script ──────────────────────────────────────────────────
+
+      - name: Render and validate run_once script (with directories)
+        run: |
+          "$HOME/.local/bin/chezmoi" execute-template \
+            --config /tmp/chezmoi-full.toml \
+            -f run_once_after_setup-git-local-configs.sh.tmpl | tee /tmp/setup-full.sh
+          bash -n /tmp/setup-full.sh
+          grep -q "ci-work@example.com"     /tmp/setup-full.sh
+          grep -q "ci-personal@example.com" /tmp/setup-full.sh
+          echo "run_once script (with dirs): OK"
+
+      - name: Render and validate run_once script (without directories)
+        run: |
+          "$HOME/.local/bin/chezmoi" execute-template \
+            --config /tmp/chezmoi-empty.toml \
+            -f run_once_after_setup-git-local-configs.sh.tmpl | tee /tmp/setup-empty.sh
+          bash -n /tmp/setup-empty.sh
+          if grep -q "config.work\|config.personal" /tmp/setup-empty.sh; then
+            echo "ERROR: file creation blocks must not appear when dirs/emails are empty"
+            exit 1
+          fi
+          echo "run_once script (without dirs): OK"
+
+      # ── ShellCheck ───────────────────────────────────────────────────────
+
+      - name: ShellCheck plain shell scripts
+        run: |
+          find . -name "*.sh" -not -path "./.git/*" -not -path "./dot_claude/*" -print0 | \
+            xargs -0 shellcheck --severity=warning
+
+      - name: ShellCheck rendered .sh.tmpl files
+        run: |
+          while IFS= read -r tmpl; do
+            echo "ShellCheck: $tmpl"
+            "$HOME/.local/bin/chezmoi" execute-template \
+              --config /tmp/chezmoi-full.toml -f "$tmpl" | \
+              shellcheck --severity=warning --shell=bash -
+          done < <(find . -name "*.sh.tmpl" -not -path "./.git/*")
