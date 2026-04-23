@@ -11,7 +11,6 @@ Personal macOS development environment configuration files managed with chezmoi.
 - **File Management**: yazi terminal file manager with custom themes
 - **Shell Enhancements**: starship prompt, zoxide for smart navigation, fzf for fuzzy finding
 - **macOS Settings**: System preferences automation via setup script
-- **Environment Support**: Separate configurations for different machines (MacBook, Mac Mini, work)
 
 ## Prerequisites
 
@@ -48,11 +47,6 @@ Core tools that will be managed automatically:
 * **oh-my-zsh** - Zsh framework
 * **Modern CLI Tools** - mise, lazygit, yazi, starship, zoxide, fzf
 
-Environment-specific tools will be installed via Brewfiles:
-- `mac_book/Brewfile` - Personal MacBook setup
-- `mac_mini/Brewfile` - Desktop Mac Mini setup
-- `job_macbook/Brewfile` - Work laptop setup
-
 ### Legacy Setup (without chezmoi)
 
 ```bash
@@ -69,16 +63,6 @@ cd dotfiles
 - **Visual Enhancement**: Modern terminal UI with starship prompt and yazi file manager
 - **Development Ready**: Pre-configured for multiple programming languages via mise
 - **Claude Code Ready**: Optimized configurations for AI-assisted development
-
-## Environment Configuration
-
-This dotfiles setup supports multiple machine configurations:
-
-- **mac_book**: Personal MacBook with full development stack
-- **mac_mini**: Desktop setup with performance optimizations  
-- **job_macbook**: Work environment with company-specific tools
-
-The appropriate Brewfile will be used based on your `LOCAL_NAME` environment variable.
 
 ## Troubleshooting
 

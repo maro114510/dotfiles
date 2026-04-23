@@ -154,21 +154,6 @@ function tmuxx {
 	tmux new -s "$session_name"
 }
 
-if [ -f "$HOME/.env" ]; then
-	source "$HOME/.env"
-
-	if [ "$LOCAL_NAME" = "macbook" ]; then
-		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_book/Brewfile"
-		alias brewd="brew bundle dump --force --file=$bfile"
-	elif [ "$LOCAL_NAME" = "macmini" ]; then
-		bfile="$HOME/ghq/github.com/maro114510/dotfiles/mac_mini/Brewfile"
-		alias brewd="brew bundle dump --force --file=$bfile"
-	elif [ "$LOCAL_NAME" = "job" ]; then
-		bfile="$HOME/ghq/github.com/maro114510/dotfiles/job_macbook/Brewfile"
-		alias brewd="brew bundle dump --force --file=$bfile"
-	fi
-fi
-
 ##### fzf #####
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
 export FZF_DEFAULT_OPTS="--height 50% --layout=reverse --border --inline-info"
