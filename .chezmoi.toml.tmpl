@@ -1,0 +1,16 @@
+{{- $gitEmail      := promptStringOnce "git" "email"         "Default git email" -}}
+{{- $workDir       := promptStringOnce "git" "workDir"       "Work project directory (e.g. ~/ghq/github.com/kauche/, empty=skip)" -}}
+{{- $workEmail     := promptStringOnce "git" "workEmail"     "Work git email (empty=skip)" -}}
+{{- $personalDir   := promptStringOnce "git" "personalDir"   "Personal project directory (e.g. ~/ghq/github.com/maro114510/, empty=skip)" -}}
+{{- $personalEmail := promptStringOnce "git" "personalEmail" "Personal git email (empty=skip)" -}}
+
+[git]
+  autoCommit = true
+  autoPush   = true
+
+[data.git]
+  email         = "{{ $gitEmail }}"
+  workDir       = "{{ $workDir }}"
+  workEmail     = "{{ $workEmail }}"
+  personalDir   = "{{ $personalDir }}"
+  personalEmail = "{{ $personalEmail }}"

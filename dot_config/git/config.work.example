@@ -1,0 +1,13 @@
+# ~/.config/git/config.work
+# This file is NOT tracked by chezmoi. It is created automatically during
+# `chezmoi init` if you provide a work email address.
+#
+# To manually create or update this file, run:
+#   cp ~/.config/git/config.work.example ~/.config/git/config.work
+# and edit the email address accordingly.
+#
+# For a personal directory override, create ~/.config/git/config.personal
+# with the same structure.
+
+[user]
+  email = you@yourcompany.com
