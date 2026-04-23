@@ -1,0 +1,8 @@
+# Test fixture: only default email set, optional directories omitted.
+# Used by CI to verify that includeIf blocks are not rendered when dirs are empty.
+[data]
+  gitEmail         = "ci@example.com"
+  gitWorkDir       = ""
+  gitWorkEmail     = ""
+  gitPersonalDir   = ""
+  gitPersonalEmail = ""
