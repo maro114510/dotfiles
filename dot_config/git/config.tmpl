@@ -1,6 +1,6 @@
 [user]
 	name = maro114510
-	email = {{ .git.email }}
+	email = {{ .gitEmail }}
 [core]
 	pager = delta
 	excludesfile = ~/.config/git/ignore
@@ -39,12 +39,12 @@
 	diff = diffnav
 [sequence]
 	editor = interactive-rebase-tool
-{{ if .git.workDir -}}
-[includeIf "gitdir:{{ .git.workDir }}"]
+{{ if .gitWorkDir -}}
+[includeIf "gitdir:{{ .gitWorkDir }}"]
 	path = ~/.config/git/config.work
 {{ end -}}
-{{ if .git.personalDir -}}
-[includeIf "gitdir:{{ .git.personalDir }}"]
+{{ if .gitPersonalDir -}}
+[includeIf "gitdir:{{ .gitPersonalDir }}"]
 	path = ~/.config/git/config.personal
 {{ end -}}
 [credential "https://github.com"]

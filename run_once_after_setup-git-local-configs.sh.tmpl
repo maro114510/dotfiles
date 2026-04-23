@@ -2,20 +2,20 @@
 set -euo pipefail
 
 mkdir -p "$HOME/.config/git"
-{{ if and .git.workDir .git.workEmail -}}
+{{ if and .gitWorkDir .gitWorkEmail -}}
 if [ ! -f "$HOME/.config/git/config.work" ]; then
   cat > "$HOME/.config/git/config.work" <<'EOF'
 [user]
-  email = {{ .git.workEmail }}
+  email = {{ .gitWorkEmail }}
 EOF
   echo "Created ~/.config/git/config.work"
 fi
 {{ end -}}
-{{ if and .git.personalDir .git.personalEmail -}}
+{{ if and .gitPersonalDir .gitPersonalEmail -}}
 if [ ! -f "$HOME/.config/git/config.personal" ]; then
   cat > "$HOME/.config/git/config.personal" <<'EOF'
 [user]
-  email = {{ .git.personalEmail }}
+  email = {{ .gitPersonalEmail }}
 EOF
   echo "Created ~/.config/git/config.personal"
 fi
