@@ -1,0 +1,116 @@
+# Validates that chezmoi templates in this repository render correctly.
+#
+# What this workflow guarantees:
+#   - .chezmoi.toml.tmpl produces a config that chezmoi itself can parse,
+#     with all expected data keys present and correctly interpolated
+#   - dot_config/git/config.tmpl renders to a git-parseable config and
+#     generates includeIf blocks only when directory paths are non-empty
+#   - run_once_after_setup-git-local-configs.sh.tmpl renders to valid bash
+#     and creates config.work / config.personal only when both dir and email are set
+#
+# Test fixtures live in .github/testdata/ and are committed to the repository.
+# The env vars below are the single source of truth for all test values;
+# .github/testdata/chezmoi-full.toml must contain matching values.
+name: validate-chezmoi-templates
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    name: Validate chezmoi template rendering
+    runs-on: ubuntu-latest
+    env:
+      CI_GIT_EMAIL: "ci@example.com"
+      CI_WORK_DIR: "~/ghq/github.com/testorg/"
+      CI_WORK_EMAIL: "ci-work@example.com"
+      CI_PERSONAL_DIR: "~/ghq/github.com/testuser/"
+      CI_PERSONAL_EMAIL: "ci-personal@example.com"
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "${HOME}/.local/bin"
+
+      # ── .chezmoi.toml.tmpl ───────────────────────────────────────────────
+      # Render with simulated prompts, then feed the output back to chezmoi as
+      # --config to confirm chezmoi itself can parse it and resolve all data keys.
+
+      - name: Render .chezmoi.toml.tmpl and verify via chezmoi
+        run: |
+          CHEZMOI="${HOME}/.local/bin/chezmoi"
+          CONFIG=$(mktemp --suffix=.toml)
+          trap 'rm -f "${CONFIG}"' EXIT
+
+          "${CHEZMOI}" execute-template --init \
+            --promptString "Default git email=${CI_GIT_EMAIL}" \
+            --promptString "Work project directory (trailing slash; empty to skip)=${CI_WORK_DIR}" \
+            --promptString "Work git email (empty to skip)=${CI_WORK_EMAIL}" \
+            --promptString "Personal project directory (trailing slash; empty to skip)=${CI_PERSONAL_DIR}" \
+            --promptString "Personal git email (empty to skip)=${CI_PERSONAL_EMAIL}" \
+            -f .chezmoi.toml.tmpl > "${CONFIG}"
+
+          [ "$("${CHEZMOI}" execute-template --config "${CONFIG}" '{{ .gitEmail }}')" = "${CI_GIT_EMAIL}" ]
+          [ "$("${CHEZMOI}" execute-template --config "${CONFIG}" '{{ .gitWorkDir }}')" = "${CI_WORK_DIR}" ]
+          [ "$("${CHEZMOI}" execute-template --config "${CONFIG}" '{{ .gitWorkEmail }}')" = "${CI_WORK_EMAIL}" ]
+          [ "$("${CHEZMOI}" execute-template --config "${CONFIG}" '{{ .gitPersonalDir }}')" = "${CI_PERSONAL_DIR}" ]
+          [ "$("${CHEZMOI}" execute-template --config "${CONFIG}" '{{ .gitPersonalEmail }}')" = "${CI_PERSONAL_EMAIL}" ]
+          echo ".chezmoi.toml.tmpl: OK"
+
+      # ── dot_config/git/config.tmpl ───────────────────────────────────────
+      # Verify email is injected and includeIf blocks appear iff dirs are set.
+
+      - name: Render git config.tmpl (with directories)
+        run: |
+          "${HOME}/.local/bin/chezmoi" execute-template \
+            --config .github/testdata/chezmoi-full.toml \
+            -f dot_config/git/config.tmpl | tee /tmp/gitconfig-full
+          git config --file /tmp/gitconfig-full --list > /dev/null
+          grep -q "email = ${CI_GIT_EMAIL}" /tmp/gitconfig-full
+          grep -q "includeIf \"gitdir:${CI_WORK_DIR}\"" /tmp/gitconfig-full
+          grep -q 'path = ~/.config/git/config.work' /tmp/gitconfig-full
+          grep -q "includeIf \"gitdir:${CI_PERSONAL_DIR}\"" /tmp/gitconfig-full
+          grep -q 'path = ~/.config/git/config.personal' /tmp/gitconfig-full
+          echo "git config.tmpl (with dirs): OK"
+
+      - name: Render git config.tmpl (without directories)
+        run: |
+          "${HOME}/.local/bin/chezmoi" execute-template \
+            --config .github/testdata/chezmoi-empty.toml \
+            -f dot_config/git/config.tmpl | tee /tmp/gitconfig-empty
+          git config --file /tmp/gitconfig-empty --list > /dev/null
+          grep -q "email = ${CI_GIT_EMAIL}" /tmp/gitconfig-empty
+          if grep -q "includeIf" /tmp/gitconfig-empty; then
+            echo "ERROR: includeIf must not be rendered when directories are empty"
+            exit 1
+          fi
+          echo "git config.tmpl (without dirs): OK"
+
+      # ── run_once_after_setup-git-local-configs.sh.tmpl ──────────────────
+      # Verify bash syntax and that file-creation blocks appear iff both
+      # directory and email are provided.
+
+      - name: Render run_once script (with directories)
+        run: |
+          "${HOME}/.local/bin/chezmoi" execute-template \
+            --config .github/testdata/chezmoi-full.toml \
+            -f run_once_after_setup-git-local-configs.sh.tmpl | tee /tmp/setup-full.sh
+          bash -n /tmp/setup-full.sh
+          grep -q "${CI_WORK_EMAIL}" /tmp/setup-full.sh
+          grep -q "${CI_PERSONAL_EMAIL}" /tmp/setup-full.sh
+          echo "run_once script (with dirs): OK"
+
+      - name: Render run_once script (without directories)
+        run: |
+          "${HOME}/.local/bin/chezmoi" execute-template \
+            --config .github/testdata/chezmoi-empty.toml \
+            -f run_once_after_setup-git-local-configs.sh.tmpl | tee /tmp/setup-empty.sh
+          bash -n /tmp/setup-empty.sh
+          if grep -q "config.work\|config.personal" /tmp/setup-empty.sh; then
+            echo "ERROR: file creation blocks must not appear when dirs/emails are empty"
+            exit 1
+          fi
+          echo "run_once script (without dirs): OK"

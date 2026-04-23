@@ -46,4 +46,6 @@ dot_raycast/memo-search/node_modules/
 dot_raycast/memo-search/.build/
 dot_raycast/memo-search/bun.lockb
 
+tmp/
+
 # End Of Ignore

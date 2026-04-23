@@ -11,7 +11,6 @@ Personal macOS development environment configuration files managed with chezmoi.
 - **File Management**: yazi terminal file manager with custom themes
 - **Shell Enhancements**: starship prompt, zoxide for smart navigation, fzf for fuzzy finding
 - **macOS Settings**: System preferences automation via setup script
-- **Environment Support**: Separate configurations for different machines (MacBook, Mac Mini, work)
 
 ## Prerequisites
 
@@ -30,12 +29,26 @@ Personal macOS development environment configuration files managed with chezmoi.
 brew install chezmoi
 
 # Initialize and apply dotfiles
+# You will be prompted for git identity information (see Git Identity below)
 chezmoi init --apply https://github.com/maro114510/dotfiles.git
+```
 
-# Navigate to home directory and run system configuration
-cd ~
-chmod +x setup.sh
-./setup.sh
+During initialization, chezmoi will interactively ask for:
+
+| Prompt | Example | Notes |
+|---|---|---|
+| Default git email | `you@example.com` | Used as the fallback email in all repos |
+| Work project directory | `~/ghq/github.com/yourcompany/` | Leave empty to skip; trailing `/` required |
+| Work git email | `you@yourcompany.com` | Leave empty to skip |
+| Personal project directory | `~/ghq/github.com/yourhandle/` | Leave empty to skip; trailing `/` required |
+| Personal git email | `you@personal.example.com` | Leave empty to skip |
+
+Per-directory email override files (`~/.config/git/config.work`, `~/.config/git/config.personal`) are created automatically on first run if you provide the corresponding email. These files are **not** tracked by chezmoi — edit them directly if you need to change the email later.
+
+To add a new directory context in the future, edit the template and add an `includeIf` block:
+```bash
+chezmoi edit ~/.config/git/config
+chezmoi apply
 ```
 
 ### Dependencies
@@ -47,11 +60,6 @@ Core tools that will be managed automatically:
 * **tmux** - Terminal multiplexer  
 * **oh-my-zsh** - Zsh framework
 * **Modern CLI Tools** - mise, lazygit, yazi, starship, zoxide, fzf
-
-Environment-specific tools will be installed via Brewfiles:
-- `mac_book/Brewfile` - Personal MacBook setup
-- `mac_mini/Brewfile` - Desktop Mac Mini setup
-- `job_macbook/Brewfile` - Work laptop setup
 
 ### Legacy Setup (without chezmoi)
 
@@ -69,16 +77,6 @@ cd dotfiles
 - **Visual Enhancement**: Modern terminal UI with starship prompt and yazi file manager
 - **Development Ready**: Pre-configured for multiple programming languages via mise
 - **Claude Code Ready**: Optimized configurations for AI-assisted development
-
-## Environment Configuration
-
-This dotfiles setup supports multiple machine configurations:
-
-- **mac_book**: Personal MacBook with full development stack
-- **mac_mini**: Desktop setup with performance optimizations  
-- **job_macbook**: Work environment with company-specific tools
-
-The appropriate Brewfile will be used based on your `LOCAL_NAME` environment variable.
 
 ## Troubleshooting
 

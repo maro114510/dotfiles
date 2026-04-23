@@ -28,9 +28,7 @@ ghq = "1.9.4"
 zoxide = "0.9.9"
 
 [settings]
-lockfile = true
 idiomatic_version_file_enable_tools = ["terraform"]
-github.credential_command = ["gh", "auth", "token"]
 trusted_config_paths = ["~/ghq"]
 
 [settings.aqua]

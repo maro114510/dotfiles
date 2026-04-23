@@ -1,0 +1,8 @@
+# Test fixture: all git identity values set.
+# Used by CI to verify template rendering with both work and personal directories.
+[data]
+  gitEmail         = "ci@example.com"
+  gitWorkDir       = "~/ghq/github.com/testorg/"
+  gitWorkEmail     = "ci-work@example.com"
+  gitPersonalDir   = "~/ghq/github.com/testuser/"
+  gitPersonalEmail = "ci-personal@example.com"
