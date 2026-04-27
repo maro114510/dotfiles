@@ -53,3 +53,7 @@
 [credential "https://gist.github.com"]
 	helper =
 	helper = !gh auth git-credential
+
+[hook "gitleaks"]
+	event = pre-commit
+	command = gitleaks protect --staged
