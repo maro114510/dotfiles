@@ -19,10 +19,7 @@ return {
       set("n", "<C-m>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
       set("n", "gy", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
       set("n", "ma", "<cmd>lua vim.lsp.buf.code_action()<CR>")
-      set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
       set("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<CR>")
-      set("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
-      set("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>")
     end
 
     -- グローバル設定: 全サーバーに on_attach / capabilities を適用
