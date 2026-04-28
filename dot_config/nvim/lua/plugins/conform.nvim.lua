@@ -33,6 +33,8 @@ return {
         json = { "prettier" },
         markdown = { "prettier" },
         sql = { "sql_formatter" },
+        kotlin = { "ktlint" },
+        swift = { "swift_format" },
       },
       format_on_save = { timeout_ms = 500, lsp_fallback = true },
     })
