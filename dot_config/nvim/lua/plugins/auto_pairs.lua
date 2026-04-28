@@ -2,11 +2,11 @@
 -- A super powerful autopair plugin for Neovim that supports multiple characters.
 
 return {
-  'windwp/nvim-autopairs',
+  "windwp/nvim-autopairs",
 
   config = function()
-    require'nvim-autopairs'.setup {}
+    require("nvim-autopairs").setup({})
   end,
 
-  event = {"InsertEnter"},
+  event = { "InsertEnter" },
 }

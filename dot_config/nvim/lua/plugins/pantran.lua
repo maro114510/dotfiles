@@ -7,14 +7,14 @@ return {
   config = function()
     require("pantran").setup({
       default_engine = "google",
-        engines = {
-          google = {
-            fallback = {
+      engines = {
+        google = {
+          fallback = {
             default_source = "auto",
             default_target = "en",
-          }
-        }
-      }
+          },
+        },
+      },
     })
   end,
 

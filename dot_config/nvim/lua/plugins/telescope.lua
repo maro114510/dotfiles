@@ -94,7 +94,7 @@ return {
         grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
       },
     })
-    require('telescope').load_extension('fzf')
+    require("telescope").load_extension("fzf")
     require("telescope").load_extension("gh")
     require("telescope").load_extension("memo")
   end,

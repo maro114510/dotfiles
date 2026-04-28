@@ -2,20 +2,20 @@
 -- A snazzy bufferline for Neovim
 
 return {
-  'akinsho/bufferline.nvim',
+  "akinsho/bufferline.nvim",
 
-  dependencies = 'nvim-tree/nvim-web-devicons',
+  dependencies = "nvim-tree/nvim-web-devicons",
 
   opts = function()
     require("bufferline").setup({
       options = {
         mode = "tabs",
 
-        separator_style = 'slant',
+        separator_style = "slant",
 
         offsets = {
           { filetype = "neo-tree", text = "", text_align = "center", padding = 1 },
-          { filetype = "NvimTree", text = "", padding =1 },
+          { filetype = "NvimTree", text = "", padding = 1 },
         },
 
         max_name_length = 14,
@@ -38,23 +38,23 @@ return {
 
       highlights = {
         separator = {
-          guifg = '#073642',
-          guibg = '#002b36',
+          guifg = "#073642",
+          guibg = "#002b36",
         },
         separator_selected = {
-          guifg = '#073642',
+          guifg = "#073642",
         },
         background = {
-          guifg = '#657b83',
-          guibg = '#002b36'
+          guifg = "#657b83",
+          guibg = "#002b36",
         },
         buffer_selected = {
-          guifg = '#fdf6e3',
+          guifg = "#fdf6e3",
           gui = "bold",
         },
         fill = {
-          guibg = '#073642'
-        }
+          guibg = "#073642",
+        },
       },
     })
   end,

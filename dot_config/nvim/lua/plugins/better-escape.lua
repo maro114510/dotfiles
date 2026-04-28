@@ -1,6 +1,6 @@
 -- https://github.com/max397574/better-escape.nvim
 
-return   {
+return {
   "max397574/better-escape.nvim",
 
   event = { "BufReadPre", "BufWritePre", "BufNewFile" },

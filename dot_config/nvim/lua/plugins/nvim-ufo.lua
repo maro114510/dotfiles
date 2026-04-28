@@ -2,10 +2,10 @@
 -- The goal of nvim-ufo is to make Neovim's fold look modern and keep high performance.
 
 return {
-  'kevinhwang91/nvim-ufo',
+  "kevinhwang91/nvim-ufo",
 
   dependencies = {
-    'kevinhwang91/promise-async'
+    "kevinhwang91/promise-async",
   },
 
   event = "BufRead",
@@ -37,12 +37,12 @@ return {
 
   keys = {
     {
-      mode = { 'n' },
-      'zp',
+      mode = { "n" },
+      "zp",
       function()
-        require('ufo').peekFoldedLinesUnderCursor()
+        require("ufo").peekFoldedLinesUnderCursor()
       end,
-      desc = 'Peek folded lines under cursor',
+      desc = "Peek folded lines under cursor",
     },
   },
 }

@@ -1,0 +1,52 @@
+# Runs StyLua format check and Selene lint against Lua files in this repository.
+#
+# Scope:
+#   - stylua: dot_config/nvim/ and dot_config/wezterm/
+#   - selene: dot_config/nvim/ only (wezterm uses wezterm.* globals, not vim.*)
+name: lua-ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.lua'
+      - 'stylua.toml'
+      - 'selene.toml'
+      - 'vim.toml'
+      - '.github/workflows/lua-ci.yml'
+  pull_request:
+    paths:
+      - '**/*.lua'
+      - 'stylua.toml'
+      - 'selene.toml'
+      - 'vim.toml'
+      - '.github/workflows/lua-ci.yml'
+
+jobs:
+  stylua:
+    name: StyLua format check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Check formatting with StyLua
+        uses: JohnnyMorganz/stylua-action@479972f01e665acfcba96ada452c36608bdbbb5e # v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --check dot_config/nvim/ dot_config/wezterm/
+
+  selene:
+    name: Selene lint check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install selene
+        uses: baptiste0928/cargo-install@f204293d9709061b7bc1756fec3ec4e2cd57dec0 # v3
+        with:
+          crate: selene
+
+      - name: Lint with selene
+        run: selene --display-style=quiet dot_config/nvim/

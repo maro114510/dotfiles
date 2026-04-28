@@ -1,12 +1,12 @@
 -- https://github.com/nvim-tree/nvim-web-devicons.git
 
-return   {
-  'nvim-lualine/lualine.nvim',
+return {
+  "nvim-lualine/lualine.nvim",
 
   dependencies = {
-    'nvim-tree/nvim-web-devicons',
+    "nvim-tree/nvim-web-devicons",
 
-    opt = true
+    opt = true,
   },
 
   config = function()
@@ -32,8 +32,8 @@ return   {
         lualine_c = {
           {
             "diff",
-            symbols = {added = ' ', modified = ' ', removed = ' '},
-          }
+            symbols = { added = " ", modified = " ", removed = " " },
+          },
         },
         lualine_x = {
           {
@@ -43,7 +43,7 @@ return   {
           },
         },
         lualine_y = { "encoding", "fileformat" },
-        lualine_z = { "filetype", "searchcount" }
+        lualine_z = { "filetype", "searchcount" },
       },
       inactive_sections = {
         lualine_a = {},

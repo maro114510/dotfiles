@@ -1,7 +1,7 @@
-local wezterm = require 'wezterm'
+local wezterm = require("wezterm")
 
 local color = (function()
-  local COLOR = require "colors"
+  local COLOR = require("colors")
 
   local coolors = {
     COLOR.VERIDIAN,
@@ -26,75 +26,66 @@ local title_color_fg = color_primary.fg
 
 local color_off = title_color_bg:lighten(0.4)
 local color_on = color_off:lighten(0.4)
-wezterm.on('update-status', function(window, pane)
+wezterm.on("update-status", function(window, pane)
   wezterm.GLOBAL.count = (wezterm.GLOBAL.count or 0) + 1
 
-  local bat = ''
+  local bat = ""
   local batteries = wezterm.battery_info()
   if #batteries > 0 then
     local b = batteries[1]
-    bat = wezterm.format {
+    bat = wezterm.format({
       { Foreground = {
-        Color =
-          b.state_of_charge > 0.2 and color_on or color_off,
+        Color = b.state_of_charge > 0.2 and color_on or color_off,
       } },
-      { Text = '▉' },
+      { Text = "▉" },
       { Foreground = {
-        Color =
-          b.state_of_charge > 0.4 and color_on or color_off,
+        Color = b.state_of_charge > 0.4 and color_on or color_off,
       } },
-      { Text = '▉' },
+      { Text = "▉" },
       { Foreground = {
-        Color =
-          b.state_of_charge > 0.6 and color_on or color_off,
+        Color = b.state_of_charge > 0.6 and color_on or color_off,
       } },
-      { Text = '▉' },
+      { Text = "▉" },
       { Foreground = {
-        Color =
-          b.state_of_charge > 0.8 and color_on or color_off,
+        Color = b.state_of_charge > 0.8 and color_on or color_off,
       } },
-      { Text = '▉' },
+      { Text = "▉" },
       { Background = {
-        Color =
-          b.state_of_charge > 0.98 and color_on or color_off,
+        Color = b.state_of_charge > 0.98 and color_on or color_off,
       } },
-      { Foreground = {
-        Color =
-          b.state == "Charging"
-            and color_on:lighten(0.3):complement()
-            or
-              (b.state_of_charge < 0.2 and wezterm.GLOBAL.count % 2 == 0)
-                and color_on:lighten(0.1):complement()
-                or color_off:darken(0.1)
-      } },
-      { Text = ' ⚡ ' },
-    }
+      {
+        Foreground = {
+          Color = b.state == "Charging" and color_on:lighten(0.3):complement()
+            or (b.state_of_charge < 0.2 and wezterm.GLOBAL.count % 2 == 0) and color_on:lighten(0.1):complement()
+            or color_off:darken(0.1),
+        },
+      },
+      { Text = " ⚡ " },
+    })
   end
 
-  local time = wezterm.strftime '%-l:%M %P'
+  local time = wezterm.strftime("%-l:%M %P")
 
   local bg1 = title_color_bg:lighten(0.1)
   local bg2 = title_color_bg:lighten(0.2)
 
-  window:set_right_status(
-    wezterm.format {
-      { Background = { Color = title_color_bg } },
-      { Foreground = { Color = bg1 } },
-      { Text = '' },
-      { Background = { Color = title_color_bg:lighten(0.1) } },
-      { Foreground = { Color = title_color_fg } },
-      { Text = ' ' .. window:active_workspace() .. ' ' },
-      { Foreground = { Color = bg1 } },
-      { Background = { Color = bg2 } },
-      { Text = '' },
-      { Foreground = { Color = title_color_bg:lighten(0.4) } },
-      { Foreground = { Color = title_color_fg } },
-      { Text = ' ' .. time .. ' ' .. bat }
-    }
-  )
+  window:set_right_status(wezterm.format({
+    { Background = { Color = title_color_bg } },
+    { Foreground = { Color = bg1 } },
+    { Text = "" },
+    { Background = { Color = title_color_bg:lighten(0.1) } },
+    { Foreground = { Color = title_color_fg } },
+    { Text = " " .. window:active_workspace() .. " " },
+    { Foreground = { Color = bg1 } },
+    { Background = { Color = bg2 } },
+    { Text = "" },
+    { Foreground = { Color = title_color_bg:lighten(0.4) } },
+    { Foreground = { Color = title_color_fg } },
+    { Text = " " .. time .. " " .. bat },
+  }))
 end)
 
-wezterm.on('gui-startup', function(cmd)
+wezterm.on("gui-startup", function(cmd)
   local mux = wezterm.mux
 
   -- local padSize = 80
@@ -102,28 +93,28 @@ wezterm.on('gui-startup', function(cmd)
   -- local screenHeight = 1600
 
   local tab, pane, window = mux.spawn_window(cmd or {
-    workspace = 'main',
+    workspace = "main",
   })
 
   local icons = {
-    '🌞',
-    '🍧',
-    '🫠',
-    '🏞️',
-    '📑',
-    '🪁',
-    '🧠',
-    '🦥',
-    '🦉',
-    '📀',
-    '🌮',
-    '🍜',
-    '🧋',
-    '🥝',
-    '🍊',
+    "🌞",
+    "🍧",
+    "🫠",
+    "🏞️",
+    "📑",
+    "🪁",
+    "🧠",
+    "🦥",
+    "🦉",
+    "📀",
+    "🌮",
+    "🍜",
+    "🧋",
+    "🥝",
+    "🍊",
   }
 
-  tab:set_title('  ' .. icons[math.random(#icons)] .. '  ')
+  tab:set_title("  " .. icons[math.random(#icons)] .. "  ")
 
   -- if window ~= nil then
   --   wezterm.sleep_ms(3200)
@@ -138,47 +129,46 @@ local TAB_EDGE_RIGHT = wezterm.nerdfonts.ple_right_half_circle_thick
 local function tab_title(tab_info)
   local title = tab_info.tab_title
 
-  if title and #title > 0 then return title end
+  if title and #title > 0 then
+    return title
+  end
 
   return tab_info.active_pane.title:gsub("%.exe", "")
 end
 
-wezterm.on(
-  'format-tab-title',
-  function(tab, _, _, _, hover, max_width)
-    local edge_background = title_color_bg
-    local background = title_color_bg:lighten(0.05)
-    local foreground = title_color_fg
+wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
+  local edge_background = title_color_bg
+  local background = title_color_bg:lighten(0.05)
+  local foreground = title_color_fg
 
-    if tab.is_active then
-      background = background:lighten(0.1)
-      foreground = foreground:lighten(0.1)
-    elseif hover then
-      background = background:lighten(0.2)
-      foreground = foreground:lighten(0.2)
-    end
-
-    local edge_foreground = background
-
-    local title = tab_title(tab)
-
-    -- ensure that the titles fit in the available space,
-    -- and that we have room for the edges.
-    title = wezterm.truncate_right(title, max_width - 2)
-
-    return {
-      { Background = { Color = edge_background } },
-      { Foreground = { Color = edge_foreground } },
-      { Text = TAB_EDGE_LEFT },
-      { Background = { Color = background } },
-      { Foreground = { Color = foreground } },
-      { Text = title },
-      { Background = { Color = edge_background } },
-      { Foreground = { Color = edge_foreground } },
-      { Text = TAB_EDGE_RIGHT },
-    }
+  if tab.is_active then
+    background = background:lighten(0.1)
+    foreground = foreground:lighten(0.1)
+  elseif hover then
+    background = background:lighten(0.2)
+    foreground = foreground:lighten(0.2)
   end
-)
+
+  local edge_foreground = background
+
+  local title = tab_title(tab)
+
+  -- ensure that the titles fit in the available space,
+  -- and that we have room for the edges.
+  title = wezterm.truncate_right(title, max_width - 2)
+
+  return {
+    { Background = { Color = edge_background } },
+    { Foreground = { Color = edge_foreground } },
+    { Text = TAB_EDGE_LEFT },
+    { Background = { Color = background } },
+    { Foreground = { Color = foreground } },
+    { Text = title },
+    { Background = { Color = edge_background } },
+    { Foreground = { Color = edge_foreground } },
+    { Text = TAB_EDGE_RIGHT },
+  }
+end)
 
 return {
   colors = {
@@ -193,9 +183,9 @@ return {
         fg_color = title_color_fg,
         intensity = "Half",
       },
-      inactive_tab_edge = title_color_bg
+      inactive_tab_edge = title_color_bg,
     },
-    split = title_color_bg:lighten(0.3):desaturate(0.5)
+    split = title_color_bg:lighten(0.3):desaturate(0.5),
   },
   window_background_opacity = 0.6,
   window_frame = {
@@ -209,9 +199,9 @@ return {
   -- font_size = 6.0,
   font = wezterm.font("Hack Nerd Font"),
 
-  default_cursor_style = 'SteadyUnderline',
+  default_cursor_style = "SteadyUnderline",
 
-  window_decorations = 'RESIZE',
+  window_decorations = "RESIZE",
   win32_system_backdrop = "Acrylic",
   show_tab_index_in_tab_bar = false,
   show_new_tab_button_in_tab_bar = false,
