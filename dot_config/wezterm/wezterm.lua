@@ -26,45 +26,50 @@ local title_color_fg = color_primary.fg
 
 local color_off = title_color_bg:lighten(0.4)
 local color_on = color_off:lighten(0.4)
-wezterm.on('update-right-status', function(window)
+wezterm.on('update-status', function(window, pane)
+  wezterm.GLOBAL.count = (wezterm.GLOBAL.count or 0) + 1
+
   local bat = ''
-  local b = wezterm.battery_info()[1]
-  bat = wezterm.format {
-    { Foreground = {
-      Color =
-        b.state_of_charge > 0.2 and color_on or color_off,
-    } },
-    { Text = '▉' },
-    { Foreground = {
-      Color =
-        b.state_of_charge > 0.4 and color_on or color_off,
-    } },
-    { Text = '▉' },
-    { Foreground = {
-      Color =
-        b.state_of_charge > 0.6 and color_on or color_off,
-    } },
-    { Text = '▉' },
-    { Foreground = {
-      Color =
-        b.state_of_charge > 0.8 and color_on or color_off,
-    } },
-    { Text = '▉' },
-    { Background = {
-      Color =
-        b.state_of_charge > 0.98 and color_on or color_off,
-    } },
-    { Foreground = {
-      Color =
-        b.state == "Charging"
-          and color_on:lighten(0.3):complement()
-          or
-            (b.state_of_charge < 0.2 and wezterm.GLOBAL.count % 2 == 0)
-              and color_on:lighten(0.1):complement()
-              or color_off:darken(0.1)
-    } },
-    { Text = ' ⚡ ' },
-  }
+  local batteries = wezterm.battery_info()
+  if #batteries > 0 then
+    local b = batteries[1]
+    bat = wezterm.format {
+      { Foreground = {
+        Color =
+          b.state_of_charge > 0.2 and color_on or color_off,
+      } },
+      { Text = '▉' },
+      { Foreground = {
+        Color =
+          b.state_of_charge > 0.4 and color_on or color_off,
+      } },
+      { Text = '▉' },
+      { Foreground = {
+        Color =
+          b.state_of_charge > 0.6 and color_on or color_off,
+      } },
+      { Text = '▉' },
+      { Foreground = {
+        Color =
+          b.state_of_charge > 0.8 and color_on or color_off,
+      } },
+      { Text = '▉' },
+      { Background = {
+        Color =
+          b.state_of_charge > 0.98 and color_on or color_off,
+      } },
+      { Foreground = {
+        Color =
+          b.state == "Charging"
+            and color_on:lighten(0.3):complement()
+            or
+              (b.state_of_charge < 0.2 and wezterm.GLOBAL.count % 2 == 0)
+                and color_on:lighten(0.1):complement()
+                or color_off:darken(0.1)
+      } },
+      { Text = ' ⚡ ' },
+    }
+  end
 
   local time = wezterm.strftime '%-l:%M %P'
 
