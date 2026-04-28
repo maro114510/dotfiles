@@ -57,6 +57,12 @@ return {
       },
     })
 
+    vim.lsp.config("lua_ls", {
+      settings = {
+        Lua = { diagnostics = { globals = { "vim" } } },
+      },
+    })
+
     -- mason-lspconfig: Mason 管理サーバーを自動有効化
     -- glint は cmd/config 引数の既知の非互換のためスキップ
     require("mason-lspconfig").setup({
