@@ -55,31 +55,14 @@ return {
 
   build = ":TSUpdate",
 
-  lazy = false,
+  event = "BufReadPost",
 
-  config = function()
-    local ts = require("nvim-treesitter")
-    -- NOTE: Parser compilation uses `tree-sitter build`, so tree-sitter CLI
-    -- must be installed and available in Neovim's PATH.
+  opts = {
+    ensure_installed = parsers,
+  },
 
-    local installed = {}
-    local ok_installed, installed_list = pcall(ts.get_installed, "parsers")
-    if ok_installed and type(installed_list) == "table" then
-      for _, lang in ipairs(installed_list) do
-        installed[lang] = true
-      end
-    end
-
-    local missing = {}
-    for _, lang in ipairs(parsers) do
-      if not installed[lang] then
-        table.insert(missing, lang)
-      end
-    end
-
-    if #missing > 0 then
-      pcall(ts.install, missing)
-    end
+  config = function(_, opts)
+    require("nvim-treesitter").setup(opts)
 
     local group = vim.api.nvim_create_augroup("UserTreesitterFeatures", { clear = true })
     vim.api.nvim_create_autocmd("FileType", {
