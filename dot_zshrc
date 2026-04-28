@@ -108,7 +108,7 @@ bindkey '^r' fzf-select-history
 
 # For non-login interactive shells (e.g. VS Code terminal, nvim :terminal).
 # typeset -U path (set in .zshenv) deduplicates entries added by .zprofile in login shells.
-export PATH="$HOME/.local/bin:$HOME/commands:$HOME/.local/share/mise/shims:$GOBIN:$PATH"
+export PATH="${HOME}/.local/bin:${HOME}/commands:${HOME}/.local/share/mise/shims:${GOBIN}:${PATH}"
 
 ### Starship ###
 _zsh_cache_eval starship init zsh
