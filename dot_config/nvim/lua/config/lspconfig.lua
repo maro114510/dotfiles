@@ -59,6 +59,7 @@ mason_lspconfig.setup({
     "cssls",
     "pyright",
     "protols",
+    "kotlin_language_server",
   },
   automatic_enable = false,
 })
@@ -75,6 +76,8 @@ for _, server_name in ipairs(mason_lspconfig.get_installed_servers()) do
 end
 
 -- mason管理外のサーバーも個別設定
+configure("sourcekit", {})
+
 configure("typos_lsp", {
   init_options = {
     config = vim.fn.expand("~/.config/nvim/spell/.typos.toml"),
