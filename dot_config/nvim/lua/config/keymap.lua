@@ -71,14 +71,7 @@ vim.keymap.set("n", "<C-n>", "<CMD>Neotree<CR>", { silent = true })
 -- space + rf = References
 -- vim.keymap.set('n', '<space>rf', '<Plug>(coc-references)', { silent = true })
 -- LSP Rename (Global mapping to ensure availability)
-vim.keymap.set("n", "<space>rn", function()
-  local clients = vim.lsp.get_clients({ bufnr = 0 })
-  if #clients > 0 then
-    vim.lsp.buf.rename()
-  else
-    vim.notify("No LSP client attached to current buffer", vim.log.levels.WARN)
-  end
-end, { noremap = true, silent = true, desc = "LSP Rename" })
+vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, { noremap = true, silent = true, desc = "LSP Rename" })
 
 -- COC Rename (Legacy - commented out)
 -- vim.keymap.set('n', '<space>rn', '<Plug>(coc-rename)', { silent = true })
