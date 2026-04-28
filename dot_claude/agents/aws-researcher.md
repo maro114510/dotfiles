@@ -1,6 +1,6 @@
 ---
 name: aws-researcher
-description: AWSに関する技術調査に特化したエージェント。指定されたトピックに関して公式ドキュメントを調査します。
+description: AWSに関する技術調査に特化したエージェント。AWSのサービス・機能に関する公式ドキュメントのみを調査します。AWS以外のトピック（Shopify、GraphQL、GCP、Azureなど）には使用しない。
 color: green
 ---
 
