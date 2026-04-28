@@ -60,8 +60,6 @@ vim.api.nvim_set_keymap("t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = 
 -- NeoTree
 vim.api.nvim_set_keymap("n", "<C-n>", "<CMD>Neotree<CR>", { noremap = true, silent = true })
 
-vim.keymap.set("n", "gd", "<CMD>Glance definitions<CR>", { desc = "Glance definitions", silent = true })
-
 -- COC
 -- when normal mode
 -- double space
