@@ -10,7 +10,19 @@ name: shellcheck
 on:
   push:
     branches: [main]
+    paths:
+      - '**/*.sh'
+      - '**/*.sh.tmpl'
+      - 'dot_git_hooks/**'
+      - '.github/testdata/**'
+      - '.github/workflows/shellcheck.yml'
   pull_request:
+    paths:
+      - '**/*.sh'
+      - '**/*.sh.tmpl'
+      - 'dot_git_hooks/**'
+      - '.github/testdata/**'
+      - '.github/workflows/shellcheck.yml'
 
 jobs:
   shellcheck:
@@ -25,7 +37,7 @@ jobs:
 
       - name: ShellCheck plain shell scripts
         run: |
-          find . -name "*.sh" \
+          find . \( -name "*.sh" -o -name "executable_pre-push" \) \
             -not -path "./.git/*" \
             -not -path "./dot_claude/*" \
             -print0 | xargs -0 shellcheck --severity=warning
