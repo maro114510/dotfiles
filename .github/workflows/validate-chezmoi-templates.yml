@@ -16,7 +16,15 @@ name: validate-chezmoi-templates
 on:
   push:
     branches: [main]
+    paths:
+      - '**/*.tmpl'
+      - '.github/testdata/**'
+      - '.github/workflows/validate-chezmoi-templates.yml'
   pull_request:
+    paths:
+      - '**/*.tmpl'
+      - '.github/testdata/**'
+      - '.github/workflows/validate-chezmoi-templates.yml'
 
 jobs:
   validate:
