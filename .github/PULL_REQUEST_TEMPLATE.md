@@ -1,21 +1,23 @@
-## マージ概要
+## Summary
 
-* テスト
+<!-- What does this PR do and why? -->
 
-## 影響範囲
+## Changes
 
-* テスト
+<!-- List the key changes made -->
 
-### 作業日数
+- 
 
-* 2024/00/00 ~ 2024/00/00
+## Testing
 
-## 確認点
+<!-- How was this tested? -->
 
-* テスト
+- [ ] Manually tested on macOS
+
+## Related Issues
+
+<!-- Closes #issue_number -->
 
 ---
 
-#### 備考
-
-* テスト
+> **Notes:** <!-- Anything reviewers should know -->
