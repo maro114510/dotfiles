@@ -1,0 +1,32 @@
+tap "homebrew/bundle"
+
+# Bootstrap — must be installed before/alongside mise
+brew "git"
+brew "chezmoi"
+brew "mise"
+brew "sheldon"   # zsh plugin manager (.zshrc depends on this)
+
+# Core utilities (not managed by mise, referenced in shell config)
+brew "bat"
+brew "git-delta"
+brew "git-lfs"
+brew "jq"
+brew "tree"
+brew "wget"
+brew "yazi"      # .zshrc y() function depends on this
+
+# Dev tools (not managed by mise)
+brew "awscli"
+brew "pre-commit"
+
+# GUI apps (common to all machines)
+cask "deepl"
+cask "ghostty"
+cask "grandperspective"
+cask "karabiner-elements"
+cask "microsoft-auto-update"
+cask "notion"
+cask "obsidian"
+cask "shottr"
+cask "ticktick"
+cask "wezterm"
