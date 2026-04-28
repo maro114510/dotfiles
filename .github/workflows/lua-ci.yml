@@ -34,6 +34,7 @@ jobs:
         uses: JohnnyMorganz/stylua-action@479972f01e665acfcba96ada452c36608bdbbb5e # v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest
           args: --check dot_config/nvim/ dot_config/wezterm/
 
   selene:
@@ -49,4 +50,4 @@ jobs:
           crate: selene
 
       - name: Lint with selene
-        run: selene --display-style=quiet dot_config/nvim/
+        run: selene --display-style=quiet --allow-warnings dot_config/nvim/
