@@ -2,14 +2,14 @@
 -- A vim-vinegar like file explorer that lets you edit your filesystem like a normal Neovim buffer.
 
 return {
-  'stevearc/oil.nvim',
+  "stevearc/oil.nvim",
 
   opts = {},
 
   dependencies = { "nvim-tree/nvim-web-devicons" },
 
   config = function()
-    require('oil').setup({
+    require("oil").setup({
       delete_to_trash = true,
       view_options = {
         show_hidden = true,

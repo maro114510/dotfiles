@@ -15,19 +15,19 @@ return {
   config = function()
     local on_attach = function(client, bufnr)
       local set = vim.keymap.set
-      set("n", "K",         "<cmd>lua vim.lsp.buf.hover()<CR>")
-      set("n", "<C-m>",     "<cmd>lua vim.lsp.buf.signature_help()<CR>")
-      set("n", "gy",        "<cmd>lua vim.lsp.buf.type_definition()<CR>")
-      set("n", "ma",        "<cmd>lua vim.lsp.buf.code_action()<CR>")
-      set("n", "gr",        "<cmd>lua vim.lsp.buf.references()<CR>")
-      set("n", "<space>e",  "<cmd>lua vim.diagnostic.open_float()<CR>")
-      set("n", "[d",        "<cmd>lua vim.diagnostic.goto_prev()<CR>")
-      set("n", "]d",        "<cmd>lua vim.diagnostic.goto_next()<CR>")
+      set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
+      set("n", "<C-m>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
+      set("n", "gy", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
+      set("n", "ma", "<cmd>lua vim.lsp.buf.code_action()<CR>")
+      set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
+      set("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<CR>")
+      set("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
+      set("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>")
     end
 
     -- グローバル設定: 全サーバーに on_attach / capabilities を適用
     vim.lsp.config("*", {
-      on_attach    = on_attach,
+      on_attach = on_attach,
       capabilities = require("cmp_nvim_lsp").default_capabilities(),
     })
 
@@ -51,7 +51,7 @@ return {
     vim.lsp.config("ruff", {
       init_options = {
         settings = {
-          lint   = { enable = true, ignore = { "E501" } },
+          lint = { enable = true, ignore = { "E501" } },
           format = { docstring_code_format = true },
         },
       },

@@ -1,11 +1,11 @@
 -- https://github.com/MattesGroeger/vim-bookmarks.git
 
 return {
-  'MattesGroeger/vim-bookmarks',
+  "MattesGroeger/vim-bookmarks",
 
   event = {
-    'BufRead',
-    'BufNewFile',
+    "BufRead",
+    "BufNewFile",
   },
 
   -- Keymap for vim-bookmarks

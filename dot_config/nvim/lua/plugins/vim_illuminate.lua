@@ -1,12 +1,12 @@
 -- https://github.com/RRethy/vim-illuminate.git
 
 return {
-	--"RRethy/vim-illuminate",
+  --"RRethy/vim-illuminate",
 
-	--config = function()
-	--	vim.g.Illuminate_delay = 1000
-	--	vim.g.Illuminate_ftblacklist = { "NvimTree", "packer" }
-	--end,
+  --config = function()
+  --	vim.g.Illuminate_delay = 1000
+  --	vim.g.Illuminate_ftblacklist = { "NvimTree", "packer" }
+  --end,
 
-	--event = "UIEnter"
+  --event = "UIEnter"
 }

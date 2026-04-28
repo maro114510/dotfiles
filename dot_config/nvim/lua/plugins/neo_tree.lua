@@ -8,7 +8,7 @@ return {
   dependencies = {
     "nvim-tree/nvim-web-devicons",
     "nvim-lua/plenary.nvim",
-    "MunifTanjim/nui.nvim"
+    "MunifTanjim/nui.nvim",
   },
 
   opts = {
@@ -21,12 +21,12 @@ return {
         hide_dotfiles = false,
         hide_gitignored = true,
         hide_by_name = {
-          '.git',
-          '.DS_Store',
+          ".git",
+          ".DS_Store",
         },
         never_show = { -- remains hidden even if visible is toggled to true, this overrides always_show
           ".DS_Store",
-          "thumbs.db"
+          "thumbs.db",
         },
       },
     },
@@ -41,12 +41,14 @@ return {
       {
         event = "vim_buffer_enter",
         handler = function(_)
-          if vim.bo.filetype == "neo-tree" then vim.wo.signcolumn = "auto" end
+          if vim.bo.filetype == "neo-tree" then
+            vim.wo.signcolumn = "auto"
+          end
         end,
-      }
+      },
     },
 
-    window ={
+    window = {
       width = 30,
     },
 
@@ -84,7 +86,7 @@ return {
           conflict = "",
         },
       },
-    }
+    },
   },
 
   event = "VeryLazy",

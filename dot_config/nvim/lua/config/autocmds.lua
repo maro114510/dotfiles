@@ -14,15 +14,15 @@ vim.cmd([[
 local theme_override_group = vim.api.nvim_create_augroup("ThemeOverrides", { clear = true })
 
 local function apply_theme_overrides()
-	if vim.g.colors_name == "duskfox" then
-		vim.cmd([[highlight Normal ctermbg=NONE guibg=NONE]])
-		vim.cmd([[highlight Comment cterm=italic gui=italic guifg=#ffd700 ctermfg=226]])
-	end
+  if vim.g.colors_name == "duskfox" then
+    vim.cmd([[highlight Normal ctermbg=NONE guibg=NONE]])
+    vim.cmd([[highlight Comment cterm=italic gui=italic guifg=#ffd700 ctermfg=226]])
+  end
 end
 
 vim.api.nvim_create_autocmd("ColorScheme", {
-	group = theme_override_group,
-	callback = apply_theme_overrides,
+  group = theme_override_group,
+  callback = apply_theme_overrides,
 })
 
 apply_theme_overrides()

@@ -1,13 +1,13 @@
 -- https://github.com/echasnovski/mini.indentscope
 
 return {
-  'echasnovski/mini.indentscope',
+  "echasnovski/mini.indentscope",
 
   config = function()
-    require('mini.indentscope').setup({
-      symbol = '▏',
+    require("mini.indentscope").setup({
+      symbol = "▏",
     })
   end,
 
-  event = {'BufReadPre', 'BufNewFile'},
+  event = { "BufReadPre", "BufNewFile" },
 }

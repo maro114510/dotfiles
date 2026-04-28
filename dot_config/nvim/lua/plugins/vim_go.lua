@@ -2,9 +2,9 @@
 
 return {
   -- golang language server
-  'fatih/vim-go',
+  "fatih/vim-go",
 
-  ft = {'go'},
+  ft = { "go" },
 
-  build = ':GoUpdateBinaries',
+  build = ":GoUpdateBinaries",
 }

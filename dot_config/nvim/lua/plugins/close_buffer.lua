@@ -2,7 +2,7 @@
 -- Close hidden buffers
 
 return {
-  'kazhala/close-buffers.nvim',
+  "kazhala/close-buffers.nvim",
 
-  cmd = { 'BDelete' },
+  cmd = { "BDelete" },
 }

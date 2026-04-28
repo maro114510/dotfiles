@@ -10,14 +10,14 @@ return {
   config = function()
     vim.diagnostic.config({ virtual_text = false })
 
-    require('tiny-inline-diagnostic').setup({
-      preset = 'ghost',
+    require("tiny-inline-diagnostic").setup({
+      preset = "ghost",
       options = {
         multilines = {
           enabled = true,
           always_show = true,
         },
-      }
+      },
     })
-  end
+  end,
 }
