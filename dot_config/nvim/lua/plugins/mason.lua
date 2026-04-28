@@ -44,6 +44,7 @@ return {
         "tfsec",
         "cfn-lint",
         "sql-formatter",
+        "ktlint",
       },
       run_on_start = true,
     },
