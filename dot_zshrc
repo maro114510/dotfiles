@@ -72,8 +72,6 @@ else
 fi
 unset _comp_path
 
-export EDITOR=nvim
-
 ### history ###
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=100000
@@ -92,18 +90,6 @@ setopt no_beep
 ### homebrew ###
 #eval "$(/opt/homebrew/bin/brew shellenv)"
 
-### Golang ###
-case "$OSTYPE" in
-  linux*)
-    export PATH="$PATH:/usr/local/go/bin"
-    ;;
-  darwin*)
-    export GOPATH="$HOME/go"
-    export GOBIN="$GOPATH/bin"
-    export PATH="$PATH:$GOBIN"
-    ;;
-esac
-
 ### fzf history search ###
 function fzf-select-history() {
 	BUFFER=$(history -n 1 | \
@@ -120,7 +106,9 @@ function fzf-select-history() {
 zle -N fzf-select-history
 bindkey '^r' fzf-select-history
 
-export PATH="$HOME/.local/bin:$HOME/commands:$HOME/.local/share/mise/shims:$PATH"
+# For non-login interactive shells (e.g. VS Code terminal, nvim :terminal).
+# typeset -U path (set in .zshenv) deduplicates entries added by .zprofile in login shells.
+export PATH="$HOME/.local/bin:$HOME/commands:$HOME/.local/share/mise/shims:$GOBIN:$PATH"
 
 ### Starship ###
 _zsh_cache_eval starship init zsh
