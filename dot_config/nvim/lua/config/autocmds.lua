@@ -1,10 +1,8 @@
--- when leave cursor setting
-vim.cmd([[
-	augroup RestoreCursorShapeOnExit
-		autocmd!
-		autocmd VimLeave * set guicursor=a:hor1
-	augroup END
-]])
+local cursor_group = vim.api.nvim_create_augroup("RestoreCursorShapeOnExit", { clear = true })
+vim.api.nvim_create_autocmd("VimLeave", {
+  group = cursor_group,
+  command = "set guicursor=a:hor1",
+})
 
 local theme_override_group = vim.api.nvim_create_augroup("ThemeOverrides", { clear = true })
 
