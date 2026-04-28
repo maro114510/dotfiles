@@ -1,6 +1,22 @@
-. "$HOME/.cargo/env"
-# lang
+[[ -f "${HOME}/.cargo/env" ]] && . "${HOME}/.cargo/env"
+
+# locale
 export LANGUAGE="en_US.UTF-8"
 export LANG="${LANGUAGE}"
 export LC_ALL="${LANGUAGE}"
 export LC_CTYPE="${LANGUAGE}"
+
+# editor — needed by git, cron, and other non-interactive programs
+export EDITOR=nvim
+
+# Go: variable declarations; PATH prepend follows below
+export GOPATH="${HOME}/go"
+export GOBIN="${GOPATH}/bin"
+
+# PATH for all shells (cron, LaunchAgent, SSH non-interactive).
+# typeset -U path deduplicates across subsequent login-shell sources (.zprofile, .zshrc).
+typeset -U path
+path=("${HOME}/.local/bin" "${HOME}/commands" "${HOME}/.local/share/mise/shims" "${GOBIN}" $path)
+case "${OSTYPE}" in
+  linux*) [[ -d /usr/local/go/bin ]] && path=("/usr/local/go/bin" $path) ;;
+esac

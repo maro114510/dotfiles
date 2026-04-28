@@ -1,1 +1,5 @@
 eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Re-prepend user paths after /etc/zprofile's path_helper has inserted system paths.
+# typeset -U path (set in .zshenv) removes duplicate entries automatically.
+path=("${HOME}/.local/bin" "${HOME}/commands" "${HOME}/.local/share/mise/shims" "${GOBIN:-${HOME}/go/bin}" $path)
