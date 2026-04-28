@@ -45,6 +45,8 @@ return {
         "cfn-lint",
         "sql-formatter",
         "ktlint",
+        "stylua",
+        "selene",
       },
       run_on_start = true,
     },

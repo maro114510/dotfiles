@@ -3,12 +3,12 @@
 return {
   "mfussenegger/nvim-lint",
 
-  ft = { "yaml" },
+  ft = { "yaml", "lua" },
 
   config = function()
     local lint = require("lint")
 
-    lint.linters_by_ft = { yaml = {} }
+    lint.linters_by_ft = { yaml = {}, lua = { "selene" } }
 
     local function is_cfn_yaml(bufnr)
       local name = vim.api.nvim_buf_get_name(bufnr or 0)
@@ -52,6 +52,13 @@ return {
         if cur ~= args.buf then
           vim.api.nvim_set_current_buf(cur)
         end
+      end,
+    })
+
+    vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost" }, {
+      pattern = { "*.lua" },
+      callback = function()
+        lint.try_lint("selene")
       end,
     })
   end,
