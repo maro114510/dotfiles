@@ -1,41 +1,19 @@
--- https://github.com/keaising/im-select.nvim.git
--- input ime settings
-
--- Japanese Input Source
 return {
-  'keaising/im-select.nvim',
+  "keaising/im-select.nvim",
 
-  config = function()
-    require('im_select').setup {
-      default_im_select = 'com.apple.keylayout.ABC'
-    }
+  -- macOS is handled by config.ime. macism can write diagnostics to stderr,
+  -- which im-select.nvim captures as part of the saved input source.
+  enabled = function()
+    return vim.fn.has("macunix") == 0
   end,
 
-  ft = {
-    'go',
-    'javascript',
-    'javascriptreact',
-    'typescript',
-    'typescriptreact',
-    'vue',
-    'html',
-    'css',
-    'json',
-    'yaml',
-    'lua',
-    'python',
-    'rust',
-    'java',
-    'c',
-    'cpp',
-    'php',
-    'ruby',
-    'vim',
-    'sql',
-    'bash',
-    'zsh',
-    'fish',
-    -- 'md',
-    -- 'markdown',
-  }
+  lazy = false,
+  config = function()
+    require("im_select").setup({
+      set_default_events = { "InsertLeave", "CmdlineLeave" },
+      set_previous_events = { "InsertEnter" },
+      keep_quiet_on_no_binary = true,
+      async_switch_im = false,
+    })
+  end,
 }
