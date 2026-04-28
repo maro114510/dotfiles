@@ -37,13 +37,7 @@ return {
     },
     indent = { enabled = true },
     input = { enabled = true },
-    picker = {
-      enabled = true,
-      sources = {
-        files = { hidden = true },
-        explorer = { hidden = true },
-      },
-    },
+    picker = { enabled = false },
     notifier = { enabled = false },
     quickfile = { enabled = true, hidden = true },
     scope = { enabled = true },
@@ -54,26 +48,7 @@ return {
   },
 
   keys = {
-    -- Top Pickers & Explorer
-    { "<leader><space>", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
-    { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffers" },
-    { "<leader>/", function() Snacks.picker.grep() end, desc = "Grep" },
-    { "<leader>:", function() Snacks.picker.command_history() end, desc = "Command History" },
-    { "<leader>n", function() Snacks.picker.notifications() end, desc = "Notification History" },
     { "<leader>e", function() Snacks.explorer() end, desc = "File Explorer" },
-    -- find
-    { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
-    { "<leader>fc", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = "Find Config File" },
-    { "<leader>ff", function() Snacks.picker.files() end, desc = "Find Files" },
-    { "<leader>fg", function() Snacks.picker.git_files() end, desc = "Find Git Files" },
-    { "<leader>fp", function() Snacks.picker.projects() end, desc = "Projects" },
-    { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent" },
-    -- Grep
-    { "<leader>sb", function() Snacks.picker.lines() end, desc = "Buffer Lines" },
-    { "<leader>sg", function() Snacks.picker.grep() end, desc = "Grep" },
-    -- search
-    { "<leader>sa", function() Snacks.picker.autocmds() end, desc = "Autocmds" },
-    { "<leader>sc", function() Snacks.picker.command_history() end, desc = "Command History" },
     -- Other
     { "<leader>un", function() Snacks.notifier.show_history() end, desc = "Notification History (list)" },
     { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
