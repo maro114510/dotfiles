@@ -1,8 +1,3 @@
--- Change Color Scheme
--- vim.cmd[[colorscheme tokyonight-night]]
--- nightfox, dayfox, dawnfox, duskfox, nordfox,terafox, carbonfox
-vim.cmd([[colorscheme duskfox]])
-
 -- when leave cursor setting
 vim.cmd([[
 	augroup RestoreCursorShapeOnExit
@@ -24,5 +19,3 @@ vim.api.nvim_create_autocmd("ColorScheme", {
   group = theme_override_group,
   callback = apply_theme_overrides,
 })
-
-apply_theme_overrides()
