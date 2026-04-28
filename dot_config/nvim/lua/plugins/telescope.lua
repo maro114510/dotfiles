@@ -12,6 +12,7 @@ return {
     "nvim-telescope/telescope-github.nvim",
     "nvim-telescope/telescope-media-files.nvim",
     { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    "danielfalk/smart-open.nvim",
   },
 
   config = function()
@@ -97,6 +98,7 @@ return {
     require("telescope").load_extension("fzf")
     require("telescope").load_extension("gh")
     require("telescope").load_extension("memo")
+    require("telescope").load_extension("smart_open")
   end,
 
   cmd = { "Telescope" },
