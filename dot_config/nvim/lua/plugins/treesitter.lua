@@ -21,6 +21,8 @@ local parsers = {
   "hcl",
   "python",
   "proto",
+  "kotlin",
+  "swift",
 }
 
 -- Filetypes to enable treesitter highlighting
@@ -44,6 +46,8 @@ local filetypes = {
   "hcl",
   "python",
   "proto",
+  "kotlin",
+  "swift",
 }
 
 return {
