@@ -10,7 +10,7 @@ return {
       },
     })
 
-    require("nightfox").load("duskfox")
+    vim.cmd("colorscheme duskfox")
   end,
 
   event = "UIEnter",
