@@ -2,3 +2,4 @@ std = "lua51+vim"
 
 [rules]
 unused_variable = "allow"
+mixed_table = "allow"

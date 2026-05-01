@@ -1,7 +1,6 @@
 {
   "diagnostics": {
     "globals": ["vim"],
-    "hint.enable": false,
-    "disable": ["mixed_table"]
+    "hint.enable": false
   }
 }
