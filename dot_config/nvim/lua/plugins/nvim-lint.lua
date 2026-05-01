@@ -8,6 +8,14 @@ return {
   config = function()
     local lint = require("lint")
 
+    lint.linters.selene.args = {
+      "--config",
+      vim.fn.stdpath("config") .. "/selene.toml",
+      "--display-style",
+      "json",
+      "-",
+    }
+
     lint.linters_by_ft = { yaml = {}, lua = { "selene" } }
 
     local function is_cfn_yaml(bufnr)
