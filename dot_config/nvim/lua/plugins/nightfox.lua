@@ -8,6 +8,13 @@ return {
       options = {
         transparent = true,
       },
+      groups = {
+        all = {
+          Normal = { bg = "NONE" },
+          Comment = { fg = "#ffd700", style = "italic" },
+          ["@comment"] = { fg = "#ffd700", style = "italic" },
+        },
+      },
     })
 
     vim.cmd("colorscheme duskfox")
