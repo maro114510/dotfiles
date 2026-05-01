@@ -21,7 +21,7 @@ brew "pre-commit"
 
 # GUI apps (common to all machines)
 cask "deepl"
-cask "ghostty"
+cask "ghostty@tip"
 cask "grandperspective"
 cask "karabiner-elements"
 cask "microsoft-auto-update"
