@@ -176,7 +176,7 @@
       "Bash(mysql:*)",
       "Bash(mongod:*)"
     ],
-    "defaultMode": "default",
+    "defaultMode": "auto",
     "read": {
       "deny": [
         "**/.env*",
@@ -189,7 +189,6 @@
       ]
     }
   },
-  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
       {
@@ -287,24 +286,24 @@
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
-    "example-skills@anthropic-agent-skills": true,
-    "document-skills@anthropic-agent-skills": true,
+    "example-skills@anthropic-agent-skills": false,
+    "document-skills@anthropic-agent-skills": false,
     "rust-analyzer-lsp@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
     "hono-skill@hono-skill": true,
     "skill-creator@claude-plugins-official": true,
-    "pm-toolkit@pm-skills": true,
-    "pm-product-strategy@pm-skills": true,
-    "pm-product-discovery@pm-skills": true,
-    "pm-market-research@pm-skills": true,
-    "pm-data-analytics@pm-skills": true,
-    "pm-marketing-growth@pm-skills": true,
-    "pm-go-to-market@pm-skills": true,
-    "pm-execution@pm-skills": true,
-    "pr-review@maro114510-pr-review": true,
+    "pm-toolkit@pm-skills": false,
+    "pm-product-strategy@pm-skills": false,
+    "pm-product-discovery@pm-skills": false,
+    "pm-market-research@pm-skills": false,
+    "pm-data-analytics@pm-skills": false,
+    "pm-marketing-growth@pm-skills": false,
+    "pm-go-to-market@pm-skills": false,
+    "pm-execution@pm-skills": false,
     "codex@openai-codex": true,
-    "skills@maro114510-agent-skills": true
+    "skills@maro114510-agent-skills": true,
+    "slack@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {
@@ -357,9 +356,11 @@
     }
   },
   "alwaysThinkingEnabled": true,
-  "voiceEnabled": true,
   "skipDangerousModePermissionPrompt": true,
+  "skipAutoPermissionPrompt": true,
+  "voiceEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1753989253554
-  }
+  },
+  "model": "sonnet"
 }
