@@ -33,11 +33,19 @@ return {
     },
     explorer = {
       enabled = true,
-      hidden = true,
     },
     indent = { enabled = true },
     input = { enabled = true },
-    picker = { enabled = false },
+    picker = {
+      enabled = false,
+      sources = {
+        explorer = {
+          hidden = true,
+          ignored = true,
+          exclude = { "**/.git" },
+        },
+      },
+    },
     notifier = { enabled = false },
     quickfile = { enabled = true, hidden = true },
     scope = { enabled = true },

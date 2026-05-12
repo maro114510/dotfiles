@@ -29,17 +29,10 @@ vim.keymap.set("i", "っj", "<ESC>", { silent = true })
 vim.keymap.set("", ";", ":")
 
 -- Telescope
-vim.keymap.set(
-  "n",
-  "<C-f>",
-  "<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<cr>",
-  { noremap = true, silent = true }
-)
-
+-- <C-f> for find_files is defined in lua/plugins/telescope.lua keys section.
 vim.keymap.set(
   "n",
   "<C-P>",
-  -- "<cmd>Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<cr>",
   "<cmd>Telescope smart_open<CR>",
   { silent = true }
 )

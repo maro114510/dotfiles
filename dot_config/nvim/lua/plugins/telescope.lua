@@ -39,6 +39,21 @@ return {
           filetypes = { "png", "webp", "jpg", "jpeg" },
           find_cmd = "rg", -- find command (defaults to `fd`)
         },
+
+        file_browser = {
+          hidden = true,
+          ignore_patterns = { "node_modules", ".git" },
+        },
+      },
+      pickers = {
+        find_files = {
+          hidden = true,
+          find_command = { "fd", "--type", "f", "--hidden", "--follow", "--no-ignore-vcs", "-E", ".git" },
+        },
+        live_grep = { hidden = true },
+        oldfiles = { hidden = true },
+        git_files = { hidden = true },
+        buffers = { hidden = true },
       },
       defaults = {
         vimgrep_arguments = {
@@ -50,26 +65,15 @@ return {
           "--column",
           "--smart-case",
           "--hidden",
+          "--glob=!.git",
         },
 
         prompt_prefix = " 🔭 ",
         selection_caret = "→ ",
         entry_prefix = "  ",
-        pickers = {
-          find_files = { hidden = true, find_command = { "fd", "--type", "f", "--hidden", "--follow", "-E", ".git/*" } },
-          file_browser = { hidden = true },
-          live_grep = { hidden = true },
-          oldfiles = { hidden = true },
-          git_files = { hidden = true },
-          buffers = { hidden = true },
-        },
         layout_strategy = "horizontal",
         selection_strategy = "reset",
         sorting_strategy = "ascending",
-        file_browser = {
-          hidden = true,
-          ignore_patterns = { "node_modules", ".git" },
-        },
         layout_config = {
           horizontal = {
             prompt_position = "top",
@@ -111,7 +115,7 @@ return {
       function()
         require("telescope.builtin").find_files({
           hidden = true,
-          find_command = { "fd", "--type", "f", "--hidden", "--follow", "-E", ".git/*" },
+          find_command = { "fd", "--type", "f", "--hidden", "--follow", "--no-ignore-vcs", "-E", ".git" },
         })
       end,
       desc = "Find files",
