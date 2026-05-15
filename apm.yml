@@ -1,0 +1,12 @@
+name: dotfiles
+version: 0.1.0
+author: maro114510
+
+targets:
+  - claude
+  - codex
+
+dependencies:
+  apm:
+    - yoshiko-pg/difit
+    - mattpocock/skills/skills/productivity/grill-me
