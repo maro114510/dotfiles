@@ -1,0 +1,24 @@
+lockfile_version: '1'
+generated_at: '2026-05-15T00:33:24.086591+00:00'
+apm_version: 0.13.0
+dependencies:
+- repo_url: mattpocock/skills
+  host: github.com
+  resolved_commit: e74f0061bb67222181640effa98c675bdb2fdaa7
+  virtual_path: skills/productivity/grill-me
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/grill-me
+  - .claude/skills/grill-me
+  content_hash: sha256:784f0dbb7403b0f00324bce9a112f715342777a0daee7bbb7385f9c6f0a170ea
+- repo_url: yoshiko-pg/difit
+  host: github.com
+  resolved_commit: 684980b7f37a870197cc40675745110050d26e33
+  package_type: skill_bundle
+  deployed_files:
+  - .agents/skills/difit
+  - .agents/skills/difit-review
+  - .claude/skills/difit
+  - .claude/skills/difit-review
+  content_hash: sha256:5df7fcf6cd443486511daceb1624ca0912c78996c039d3fee568106952ebeadf
