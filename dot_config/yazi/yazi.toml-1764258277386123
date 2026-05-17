@@ -1,0 +1,5 @@
+[manager]
+show_hidden = true
+
+[flavor]
+use = "monokai-vibrant"
