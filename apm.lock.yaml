@@ -1,7 +1,26 @@
 lockfile_version: '1'
-generated_at: '2026-05-15T00:33:24.086591+00:00'
+generated_at: '2026-05-18T13:14:14.484134+00:00'
 apm_version: 0.13.0
 dependencies:
+- repo_url: maro114510/skills
+  host: github.com
+  resolved_commit: 128b7a54aad21562f78504ead1f2c901a46ec5bf
+  package_type: marketplace_plugin
+  deployed_files:
+  - .agents/skills/create-pr
+  - .agents/skills/dependabot-review
+  - .agents/skills/md-review
+  - .agents/skills/pr-lessons
+  - .agents/skills/pr-review-pe
+  - .agents/skills/security-review
+  - .agents/skills/tdd-test-cases
+  - .claude/skills/dependabot-review
+  - .claude/skills/md-review
+  - .claude/skills/pr-lessons
+  - .claude/skills/pr-review-pe
+  - .claude/skills/security-review
+  - .claude/skills/tdd-test-cases
+  content_hash: sha256:1629f1418c8cf172f738ce64edaa6ed321584e52236d9fd516770981b35dd933
 - repo_url: mattpocock/skills
   host: github.com
   resolved_commit: e74f0061bb67222181640effa98c675bdb2fdaa7
