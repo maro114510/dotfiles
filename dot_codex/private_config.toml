@@ -1,19 +1,26 @@
 hide_agent_reasoning = true
-model = "gpt-5.4"
+model = "gpt-5.5"
 network_access = true
 ask_for_approval = "never"
 model_responding_effort = "medium"
-web_search = "live"
 model_reasoning_effort = "medium"
 approval_policy = "never"
+personality = "pragmatic"
+approvals_reviewer = "user"
+
+model_provider = "openai"
+sandbox_mode = "danger-full-access"
 
 [notice]
 hide_gpt5_1_migration_prompt = true
 "hide_gpt-5.1-codex-max_migration_prompt" = true
+hide_full_access_warning = true
+fast_default_opt_out = true
 
 [notice.model_migrations]
 "gpt-5.1-codex-max" = "gpt-5.2-codex"
-"gpt-5.2-codex" = "gpt-5.4"
+"gpt-5.2-codex" = "gpt-5.3-codex"
+"gpt-5.3-codex" = "gpt-5.4"
 
 [projects."/Users/nohira/ghq/github.com/maro114510/stock_with_me_alpha"]
 trust_level = "trusted"
@@ -42,7 +49,31 @@ trust_level = "trusted"
 [projects."/Users/nohira/ghq/github.com/maro114510/feedly-opener"]
 trust_level = "trusted"
 
-[projects."/Users/atsuki.nohira/.local/share/chezmoi"]
+[projects."/"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/gas_clasp"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/moto-weather-index"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/youtube_check_front"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/dotfiles"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/.config/nvim"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/zenn_sandbox"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/Documents/Codex/2026-05-17/new-chat"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/stocker"]
 trust_level = "trusted"
 
 [mcp_servers.spec-workflow]
@@ -54,6 +85,40 @@ enabled = false
 unified_exec = true
 shell_snapshot = true
 rmcp_client = true
+memories = false
+chronicle = false
 
 [sandbox_workspace_write]
 network_access = true
+
+[plugins."github@openai-curated"]
+enabled = true
+
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true
+
+[tui]
+terminal_title = ["spinner", "project", "app-name", "status", "thread", "git-branch", "model", "task-progress"]
+status_line = ["model-with-reasoning", "current-dir", "model-name", "project-root", "git-branch", "context-remaining", "context-used", "five-hour-limit"]
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+
+[marketplaces.openai-bundled]
+last_updated = "2026-05-17T13:17:44Z"
+source_type = "local"
+source = "/Users/nohira/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-05-15T19:32:43Z"
+source_type = "local"
+source = "/Users/nohira/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[memories]
+no_memories_if_mcp_or_web_search = true
