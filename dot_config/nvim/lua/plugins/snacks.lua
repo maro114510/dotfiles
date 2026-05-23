@@ -24,6 +24,27 @@ return {
       enabled = true,
       preset = {
         header = logo,
+        keys = {
+          { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+          {
+            icon = " ",
+            key = "c",
+            desc = "Config",
+            action = function()
+              vim.cmd.edit(vim.fn.fnameescape(vim.fn.stdpath("config") .. "/init.lua"))
+            end,
+          },
+          {
+            icon = "󰒲 ",
+            key = "L",
+            desc = "Lazy",
+            action = function()
+              require("lazy").home()
+            end,
+            enabled = package.loaded.lazy ~= nil,
+          },
+          { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+        },
       },
       sections = {
         { section = "header", padding = 1 },
