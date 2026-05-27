@@ -36,6 +36,7 @@
 # *.json
 *_compiled.lua
 lazy-lock.json
+!dot_config/nvim/lazy-lock.json
 
 .DS_Store
 

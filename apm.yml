@@ -10,3 +10,4 @@ dependencies:
   apm:
     - yoshiko-pg/difit
     - mattpocock/skills/skills/productivity/grill-me
+    - maro114510/skills
