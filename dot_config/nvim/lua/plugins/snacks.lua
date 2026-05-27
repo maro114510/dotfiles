@@ -25,6 +25,9 @@ return {
       preset = {
         header = logo,
         keys = {
+          { icon = " ", key = "f", desc = "Find File", action = ":Telescope find_files" },
+          { icon = " ", key = "r", desc = "Recent Files", action = ":Telescope oldfiles" },
+          { icon = " ", key = "g", desc = "Find Text", action = ":Telescope live_grep" },
           { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
           {
             icon = " ",
