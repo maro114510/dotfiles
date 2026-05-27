@@ -9,7 +9,12 @@ return {
     timeout = 100,
     default_mappings = false,
     mappings = {
-      i = { j = { k = "<ESC>" } },
+      i = {
+        j = {
+          j = "<ESC>", -- jj
+          k = "<ESC>", -- jk
+        },
+      },
       t = {
         j = { k = "<C-\\><C-n>" },
       },

@@ -22,7 +22,7 @@ vim.keymap.set("n", "k", "gk")
 vim.keymap.set("n", "Y", "y$")
 
 -- Esc
-vim.keymap.set("i", "jj", "<ESC>", { silent = true })
+-- jj is handled by better-escape.nvim (see lua/plugins/better-escape.lua)
 vim.keymap.set("i", "っj", "<ESC>", { silent = true })
 
 -- Exchange
