@@ -1,29 +1,32 @@
 lockfile_version: '1'
-generated_at: '2026-05-18T13:14:14.484134+00:00'
-apm_version: 0.13.0
+generated_at: '2026-05-27T09:31:00.658515+00:00'
+apm_version: 0.14.2
 dependencies:
 - repo_url: maro114510/skills
   host: github.com
-  resolved_commit: 128b7a54aad21562f78504ead1f2c901a46ec5bf
+  resolved_commit: fbd3cdade0855a26d01b6d30767c34375716ba8b
   package_type: marketplace_plugin
   deployed_files:
   - .agents/skills/create-pr
   - .agents/skills/dependabot-review
   - .agents/skills/md-review
+  - .agents/skills/pr-doc-review-pe
   - .agents/skills/pr-lessons
   - .agents/skills/pr-review-pe
   - .agents/skills/security-review
   - .agents/skills/tdd-test-cases
+  - .claude/skills/create-pr
   - .claude/skills/dependabot-review
   - .claude/skills/md-review
+  - .claude/skills/pr-doc-review-pe
   - .claude/skills/pr-lessons
   - .claude/skills/pr-review-pe
   - .claude/skills/security-review
   - .claude/skills/tdd-test-cases
-  content_hash: sha256:1629f1418c8cf172f738ce64edaa6ed321584e52236d9fd516770981b35dd933
+  content_hash: sha256:54b09d3ec5f2e2c9cda9efb2638cf9d9448c972308996509aad1d40c497aeb2e
 - repo_url: mattpocock/skills
   host: github.com
-  resolved_commit: e74f0061bb67222181640effa98c675bdb2fdaa7
+  resolved_commit: b8be62ffacb0118fa3eaa29a0923c87c8c11985c
   virtual_path: skills/productivity/grill-me
   is_virtual: true
   package_type: claude_skill
@@ -31,13 +34,23 @@ dependencies:
   - .agents/skills/grill-me
   - .claude/skills/grill-me
   content_hash: sha256:784f0dbb7403b0f00324bce9a112f715342777a0daee7bbb7385f9c6f0a170ea
+- repo_url: mizchi/skills
+  host: github.com
+  resolved_commit: 2de9c04734c79574d5ebcc64be5b3685f575af59
+  virtual_path: meta/empirical-prompt-tuning
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/empirical-prompt-tuning
+  - .claude/skills/empirical-prompt-tuning
+  content_hash: sha256:0caa36857ba4e1f7193fa9ee3e22cac38d7e9787eda95e1726d4a39e40fb9479
 - repo_url: yoshiko-pg/difit
   host: github.com
-  resolved_commit: 684980b7f37a870197cc40675745110050d26e33
+  resolved_commit: e436a5d98230ce2f36b2ea8de440ba32e82fe929
   package_type: skill_bundle
   deployed_files:
   - .agents/skills/difit
   - .agents/skills/difit-review
   - .claude/skills/difit
   - .claude/skills/difit-review
-  content_hash: sha256:5df7fcf6cd443486511daceb1624ca0912c78996c039d3fee568106952ebeadf
+  content_hash: sha256:db0be5aed18703229c765b4f0f824d56cbf58e64e6a58cebfd81f3a904fe612b

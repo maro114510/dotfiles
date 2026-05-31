@@ -10,4 +10,5 @@ dependencies:
   apm:
     - yoshiko-pg/difit
     - mattpocock/skills/skills/productivity/grill-me
+    - mizchi/skills/meta/empirical-prompt-tuning
     - maro114510/skills

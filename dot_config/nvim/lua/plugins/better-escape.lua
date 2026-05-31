@@ -6,10 +6,15 @@ return {
   event = { "BufReadPre", "BufWritePre", "BufNewFile" },
 
   opts = {
-    timeout = 100,
+    timeout = 300,
     default_mappings = false,
     mappings = {
-      i = { j = { k = "<ESC>" } },
+      i = {
+        j = {
+          j = "<ESC>", -- jj
+          k = "<ESC>", -- jk
+        },
+      },
       t = {
         j = { k = "<C-\\><C-n>" },
       },

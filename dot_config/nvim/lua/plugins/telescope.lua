@@ -48,7 +48,7 @@ return {
       pickers = {
         find_files = {
           hidden = true,
-          find_command = { "fd", "--type", "f", "--hidden", "--follow", "--no-ignore-vcs", "-E", ".git" },
+          find_command = { "fd", "--type", "f", "--hidden", "--follow", "-E", ".git" },
         },
         live_grep = { hidden = true },
         oldfiles = { hidden = true },
@@ -115,7 +115,7 @@ return {
       function()
         require("telescope.builtin").find_files({
           hidden = true,
-          find_command = { "fd", "--type", "f", "--hidden", "--follow", "--no-ignore-vcs", "-E", ".git" },
+          find_command = { "fd", "--type", "f", "--hidden", "--follow", "-E", ".git" },
         })
       end,
       desc = "Find files",

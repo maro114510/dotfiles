@@ -189,6 +189,7 @@
       ]
     }
   },
+  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
       {
@@ -290,13 +291,21 @@
     "claude-md-management@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
+    "skills@maro114510-agent-skills": true
   },
-"alwaysThinkingEnabled": true,
+  "extraKnownMarketplaces": {
+    "maro114510-agent-skills": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/atsuki.nohira/ghq/github.com/maro114510/skills-issue-28-4stage-review-pipeline"
+      }
+    }
+  },
+  "alwaysThinkingEnabled": true,
   "skipDangerousModePermissionPrompt": true,
   "skipAutoPermissionPrompt": true,
   "voiceEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1753989253554
-  },
-  "model": "sonnet"
+  }
 }
