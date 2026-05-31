@@ -2,5 +2,19 @@
 
 return {
   "wakatime/vim-wakatime",
-  lazy = false,
+  event = { "BufReadPost", "BufNewFile" },
+  cmd = {
+    "WakaTimeApiKey",
+    "WakaTimeDebugEnable",
+    "WakaTimeDebugDisable",
+    "WakaTimeStatusBarEnable",
+    "WakaTimeStatusBarDisable",
+    "WakaTimeScreenRedrawDisable",
+    "WakaTimeScreenRedrawEnable",
+    "WakaTimeScreenRedrawEnableAuto",
+    "WakaTimeToday",
+    "WakaTimeFileExpert",
+    "WakaTimeCliLocation",
+    "WakaTimeCliVersion",
+  },
 }
