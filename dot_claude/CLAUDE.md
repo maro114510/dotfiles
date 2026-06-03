@@ -1,33 +1,61 @@
-## 作業原則
+## Working Principles
 
-変更は常に最小限にとどめ、後方互換性を維持して実装する
+Keep changes minimal and maintain backward compatibility.
 
-## ワークツリー運用
+## Worktree Workflow
 
-- 作業は原則として [git-worktree-runner](https://github.com/coderabbitai/git-worktree-runner) を使いワークツリー上で実施する
-- mainブランチへの直接変更は禁止。必ずワークツリー上で作業し、レビュー後にマージする
-- ワークツリーの作成・管理は git-worktree-runner に委譲し、手動操作は避ける
-- `EnterWorktree` ツールは使用しない
+- All work must be done on a worktree using [git-wt](https://github.com/k1LoW/git-wt)
+- Direct changes to the main branch are prohibited — always work on a worktree and merge after review
 
-## このファイルの適用範囲
+## Scope of This File
 
-- このファイルはすべてのプロジェクトに適用されるため、汎用ルールのみを記載する
-- プロジェクト固有のルールは各プロジェクトの `CLAUDE.md` または `.claude/rules/` に記載する
-- プロジェクト側のCLAUDE.mdと競合するルールは非決定的に解決されるため、重複・矛盾を避ける
+- This file applies to all projects, so only generic rules belong here
+- Project-specific rules go in each project's `CLAUDE.md` or `.claude/rules/`
+- Avoid duplicating or contradicting rules between this file and project-level CLAUDE.md
 
-## Git操作の安全規則
+## Clarify Before Implementing
 
-### commit / amend / push の前に必ず確認する
-- `git branch --show-current` でブランチを確認する
-- `git status` でステージング状態を確認する
-- 期待するブランチと一致しない場合は操作を中断してユーザーに報告する
+Surface assumptions before writing code, not after.
 
-### ファイルの復元・借用
-- `git checkout <remote>/<branch> -- <file>` は使用禁止
-  （ブランチを変えずにファイルだけ置き換えるため、誤ったブランチへのコミットを誘発する）
-- 別ブランチのファイル内容が必要な場合は `git show <branch>:<path>` で内容を確認し、Read/Editツールで編集する
+- If multiple interpretations exist, list them and ask — don't silently pick one.
+- If a simpler approach exists, say so before starting.
+- Ask once with all your questions grouped. Don't interrupt repeatedly mid-task.
+- If something is still unclear after asking, name the ambiguity explicitly in your response.
 
-### コードレビュー・確認フェーズ
-- 変更内容の確認は `git diff origin/main...<branch>` でリモートブランチを対象にする
-- ローカルとリモートの一致は `git diff origin/<branch>` で確認する
-- GitHub Actions の差分に `concurrency:` が含まれる場合、同一 `group:` 値を持つ他のジョブを検索して競合がないか確認する
+## Simplicity First
+
+Solve the stated problem. Nothing more.
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "future-proofing" that wasn't requested.
+- If you've written significantly more code than the task warrants, reconsider the approach.
+
+## Surgical Changes
+
+Touch only what the task requires.
+
+- Don't improve adjacent code, comments, or formatting — even if they're suboptimal.
+- Consistency with surrounding code takes priority over your stylistic preferences. The codebase has a voice; match it.
+- If you notice unrelated issues, mention them — don't silently fix them.
+- Remove only the imports/variables/functions that YOUR changes made unused. Leave pre-existing dead code alone.
+
+## Define Done Before Starting
+
+For any non-trivial task, make the exit condition explicit before writing code.
+
+**For testable work, follow t-wada's TDD cycle:**
+1. Write a test list — all the cases you can think of, before writing any code
+2. Pick one case: write a failing test that specifies the behavior (Red)
+3. Write the minimum code to make it pass — no more (Green)
+4. Refactor while keeping tests green (Refactor)
+5. Repeat until the test list is exhausted
+
+Tests are specifications, not afterthoughts. If the test is hard to write, the design is wrong.
+
+**For non-testable tasks (config, UI, scripts):**
+Define the observable change that confirms success before starting:
+- "The server returns 404 for unknown routes"
+- "The button is disabled when the form is empty"
+
+Don't mark a task complete until the exit condition is verified.
