@@ -30,12 +30,7 @@ vim.keymap.set("", ";", ":")
 
 -- Telescope
 -- <C-f> for find_files is defined in lua/plugins/telescope.lua keys section.
-vim.keymap.set(
-  "n",
-  "<C-P>",
-  "<cmd>Telescope smart_open<CR>",
-  { silent = true }
-)
+vim.keymap.set("n", "<C-P>", "<cmd>Telescope smart_open<CR>", { silent = true })
 vim.keymap.set(
   "n",
   "<M-f>",
