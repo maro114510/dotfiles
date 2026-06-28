@@ -2,6 +2,8 @@
 
 return {
   "EdenEast/nightfox.nvim",
+  lazy = false,
+  priority = 1000,
 
   config = function()
     require("nightfox").setup({
@@ -19,6 +21,4 @@ return {
 
     vim.cmd("colorscheme duskfox")
   end,
-
-  event = "UIEnter",
 }
