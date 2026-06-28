@@ -138,7 +138,7 @@ args = []
 # mode = "windowed"
 opacity = 0.62
 blur = true
-decorations = "enabled"
+decorations = "Enabled"
 macos-use-unified-titlebar = false
 macos-use-shadow = true
 # colorspace = "display-p3"
@@ -167,9 +167,9 @@ macos-use-shadow = true
 # • filters: A list of paths to RetroArch slang shaders. Might not work with OpenGL.
 #
 # Example:
-# [renderer]
-# performance = "high"
-# backend = "automatic"
+[renderer]
+performance = "high"
+backend = "automatic"
 # disable-unfocused-render = false
 # level = 1
 # filters = []
@@ -283,6 +283,7 @@ size = 12.0
 # hide-if-single = true
 # use-current-path = false
 # color-automation = []
+# unfocused-split-opacity = 0.7
 
 # Shell
 #
@@ -324,10 +325,10 @@ size = 12.0
 # (considering if theme folder does exists and is being used)
 #
 # Example:
-[colors]
+# [colors]
 # background = '#0F0D0E'
 # foreground = '#F9F4DA'
-cursor = '#52AD70'
+# cursor = '#52AD70'
 # tabs = '#443d40'
 # tabs-active = '#F38BA3'
 # green = '#0BA95B'
