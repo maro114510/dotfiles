@@ -11,6 +11,8 @@ approvals_reviewer = "user"
 model_provider = "openai"
 sandbox_mode = "danger-full-access"
 
+notify = ["/Users/nohira/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
+
 [notice]
 hide_gpt5_1_migration_prompt = true
 "hide_gpt-5.1-codex-max_migration_prompt" = true
@@ -76,10 +78,38 @@ trust_level = "trusted"
 [projects."/Users/nohira/ghq/github.com/maro114510/stocker"]
 trust_level = "trusted"
 
+[projects."/Users/nohira/ghq/github.com/maro114510/skills"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/ghq/github.com/maro114510/outfit-pull-requests"]
+trust_level = "trusted"
+
+[projects."/Users/nohira/Documents/Codex/2026-06-16/readme-npx-gh-pull"]
+trust_level = "trusted"
+
 [mcp_servers.spec-workflow]
 command = "npx"
 args = ["-y", "@pimzino/spec-workflow-mcp@latest", "/Users/nohira/ghq/github.com/maro114510/feedly-opener"]
 enabled = false
+
+[mcp_servers.node_repl]
+args = []
+command = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+startup_timeout_sec = 120
+
+[mcp_servers.node_repl.env]
+NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
+NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_node/lib/node_modules"
+NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+NODE_REPL_TRUSTED_CODE_PATHS = "/Users/nohira/.codex"
+CODEX_HOME = "/Users/nohira/.codex"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "59e7bb81812ddd5f102e1d580335166e552c91686b5726218a985b59b4f89ca1"
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.623.42026"
+CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
 
 [features]
 unified_exec = true
@@ -87,20 +117,36 @@ shell_snapshot = true
 rmcp_client = true
 memories = false
 chronicle = false
-
-[sandbox_workspace_write]
-network_access = true
+js_repl = false
 
 [plugins."github@openai-curated"]
 enabled = true
 
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
 [plugins."computer-use@openai-bundled"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
 enabled = true
 
 [plugins."browser@openai-bundled"]
 enabled = true
 
 [plugins."chrome@openai-bundled"]
+enabled = true
+
+[plugins."codex-cli-wakatime@wakatime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
 enabled = true
 
 [tui]
@@ -111,14 +157,47 @@ status_line = ["model-with-reasoning", "current-dir", "model-name", "project-roo
 "gpt-5.5" = 4
 
 [marketplaces.openai-bundled]
-last_updated = "2026-05-17T13:17:44Z"
+last_updated = "2026-06-28T05:41:14Z"
 source_type = "local"
 source = "/Users/nohira/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-05-15T19:32:43Z"
+last_updated = "2026-06-24T05:32:49Z"
 source_type = "local"
 source = "/Users/nohira/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
+[marketplaces.wakatime]
+last_updated = "2026-06-25T10:29:42Z"
+last_revision = "a0218436d549915c521287b9436782891e75e856"
+source_type = "git"
+source = "https://github.com/wakatime/codex-cli-wakatime.git"
+
 [memories]
 no_memories_if_mcp_or_web_search = true
+
+[desktop]
+ambient-suggestions-enabled = false
+usePointerCursors = true
+mac-menu-bar-enabled = false
+preventSleepWhileRunning = true
+keepRemoteControlAwakeWhilePluggedIn = true
+git-show-sidebar-pr-icons = true
+git-commit-instructions = """
+英語で簡潔に。
+セマンティックバージョニングを意識してfeat,choreなどの基本的なものを使用する"""
+conversationDetailMode = "STEPS_COMMANDS"
+followUpQueueMode = "queue"
+
+[desktop.open-in-target-preferences]
+global = "ghostty"
+
+[hooks.state]
+
+[hooks.state."codex-cli-wakatime@wakatime:hooks/hooks.json:post_tool_use:0:0"]
+trusted_hash = "sha256:3019b5f39b02025bd4c40a156aef99bda28389107c16b8fa6ed6bc691a3928e4"
+
+[hooks.state."codex-cli-wakatime@wakatime:hooks/hooks.json:session_start:0:0"]
+trusted_hash = "sha256:3793f33bb324020d43751b6ce8548d7a1a2791fec8b4c76fc1dcc689f6671b7b"
+
+[hooks.state."codex-cli-wakatime@wakatime:hooks/hooks.json:user_prompt_submit:0:0"]
+trusted_hash = "sha256:84094d8aa7937a8545ef4d87ef03a0309f77bd2670fbc74560c922f3fe653dcc"
