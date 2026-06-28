@@ -25,6 +25,7 @@ zellij = "latest"
 ghq = "1.9.4"
 gitleaks = "latest"
 zoxide = "0.9.9"
+claude = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = ["terraform"]
