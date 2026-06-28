@@ -3,3 +3,14 @@ show_hidden = true
 
 [flavor]
 use = "monokai-vibrant"
+
+[opener]
+tdf = [
+  { run = "tdf %s1", block = true, desc = "TDF", for = "unix" },
+]
+
+[open]
+prepend_rules = [
+  { mime = "application/pdf", use = [ "tdf", "open", "reveal" ] },
+  { url = "*.pdf", use = [ "tdf", "open", "reveal" ] },
+]
