@@ -1,0 +1,51 @@
+# General settings
+onboarding = false
+
+[update]
+channel = "stable"
+version_check = true
+manifest_check = true
+
+[terminal]
+shell_mode = "auto"
+new_cwd = "follow"
+
+# Keybindings
+[keys]
+prefix = "ctrl+a"
+previous_workspace = "prefix+up"
+next_workspace = "prefix+down"
+
+[[keys.command]]
+key = "option+l"
+type = "pane"
+command = "exec ${SHELL:-zsh}"
+description = "open temporary shell pane"
+
+[[keys.command]]
+key = "alt+g"
+type = "pane"
+command = "lazygit"
+description = "run lazygit"
+
+[[keys.command]]
+key = "prefix+r"
+type = "shell"
+command = "herdr server reload-config"
+description = "reload config"
+
+# UI settings
+[theme]
+name = "dracula"
+auto_switch = true
+light_theme = "rose-pine"
+dark_theme = "dracula"
+
+[ui]
+prompt_new_tab_name = false
+
+[ui.toast.herdr]
+position = "top-right"
+
+[ui.sound]
+enabled = false
