@@ -17,10 +17,10 @@ previous_workspace = "prefix+up"
 next_workspace = "prefix+down"
 
 [[keys.command]]
-key = "option+l"
-type = "pane"
-command = "exec ${SHELL:-zsh}"
-description = "open temporary shell pane"
+key = "alt+l"
+type = "plugin_action"
+command = "maro114510.toggle-popup.toggle-shell"
+description = "Toggle popup shell"
 
 [[keys.command]]
 key = "alt+g"
