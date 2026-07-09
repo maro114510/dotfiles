@@ -1,0 +1,69 @@
+lockfile_version: '1'
+generated_at: '2026-07-09T23:21:05.103263+00:00'
+apm_version: 0.18.0
+dependencies:
+- repo_url: maro114510/skills
+  host: github.com
+  resolved_commit: eb4085cb583b5e316dbe7e43cd743436ee4a9d65
+  package_type: marketplace_plugin
+  deployed_files:
+  - .agents/skills/create-github-issues
+  - .agents/skills/create-pr
+  - .agents/skills/frame-problem
+  - .agents/skills/implement
+  - .agents/skills/ja-style-check
+  - .agents/skills/md-review
+  - .agents/skills/pr-doc-review-pe
+  - .agents/skills/pr-lessons
+  - .agents/skills/pr-review-pe
+  - .agents/skills/security-review
+  - .agents/skills/skill-cleaner
+  - .agents/skills/tdd-test-cases
+  - .agents/skills/why-man
+  - .claude/skills/create-github-issues
+  - .claude/skills/create-pr
+  - .claude/skills/frame-problem
+  - .claude/skills/implement
+  - .claude/skills/ja-style-check
+  - .claude/skills/md-review
+  - .claude/skills/pr-doc-review-pe
+  - .claude/skills/pr-lessons
+  - .claude/skills/pr-review-pe
+  - .claude/skills/security-review
+  - .claude/skills/skill-cleaner
+  - .claude/skills/skills/.claude-plugin/plugin.json
+  - .claude/skills/skills/bin/pr-review-pe-identify-pr.sh
+  - .claude/skills/tdd-test-cases
+  - .claude/skills/why-man
+  deployed_file_hashes:
+    .claude/skills/skills/.claude-plugin/plugin.json: sha256:f56b6723e5e01e8316a5e542146daa46b32eb0be98e4d188429acef9fb85d557
+    .claude/skills/skills/bin/pr-review-pe-identify-pr.sh: sha256:845dc1c54f113ce9bf1ec1e6f1366398e54f40193965f6d5bf6986458fc3a63b
+  content_hash: sha256:b808c14e423186d9dd9eb5baffe4ad45d7989ba817612997a66ee8fd78276c87
+- repo_url: mizchi/skills
+  host: github.com
+  resolved_commit: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  virtual_path: meta/empirical-prompt-tuning
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/empirical-prompt-tuning
+  - .claude/skills/empirical-prompt-tuning
+  content_hash: sha256:20e7fba93c7267ba6e3a7b27787ca49191b762dffcfb804b01da9183b1b0c891
+- repo_url: ogulcancelik/herdr
+  host: github.com
+  resolved_commit: 0de503ccd9a8fedeeb6cbcc1446ab2bc644fdbb6
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/herdr
+  - .claude/skills/herdr
+  content_hash: sha256:4fcadf064ccce3369956a4e82653177cc7b7184f584997031ae612c4a5f27afa
+- repo_url: yoshiko-pg/difit
+  host: github.com
+  resolved_commit: 9ca858d538926f1ec1692ae34a75e7c27df042a2
+  package_type: skill_bundle
+  deployed_files:
+  - .agents/skills/difit
+  - .agents/skills/difit-review
+  - .claude/skills/difit
+  - .claude/skills/difit-review
+  content_hash: sha256:e4abc298b5df3a855ccc6bd2828360166ac1ecb3860a7dc2d427288433e5350e
