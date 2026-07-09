@@ -7,7 +7,4 @@ targets:
   - codex
 
 dependencies:
-  apm:
-    - yoshiko-pg/difit
-    - mizchi/skills/meta/empirical-prompt-tuning
-    - maro114510/skills
+  apm: []
