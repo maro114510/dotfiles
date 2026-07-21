@@ -38,12 +38,13 @@ description = "reload config"
 [theme]
 name = "dracula"
 auto_switch = true
-light_theme = "rose-pine"
-dark_theme = "dracula"
+light_name = "rose-pine"
+dark_name = "dracula"
 
 [ui]
 prompt_new_tab_name = false
 
+agent_panel_sort = "spaces"
 [ui.toast.herdr]
 position = "top-right"
 
