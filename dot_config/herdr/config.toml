@@ -34,6 +34,11 @@ type = "shell"
 command = "herdr server reload-config"
 description = "reload config"
 
+[[keys.command]]
+key = "cmd+r"
+type = "plugin_action"
+command = "persiyanov.reviewr.toggle"
+
 # UI settings
 [theme]
 name = "dracula"
