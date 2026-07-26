@@ -12,6 +12,9 @@ format = '(via [${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)
 [rust]
 format = '(via [$symbol($version )]($style))'
 
+[gcloud]
+disabled = true
+
 [battery]
 full_symbol = '🔋 '
 charging_symbol = '⚡️ '
