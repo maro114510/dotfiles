@@ -248,14 +248,13 @@ function y() {
 	tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
 
 	command yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
 
-	if IFS= read -r -d '' cwd < "$tmp" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+	if [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && [ -d "$cwd" ]; then
 		builtin cd -- "$cwd"
 	fi
 
-	if [ -n "$tmp" ] && [ -e "$tmp" ]; then
-		command trash "$tmp"
-	fi
+	command rm -f -- "$tmp"
 }
 
 function paws {
