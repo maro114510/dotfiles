@@ -1,18 +1,24 @@
-# Cache invalidation key: real binary mtime. mise reshim does NOT invalidate caches.
+# Cache invalidation key: resolved binary path + mise `latest` target + args (see hash below),
+# plus real binary mtime. mise reshim does NOT invalidate caches on its own.
 _zsh_cache_eval() {
   local name="$1"
   local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/eval-cache"
-  local cache_file="$cache_dir/$name"
   local real_bin="" mise_base="$HOME/.local/share/mise/installs/$name"
+  local target=""
 
   if [[ -L "$mise_base/latest" ]]; then
-    local target
     target=$(readlink "$mise_base/latest")
     target="${target#./}"
-    if [[ -x "$mise_base/$target/$name" ]]; then
-      real_bin="$mise_base/$target/$name"
-    elif [[ -x "$mise_base/$target/bin/$name" ]]; then
-      real_bin="$mise_base/$target/bin/$name"
+    local version_dir
+    if [[ "$target" = /* ]]; then
+      version_dir="$target"
+    else
+      version_dir="$mise_base/$target"
+    fi
+    if [[ -x "$version_dir/$name" ]]; then
+      real_bin="$version_dir/$name"
+    elif [[ -x "$version_dir/bin/$name" ]]; then
+      real_bin="$version_dir/bin/$name"
     fi
   fi
 
@@ -23,15 +29,43 @@ _zsh_cache_eval() {
   [[ -x "$real_bin" ]] || return 0
   [[ -d "$cache_dir" ]] || mkdir -p "$cache_dir"
 
+  # Fold the resolved binary, latest target, and args into the cache filename so
+  # different invocations of the same command never collide, and a `latest` retarget
+  # is always detected even when it doesn't change real_bin's mtime.
+  local key_hash
+  key_hash=$(printf '%s\0' "$real_bin" "$target" "${@:2}" | cksum | cut -d' ' -f1)
+  local cache_file="$cache_dir/${name}.${key_hash}"
+
   if [[ ! -f "$cache_file" || "$real_bin" -nt "$cache_file" ]]; then
-    "$real_bin" "${@:2}" > "$cache_file" 2>/dev/null
-    # starship embeds its own path (resolved via PATH) in PROMPT/PROMPT2 at init time.
-    # Replace shim path with the real binary so prompt rendering bypasses the shim.
-    local shim_path="$HOME/.local/share/mise/shims/$name"
-    [[ -f "$shim_path" && -f "$cache_file" ]] && \
-      sed -i '' "s|${shim_path}|${real_bin}|g" "$cache_file" 2>/dev/null
+    local tmp="${cache_file}.$$.tmp"
+    if "$real_bin" "${@:2}" >| "$tmp" 2>/dev/null && zsh -n "$tmp" 2>/dev/null; then
+      # starship embeds its own path (resolved via PATH) in PROMPT/PROMPT2 at init time.
+      # Replace shim path with the real binary so prompt rendering bypasses the shim.
+      local shim_path="$HOME/.local/share/mise/shims/$name"
+      if [[ -f "$shim_path" ]]; then
+        local shim_esc="${shim_path//\\/\\\\}"
+        shim_esc="${shim_esc//./\\.}"
+        shim_esc="${shim_esc//\*/\\*}"
+        shim_esc="${shim_esc//\[/\\[}"
+        shim_esc="${shim_esc//\^/\\^}"
+        shim_esc="${shim_esc//\$/\\$}"
+        shim_esc="${shim_esc//\|/\\|}"
+        local real_esc="${real_bin//\\/\\\\}"
+        real_esc="${real_esc//&/\\&}"
+        real_esc="${real_esc//\|/\\|}"
+        sed -i.bak "s|${shim_esc}|${real_esc}|g" "$tmp" 2>/dev/null && command rm -f -- "${tmp}.bak"
+      fi
+      if zsh -n "$tmp" 2>/dev/null; then
+        mv -f -- "$tmp" "$cache_file"
+      else
+        command rm -f -- "$tmp"
+      fi
+    else
+      command rm -f -- "$tmp"
+    fi
   fi
-  source "$cache_file"
+
+  [[ -r "$cache_file" ]] && source "$cache_file"
 }
 
 ### Sheldon plugin manager ###
@@ -41,9 +75,14 @@ _sheldon_load() {
   local lock="${XDG_DATA_HOME:-$HOME/.local/share}/sheldon/plugins.lock"
   [[ -d "${cache:h}" ]] || mkdir -p "${cache:h}"
   if [[ ! -f "$cache" || "$toml" -nt "$cache" || "$lock" -nt "$cache" ]]; then
-    sheldon source > "$cache" 2>/dev/null
+    local tmp="${cache}.$$.tmp"
+    if sheldon source >| "$tmp" 2>/dev/null && zsh -n "$tmp" 2>/dev/null; then
+      mv -f -- "$tmp" "$cache"
+    else
+      command rm -f -- "$tmp"
+    fi
   fi
-  source "$cache"
+  [[ -r "$cache" ]] && source "$cache"
 }
 _sheldon_load
 unfunction _sheldon_load
