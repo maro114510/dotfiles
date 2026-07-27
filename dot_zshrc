@@ -119,16 +119,9 @@ alias la='lsd -al'
 alias cp='cp -i'
 alias mv='mv -i'
 function rm() {
-  for arg in "$@"; do
-    if [[ "$arg" == -* && "$arg" == *r* && "$arg" == *f* ]]; then
-      echo "rm -rf is disabled. Use 'trash' instead." >&2
-      return 1
-    fi
-  done
-  case "$OSTYPE" in
-    darwin*) command rm -i "$@" ;;
-    linux*)  command rm -i --preserve-root "$@" ;;
-  esac
+  print -u2 "rm is disabled; use trash."
+  print -u2 "For intentional deletion, use: command rm ..."
+  return 1
 }
 alias vim='nvim'
 alias vi='vi'
@@ -177,7 +170,7 @@ fkill() {
 	fi
 }
 frm() {
-    ls | fzf -m | xargs rm -i
+    ls | fzf -m | xargs command rm -i
 }
 function wtr(){
     curl "https://ja.wttr.in/$1?2nF"
