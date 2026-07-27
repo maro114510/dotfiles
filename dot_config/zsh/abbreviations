@@ -18,7 +18,7 @@ abbr -S -q -- awsp="paws"
 
 # Shell utilities
 abbr -S -q -- cl="clear"
-abbr -S -q -- srczh="source ~/.zshrc"
+abbr -S -q -- srczh="exec zsh"
 abbr -S -q -- editzh="nvim ~/.zshrc"
 abbr -S -q -- proot="cd \$(git rev-parse --show-toplevel)"
 
