@@ -208,7 +208,9 @@ fkill() {
 	fi
 }
 frm() {
-    ls | fzf -m | xargs command rm -i
+	local -a files
+	files=(${(f)"$(ls | fzf -m)"})
+	(( ${#files[@]} )) && trash -- "${files[@]}"
 }
 function wtr(){
     curl "https://ja.wttr.in/$1?2nF"
