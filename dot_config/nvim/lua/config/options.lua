@@ -1,6 +1,21 @@
 -- About File
 vim.opt.fileencoding = "utf-8"
-vim.opt.swapfile = false -- Do not create swapfiile
+
+-- Recovery policy: swap files protect unsaved edits after a crash, while
+-- persistent undo preserves saved edit history across Neovim sessions.
+-- Keep both in private, centralized directories. The trailing `//` makes
+-- Neovim encode the full file path, avoiding basename collisions.
+local recovery_dir = vim.fn.stdpath("state") .. "/recovery"
+local swap_dir = recovery_dir .. "/swap"
+local undo_dir = recovery_dir .. "/undo"
+
+vim.fn.mkdir(swap_dir, "p", 448) -- 0700
+vim.fn.mkdir(undo_dir, "p", 448) -- 0700
+
+vim.opt.directory = swap_dir .. "//"
+vim.opt.swapfile = true
+vim.opt.undodir = undo_dir .. "//"
+vim.opt.undofile = true
 vim.opt.hidden = true
 
 -- Do not use clipboard
