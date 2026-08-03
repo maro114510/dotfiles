@@ -14,6 +14,18 @@ return {
 
   config = function()
     local on_attach = function(client, bufnr)
+      -- Conform owns formatting for these language clients. Keeping the LSP
+      -- capability enabled would make :lua vim.lsp.buf.format() ambiguous.
+      local conform_owned_formatting = {
+        gopls = true,
+        ruff = true,
+        ["typescript-tools"] = true,
+      }
+      if conform_owned_formatting[client.name] then
+        client.server_capabilities.documentFormattingProvider = false
+        client.server_capabilities.documentRangeFormattingProvider = false
+      end
+
       local set = vim.keymap.set
       set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
       set("n", "<C-m>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
@@ -35,16 +47,6 @@ return {
       },
     })
 
-    vim.lsp.config("pylsp", {
-      settings = {
-        pylsp = {
-          plugins = {
-            pycodestyle = { ignore = { "E501" } },
-          },
-        },
-      },
-    })
-
     vim.lsp.config("ruff", {
       init_options = {
         settings = {
@@ -60,33 +62,28 @@ return {
       },
     })
 
-    -- mason-lspconfig: Mason 管理サーバーを自動有効化
-    -- glint は cmd/config 引数の既知の非互換のためスキップ
+    -- mason-lspconfig: only the declared servers are installed and enabled.
+    -- This allowlist prevents unrelated servers already in Mason from attaching.
+    local language_servers = {
+      "lua_ls",
+      "gopls",
+      "terraformls",
+      "jsonls",
+      "rust_analyzer",
+      "bashls",
+      "ruff",
+      "html",
+      "cssls",
+      "protols",
+      "kotlin_language_server",
+    }
     require("mason-lspconfig").setup({
-      ensure_installed = {
-        "lua_ls",
-        "gopls",
-        "terraformls",
-        "jsonls",
-        "denols",
-        "rust_analyzer",
-        "bashls",
-        "ruff",
-        "stylua",
-        "html",
-        "cssls",
-        "pyright",
-        "protols",
-        "kotlin_language_server",
-      },
-      automatic_enable = {
-        exclude = { "glint" },
-      },
+      ensure_installed = language_servers,
+      automatic_enable = language_servers,
     })
 
     -- Mason 管理外サーバーは手動で有効化
     vim.lsp.enable("sourcekit")
     vim.lsp.enable("typos_lsp")
-    vim.lsp.enable("pylsp")
   end,
 }
