@@ -9,13 +9,22 @@ return {
     {
       "<leader>cf",
       function()
-        require("conform").format({ async = true, lsp_fallback = true })
+        require("conform").format({ async = true, lsp_format = "fallback" })
       end,
       desc = "Format Buffer",
     },
   },
 
   config = function()
+    local external_formatter_filetypes = {
+      go = true,
+      javascript = true,
+      javascriptreact = true,
+      python = true,
+      typescript = true,
+      typescriptreact = true,
+    }
+
     require("conform").setup({
       formatters_by_ft = {
         typescript = { "prettierd" },
@@ -36,7 +45,13 @@ return {
         kotlin = { "ktlint" },
         swift = { "swift_format" },
       },
-      format_on_save = { timeout_ms = 500, lsp_fallback = true },
+      format_on_save = function(bufnr)
+        local filetype = vim.bo[bufnr].filetype
+        return {
+          timeout_ms = 500,
+          lsp_format = external_formatter_filetypes[filetype] and "never" or "fallback",
+        }
+      end,
     })
   end,
 }

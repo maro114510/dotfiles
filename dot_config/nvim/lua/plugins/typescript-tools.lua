@@ -7,5 +7,12 @@ return {
 
   opts = {},
 
-  ft = { "typescript", "typescriptreact", "typescript.tsx" },
+  ft = {
+    "javascript",
+    "javascriptreact",
+    "javascript.jsx",
+    "typescript",
+    "typescriptreact",
+    "typescript.tsx",
+  },
 }
