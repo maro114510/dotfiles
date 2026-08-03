@@ -15,11 +15,6 @@ return {
     cmd = { "Mason" },
   },
 
-  -- Mason LSPConfig
-  {
-    "mason-org/mason-lspconfig.nvim",
-  },
-
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
 
