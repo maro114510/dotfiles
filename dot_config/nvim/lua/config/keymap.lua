@@ -51,15 +51,15 @@ vim.keymap.set("n", "<C-n>", "<CMD>Neotree<CR>", { silent = true })
 -- COC
 -- when normal mode
 -- double space
--- vim.keymap.set('n', '<space><space>', '<Cmd>CocList<CR>', { silent = true })
+-- vim.keymap.set('n', '<leader><leader>', '<Cmd>CocList<CR>', { silent = true })
 -- space + hwover = Hover
--- vim.keymap.set('n', '<space>h', '<Cmd>call CocAction("doHover")<CR>', { silent = true })
+-- vim.keymap.set('n', '<leader>h', '<Cmd>call CocAction("doHover")<CR>', { silent = true })
 -- space + df = Definition
--- vim.keymap.set('n', '<space>df', '<Plug>(coc-definition)', { silent = true })
+-- vim.keymap.set('n', '<leader>df', '<Plug>(coc-definition)', { silent = true })
 -- space + rf = References
--- vim.keymap.set('n', '<space>rf', '<Plug>(coc-references)', { silent = true })
+-- vim.keymap.set('n', '<leader>rf', '<Plug>(coc-references)', { silent = true })
 -- LSP Rename (Global mapping to ensure availability)
-vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, { noremap = true, silent = true, desc = "LSP Rename" })
+vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { noremap = true, silent = true, desc = "LSP Rename" })
 
 -- COC Rename (Legacy - commented out)
--- vim.keymap.set('n', '<space>rn', '<Plug>(coc-rename)', { silent = true })
+-- vim.keymap.set('n', '<leader>rn', '<Plug>(coc-rename)', { silent = true })
