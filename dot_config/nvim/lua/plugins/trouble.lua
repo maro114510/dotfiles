@@ -10,7 +10,7 @@ return {
 
   keys = {
     {
-      "<space>xx",
+      "<leader>xx",
       "<cmd>Trouble diagnostics toggle<cr>",
       desc = "Diagnostics (Trouble)",
     },
