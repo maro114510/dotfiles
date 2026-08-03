@@ -90,7 +90,12 @@ return {
         },
       },
     },
-    notifier = { enabled = false },
+    notifier = {
+      enabled = true,
+      timeout = 1000,
+      width = { max = 50 },
+      style = "fancy",
+    },
     quickfile = { enabled = true, hidden = true },
     scope = { enabled = true },
     scroll = { enabled = false },
@@ -109,7 +114,7 @@ return {
     },
     -- Other
     {
-      "<leader>un",
+      "<leader>n",
       function()
         Snacks.notifier.show_history()
       end,
