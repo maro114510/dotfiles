@@ -154,6 +154,8 @@ _zsh_cache_eval starship init zsh
 ##### alias #####
 alias ll='lsd -l'
 alias la='lsd -al'
+# 配下サイズは明示的に指定した場合だけ計算する。大規模なディレクトリで通常の一覧表示が遅くなるのを防ぐ。
+alias lls='lsd -l --total-size'
 alias cp='cp -i'
 alias mv='mv -i'
 function rm() {
