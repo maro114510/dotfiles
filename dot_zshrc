@@ -208,9 +208,11 @@ fkill() {
 	fi
 }
 frm() {
-	local -a files
-	files=(${(f)"$(ls | fzf -m)"})
-	(( ${#files[@]} )) && trash -- "${files[@]}"
+	find . -mindepth 1 -maxdepth 1 -print0 |
+		fzf --read0 --print0 -m |
+		while IFS= read -r -d $'\0' file; do
+			trash "$file"
+		done
 }
 function wtr(){
     curl "https://ja.wttr.in/$1?2nF"
