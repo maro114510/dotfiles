@@ -7,7 +7,7 @@
 #19D1E5
 #528bff
 
-[manager]
+[mgr]
 cwd = { fg = "white" }
 
 hovered         = { reversed = true }
