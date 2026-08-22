@@ -74,7 +74,7 @@ return {
       "ruff",
       "html",
       "cssls",
-      "protols",
+      "buf_ls",
       "kotlin_language_server",
     }
     require("mason-lspconfig").setup({
