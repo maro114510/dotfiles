@@ -3,7 +3,12 @@ version: 1.0.0
 description: APM project for atsuki.nohira
 author: maro114510
 dependencies:
-  apm: []
+  apm:
+    - maro114510/skills
+    - yoshiko-pg/difit
+    - mizchi/skills/meta/empirical-prompt-tuning
+    - ogulcancelik/herdr
+    - github/gh-stack/skills/gh-stack
   mcp: []
 includes: auto
 scripts: {}
