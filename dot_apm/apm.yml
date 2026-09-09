@@ -2,12 +2,19 @@ name: atsuki.nohira
 version: 1.0.0
 description: APM project for atsuki.nohira
 author: maro114510
+targets:
+  - codex
 dependencies:
   apm:
-  - maro114510/skills
-  - yoshiko-pg/difit
-  - mizchi/skills/meta/empirical-prompt-tuning
-  - ogulcancelik/herdr
+    - maro114510/skills
+    - maro114510/private-skills
+    - mizchi/skills/meta/empirical-prompt-tuning
+    - git: yoshiko-pg/difit
+      path: skills/difit
+    - git: yoshiko-pg/difit
+      path: skills/difit-review
+    - git: herdrdev/herdr
+      path: skills/herdr
   mcp: []
 includes: auto
 scripts: {}
