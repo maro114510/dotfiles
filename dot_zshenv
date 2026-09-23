@@ -9,6 +9,9 @@ export LC_CTYPE="${LANGUAGE}"
 # editor — needed by git, cron, and other non-interactive programs
 export EDITOR=nvim
 
+# OpenCode cheap model for built-in research agents; read by every zsh launch path
+export OPENCODE_CHEAP_MODEL=openai/gpt-5.6-luna
+
 # Go: variable declarations; PATH prepend follows below
 export GOPATH="${HOME}/go"
 export GOBIN="${GOPATH}/bin"
