@@ -4,11 +4,13 @@ description: APM project for atsuki.nohira
 author: maro114510
 targets:
   - codex
+  - claude
+  - opencode
 dependencies:
   apm:
     - maro114510/skills
     - maro114510/private-skills
-    - mizchi/skills/meta/empirical-prompt-tuning
+    - mizchi/skills/empirical-prompt-tuning
     - git: yoshiko-pg/difit
       path: skills/difit
     - git: yoshiko-pg/difit
