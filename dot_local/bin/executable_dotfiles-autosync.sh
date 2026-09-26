@@ -20,14 +20,20 @@ LOCK_DIR="${XDG_CACHE_HOME:-${HOME}/.cache}/${PROG}.lock"
 LOCK_STALE_SECONDS=900
 LOCK_WAIT_SECONDS=600
 LOCK_POLL_SECONDS=2
+LOCK_RECLAIM_STALE_SECONDS=60
 CHECK_GRACE_ATTEMPTS=12
 CHECK_GRACE_SLEEP=10
+TIMEOUT_NETWORK=120
+TIMEOUT_GH=60
+TIMEOUT_CI_WATCH=2700
+TIMEOUT_MISE=600
 
 LOCK_HELD=0
 SWITCHED=0
 BRANCH_CREATED=0
 NOTIFIED=0
 PR_NUMBER=""
+PUSHED_SHA=""
 
 TARGETS=()
 
@@ -50,6 +56,24 @@ log() {
   fi
 }
 
+with_timeout() {
+  local secs="${1}" pid watcher rc=0
+  shift
+  "${@}" &
+  pid=${!}
+  (
+    sleep "${secs}"
+    kill -TERM "${pid}" 2>/dev/null || true
+    sleep 5
+    kill -KILL "${pid}" 2>/dev/null || true
+  ) >/dev/null 2>&1 &
+  watcher=${!}
+  wait "${pid}" || rc=${?}
+  kill "${watcher}" 2>/dev/null || true
+  wait "${watcher}" 2>/dev/null || true
+  return "${rc}"
+}
+
 notify() {
   local message="${1}" escaped
   NOTIFIED=1
@@ -67,7 +91,11 @@ fail() {
 
 release_lock() {
   if [ "${LOCK_HELD}" = 1 ]; then
-    rmdir "${LOCK_DIR}" 2>/dev/null || rm -rf "${LOCK_DIR}" 2>/dev/null || true
+    local owner
+    owner="$(cat "${LOCK_DIR}/owner" 2>/dev/null || true)"
+    if [ -z "${owner}" ] || [ "${owner}" = "${$}" ]; then
+      rm -rf "${LOCK_DIR}" 2>/dev/null || true
+    fi
     LOCK_HELD=0
   fi
 }
@@ -127,9 +155,19 @@ pr_body() {
   done
 }
 
-lock_age_seconds() {
-  local mtime now
-  mtime="$(stat -f %m "${LOCK_DIR}" 2>/dev/null || stat -c %Y "${LOCK_DIR}" 2>/dev/null || true)"
+scope_source_paths() {
+  local target source
+  for target in "${TARGETS[@]}"; do
+    source="$(chezmoi source-path "${target}" 2>/dev/null || true)"
+    if [ -n "${source}" ]; then
+      printf '%s\n' "${source}"
+    fi
+  done
+}
+
+path_age_seconds() {
+  local path="${1}" mtime now
+  mtime="$(stat -f %m "${path}" 2>/dev/null || stat -c %Y "${path}" 2>/dev/null || true)"
   if [ -z "${mtime}" ]; then
     printf '0'
     return 0
@@ -138,19 +176,38 @@ lock_age_seconds() {
   printf '%s' "$((now - mtime))"
 }
 
+lock_age_seconds() {
+  path_age_seconds "${LOCK_DIR}"
+}
+
+try_reclaim_lock() {
+  local reclaim="${LOCK_DIR}.reclaim" reclaimed=1
+  if [ -d "${reclaim}" ] && [ "$(path_age_seconds "${reclaim}")" -ge "${LOCK_RECLAIM_STALE_SECONDS}" ]; then
+    rm -rf "${reclaim}" 2>/dev/null || true
+  fi
+  if ! mkdir "${reclaim}" 2>/dev/null; then
+    return 1
+  fi
+  if [ -d "${LOCK_DIR}" ] && [ "$(lock_age_seconds)" -ge "${LOCK_STALE_SECONDS}" ]; then
+    rm -rf "${LOCK_DIR}" 2>/dev/null || true
+    reclaimed=0
+  fi
+  rmdir "${reclaim}" 2>/dev/null || rm -rf "${reclaim}" 2>/dev/null || true
+  return "${reclaimed}"
+}
+
 acquire_lock() {
-  local waited=0 age
+  local waited=0
   mkdir -p "$(dirname "${LOCK_DIR}")" 2>/dev/null || true
   while :; do
     if mkdir "${LOCK_DIR}" 2>/dev/null; then
+      printf '%s\n' "${$}" >"${LOCK_DIR}/owner" 2>/dev/null || true
       LOCK_HELD=1
       return 0
     fi
-    if [ -d "${LOCK_DIR}" ]; then
-      age="$(lock_age_seconds)"
-      if [ "${age}" -ge "${LOCK_STALE_SECONDS}" ]; then
-        log "removing stale lock, age ${age}s"
-        rm -rf "${LOCK_DIR}" >/dev/null 2>&1 || true
+    if [ -d "${LOCK_DIR}" ] && [ "$(lock_age_seconds)" -ge "${LOCK_STALE_SECONDS}" ]; then
+      if try_reclaim_lock; then
+        log "removed stale lock"
         continue
       fi
     fi
@@ -187,7 +244,7 @@ guard() {
 run_mise_lock() {
   command -v mise >/dev/null 2>&1 || fail "mise is not available in PATH"
   log "refreshing the global mise lock"
-  if ! (cd "${ORIGINAL_DIR}" && mise lock --global); then
+  if ! (cd "${ORIGINAL_DIR}" && with_timeout "${TIMEOUT_MISE}" mise lock --global); then
     fail "mise lock --global failed"
   fi
 }
@@ -230,7 +287,7 @@ has_commits_since() {
 
 current_autosync_pr() {
   local number
-  number="$(gh pr list --head "${AUTOSYNC_BRANCH}" --state open --json number --jq '.[0].number // empty' 2>/dev/null || true)"
+  number="$(with_timeout "${TIMEOUT_GH}" gh pr list --head "${AUTOSYNC_BRANCH}" --state open --json number --jq '.[0].number // empty' 2>/dev/null || true)"
   if [ "${number}" = "null" ]; then
     number=""
   fi
@@ -241,12 +298,12 @@ ensure_pull_request() {
   if [ -n "${PR_NUMBER}" ]; then
     return 0
   fi
-  if gh pr create \
+  if with_timeout "${TIMEOUT_GH}" gh pr create \
     --base "${BASE_BRANCH}" \
     --head "${AUTOSYNC_BRANCH}" \
     --title "$(commit_subject)" \
     --body "$(pr_body)" >/dev/null 2>&1; then
-    PR_NUMBER="$(gh pr view "${AUTOSYNC_BRANCH}" --json number --jq '.number' 2>/dev/null || true)"
+    PR_NUMBER="$(with_timeout "${TIMEOUT_GH}" gh pr view "${AUTOSYNC_BRANCH}" --json number --jq '.number' 2>/dev/null || true)"
   else
     # another run may have created it first
     PR_NUMBER="$(current_autosync_pr)"
@@ -259,7 +316,7 @@ ensure_pull_request() {
 wait_for_checks() {
   local attempt=0 names
   while [ "${attempt}" -lt "${CHECK_GRACE_ATTEMPTS}" ]; do
-    names="$(gh pr checks "${PR_NUMBER}" --json name 2>/dev/null || true)"
+    names="$(with_timeout "${TIMEOUT_GH}" gh pr checks "${PR_NUMBER}" --json name 2>/dev/null || true)"
     if [ -n "${names}" ] && [ "${names}" != "[]" ]; then
       break
     fi
@@ -272,26 +329,32 @@ wait_for_checks() {
     log "no CI checks reported for PR #${PR_NUMBER}; treating as passed"
     return 0
   fi
-  if ! gh pr checks "${PR_NUMBER}" --watch --fail-fast; then
+  if ! with_timeout "${TIMEOUT_CI_WATCH}" gh pr checks "${PR_NUMBER}" --watch --fail-fast; then
     fail "CI checks failed for PR #${PR_NUMBER}; commit preserved on ${AUTOSYNC_BRANCH}"
   fi
 }
 
 merge_pull_request() {
-  local state
-  state="$(gh pr view "${PR_NUMBER}" --json state --jq '.state' 2>/dev/null || true)"
+  local state head_sha
+  state="$(with_timeout "${TIMEOUT_GH}" gh pr view "${PR_NUMBER}" --json state --jq '.state' 2>/dev/null || true)"
   if [ "${state}" = "MERGED" ]; then
     log "PR #${PR_NUMBER} already merged"
     return 0
   fi
-  if ! gh pr merge "${PR_NUMBER}" --merge >/dev/null 2>&1; then
-    state="$(gh pr view "${PR_NUMBER}" --json state --jq '.state' 2>/dev/null || true)"
-    if [ "${state}" = "MERGED" ]; then
-      log "PR #${PR_NUMBER} merged concurrently"
-      return 0
-    fi
-    fail "gh pr merge failed for PR #${PR_NUMBER}"
+  if with_timeout "${TIMEOUT_GH}" gh pr merge "${PR_NUMBER}" --merge --match-head-commit "${PUSHED_SHA}" >/dev/null 2>&1; then
+    return 0
   fi
+  state="$(with_timeout "${TIMEOUT_GH}" gh pr view "${PR_NUMBER}" --json state --jq '.state' 2>/dev/null || true)"
+  if [ "${state}" = "MERGED" ]; then
+    log "PR #${PR_NUMBER} merged concurrently"
+    return 0
+  fi
+  head_sha="$(with_timeout "${TIMEOUT_GH}" gh pr view "${PR_NUMBER}" --json headRefOid --jq '.headRefOid' 2>/dev/null || true)"
+  if [ -n "${head_sha}" ] && [ "${head_sha}" != "${PUSHED_SHA}" ]; then
+    log "PR #${PR_NUMBER} head moved to ${head_sha}; handing off"
+    return 2
+  fi
+  fail "gh pr merge failed for PR #${PR_NUMBER}"
 }
 
 run_dry_run() {
@@ -319,8 +382,27 @@ deliver() {
     fail "chezmoi re-add failed for scope ${SCOPE}"
   fi
 
-  if [ -n "$(git status --porcelain)" ]; then
-    git add -A || fail "git add failed"
+  local stage_paths=()
+  local source_path
+  while IFS= read -r source_path; do
+    if [ -n "${source_path}" ]; then
+      stage_paths+=("${source_path}")
+    fi
+  done < <(scope_source_paths)
+
+  local scope_changes
+  if [ "${#stage_paths[@]}" -gt 0 ]; then
+    scope_changes="$(git status --porcelain -- "${stage_paths[@]}")"
+  else
+    scope_changes="$(git status --porcelain)"
+  fi
+
+  if [ -n "${scope_changes}" ]; then
+    if [ "${#stage_paths[@]}" -gt 0 ]; then
+      git add -A -- "${stage_paths[@]}" || fail "git add failed"
+    else
+      git add -A || fail "git add failed"
+    fi
     git commit --quiet -m "$(commit_subject)" || fail "git commit failed"
     log "committed: $(commit_subject)"
   fi
@@ -333,7 +415,9 @@ deliver() {
 
   command -v gh >/dev/null 2>&1 || fail "gh is not available in PATH"
 
-  git fetch origin --prune --quiet || fail "git fetch failed; commit preserved on ${AUTOSYNC_BRANCH}"
+  if ! with_timeout "${TIMEOUT_NETWORK}" git fetch origin --prune --quiet; then
+    fail "git fetch failed; commit preserved on ${AUTOSYNC_BRANCH}"
+  fi
 
   if git show-ref --verify --quiet "refs/remotes/origin/${AUTOSYNC_BRANCH}" &&
     ! git merge-base --is-ancestor "origin/${AUTOSYNC_BRANCH}" HEAD; then
@@ -351,7 +435,13 @@ deliver() {
     return 0
   fi
 
-  git push --force-with-lease origin "${AUTOSYNC_BRANCH}" >/dev/null 2>&1 || fail "git push failed; commit preserved on ${AUTOSYNC_BRANCH}"
+  if ! with_timeout "${TIMEOUT_NETWORK}" git push --force-with-lease origin "${AUTOSYNC_BRANCH}" >/dev/null 2>&1; then
+    fail "git push failed; commit preserved on ${AUTOSYNC_BRANCH}"
+  fi
+  PUSHED_SHA="$(git rev-parse HEAD)"
+  if [ -z "${PUSHED_SHA}" ]; then
+    fail "could not resolve the pushed commit"
+  fi
 
   return_to_main
   BRANCH_CREATED=0
@@ -360,7 +450,16 @@ deliver() {
   PR_NUMBER="$(current_autosync_pr)"
   ensure_pull_request
   wait_for_checks
-  merge_pull_request
+
+  local merge_rc=0
+  merge_pull_request || merge_rc=${?}
+  if [ "${merge_rc}" -eq 2 ]; then
+    log "handed off PR #${PR_NUMBER}; the run that pushed the newer head merges it"
+    return 0
+  fi
+  if [ "${merge_rc}" -ne 0 ]; then
+    return "${merge_rc}"
+  fi
 
   acquire_lock || fail "timed out waiting for another autosync run"
   return_to_main
