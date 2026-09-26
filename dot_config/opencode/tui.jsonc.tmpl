@@ -1,0 +1,20 @@
+{{- /* Keep Herdr's runtime plugin registration from the current target. */ -}}
+{{- $managed := fromJson `
+{
+	"$schema": "https://opencode.ai/tui.json",
+	"theme": "system"
+}
+` -}}
+{{- $path := joinPath .chezmoi.homeDir ".config/opencode/tui.jsonc" -}}
+{{- $config := dict -}}
+{{- $original := "" -}}
+{{- if stat $path -}}
+  {{- $original = include $path -}}
+  {{- $config = fromJsonc $original -}}
+{{- end -}}
+{{- $config = mergeOverwrite $config $managed -}}
+{{- if and $original (deepEqual (fromJsonc $original) $config) -}}
+{{ $original -}}
+{{- else -}}
+{{ toPrettyJson $config -}}
+{{- end -}}

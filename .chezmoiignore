@@ -1,3 +1,7 @@
 README.md
 backup/
 .config/yazi/flavors/*/.git/**
+.claude/hooks/herdr-agent-state.sh
+.config/opencode/herdr-tui-session.js
+.config/opencode/herdr-opencode
+.config/opencode/herdr-opencode/**
