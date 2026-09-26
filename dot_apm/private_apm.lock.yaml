@@ -1,11 +1,11 @@
 lockfile_version: '1'
-generated_at: '2026-09-26T13:51:21.303640+00:00'
-apm_version: 0.31.0
+generated_at: '2026-09-26T18:17:26.594186+00:00'
+apm_version: 0.32.0
 dependencies:
 - repo_url: herdrdev/herdr
   name: herdr
   host: github.com
-  resolved_commit: 81ddfc65b4661c52569f8b8d1ee41d5a6d68f85e
+  resolved_commit: bde45262be66fc8a95d36e6058b0afd4865ffed5
   version: unknown
   virtual_path: skills/herdr
   is_virtual: true
@@ -580,7 +580,7 @@ dependencies:
 - repo_url: mizchi/skills
   name: empirical-prompt-tuning
   host: github.com
-  resolved_commit: 0c7c1e606efa7e6cad8fadb8b22066b520d914ea
+  resolved_commit: f03585cd8a41aac91b46ba15456a56c291595de3
   version: unknown
   virtual_path: empirical-prompt-tuning
   is_virtual: true
