@@ -43,3 +43,30 @@ vim.api.nvim_create_autocmd("QuitPre", {
   end,
   desc = "Quit after closing the last normal window",
 })
+
+local autosync_group = vim.api.nvim_create_augroup("DotfilesAutosync", { clear = true })
+
+local function launch_dotfiles_autosync()
+  local script = vim.fn.expand("~/.local/bin/dotfiles-autosync.sh")
+
+  if vim.fn.executable(script) ~= 1 then
+    return
+  end
+
+  vim.fn.jobstart({ script, "nvim" }, { detach = true })
+end
+
+vim.api.nvim_create_autocmd("VimLeavePre", {
+  group = autosync_group,
+  callback = launch_dotfiles_autosync,
+  desc = "Detach the dotfiles auto-sync after Neovim exits",
+})
+
+vim.api.nvim_create_autocmd("User", {
+  group = autosync_group,
+  pattern = "LazySync",
+  callback = function()
+    vim.defer_fn(launch_dotfiles_autosync, 3000)
+  end,
+  desc = "Detach the dotfiles auto-sync three seconds after a lazy sync",
+})
