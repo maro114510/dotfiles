@@ -1,3 +1,5 @@
+{{- /* Keep application-written settings, including Herdr's SessionStart hook. */ -}}
+{{- $managed := fromJson `
 {
   "cleanupPeriodDays": 9999,
   "attribution": {
@@ -221,8 +223,19 @@
   "awaySummaryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
   "skipAutoPermissionPrompt": true,
-  "voiceEnabled": true,
-  "feedbackSurveyState": {
-    "lastShownTime": 1753989253554
-  }
+  "voiceEnabled": true
 }
+` -}}
+{{- $path := joinPath .chezmoi.homeDir ".claude/settings.json" -}}
+{{- $config := dict -}}
+{{- $original := "" -}}
+{{- if stat $path -}}
+  {{- $original = include $path -}}
+  {{- $config = fromJson $original -}}
+{{- end -}}
+{{- $config = mergeOverwrite $config $managed -}}
+{{- if and $original (deepEqual (fromJson $original) $config) -}}
+{{ $original -}}
+{{- else -}}
+{{ toPrettyJson $config -}}
+{{- end -}}

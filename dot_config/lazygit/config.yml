@@ -7,16 +7,17 @@ refresher:
 
 git:
   branchLogCmd: "git log --graph --color=always --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' {{branchName}} --"
-  allBranchesLogCmd: "git log --graph --color=always --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --all"
-  paging:
-    colorArg: always
-    pager: delta --dark --paging=never
+  allBranchesLogCmds:
+    - "git log --graph --color=always --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --all"
+  diffRenderers:
+    - colorArg: always
+      command: delta --dark --paging=never
   parseEmoji: true
 
 customCommands:
   - command: git cz
     context: files
-    subprocess: true
+    output: terminal
     key: C
   - key: 'u'
     context: 'files'

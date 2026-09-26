@@ -1,0 +1,42 @@
+{{- /* Keep Codex-generated settings from the current target; overlay only portable policy. */ -}}
+{{- $policy := fromToml `
+hide_agent_reasoning = true
+model = "gpt-5.6-terra"
+network_access = true
+ask_for_approval = "never"
+model_responding_effort = "medium"
+model_reasoning_effort = "high"
+approval_policy = "never"
+personality = "pragmatic"
+approvals_reviewer = "user"
+model_provider = "openai"
+sandbox_mode = "danger-full-access"
+
+[notice]
+hide_gpt5_1_migration_prompt = true
+"hide_gpt-5.1-codex-max_migration_prompt" = true
+hide_full_access_warning = true
+fast_default_opt_out = true
+
+[notice.model_migrations]
+"gpt-5.1-codex-max" = "gpt-5.2-codex"
+"gpt-5.2-codex" = "gpt-5.3-codex"
+"gpt-5.3-codex" = "gpt-5.4"
+` -}}
+{{- $path := joinPath .chezmoi.homeDir ".codex/config.toml" -}}
+{{- $config := dict -}}
+{{- $original := "" -}}
+{{- if stat $path -}}
+  {{- $original = include $path -}}
+  {{- $config = fromToml $original -}}
+{{- end -}}
+{{- $config = mergeOverwrite $config $policy -}}
+{{- with (get $config "projects") -}}
+  {{- $_ := unset . "/" -}}
+  {{- $_ := unset . (joinPath $.chezmoi.homeDir) -}}
+{{- end -}}
+{{- if and $original (deepEqual (fromToml $original) $config) -}}
+{{ $original -}}
+{{- else -}}
+{{ toToml $config -}}
+{{- end -}}

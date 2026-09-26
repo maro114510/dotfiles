@@ -4,7 +4,7 @@
 return {
   "mrjones2014/legendary.nvim",
 
-  version = "v2.1.0",
+  version = "*",
 
   event = "VeryLazy",
 
