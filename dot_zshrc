@@ -285,3 +285,28 @@ function penv {
         echo "APP_ENV is now $APP_ENV"
     fi
 }
+
+### dotfiles autosync
+# After a tracked apm/mise update finishes, hand the changed files to the
+# detached sync script. It owns logging; the command's exit code is preserved.
+function _dotfiles_autosync() {
+	command dotfiles-autosync.sh "$1" >/dev/null 2>&1 &!
+}
+
+function apm() {
+	command apm "$@"
+	local ret=$?
+	case "$1" in
+		update | install | lock) _dotfiles_autosync apm ;;
+	esac
+	return $ret
+}
+
+function mise() {
+	command mise "$@"
+	local ret=$?
+	case "$1" in
+		up | upgrade | use | unset) _dotfiles_autosync mise ;;
+	esac
+	return $ret
+}
