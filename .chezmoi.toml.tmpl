@@ -4,9 +4,11 @@
 {{- $gitPersonalDir   := promptStringOnce . "gitPersonalDir"   "Personal project directory (trailing slash; empty to skip)" -}}
 {{- $gitPersonalEmail := promptStringOnce . "gitPersonalEmail" "Personal git email (empty to skip)" -}}
 
+sourceDir = "~/ghq/github.com/maro114510/dotfiles"
+
 [git]
-  autoCommit = true
-  autoPush   = true
+  autoCommit = false
+  autoPush   = false
 
 [data]
   gitEmail         = {{ $gitEmail | quote }}
