@@ -22,9 +22,9 @@ terraform = "latest"
 tmux = "latest"
 typos = "latest"
 zellij = "latest"
-ghq = "1.9.4"
+ghq = "latest"
 gitleaks = "latest"
-zoxide = "0.9.9"
+zoxide = "latest"
 claude = "latest"
 
 [settings]
