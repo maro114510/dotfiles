@@ -60,35 +60,26 @@
 			"eval *": "ask",
 			"xargs *": "ask",
 
-			// git: publish / discard
-			"git commit *": "ask",
-			"git push *": "ask",
-			"git merge *": "ask",
+			// git: irreversible only
+			"git push -f*": "ask",
+			"git push * -f*": "ask",
+			"git push *--force*": "ask",
 			"git restore *": "ask",
 			"git clean *": "ask",
 			"git stash drop *": "ask",
 			"git stash clear *": "ask",
-			"git branch *-d*": "ask",
 			"git branch *-D*": "ask",
-			"git worktree remove *": "ask",
+			"git worktree remove -f*": "ask",
+			"git worktree remove * -f*": "ask",
+			"git worktree remove *--force*": "ask",
 
-			// gh: anything that writes to GitHub
-			"gh pr create *": "ask",
+			// gh: irreversible or high impact only
 			"gh pr merge *": "ask",
-			"gh pr close *": "ask",
-			"gh pr edit *": "ask",
-			"gh pr comment *": "ask",
-			"gh pr review *": "ask",
-			"gh issue create *": "ask",
-			"gh issue close *": "ask",
-			"gh issue edit *": "ask",
-			"gh issue comment *": "ask",
+			"gh issue delete *": "ask",
 			"gh release *": "ask",
-			"gh repo create *": "ask",
 			"gh repo delete *": "ask",
 			"gh workflow run *": "ask",
 			"gh run rerun *": "ask",
-			"gh run cancel *": "ask",
 
 			// installs / system state
 			"npm install *": "ask",
