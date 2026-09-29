@@ -43,11 +43,12 @@
 		// Absolute patterns match here. Also covers read/edit/grep/glob and
 		// bash cd/cat/cp/mv/rm/mkdir/touch/chmod/chown path arguments.
 		"external_directory": {
+			"~/*": "allow",
 			"~/.ssh/*": "deny",
 			"~/.aws/*": "deny",
 		},
 		// V1 accepts only a single action here (no per-URL rules).
-		"webfetch": "ask",
+		"webfetch": "allow",
 		// Best effort only: matching is on each command's source text, so
 		// wrappers, `{ ...; } > f` and `VAR=x cmd` are not reliably caught.
 		"bash": {
