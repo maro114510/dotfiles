@@ -1,11 +1,11 @@
 lockfile_version: '1'
-generated_at: '2026-09-29T11:51:17.966565+00:00'
+generated_at: '2026-09-30T01:39:37.813530+00:00'
 apm_version: 0.32.0
 dependencies:
 - repo_url: herdrdev/herdr
   name: herdr
   host: github.com
-  resolved_commit: 9dc3a1df2b563df0637264fc0dffcd607c324ac5
+  resolved_commit: 331775c3e51e8cca4d122468180738101bd9e6b0
   version: unknown
   virtual_path: skills/herdr
   is_virtual: true
@@ -18,10 +18,10 @@ dependencies:
   - .config/opencode/skills/herdr
   - .config/opencode/skills/herdr/SKILL.md
   deployed_file_hashes:
-    .agents/skills/herdr/SKILL.md: sha256:03855a7a1f9d0aa1ba6444fed2e4971adf796e91e73001d8f2472f5f9e5f659f
-    .claude/skills/herdr/SKILL.md: sha256:03855a7a1f9d0aa1ba6444fed2e4971adf796e91e73001d8f2472f5f9e5f659f
-    .config/opencode/skills/herdr/SKILL.md: sha256:03855a7a1f9d0aa1ba6444fed2e4971adf796e91e73001d8f2472f5f9e5f659f
-  content_hash: sha256:c741134cc22372c08da2f469d49aac9f9bbddd4f5e1da0558cf1132836fa3287
+    .agents/skills/herdr/SKILL.md: sha256:b16ba0d9a22adbaf259d2022cd323801f8e51d530c94cb0cd23a69069292506b
+    .claude/skills/herdr/SKILL.md: sha256:b16ba0d9a22adbaf259d2022cd323801f8e51d530c94cb0cd23a69069292506b
+    .config/opencode/skills/herdr/SKILL.md: sha256:b16ba0d9a22adbaf259d2022cd323801f8e51d530c94cb0cd23a69069292506b
+  content_hash: sha256:66715d76e5947497431ec0db32f2693b9c916ad799c3f32b99e6174b4b9c607f
 - repo_url: maro114510/private-skills
   name: private-skills
   host: github.com
@@ -948,7 +948,7 @@ deployments:
   owners:
   - herdrdev/herdr/skills/herdr
   active_owner: herdrdev/herdr/skills/herdr
-  content_hash: sha256:03855a7a1f9d0aa1ba6444fed2e4971adf796e91e73001d8f2472f5f9e5f659f
+  content_hash: sha256:b16ba0d9a22adbaf259d2022cd323801f8e51d530c94cb0cd23a69069292506b
 - kind: project-relative
   target: claude
   value: .claude/skills/implement
@@ -1965,7 +1965,7 @@ deployments:
   owners:
   - herdrdev/herdr/skills/herdr
   active_owner: herdrdev/herdr/skills/herdr
-  content_hash: sha256:03855a7a1f9d0aa1ba6444fed2e4971adf796e91e73001d8f2472f5f9e5f659f
+  content_hash: sha256:b16ba0d9a22adbaf259d2022cd323801f8e51d530c94cb0cd23a69069292506b
 - kind: project-relative
   target: codex
   value: .agents/skills/implement
@@ -2973,7 +2973,7 @@ deployments:
   owners:
   - herdrdev/herdr/skills/herdr
   active_owner: herdrdev/herdr/skills/herdr
-  content_hash: sha256:03855a7a1f9d0aa1ba6444fed2e4971adf796e91e73001d8f2472f5f9e5f659f
+  content_hash: sha256:b16ba0d9a22adbaf259d2022cd323801f8e51d530c94cb0cd23a69069292506b
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/implement
