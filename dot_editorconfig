@@ -1,0 +1,21 @@
+root = true
+
+[*.{json,jsonc,json5}]
+indent_style = space
+indent_size = 2
+
+[*.{yaml,yml}]
+indent_style = space
+indent_size = 2
+
+[*.lua]
+indent_style = space
+indent_size = 2
+
+[*.toml]
+indent_style = space
+indent_size = 2
+
+[*.{js,jsx,ts,tsx,css,html}]
+indent_style = space
+indent_size = 2
