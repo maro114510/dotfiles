@@ -26,6 +26,7 @@ ghq = "latest"
 gitleaks = "latest"
 zoxide = "latest"
 claude = "latest"
+"npm:difit" = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = ["terraform"]
