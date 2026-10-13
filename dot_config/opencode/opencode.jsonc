@@ -246,11 +246,11 @@
 			"gcloud auth print-identity-token*": "ask",
 			"gcloud auth application-default print-access-token*": "ask",
 			"gcloud spanner databases execute-sql*": "ask",
-			// dev projects only; prod and unresolved $P stay on ask
-			"gcloud spanner databases execute-sql *--project=kauche-shared-spanner-dev *": "allow",
-			"gcloud spanner databases execute-sql *--project kauche-shared-spanner-dev *": "allow",
-			"gcloud spanner databases execute-sql *--project=x-asia-kauche-dev *": "allow",
-			"gcloud spanner databases execute-sql *--project x-asia-kauche-dev *": "allow",
+			// projects ending in -dev only; unresolved $P stays on ask. "*" spans
+			// spaces, so re-ask on any "-prod" to keep prod out.
+			"gcloud spanner databases execute-sql *--project=*-dev *": "allow",
+			"gcloud spanner databases execute-sql *--project *-dev *": "allow",
+			"gcloud spanner databases execute-sql *-prod*": "ask",
 			"psql *": "ask",
 			"mysql *": "ask",
 			"mongod *": "ask",
