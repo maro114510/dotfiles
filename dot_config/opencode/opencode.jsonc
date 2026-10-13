@@ -203,6 +203,31 @@
 			"pip* install -r *.txt": "allow",
 			"python* -m pip install -r *.txt": "allow",
 			"uv pip install -r *.txt": "allow",
+			// npx: known packages only. A trailing space or "@" keeps
+			// look-alike names (difit-foo) on ask.
+			"npx difit *": "allow",
+			"npx -y difit *": "allow",
+			"npx --yes difit *": "allow",
+			"npx --no-install difit *": "allow",
+			"npx prettier *": "allow",
+			"npx -y prettier *": "allow",
+			"npx --yes prettier *": "allow",
+			"npx jest *": "allow",
+			"npx -y jest *": "allow",
+			"npx --yes jest *": "allow",
+			"npx -y @dataform/cli@*": "allow",
+			"npx --yes @dataform/cli@*": "allow",
+			"npx -y @mermaid-js/mermaid-cli@*": "allow",
+			"npx --yes @mermaid-js/mermaid-cli@*": "allow",
+			"npx -y -p @mermaid-js/mermaid-cli mmdc *": "allow",
+			"npx --yes -p @mermaid-js/mermaid-cli mmdc *": "allow",
+			"npx oxlint *": "allow",
+			"npx vitest *": "allow",
+			"npx playwright test *": "allow",
+			"npx -y markdownlint-cli2 *": "allow",
+			"npx --yes markdownlint-cli2 *": "allow",
+			"npx -y pnpm@*": "allow",
+			"npx --yes pnpm@*": "allow",
 
 			// cloud / db: destructive or tokens into the context
 			"terraform apply *": "ask",
@@ -221,6 +246,11 @@
 			"gcloud auth print-identity-token*": "ask",
 			"gcloud auth application-default print-access-token*": "ask",
 			"gcloud spanner databases execute-sql*": "ask",
+			// projects ending in -dev only; unresolved $P stays on ask. "*" spans
+			// spaces, so re-ask on any "-prod" to keep prod out.
+			"gcloud spanner databases execute-sql *--project=*-dev *": "allow",
+			"gcloud spanner databases execute-sql *--project *-dev *": "allow",
+			"gcloud spanner databases execute-sql *-prod*": "ask",
 			"psql *": "ask",
 			"mysql *": "ask",
 			"mongod *": "ask",
