@@ -4,6 +4,10 @@
 auto-update = check
 command = /bin/zsh
 shell-integration-features = ssh-terminfo,ssh-env,no-cursor
+# opencode: use ripgrep instead of fff for the @ file picker. fff re-reads the git
+# index on every file change (~45% of a core per session); env-only, no opencode
+# config key. Trade-off: files created after a session starts don't show in @.
+env = OPENCODE_DISABLE_FFF=1
 
 # ------------------------------------------------ #
 # Theme / Color Settings
