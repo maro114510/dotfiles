@@ -1,9 +1,7 @@
 {
 	"$schema": "https://opencode.ai/config.json",
 	"autoupdate": false,
-	// Snapshots (for /undo of file edits) re-scan the whole worktree with git on
-	// every step; with many sessions on a large monorepo this saturates the CPU.
-	// Edits are recovered with git (worktrees/branches) instead.
+	// Snapshots git-scan the whole worktree every step; undo edits with git instead
 	"snapshot": false,
 	"agent": {
 		"explore": {
