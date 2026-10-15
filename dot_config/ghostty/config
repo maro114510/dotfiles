@@ -4,6 +4,8 @@
 auto-update = check
 command = /bin/zsh
 shell-integration-features = ssh-terminfo,ssh-env,no-cursor
+# opencode: use ripgrep, not fff (fff re-reads the git index on every change)
+env = OPENCODE_DISABLE_FFF=1
 
 # ------------------------------------------------ #
 # Theme / Color Settings

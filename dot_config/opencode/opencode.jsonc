@@ -1,6 +1,8 @@
 {
 	"$schema": "https://opencode.ai/config.json",
 	"autoupdate": false,
+	// Snapshots git-scan the whole worktree every step; undo edits with git instead
+	"snapshot": false,
 	"agent": {
 		"explore": {
 			"model": "{env:OPENCODE_CHEAP_MODEL}",
