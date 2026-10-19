@@ -285,6 +285,37 @@ has_commits_since() {
   [ "${count}" -gt 0 ]
 }
 
+# A run whose rebase failed keeps its commit on the branch, and the next run commits on top, so the
+# branch only grows and every later rebase conflicts. Autosync commits are regenerated from the live
+# files, so when the branch holds nothing but those, rebuild the delivery on the current origin
+# instead of replaying a stale base. Any other commit means real work is there; keep the branch then.
+rebuild_on_origin() {
+  local non_autosync path paths=()
+  non_autosync="$(git log --format=%s "refs/heads/${BASE_BRANCH}..HEAD" | grep -vc '^chore(autosync): ' || true)"
+  if [ "${non_autosync:-0}" -ne 0 ]; then
+    return 1
+  fi
+  git reset --hard "origin/${BASE_BRANCH}" || return 1
+  if ! chezmoi re-add "${TARGETS[@]}" >/dev/null 2>&1; then
+    return 1
+  fi
+  while IFS= read -r path; do
+    if [ -n "${path}" ]; then
+      paths+=("${path}")
+    fi
+  done < <(scope_source_paths)
+  if [ "${#paths[@]}" -gt 0 ]; then
+    git add -A -- "${paths[@]}" || return 1
+  else
+    git add -A || return 1
+  fi
+  if ! git diff --cached --quiet; then
+    git commit --quiet -m "$(commit_subject)" || return 1
+  fi
+  log "rebuilt the autosync commit on origin/${BASE_BRANCH}; the previous base could not be rebased"
+  return 0
+}
+
 current_autosync_pr() {
   local number
   number="$(with_timeout "${TIMEOUT_GH}" gh pr list --head "${AUTOSYNC_BRANCH}" --state open --json number --jq '.[0].number // empty' 2>/dev/null || true)"
@@ -426,7 +457,9 @@ deliver() {
 
   if ! git rebase --onto "origin/${BASE_BRANCH}" "refs/heads/${BASE_BRANCH}" >/dev/null 2>&1; then
     git rebase --abort >/dev/null 2>&1 || true
-    fail "rebase onto origin/${BASE_BRANCH} failed; commit preserved on ${AUTOSYNC_BRANCH}"
+    if ! rebuild_on_origin; then
+      fail "rebase onto origin/${BASE_BRANCH} failed; commit preserved on ${AUTOSYNC_BRANCH}"
+    fi
   fi
 
   if ! has_commits_since "origin/${BASE_BRANCH}"; then
