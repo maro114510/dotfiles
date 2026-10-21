@@ -285,6 +285,59 @@ has_commits_since() {
   [ "${count}" -gt 0 ]
 }
 
+# A run whose rebase failed keeps its commit on the branch, and the next run commits on top, so the
+# branch only grows and every later rebase conflicts. Autosync commits are regenerated from the live
+# files, so when the branch provably holds nothing but those, rebuild the delivery on the current
+# origin instead of replaying a stale base. Anything unproven keeps the branch untouched.
+rebuild_on_origin() {
+  local total autosync previous path paths=()
+  # A shallow history cannot prove what an older commit was, so its walk may stop before a real one.
+  if [[ "$(git rev-parse --is-shallow-repository 2>/dev/null)" != "false" ]]; then
+    return 1
+  fi
+  git rev-parse --verify --quiet "refs/heads/${BASE_BRANCH}" >/dev/null || return 1
+  total="$(git rev-list --count "refs/heads/${BASE_BRANCH}..HEAD")" || return 1
+  autosync="$(git rev-list --count --grep='^chore(autosync): ' "refs/heads/${BASE_BRANCH}..HEAD")" || return 1
+  if [ "${total}" -eq 0 ] || [ "${total}" -ne "${autosync}" ]; then
+    return 1
+  fi
+  # The branch tip moves before the rebuild succeeds, so keep it and put it back on any failure; the
+  # caller still reports that the commit was preserved.
+  previous="$(git rev-parse HEAD)" || return 1
+  if ! git reset --hard "origin/${BASE_BRANCH}"; then
+    git reset --hard "${previous}" >/dev/null 2>&1 || true
+    return 1
+  fi
+  if ! chezmoi re-add "${TARGETS[@]}" >/dev/null 2>&1; then
+    git reset --hard "${previous}" >/dev/null 2>&1 || true
+    return 1
+  fi
+  while IFS= read -r path; do
+    if [ -n "${path}" ]; then
+      paths+=("${path}")
+    fi
+  done < <(scope_source_paths)
+  if [ "${#paths[@]}" -gt 0 ]; then
+    git add -A -- "${paths[@]}" || {
+      git reset --hard "${previous}" >/dev/null 2>&1 || true
+      return 1
+    }
+  else
+    git add -A || {
+      git reset --hard "${previous}" >/dev/null 2>&1 || true
+      return 1
+    }
+  fi
+  if ! git diff --cached --quiet; then
+    git commit --quiet -m "$(commit_subject)" || {
+      git reset --hard "${previous}" >/dev/null 2>&1 || true
+      return 1
+    }
+  fi
+  log "rebuilt the autosync commit on origin/${BASE_BRANCH}; the previous base could not be rebased"
+  return 0
+}
+
 current_autosync_pr() {
   local number
   number="$(with_timeout "${TIMEOUT_GH}" gh pr list --head "${AUTOSYNC_BRANCH}" --state open --json number --jq '.[0].number // empty' 2>/dev/null || true)"
@@ -426,7 +479,9 @@ deliver() {
 
   if ! git rebase --onto "origin/${BASE_BRANCH}" "refs/heads/${BASE_BRANCH}" >/dev/null 2>&1; then
     git rebase --abort >/dev/null 2>&1 || true
-    fail "rebase onto origin/${BASE_BRANCH} failed; commit preserved on ${AUTOSYNC_BRANCH}"
+    if ! rebuild_on_origin; then
+      fail "rebase onto origin/${BASE_BRANCH} failed; commit preserved on ${AUTOSYNC_BRANCH}"
+    fi
   fi
 
   if ! has_commits_since "origin/${BASE_BRANCH}"; then
