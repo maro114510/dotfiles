@@ -328,6 +328,27 @@ rebuild_on_origin() {
       return 1
     }
   fi
+  # re-add copies the live file over the source, so syncing a file that origin changed since our base
+  # writes the older local target back and reverts that change. Refuse and let the live files catch up.
+  # Rename detection is off on both diffs: a rename reports only its destination, so an upstream
+  # rename would hide the old path that re-add recreates from the stale live file.
+  local synced upstream overlap
+  synced="$(git diff --cached --name-only --no-renames)" || {
+    git reset --hard "${previous}" >/dev/null 2>&1 || true
+    return 1
+  }
+  upstream="$(git diff --name-only --no-renames "refs/heads/${BASE_BRANCH}" "origin/${BASE_BRANCH}")" || {
+    git reset --hard "${previous}" >/dev/null 2>&1 || true
+    return 1
+  }
+  if [ -n "${synced}" ] && [ -n "${upstream}" ]; then
+    overlap="$(printf '%s\n' "${synced}" | grep -Fxf <(printf '%s\n' "${upstream}") || true)"
+    if [ -n "${overlap}" ]; then
+      git reset --hard "${previous}" >/dev/null 2>&1 || true
+      log "refusing to sync $(printf '%s' "${overlap}" | tr '\n' ' ') because origin/${BASE_BRANCH} changed it since ${BASE_BRANCH}; pull and apply before syncing"
+      return 1
+    fi
+  fi
   if ! git diff --cached --quiet; then
     git commit --quiet -m "$(commit_subject)" || {
       git reset --hard "${previous}" >/dev/null 2>&1 || true
