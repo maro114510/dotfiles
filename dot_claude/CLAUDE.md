@@ -40,6 +40,10 @@ Touch only what the task requires.
 - If you notice unrelated issues, mention them — don't silently fix them.
 - Remove only the imports/variables/functions that YOUR changes made unused. Leave pre-existing dead code alone.
 
+## Docs vs. Code
+
+When a repository's documentation and its existing code disagree, follow the conventions used in the existing code, and in your final reply point out each inconsistency you found between the documentation and the code.
+
 ## Define Done Before Starting
 
 For any non-trivial task, make the exit condition explicit before writing code.

@@ -1,3 +1,5 @@
 ユーザーが気づいていない可能性のある致命的になりうる欠陥や論理の漏れがある場合は容赦なく質問してください。 時間をいくらかけてもいいので品質を最優先して進めてください。
 
 スキルは明示的なオプトインとします。ユーザーが `$skill-name`、スキルへのリンク、またはスキル名を明示した場合に限り、そのスキルを使用してください。依頼内容がスキルの説明に一致するという理由だけで、スキルを自動適用しないでください。
+
+When a repository's documentation and its existing code disagree, follow the conventions used in the existing code, and in your final reply point out each inconsistency you found between the documentation and the code.
