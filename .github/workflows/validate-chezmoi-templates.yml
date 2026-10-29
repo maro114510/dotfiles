@@ -1,4 +1,5 @@
-# Validates that chezmoi templates in this repository render correctly.
+# Validates that chezmoi templates in this repository render correctly, and that
+# `chezmoi apply` re-runs brew bundle only when the Brewfile changes.
 #
 # What this workflow guarantees:
 #   - .chezmoi.toml.tmpl produces a config that chezmoi itself can parse,
@@ -7,6 +8,8 @@
 #     generates includeIf blocks only when directory paths are non-empty
 #   - run_once_after_setup-git-local-configs.sh.tmpl renders to valid bash
 #     and creates config.work / config.personal only when both dir and email are set
+#   - run_onchange_after_brew-bundle.sh.tmpl re-runs brew bundle when the
+#     Brewfile changes and stays quiet when it does not
 #
 # Test fixtures live in .github/testdata/ and are committed to the repository.
 # The env vars below are the single source of truth for all test values;
@@ -122,3 +125,12 @@ jobs:
             exit 1
           fi
           echo "run_once script (without dirs): OK"
+
+      # ── run_onchange_after_brew-bundle.sh.tmpl ──────────────────────────
+      # Run a real `chezmoi apply` in a throwaway source and destination with
+      # a fake brew, and verify brew bundle runs only when the Brewfile changes.
+
+      - name: Re-run brew bundle only when the Brewfile changes
+        run: |
+          CHEZMOI="${HOME}/.local/bin/chezmoi" \
+            bash .github/testdata/brew-bundle-run-onchange.sh

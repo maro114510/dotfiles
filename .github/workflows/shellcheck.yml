@@ -42,11 +42,13 @@ jobs:
             -not -path "./dot_claude/*" \
             -print0 | xargs -0 shellcheck --severity=warning
 
+      # --source . lets templates call include, which resolves paths against the
+      # source directory (e.g. the Brewfile hash in the brew-bundle script).
       - name: ShellCheck rendered .sh.tmpl files
         run: |
           while IFS= read -r tmpl; do
             echo "ShellCheck: $tmpl"
-            "${HOME}/.local/bin/chezmoi" execute-template \
+            "${HOME}/.local/bin/chezmoi" execute-template --source . \
               --config .github/testdata/chezmoi-full.toml -f "$tmpl" | \
               shellcheck --severity=warning --shell=bash -
           done < <(find . -name "*.sh.tmpl" -not -path "./.git/*")
