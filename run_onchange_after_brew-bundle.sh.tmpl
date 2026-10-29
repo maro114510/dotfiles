@@ -1,10 +1,13 @@
 #!/bin/bash
-# Invoked automatically by `chezmoi apply` via the run_once_after_ filename prefix.
-# Runs once per unique script content; re-runs only when this file is modified.
+# Invoked automatically by `chezmoi apply` via the run_onchange_after_ filename prefix.
+# Re-runs only when this script's rendered content changes. The `.Brewfile` hash
+# below changes whenever dot_Brewfile changes, so a Brewfile edit re-runs brew bundle.
 
 set -euo pipefail
 
 BREWFILE="${HOME}/.Brewfile"
+
+# .Brewfile hash: {{ include "dot_Brewfile" | sha256sum }}
 
 if ! command -v brew &>/dev/null; then
   echo "Homebrew not found — skipping brew bundle." >&2
