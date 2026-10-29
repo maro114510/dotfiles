@@ -11,6 +11,7 @@ lazygit = "latest"
 lsd = "latest"
 "aqua:neovim/neovim" = "latest"
 node = "latest"
+pnpm = "12"
 peco = "latest"
 pipx = "latest"
 python = "latest"
@@ -26,9 +27,10 @@ ghq = "latest"
 gitleaks = "latest"
 zoxide = "latest"
 claude = "latest"
-"npm:difit" = "latest"
+"npm:difit" = { version = "latest" }
 
 [settings]
+npm.package_manager = "pnpm"
 idiomatic_version_file_enable_tools = ["terraform"]
 trusted_config_paths = ["~/ghq"]
 
