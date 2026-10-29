@@ -17,12 +17,15 @@ This is a **review-first** migration. Applying chezmoi does NOT uninstall anythi
 ### 1. Capture a local inventory (read only)
 
 ```bash
-node-global-audit.sh | tee "$HOME/npm-global-inventory.txt"
 type -a npm node pnpm mise
+npm prefix -g
+npm ls -g --depth=0
 mise ls --global
 ```
 
-This reports global npm packages in PATH and common mise/nvm/asdf/nodenv/volta installations, grouped by npm prefix. This is *not* a complete filesystem scan. If you use alternative Node managers or custom prefixes, inspect those explicitly. Keep the inventory **out of Git**: paths and package names may be sensitive.
+These built-in commands inspect the **currently selected** npm installation; no audit helper is installed or maintained. If you use multiple Node installations (mise/nvm/asdf/volta/Homebrew), select each version and repeat `npm prefix -g` and `npm ls -g --depth=0`, or use the **absolute path** of that version's `npm` executable.
+
+For additional prefixes, inspect them explicitly; this is not a complete filesystem scan. Save any ad hoc inventory **outside Git**: paths and package names may be sensitive.
 
 **Important:** The reported `npm:` entries are *candidates*, not a ready-to-paste manifest. Libraries without CLI binaries do not belong in mise; move them into project dependencies if needed. Neither npm nor its bundled corepack belongs in this list. Existing npm-installed global packages remain untouched.
 
@@ -103,7 +106,7 @@ chezmoi diff
 chezmoi apply
 mise install
 pnpm-policy.sh --check
-node-global-audit.sh
+npm ls -g --depth=0
 mise ls --global
 git -C "$(chezmoi source-path)" status --short
 ```
