@@ -33,6 +33,7 @@ claude = "latest"
 npm.package_manager = "pnpm"
 idiomatic_version_file_enable_tools = ["terraform"]
 trusted_config_paths = ["~/ghq"]
+lockfile_platforms = ["macos-arm64"]
 
 [settings.aqua]
 baked_registry = true
