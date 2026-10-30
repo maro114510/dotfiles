@@ -48,8 +48,11 @@ jobs:
       - name: Install chezmoi
         run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "${HOME}/.local/bin"
 
+      - name: Install bats
+        run: sudo apt-get update && sudo apt-get install --yes bats
+
       - name: Validate instruction templates
-        run: bash .github/testdata/validate-instruction-templates.sh
+        run: CHEZMOI="${HOME}/.local/bin/chezmoi" bats .github/testdata/validate-instruction-templates.bats
 
       # ── .chezmoi.toml.tmpl ───────────────────────────────────────────────
       # Render with simulated prompts, then feed the output back to chezmoi as
