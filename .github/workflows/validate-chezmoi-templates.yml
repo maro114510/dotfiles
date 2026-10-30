@@ -21,11 +21,13 @@ on:
     branches: [main]
     paths:
       - '**/*.tmpl'
+      - '.chezmoitemplates/**'
       - '.github/testdata/**'
       - '.github/workflows/validate-chezmoi-templates.yml'
   pull_request:
     paths:
       - '**/*.tmpl'
+      - '.chezmoitemplates/**'
       - '.github/testdata/**'
       - '.github/workflows/validate-chezmoi-templates.yml'
 
@@ -45,6 +47,12 @@ jobs:
 
       - name: Install chezmoi
         run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "${HOME}/.local/bin"
+
+      - name: Install bats
+        run: sudo apt-get update && sudo apt-get install --yes bats
+
+      - name: Validate instruction templates
+        run: CHEZMOI="${HOME}/.local/bin/chezmoi" bats .github/testdata/validate-instruction-templates.bats
 
       # ── .chezmoi.toml.tmpl ───────────────────────────────────────────────
       # Render with simulated prompts, then feed the output back to chezmoi as
