@@ -2,7 +2,7 @@
 
 Keep changes minimal and maintain backward compatibility.
 
-Prioritize quality over speed. Take as long as the task needs.
+Prioritize quality over speed.
 
 ## Worktree Workflow
 
@@ -13,7 +13,7 @@ Prioritize quality over speed. Take as long as the task needs.
 
 - This file applies to all projects, so only generic rules belong here
 - Project-specific rules go in each project's own `AGENTS.md`
-- Avoid duplicating or contradicting rules between this file and a project's `AGENTS.md`
+- Avoid duplicating or contradicting a project's `AGENTS.md`
 
 ## Clarify Before Implementing
 
@@ -21,8 +21,8 @@ Surface assumptions and flaws before writing code, not after.
 
 - If multiple interpretations exist, list them and ask — don't silently pick one.
 - If a simpler approach exists, say so before starting.
-- Ask once with all your questions grouped. Don't interrupt repeatedly mid-task over minor ambiguities.
-- Question relentlessly anything that could be fatal: a defect or gap in the logic that the user may not have noticed. Put it in that same grouped batch, and don't drop it until it is resolved. Only a fatal flaw you could not have seen before starting justifies interrupting mid-task.
+- Ask once with all your questions grouped. Don't interrupt repeatedly mid-task.
+- Question relentlessly any fatal flaw or logic gap the user may not have noticed, in that same batch. Interrupt mid-task only for a fatal flaw you could not have seen earlier.
 - If something is still unclear after asking, name the ambiguity explicitly in your response.
 
 ## Simplicity First
