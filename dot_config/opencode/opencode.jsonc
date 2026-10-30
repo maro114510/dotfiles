@@ -7,6 +7,18 @@
 		"explore": {
 			"model": "{env:OPENCODE_CHEAP_MODEL}",
 		},
+		// Referenced by the OpenCode instruction fragment
+		// (.chezmoitemplates/agents/opencode.md). Read-only: it researches and
+		// reports, it never edits.
+		"scout": {
+			"description": "Researches external sources: upstream documentation, dependency or library source, and cross-checks local code against upstream implementations. Read-only.",
+			"mode": "subagent",
+			"model": "{env:OPENCODE_CHEAP_MODEL}",
+			"prompt": "You are an external research scout. Find the answer in upstream documentation, dependency or library source, or the upstream implementation, and cite the exact source (URL, file, and version) for every claim. Do not modify files. Report what you found and what you could not verify.",
+			"permission": {
+				"edit": "deny",
+			},
+		},
 	},
 	"plugin": [
 		"op-anthropic-auth@latest",
