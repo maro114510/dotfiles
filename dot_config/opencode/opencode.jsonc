@@ -7,16 +7,6 @@
 		"explore": {
 			"model": "{env:OPENCODE_CHEAP_MODEL}",
 		},
-		// Named in .chezmoitemplates/agents/opencode.md. Edit tools denied, bash follows the global rules.
-		"scout": {
-			"description": "Researches upstream docs and library source.",
-			"mode": "subagent",
-			"model": "{env:OPENCODE_CHEAP_MODEL}",
-			"prompt": "Research external sources and cite the exact source for every claim. Do not modify files.",
-			"permission": {
-				"edit": "deny",
-			},
-		},
 	},
 	"plugin": [
 		"op-anthropic-auth@latest",
