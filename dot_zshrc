@@ -97,6 +97,7 @@ bindkey '^W' backward-kill-word-no-slash
 
 # extended_glob is required for the (Nm-1) glob qualifier below
 setopt extended_glob
+setopt interactivecomments
 
 autoload -Uz compinit
 _comp_path="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}"
@@ -284,6 +285,28 @@ function penv {
         export APP_ENV
         echo "APP_ENV is now $APP_ENV"
     fi
+}
+
+
+# buku bookmarks fuzzy finder
+fb() {
+  local selected url
+
+  selected=$(
+    buku -p -f 4 |
+      fzf \
+        --height=60% \
+        --layout=reverse \
+        --border \
+        --delimiter=$'\t' \
+        --with-nth=3,4,2 \
+        --prompt='Bookmarks > ' \
+        --preview='buku -p {1}' \
+        --preview-window='right:50%:wrap'
+  ) || return
+
+  url=$(printf '%s\n' "$selected" | cut -f2)
+  [[ -n "$url" ]] && open "$url"
 }
 
 ### dotfiles autosync
