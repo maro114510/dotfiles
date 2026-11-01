@@ -10,6 +10,8 @@
 #     and creates config.work / config.personal only when both dir and email are set
 #   - run_onchange_after_brew-bundle.sh.tmpl re-runs brew bundle when the
 #     Brewfile changes and stays quiet when it does not
+#   - the rendered git config activates dot_git_hooks/pre-push, which rejects
+#     pushes to main and master on any remote
 #
 # Test fixtures live in .github/testdata/ and are committed to the repository.
 # The env vars below are the single source of truth for all test values;
@@ -22,12 +24,14 @@ on:
     paths:
       - '**/*.tmpl'
       - '.chezmoitemplates/**'
+      - 'dot_git_hooks/**'
       - '.github/testdata/**'
       - '.github/workflows/validate-chezmoi-templates.yml'
   pull_request:
     paths:
       - '**/*.tmpl'
       - '.chezmoitemplates/**'
+      - 'dot_git_hooks/**'
       - '.github/testdata/**'
       - '.github/workflows/validate-chezmoi-templates.yml'
 
@@ -50,6 +54,9 @@ jobs:
 
       - name: Install bats
         run: sudo apt-get update && sudo apt-get install --yes bats
+
+      - name: Verify the managed pre-push hook
+        run: CHEZMOI="${HOME}/.local/bin/chezmoi" bats .github/testdata/pre-push-hook.bats
 
       - name: Validate instruction templates
         run: CHEZMOI="${HOME}/.local/bin/chezmoi" bats .github/testdata/validate-instruction-templates.bats
