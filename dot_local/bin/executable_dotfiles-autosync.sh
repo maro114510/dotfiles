@@ -1,8 +1,8 @@
 #!/bin/bash
 # dotfiles-autosync.sh: one scope, apm | mise | nvim
-# Do:   chezmoi re-add scope targets, commit only on change
+# Do:   chezmoi re-add scope targets into a temporary worktree of origin/main, commit only on change
 # Ship: push chore/autosync, then open or update its PR; a person merges it
-# Need: source checkout clean and on main
+# Need: nothing from the source checkout; it may be on any branch and dirty
 
 set -euo pipefail
 
@@ -13,6 +13,7 @@ SCOPE=""
 DRY_RUN=0
 
 SOURCE_DIR=""
+WORKTREE_DIR=""
 ORIGINAL_DIR="${PWD}"
 LOG_DIR="${XDG_STATE_HOME:-${HOME}/.local/state}"
 LOG_FILE="${LOG_DIR}/${PROG}.log"
@@ -26,8 +27,6 @@ TIMEOUT_GH=60
 TIMEOUT_MISE=600
 
 LOCK_HELD=0
-SWITCHED=0
-BRANCH_CREATED=0
 NOTIFIED=0
 PR_NUMBER=""
 
@@ -99,16 +98,23 @@ release_lock() {
   fi
 }
 
+# The temporary worktree lives outside the source checkout, so every exit path,
+# success or failure, has to take it away or it accumulates registrations that
+# block the next run.
+remove_worktree() {
+  [ -n "${WORKTREE_DIR}" ] || return 0
+  if [ -n "${SOURCE_DIR}" ]; then
+    git -C "${SOURCE_DIR}" worktree remove --force "${WORKTREE_DIR}" >/dev/null 2>&1 || true
+    git -C "${SOURCE_DIR}" worktree prune >/dev/null 2>&1 || true
+  fi
+  rm -rf "${WORKTREE_DIR}" 2>/dev/null || true
+  WORKTREE_DIR=""
+}
+
 restore() {
   local code=${?}
   trap - EXIT
-  if [ "${SWITCHED}" = 1 ] && [ -n "${SOURCE_DIR}" ]; then
-    local current
-    current="$(git -C "${SOURCE_DIR}" symbolic-ref --quiet --short HEAD 2>/dev/null || true)"
-    if [ "${current}" != "${BASE_BRANCH}" ]; then
-      git -C "${SOURCE_DIR}" switch "${BASE_BRANCH}" --quiet >/dev/null 2>&1 || true
-    fi
-  fi
+  remove_worktree
   release_lock
   if [ "${code}" -ne 0 ] && [ "${NOTIFIED}" = 0 ]; then
     notify "unexpected failure, exit ${code}"
@@ -151,16 +157,6 @@ pr_body() {
   printf 'scope: %s\n\ntargets:\n' "${SCOPE}"
   for target in "${TARGETS[@]}"; do
     printf -- '- %s\n' "${target}"
-  done
-}
-
-scope_source_paths() {
-  local target source
-  for target in "${TARGETS[@]}"; do
-    source="$(chezmoi source-path "${target}" 2>/dev/null || true)"
-    if [ -n "${source}" ]; then
-      printf '%s\n' "${source}"
-    fi
   done
 }
 
@@ -229,17 +225,6 @@ resolve_source() {
   SOURCE_DIR="$(git -C "${resolved}" rev-parse --show-toplevel 2>/dev/null)" || fail "chezmoi source is not a git worktree: ${resolved}"
 }
 
-guard() {
-  local branch
-  branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || true)"
-  if [ "${branch}" != "${BASE_BRANCH}" ]; then
-    fail "source checkout is on '${branch:-detached HEAD}', expected '${BASE_BRANCH}'"
-  fi
-  if [ -n "$(git status --porcelain)" ]; then
-    fail "source checkout has uncommitted changes; refusing to auto-sync"
-  fi
-}
-
 run_mise_lock() {
   command -v mise >/dev/null 2>&1 || fail "mise is not available in PATH"
   log "refreshing the global mise lock"
@@ -248,114 +233,24 @@ run_mise_lock() {
   fi
 }
 
-switch_to_autosync() {
-  if git show-ref --verify --quiet "refs/heads/${AUTOSYNC_BRANCH}"; then
-    git switch "${AUTOSYNC_BRANCH}" --quiet
-  elif git show-ref --verify --quiet "refs/remotes/origin/${AUTOSYNC_BRANCH}"; then
-    git switch -c "${AUTOSYNC_BRANCH}" --track "origin/${AUTOSYNC_BRANCH}" --quiet
-    BRANCH_CREATED=1
-  else
-    git switch -c "${AUTOSYNC_BRANCH}" "${BASE_BRANCH}" --quiet
-    BRANCH_CREATED=1
+# A fresh worktree of origin/main means the sync never checks out, rebases or
+# resets anything the person is working in, and the commit is rebuilt from the
+# live files on every run instead of accumulating on a long-lived branch.
+prepare_worktree() {
+  local base_ref="origin/${BASE_BRANCH}"
+  command -v gh >/dev/null 2>&1 || fail "gh is not available in PATH"
+  if ! with_timeout "${TIMEOUT_NETWORK}" git -C "${SOURCE_DIR}" fetch origin --prune --quiet; then
+    fail "git fetch from origin failed"
   fi
-  SWITCHED=1
-}
-
-return_to_main() {
-  local current
-  current="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || true)"
-  if [ "${current}" != "${BASE_BRANCH}" ]; then
-    git switch "${BASE_BRANCH}" --quiet || fail "failed to switch back to ${BASE_BRANCH}"
+  if ! git -C "${SOURCE_DIR}" rev-parse --verify --quiet "refs/remotes/${base_ref}" >/dev/null; then
+    fail "cannot find ${base_ref} in the chezmoi source"
   fi
-  SWITCHED=0
-}
-
-leave_autosync_branch() {
-  return_to_main
-  if [ "${BRANCH_CREATED}" = 1 ]; then
-    git branch --delete --force "${AUTOSYNC_BRANCH}" >/dev/null 2>&1 || true
-    BRANCH_CREATED=0
+  # Registrations left by a killed run would otherwise pile up under .git/worktrees.
+  git -C "${SOURCE_DIR}" worktree prune >/dev/null 2>&1 || true
+  WORKTREE_DIR="$(mktemp -d "${TMPDIR:-/tmp}/${PROG}.XXXXXX")" || fail "cannot create a temporary directory"
+  if ! git -C "${SOURCE_DIR}" worktree add --detach --quiet "${WORKTREE_DIR}" "${base_ref}"; then
+    fail "cannot create a temporary worktree for ${base_ref}"
   fi
-}
-
-has_commits_since() {
-  local count
-  count="$(git rev-list --count "${1}..HEAD" 2>/dev/null)" || fail "cannot compare ${1} with HEAD"
-  [ "${count}" -gt 0 ]
-}
-
-# A run whose rebase failed keeps its commit on the branch, and the next run commits on top, so the
-# branch only grows and every later rebase conflicts. Autosync commits are regenerated from the live
-# files, so when the branch provably holds nothing but those, rebuild the delivery on the current
-# origin instead of replaying a stale base. Anything unproven keeps the branch untouched.
-rebuild_on_origin() {
-  local total autosync previous path paths=()
-  # A shallow history cannot prove what an older commit was, so its walk may stop before a real one.
-  if [[ "$(git rev-parse --is-shallow-repository 2>/dev/null)" != "false" ]]; then
-    return 1
-  fi
-  git rev-parse --verify --quiet "refs/heads/${BASE_BRANCH}" >/dev/null || return 1
-  total="$(git rev-list --count "refs/heads/${BASE_BRANCH}..HEAD")" || return 1
-  autosync="$(git rev-list --count --grep='^chore(autosync): ' "refs/heads/${BASE_BRANCH}..HEAD")" || return 1
-  if [ "${total}" -eq 0 ] || [ "${total}" -ne "${autosync}" ]; then
-    return 1
-  fi
-  # The branch tip moves before the rebuild succeeds, so keep it and put it back on any failure; the
-  # caller still reports that the commit was preserved.
-  previous="$(git rev-parse HEAD)" || return 1
-  if ! git reset --hard "origin/${BASE_BRANCH}"; then
-    git reset --hard "${previous}" >/dev/null 2>&1 || true
-    return 1
-  fi
-  if ! chezmoi re-add "${TARGETS[@]}" >/dev/null 2>&1; then
-    git reset --hard "${previous}" >/dev/null 2>&1 || true
-    return 1
-  fi
-  while IFS= read -r path; do
-    if [ -n "${path}" ]; then
-      paths+=("${path}")
-    fi
-  done < <(scope_source_paths)
-  if [ "${#paths[@]}" -gt 0 ]; then
-    git add -A -- "${paths[@]}" || {
-      git reset --hard "${previous}" >/dev/null 2>&1 || true
-      return 1
-    }
-  else
-    git add -A || {
-      git reset --hard "${previous}" >/dev/null 2>&1 || true
-      return 1
-    }
-  fi
-  # re-add copies the live file over the source, so syncing a file that origin changed since our base
-  # writes the older local target back and reverts that change. Refuse and let the live files catch up.
-  # Rename detection is off on both diffs: a rename reports only its destination, so an upstream
-  # rename would hide the old path that re-add recreates from the stale live file.
-  local synced upstream overlap
-  synced="$(git diff --cached --name-only --no-renames)" || {
-    git reset --hard "${previous}" >/dev/null 2>&1 || true
-    return 1
-  }
-  upstream="$(git diff --name-only --no-renames "refs/heads/${BASE_BRANCH}" "origin/${BASE_BRANCH}")" || {
-    git reset --hard "${previous}" >/dev/null 2>&1 || true
-    return 1
-  }
-  if [ -n "${synced}" ] && [ -n "${upstream}" ]; then
-    overlap="$(printf '%s\n' "${synced}" | grep -Fxf <(printf '%s\n' "${upstream}") || true)"
-    if [ -n "${overlap}" ]; then
-      git reset --hard "${previous}" >/dev/null 2>&1 || true
-      log "refusing to sync $(printf '%s' "${overlap}" | tr '\n' ' ') because origin/${BASE_BRANCH} changed it since ${BASE_BRANCH}; pull and apply before syncing"
-      return 1
-    fi
-  fi
-  if ! git diff --cached --quiet; then
-    git commit --quiet -m "$(commit_subject)" || {
-      git reset --hard "${previous}" >/dev/null 2>&1 || true
-      return 1
-    }
-  fi
-  log "rebuilt the autosync commit on origin/${BASE_BRANCH}; the previous base could not be rebased"
-  return 0
 }
 
 current_autosync_pr() {
@@ -390,7 +285,7 @@ run_dry_run() {
   local target plan
   log "dry-run: scope=${SCOPE}"
   log "dry-run: source=${SOURCE_DIR}"
-  log "dry-run: branch=${AUTOSYNC_BRANCH}"
+  log "dry-run: a temporary worktree of origin/${BASE_BRANCH}, delivered on ${AUTOSYNC_BRANCH}"
   for target in "${TARGETS[@]}"; do
     log "dry-run: target=${target}"
   done
@@ -406,18 +301,40 @@ run_dry_run() {
   fi
 }
 
+# Serves as a last check before force-pushing: anything on the sync branch that
+# autosync did not create is a person's work, and overwriting it loses it.
+autosync_branch_tip() {
+  local total autosync
+  if ! git rev-parse --verify --quiet "refs/remotes/origin/${AUTOSYNC_BRANCH}" >/dev/null; then
+    return 0
+  fi
+  total="$(git rev-list --count "origin/${BASE_BRANCH}..origin/${AUTOSYNC_BRANCH}")" ||
+    fail "cannot compare ${AUTOSYNC_BRANCH} with ${BASE_BRANCH}"
+  autosync="$(git rev-list --count --grep='^chore(autosync): ' "origin/${BASE_BRANCH}..origin/${AUTOSYNC_BRANCH}")" ||
+    fail "cannot inspect ${AUTOSYNC_BRANCH}"
+  if [ "${total}" -ne "${autosync}" ]; then
+    fail "origin/${AUTOSYNC_BRANCH} has commits autosync did not create; refusing to overwrite it"
+  fi
+  git rev-parse "refs/remotes/origin/${AUTOSYNC_BRANCH}"
+}
+
 deliver() {
-  if ! chezmoi re-add "${TARGETS[@]}" >/dev/null 2>&1; then
+  cd "${WORKTREE_DIR}" || fail "cannot enter the temporary worktree"
+
+  # --source keeps re-add writing into the temporary worktree, never into the
+  # checkout the person is working in.
+  if ! chezmoi --source "${WORKTREE_DIR}" re-add "${TARGETS[@]}" >/dev/null 2>&1; then
     fail "chezmoi re-add failed for scope ${SCOPE}"
   fi
 
   local stage_paths=()
-  local source_path
-  while IFS= read -r source_path; do
+  local target source_path
+  for target in "${TARGETS[@]}"; do
+    source_path="$(chezmoi --source "${WORKTREE_DIR}" source-path "${target}" 2>/dev/null || true)"
     if [ -n "${source_path}" ]; then
       stage_paths+=("${source_path}")
     fi
-  done < <(scope_source_paths)
+  done
 
   local scope_changes
   if [ "${#stage_paths[@]}" -gt 0 ]; then
@@ -432,47 +349,32 @@ deliver() {
     else
       git add -A || fail "git add failed"
     fi
-    git commit --quiet -m "$(commit_subject)" || fail "git commit failed"
-    log "committed: $(commit_subject)"
-  fi
-
-  if ! has_commits_since "refs/heads/${BASE_BRANCH}"; then
-    log "no changes for scope ${SCOPE}; nothing to deliver"
-    leave_autosync_branch
-    return 0
-  fi
-
-  command -v gh >/dev/null 2>&1 || fail "gh is not available in PATH"
-
-  if ! with_timeout "${TIMEOUT_NETWORK}" git fetch origin --prune --quiet; then
-    fail "git fetch failed; commit preserved on ${AUTOSYNC_BRANCH}"
-  fi
-
-  if git show-ref --verify --quiet "refs/remotes/origin/${AUTOSYNC_BRANCH}" &&
-    ! git merge-base --is-ancestor "origin/${AUTOSYNC_BRANCH}" HEAD; then
-    fail "origin/${AUTOSYNC_BRANCH} has commits not present locally; refusing to overwrite it"
-  fi
-
-  if ! git rebase --onto "origin/${BASE_BRANCH}" "refs/heads/${BASE_BRANCH}" >/dev/null 2>&1; then
-    git rebase --abort >/dev/null 2>&1 || true
-    if ! rebuild_on_origin; then
-      fail "rebase onto origin/${BASE_BRANCH} failed; commit preserved on ${AUTOSYNC_BRANCH}"
+    if ! git diff --cached --quiet; then
+      git commit --quiet -m "$(commit_subject)" || fail "git commit failed"
+      log "committed: $(commit_subject)"
     fi
   fi
 
-  if ! has_commits_since "origin/${BASE_BRANCH}"; then
-    log "commit already present in origin/${BASE_BRANCH}; nothing to deliver"
-    leave_autosync_branch
+  if [ "$(git rev-list --count "origin/${BASE_BRANCH}..HEAD")" -eq 0 ]; then
+    log "no changes for scope ${SCOPE}; nothing to deliver"
     return 0
   fi
 
-  if ! with_timeout "${TIMEOUT_NETWORK}" git push --force-with-lease origin "${AUTOSYNC_BRANCH}" >/dev/null 2>&1; then
-    fail "git push failed; commit preserved on ${AUTOSYNC_BRANCH}"
-  fi
+  local expected=""
+  expected="$(autosync_branch_tip)"
 
-  return_to_main
-  BRANCH_CREATED=0
-  release_lock
+  if [ -n "${expected}" ]; then
+    if ! with_timeout "${TIMEOUT_NETWORK}" git push --quiet \
+      --force-with-lease="refs/heads/${AUTOSYNC_BRANCH}:${expected}" \
+      origin "HEAD:refs/heads/${AUTOSYNC_BRANCH}" >/dev/null 2>&1; then
+      fail "git push to ${AUTOSYNC_BRANCH} failed"
+    fi
+  else
+    if ! with_timeout "${TIMEOUT_NETWORK}" git push --quiet \
+      origin "HEAD:refs/heads/${AUTOSYNC_BRANCH}" >/dev/null 2>&1; then
+      fail "git push to ${AUTOSYNC_BRANCH} failed"
+    fi
+  fi
 
   PR_NUMBER="$(current_autosync_pr)"
   ensure_pull_request
@@ -527,17 +429,13 @@ main() {
     exit 0
   fi
 
-  cd "${SOURCE_DIR}" || fail "cannot enter source directory: ${SOURCE_DIR}"
-
   acquire_lock || fail "timed out waiting for another autosync run"
-  guard
 
   if [ "${SCOPE}" = "mise" ]; then
     run_mise_lock
   fi
 
-  switch_to_autosync
-
+  prepare_worktree
   deliver
   release_lock
   exit 0
