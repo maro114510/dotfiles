@@ -1,0 +1,28 @@
+# Runs every Bats suite in .github/testdata against the checked-out source.
+# The suites cover the chezmoi-managed pre-push hook, instruction template
+# rendering, the dotfiles-pr helper, and autosync's worktree isolation; each
+# one builds its own sandbox, so this workflow needs no credentials or network
+# services.
+name: bats
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  bats:
+    name: Run Bats suites
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "${HOME}/.local/bin"
+
+      - name: Install bats
+        run: sudo apt-get update && sudo apt-get install --yes bats
+
+      - name: Run all suites
+        run: CHEZMOI="${HOME}/.local/bin/chezmoi" bats .github/testdata/*.bats
