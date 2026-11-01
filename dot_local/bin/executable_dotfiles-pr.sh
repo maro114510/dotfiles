@@ -103,7 +103,7 @@ main() {
     fail "git push failed; commit kept on ${branch}. Retry: git -C ${source} push -u origin ${branch}"
 
   local url
-  url="$(cd "${source}" && gh pr view --json url --jq .url 2>/dev/null || true)"
+  url="$(cd "${source}" && gh pr view --json url,state --jq 'select(.state == "OPEN") | .url' 2>/dev/null || true)"
   if [ -z "${url}" ]; then
     url="$(cd "${source}" && gh pr create --fill --base "${BASE_BRANCH}" --head "${branch}")" ||
       fail "pull request creation failed; commit kept on ${branch}. Retry: (cd ${source} && gh pr create --fill --base ${BASE_BRANCH} --head ${branch})"
