@@ -1,0 +1,270 @@
+# The decision logic of oe ready.
+# oe-ready.sh passes every GitHub response through these definitions with gh --jq.
+# oe-ready.sh puts oe-records.jq and these values in front of this file.
+#
+# | Name | Value |
+# |---|---|
+# | now_s | The current time in epoch seconds |
+# | no_checks_grace | Seconds a commit may go without checks before its CI counts as missing |
+# | max_attempts | Owner attempts after the latest claim before the Issue parks |
+# | max_verifier_starts | Verifier starts on one commit before the Issue parks |
+# | verify_context | The commit status context that holds the verdict |
+# | pr_heads | The verdict, the Verifier starts, and the push time of each open pull request head |
+# | records | The Issue's claim and attempt records from this host, oldest first, each with kind and at |
+
+def epoch: sub("\\.[0-9]+"; "") | fromdateiso8601;
+
+# The positions in an array whose element matches f.
+def indexes(f): . as $a | [range(0; length) | select($a[.] | f)];
+
+# Who counts on GitHub: trusted, record, and engineer_input come from oe-records.jq.
+
+# CI
+#
+# ci reduces a commit's checks to one state.
+#
+# | State | When |
+# |---|---|
+# | failed | A check finished without passing |
+# | pending | No check failed, and a check is still running |
+# | none | The commit has no checks |
+# | passed | Every check passed |
+#
+# - A check passes when its conclusion is success, neutral, or skipped.
+# - Only the latest run of each check counts.
+# - The verdict status is oe's own, so it never counts as a check.
+def check_name: .name // .context // "unnamed check";
+def check_class:
+  if .__typename == "CheckRun" then
+    if .status != "COMPLETED" then "pending"
+    elif .conclusion == "SUCCESS" or .conclusion == "NEUTRAL" or .conclusion == "SKIPPED" then "passed"
+    else "failed" end
+  elif .__typename == "StatusContext" then
+    if .state == "SUCCESS" then "passed"
+    elif .state == "PENDING" or .state == "EXPECTED" then "pending"
+    else "failed" end
+  else error("unknown check type \(.__typename)") end;
+def check_key($i):
+  if .__typename == "StatusContext" then ["status", check_name]
+  elif (.checkSuite.databaseId | type) == "number" then ["suite", (.checkSuite.databaseId | tostring), check_name]
+  else ["unkeyed", ($i | tostring)] end;
+def ci:
+  .oid as $oid
+  | if .statusCheckRollup == null then {state: "none", detail: ""}
+    else .statusCheckRollup.contexts
+    | if (.nodes | type) != "array" or (.totalCount | type) != "number" then error("checks unreadable on \($oid)")
+      elif .totalCount > (.nodes | length) then error("checks truncated on \($oid)")
+      else . end
+    | [.nodes | to_entries[] | .key as $i | .value
+        | select(.__typename != "StatusContext" or .context != verify_context)
+        | {key: check_key($i), value: .}]
+    | group_by(.key)
+    | map(map(.value) | sort_by(.startedAt // .createdAt // "") | last | {name: check_name, class: check_class})
+    | (map(select(.class == "failed") | .name)) as $failed
+    | (map(select(.class == "pending") | .name)) as $pending
+    | if ($failed | length) > 0 then {state: "failed", detail: ($failed | join(", "))}
+      elif ($pending | length) > 0 then {state: "pending", detail: ($pending | join(", "))}
+      elif length == 0 then {state: "none", detail: ""}
+      else {state: "passed", detail: ""} end
+    end;
+
+# Reading the Epic
+#
+# epic_lines prints tab-separated lines for oe-ready.sh.
+#
+# | First field | Other fields |
+# |---|---|
+# | default | Branch name, head SHA, commit time, CI state, failing or pending check names |
+# | issue | Child Issue number |
+def epic_lines:
+  .data.repository as $r
+  | if ($r | type) != "object" then error("repository not found") else . end
+  | ($r.defaultBranchRef.target // error("default branch head unreadable")) as $head
+  | ($head | ci) as $ci
+  | "default\t\($r.defaultBranchRef.name)\t\($head.oid)\t\($head.committedDate | epoch)\t\($ci.state)\t\($ci.detail)",
+    (($r.issue // error("Epic not found")).subIssues
+      | if .totalCount > (.nodes | length) then error("more than \(.nodes | length) child Issues") else . end
+      | .nodes[]
+      | if (.repository.nameWithOwner | ascii_downcase) != ($r.nameWithOwner | ascii_downcase)
+        then error("child Issue #\(.number) is in \(.repository.nameWithOwner), not \($r.nameWithOwner)")
+        else "issue\t\(.number)" end);
+
+# Reading one Issue
+#
+# issue_state reduces one Issue response to the facts that next_action decides on.
+#
+# - Only records and questions after the latest claim count.
+#   - Claim and attempt records are ordered by their place in the record file, because a claim and its first attempt can share a timestamp.
+#   - A question, an answer, or a review counts as after a record by comparing its GitHub time with the record's at.
+#   - Everything counts when there is no claim.
+# - A read cut short by GitHub fails only when the comments it left out may come after the latest claim.
+# - The pull request is the newest one opened from the Issue's branch after the latest claim.
+#   - A pull request from a fork never counts.
+#   - The read holds only the newest pull request with the branch name, so a newer one from a fork hides the Issue's own.
+# - Engineer input counts once.
+#   - Input before the latest attempt was already handed to that attempt's Owner.
+# - A head that cannot be read fails the read only when the action depends on the head.
+#   - A push between the reads is the usual cause.
+#   - next_action raises it right before row 8, the first row that needs the head.
+# - A bot finding is a repair signal only while its bot's round is unused, and only when a trusted user has not approved the head.
+def issue_state:
+  .data.repository as $r
+  | ($r.issue // error("Issue not found")) as $issue
+  | ($issue.comments.nodes // error("comments unreadable")) as $comments
+  | ($r.ref != null) as $branch
+  | [($r.pullRequests.nodes // error("pull requests unreadable"))[] | select(.isCrossRepository == false)] as $prs
+  | (records | indexes(.kind == "claim") | last) as $claim
+  | (if $claim == null then null else records[$claim].at end) as $claimed_at
+  | [records | .[($claim // -1) + 1:][] | select(.kind == "attempt") | .at] as $attempts
+  | ([records | .[($claim // -1) + 1:][] | select(.kind == "attempt") | (.bots // [])[]]) as $used_bots
+  | ($comments | first | .createdAt) as $oldest
+  | if $issue.comments.totalCount > ($comments | length) and ($branch or ($prs | length) > 0)
+      and ($claimed_at == null or $oldest == null or $oldest >= $claimed_at)
+    then error("Issue #\($issue.number) has over \($comments | length) comments, and the read does not reach back to its latest claim")
+    else . end
+  | ($comments | indexes(record("question") and ($claimed_at == null or .createdAt >= $claimed_at)) | last) as $question
+  | ($attempts | last // $claimed_at) as $since
+  | ($comments | indexes(engineer_input) | map(select(. > ($question // infinite)))) as $answers
+  | (if any($answers[]; $comments[.].createdAt > ($since // "")) then ["a trusted answer to the question"] else [] end) as $answered
+  | ([$prs[] | select($claimed_at == null or .createdAt >= $claimed_at)] | first) as $pr
+  | ([$prs[] | select(.mergedAt != null and ($claimed_at == null or .mergedAt >= $claimed_at))] | first) as $merged
+  | (if $branch and $pr.state == "OPEN" then try (
+      ($pr.headRef.target // error("PR #\($pr.number) head unreadable")) as $target
+      | if $target.oid != $pr.headRefOid then error("PR #\($pr.number) head changed during the read") else . end
+      | (pr_heads[$target.oid] // error("PR #\($pr.number) head \($target.oid) changed during the read")) as $facts
+      | if $pr.reviewThreads.totalCount > ($pr.reviewThreads.nodes | length)
+        then error("PR #\($pr.number) has more review threads than one read holds") else . end
+      | ($target | ci) as $ci
+      | ($facts.pushed // ($target.committedDate | epoch)) as $pushed
+      | {sha: $target.oid[0:7], ci: $ci.state, ci_detail: $ci.detail, verdict: $facts.verdict, starts: $facts.starts,
+          oid: $target.oid, pushed: $pushed, age: (now_s - $pushed)}
+    ) catch {unreadable: .}
+    else null end) as $head
+  | (if $head == null or $head.unreadable != null then []
+     else [$pr.reviewThreads.nodes[] | bot_finding($since; $used_bots; bot_approved(($pr.approvals.nodes // []); $head.oid))]
+     end) as $bot_findings
+  | {
+      number: $issue.number,
+      closed: ($issue.state == "CLOSED"),
+      branch: $branch,
+      merged_pr: $merged.number,
+      abandoned_pr: (if $branch and $pr.state == "CLOSED" then $pr.number else null end),
+      waiting_on: (if $branch then [] else
+        $issue.blockedBy
+        | if (.nodes | type) != "array" or .totalCount > (.nodes | length)
+          then error("Issue #\($issue.number) dependencies unreadable") else .nodes end
+        | map(select(.state != "CLOSED" or .stateReason != "COMPLETED")
+            | "#\(.number) " + (if .state == "OPEN" then "open" else "closed as \(.stateReason // "unknown")" end))
+      end),
+      question_open: ($question != null and ($answers | length) == 0),
+      attempts: ($attempts | length),
+      since: $since,
+      question_at: (if $question == null then null else $comments[$question].createdAt end),
+      pr: $pr.number,
+      head: $head,
+      repairs: (if $pr == null then $answered + ["no PR yet"]
+        elif $head == null or $head.unreadable != null then []
+        else $answered + [
+          if $pr.mergeable == "CONFLICTING" then "PR #\($pr.number) conflicts with its base" else empty end,
+          if $head.ci == "failed" then "checks failed on \($head.sha): \($head.ci_detail)" else empty end,
+          if $head.verdict == "failure" or $head.verdict == "error" then "failure verdict on \($head.sha)" else empty end,
+          if any($pr.reviews.nodes[]?; engineer_input and ($since == null or .submittedAt > $since))
+          then "a trusted Changes requested review" else empty end,
+          if any($pr.reviewThreads.nodes[]?.comments.nodes[]?; engineer_input and ($since == null or .createdAt > $since))
+          then "a trusted review-thread comment" else empty end,
+          if ($bot_findings | length) > 0
+          then ($bot_findings | map("\(.level) finding from \(.login)") | join(", ")) else empty end
+        ] end)
+    };
+
+# Deciding
+#
+# next_action walks rows 3 to 12 of the next-action table in docs/design/orchestrate-epic.md from the top.
+# oe-ready.sh applies rows 1 and 2 before any Issue is read.
+#
+# | Row | When | Action |
+# |---|---|---|
+# | 3 | The Issue is closed | done |
+# | 4 | A pull request merged after the latest claim | wait-engineer |
+# | 4 | The branch exists and its pull request closed without merging | wait-engineer |
+# | 5 | No branch, and a dependency is not closed as completed | wait-dependencies |
+# | 6 | No branch, and every dependency is closed as completed | claim |
+# | 7 | The latest question has no engineer input after it | wait-answer |
+# | 8 | A repair signal is present, and fewer than max_attempts attempts were used | start-owner |
+# | 8 | A repair signal is present, and max_attempts attempts were used | parked |
+# | 9 | A check on the head is pending | wait-ci |
+# | 9 | The head has no checks, and no_checks_grace has not passed since its push | wait-ci |
+# | 10 | The head has no checks, and no_checks_grace has passed since its push | parked |
+# | 11 | The head has no verdict, and the Verifier started max_verifier_starts times | parked |
+# | 11 | The head has no verdict, and the Verifier started fewer times | start-verifier |
+# | 12 | The head has a success verdict | wait-merge |
+#
+# Repair signals
+#
+# - No pull request exists yet
+# - The pull request conflicts with its base
+# - A check on the head failed
+# - The verdict on the head is a failure
+# - Engineer input arrived after the latest attempt
+#   - An answer to the latest question
+#   - A Changes requested review
+#   - A review-thread comment
+# - A listed bot wrote a finding after the latest attempt, its round is unused, and no trusted user approved the head
+def act($action; $reason): "\(.number)\t\($action)\t\($reason)";
+def next_action:
+  if .closed then act("done"; "closed")
+  elif .merged_pr != null then act("wait-engineer"; "PR #\(.merged_pr) merged; the Issue is still open")
+  elif .abandoned_pr != null then act("wait-engineer"; "PR #\(.abandoned_pr) closed without merging")
+  elif .branch | not then
+    if (.waiting_on | length) > 0 then act("wait-dependencies"; .waiting_on | join(", "))
+    else act("claim"; "every dependency completed") end
+  elif .question_open then act("wait-answer"; "the question has no unmarked comment from a trusted role yet")
+  elif .head.unreadable != null then error(.head.unreadable)
+  elif (.repairs | length) > 0 then
+    (.repairs | join("; ")) as $why
+    | if .attempts >= max_attempts then act("parked"; "\(.attempts) attempts used; still: \($why)")
+      else act("start-owner"; "attempt \(.attempts + 1) of \(max_attempts): \($why)") end
+  elif .head.ci == "pending" then act("wait-ci"; "checks pending on \(.head.sha): \(.head.ci_detail)")
+  elif .head.ci == "none" and .head.age < no_checks_grace then
+    act("wait-ci"; "no checks yet on \(.head.sha), \(.head.age)s after its push")
+  elif .head.ci == "none" then act("parked"; "no checks on \(.head.sha) \(.head.age)s after its push")
+  elif .head.verdict != "success" and .head.starts >= max_verifier_starts then
+    act("parked"; "Verifier started \(.head.starts) times on \(.head.sha) without a verdict")
+  elif .head.verdict != "success" then act("start-verifier"; "checks passed on \(.head.sha)")
+  else act("wait-merge"; "success verdict on \(.head.sha)") end;
+
+# A closed Issue is done before anything else is read, so a busy closed Issue never fails the read.
+def classify:
+  if .data.repository.issue.state == "CLOSED" then .data.repository.issue | act("done"; "closed")
+  else issue_state | next_action end;
+
+# Facts for oe status
+#
+# facts describes one Issue as a JSON object, with the action and reason classify gives it.
+#
+# | Field | Holds |
+# |---|---|
+# | number, action, reason | The Issue number, and the action and reason classify gives |
+# | pr | The pull request opened from the branch after the latest claim, or null |
+# | head | The full SHA of that pull request's open head, or null |
+# | ci, verdict | The CI state and the oe/verify state of that head, or null |
+# | attempts | Owner attempts after the latest claim, or null for a closed Issue |
+# | started | Epoch seconds when the Issue entered its step, or null when no read shows it |
+#
+# | Action | Started at |
+# |---|---|
+# | wait-answer | The latest question |
+# | wait-ci, start-verifier, wait-merge | The push of the head |
+# | start-owner, parked | The latest attempt, or the latest claim without one |
+# | Any other | null |
+def facts:
+  if .data.repository.issue.state == "CLOSED" then .data.repository.issue | {number, action: "done", reason: "closed"}
+  else issue_state
+    | (next_action | split("\t")) as [$n, $action, $reason]
+    | {number, action: $action, reason: $reason, pr, head: .head.oid, ci: .head.ci, verdict: .head.verdict, attempts,
+        started: (
+          if $action == "wait-answer" then .question_at | epoch
+          elif $action == "wait-ci" or $action == "start-verifier" or $action == "wait-merge" then .head.pushed
+          elif $action == "start-owner" or $action == "parked" then .since // null | if . then epoch else null end
+          else null end)}
+  end;

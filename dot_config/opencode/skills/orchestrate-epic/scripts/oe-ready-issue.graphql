@@ -1,0 +1,66 @@
+# The read of one child Issue in oe ready.
+# It returns the Issue, its dependencies, its latest comments, its branch, and the newest pull request opened from that branch.
+query($owner: String!, $repo: String!, $num: Int!, $branch: String!, $ref: String!) {
+  repository(owner: $owner, name: $repo) {
+    issue(number: $num) {
+      number
+      state
+      stateReason
+      blockedBy(first: 100) {
+        totalCount
+        nodes { number state stateReason }
+      }
+      comments(last: 100) {
+        totalCount
+        nodes { authorAssociation body createdAt }
+      }
+    }
+    ref(qualifiedName: $ref) { name }
+    # Only the newest pull request decides the action, and each one more costs about one rate-limit point.
+    pullRequests(headRefName: $branch, first: 1, orderBy: {field: CREATED_AT, direction: DESC}) {
+      totalCount
+      nodes {
+        number
+        state
+        createdAt
+        mergedAt
+        isCrossRepository
+        headRefOid
+        mergeable
+        reviews(last: 100, states: [CHANGES_REQUESTED]) {
+          nodes { authorAssociation body submittedAt }
+        }
+        # An approval of the head starts no repair, so its commit decides which head it covers.
+        approvals: reviews(last: 100, states: [APPROVED]) {
+          nodes { authorAssociation commit { oid } }
+        }
+        reviewThreads(last: 100) {
+          totalCount
+          nodes {
+            isResolved
+            isOutdated
+            # Only a thread's first comment says who opened it, and a reply never counts as a finding.
+            root: comments(first: 1) { nodes { author { login __typename } body createdAt } }
+            comments(last: 20) { nodes { authorAssociation body createdAt } }
+          }
+        }
+        headRef { target { ... on Commit { ...HeadChecks } } }
+      }
+    }
+  }
+}
+
+fragment HeadChecks on Commit {
+  oid
+  committedDate
+  statusCheckRollup {
+    contexts(first: 100) {
+      totalCount
+      nodes {
+        __typename
+        ... on CheckRun { name status conclusion startedAt checkSuite { databaseId } }
+        ... on StatusContext { context state createdAt }
+      }
+    }
+  }
+}
