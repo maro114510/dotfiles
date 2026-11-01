@@ -38,6 +38,15 @@ EOF
   cat >"${sandbox}/bin/gh" <<EOF
 #!/bin/bash
 printf '%s\n' "\$*" >>"${sandbox}/gh.log"
+if [ "\${1:-}" = "pr" ] && [ "\${2:-}" = "view" ]; then
+  [ -f "${sandbox}/pr-url" ] && cat "${sandbox}/pr-url" && exit 0
+  exit 1
+fi
+if [ -n "\${GH_FAIL:-}" ]; then
+  echo "gh failed" >&2
+  exit 1
+fi
+printf 'https://example.com/pr/1\n' | tee "${sandbox}/pr-url"
 EOF
   chmod +x "${sandbox}/bin/chezmoi" "${sandbox}/bin/gh"
   PATH="${sandbox}/bin:${PATH}"
@@ -63,6 +72,7 @@ script() {
   [ -z "$(git -C "${source_dir}" status --porcelain)" ]
   [ "$(git -C "${remote}" rev-parse "refs/heads/${branch}")" = "$(git -C "${source_dir}" rev-parse HEAD)" ]
   grep -q -- "pr create --fill --base main" "${sandbox}/gh.log"
+  [[ "${output}" == *"https://example.com/pr/1"* ]]
 }
 
 @test "refuses when there is nothing to commit" {
@@ -86,4 +96,30 @@ script() {
   [[ "${output}" == *"origin/main"* ]]
   [ "$(git -C "${source_dir}" branch --show-current)" = "main" ]
   [ "$(git -C "${source_dir}" log -1 --pretty=%s)" = "initial" ]
+}
+
+@test "refuses to commit onto a branch it did not create" {
+  git -C "${source_dir}" switch --quiet -c feat/unrelated
+  printf 'two\n' >>"${source_dir}/dot_zshrc"
+
+  run script "feat: unrelated"
+
+  [ "${status}" -eq 1 ]
+  [[ "${output}" == *"chore/dotfiles-"* ]]
+  [ "$(git -C "${source_dir}" log -1 --pretty=%s)" = "initial" ]
+  [ ! -f "${sandbox}/gh.log" ]
+}
+
+@test "reuses the open pull request when a follow-up change is added" {
+  printf 'two\n' >>"${source_dir}/dot_zshrc"
+  run script "feat: first"
+  [ "${status}" -eq 0 ]
+
+  printf 'three\n' >>"${source_dir}/dot_zshrc"
+  run script "feat: follow-up"
+
+  [ "${status}" -eq 0 ]
+  [ "$(git -C "${source_dir}" log -1 --pretty=%s)" = "feat: follow-up" ]
+  [ "$(grep -c -- "pr create" "${sandbox}/gh.log")" -eq 1 ]
+  [[ "${output}" == *"https://example.com/pr/1"* ]]
 }
