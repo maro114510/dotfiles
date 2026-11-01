@@ -97,6 +97,16 @@ temporary_worktree_dirs() {
   printf 'untracked\n' > "${source_dir}/NOTES.md"
   source_head_before="$(git -C "${source_dir}" rev-parse HEAD)"
   source_status_before="$(git -C "${source_dir}" status --porcelain)"
+
+  # Advance origin/main without moving the source checkout's own main: the sync
+  # has to build on the remote tip, not on the branch the source left behind.
+  git clone --quiet "${remote_dir}" "${sandbox}/other"
+  git -C "${sandbox}/other" config user.email "autosync-test@example.com"
+  git -C "${sandbox}/other" config user.name "autosync test"
+  printf 'remote edit\n' >> "${sandbox}/other/README.md"
+  git -C "${sandbox}/other" commit --quiet --no-verify --all --message "remote edit"
+  git -C "${sandbox}/other" push --quiet origin main
+
   printf '{"new": true}\n' > "${home_dir}/.config/nvim/lazy-lock.json"
 
   run run_autosync
@@ -106,6 +116,7 @@ temporary_worktree_dirs() {
   [ "$(git -C "${source_dir}" rev-parse HEAD)" = "${source_head_before}" ]
   [ "$(git -C "${source_dir}" status --porcelain)" = "${source_status_before}" ]
 
+  [ "$(git -C "${remote_dir}" rev-parse 'chore/autosync^')" = "$(git -C "${remote_dir}" rev-parse main)" ]
   [ "$(git -C "${remote_dir}" show "chore/autosync:dot_config/nvim/lazy-lock.json")" = '{"new": true}' ]
   grep -q -- '--head chore/autosync' "${GH_LOG}"
 
