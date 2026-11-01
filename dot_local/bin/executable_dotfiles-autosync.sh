@@ -1,7 +1,7 @@
 #!/bin/bash
 # dotfiles-autosync.sh: one scope, apm | mise | nvim
 # Do:   chezmoi re-add scope targets, commit only on change
-# Ship: push chore/autosync, reuse PR, watch CI, merge, fast-forward main
+# Ship: push chore/autosync, then open or update its PR; a person merges it
 # Need: source checkout clean and on main
 
 set -euo pipefail
@@ -21,11 +21,8 @@ LOCK_STALE_SECONDS=900
 LOCK_WAIT_SECONDS=600
 LOCK_POLL_SECONDS=2
 LOCK_RECLAIM_STALE_SECONDS=60
-CHECK_GRACE_ATTEMPTS=12
-CHECK_GRACE_SLEEP=10
 TIMEOUT_NETWORK=120
 TIMEOUT_GH=60
-TIMEOUT_CI_WATCH=2700
 TIMEOUT_MISE=600
 
 LOCK_HELD=0
@@ -33,7 +30,6 @@ SWITCHED=0
 BRANCH_CREATED=0
 NOTIFIED=0
 PR_NUMBER=""
-PUSHED_SHA=""
 
 TARGETS=()
 
@@ -390,50 +386,6 @@ ensure_pull_request() {
   fi
 }
 
-wait_for_checks() {
-  local attempt=0 names
-  while [ "${attempt}" -lt "${CHECK_GRACE_ATTEMPTS}" ]; do
-    names="$(with_timeout "${TIMEOUT_GH}" gh pr checks "${PR_NUMBER}" --json name 2>/dev/null || true)"
-    if [ -n "${names}" ] && [ "${names}" != "[]" ]; then
-      break
-    fi
-    attempt=$((attempt + 1))
-    if [ "${attempt}" -lt "${CHECK_GRACE_ATTEMPTS}" ]; then
-      sleep "${CHECK_GRACE_SLEEP}"
-    fi
-  done
-  if [ -z "${names}" ] || [ "${names}" = "[]" ]; then
-    log "no CI checks reported for PR #${PR_NUMBER}; treating as passed"
-    return 0
-  fi
-  if ! with_timeout "${TIMEOUT_CI_WATCH}" gh pr checks "${PR_NUMBER}" --watch --fail-fast >/dev/null 2>&1; then
-    fail "CI checks failed for PR #${PR_NUMBER}; commit preserved on ${AUTOSYNC_BRANCH}"
-  fi
-}
-
-merge_pull_request() {
-  local state head_sha
-  state="$(with_timeout "${TIMEOUT_GH}" gh pr view "${PR_NUMBER}" --json state --jq '.state' 2>/dev/null || true)"
-  if [ "${state}" = "MERGED" ]; then
-    log "PR #${PR_NUMBER} already merged"
-    return 0
-  fi
-  if with_timeout "${TIMEOUT_GH}" gh pr merge "${PR_NUMBER}" --merge --match-head-commit "${PUSHED_SHA}" >/dev/null 2>&1; then
-    return 0
-  fi
-  state="$(with_timeout "${TIMEOUT_GH}" gh pr view "${PR_NUMBER}" --json state --jq '.state' 2>/dev/null || true)"
-  if [ "${state}" = "MERGED" ]; then
-    log "PR #${PR_NUMBER} merged concurrently"
-    return 0
-  fi
-  head_sha="$(with_timeout "${TIMEOUT_GH}" gh pr view "${PR_NUMBER}" --json headRefOid --jq '.headRefOid' 2>/dev/null || true)"
-  if [ -n "${head_sha}" ] && [ "${head_sha}" != "${PUSHED_SHA}" ]; then
-    log "PR #${PR_NUMBER} head moved to ${head_sha}; handing off"
-    return 2
-  fi
-  fail "gh pr merge failed for PR #${PR_NUMBER}"
-}
-
 run_dry_run() {
   local target plan
   log "dry-run: scope=${SCOPE}"
@@ -517,10 +469,6 @@ deliver() {
   if ! with_timeout "${TIMEOUT_NETWORK}" git push --force-with-lease origin "${AUTOSYNC_BRANCH}" >/dev/null 2>&1; then
     fail "git push failed; commit preserved on ${AUTOSYNC_BRANCH}"
   fi
-  PUSHED_SHA="$(git rev-parse HEAD)"
-  if [ -z "${PUSHED_SHA}" ]; then
-    fail "could not resolve the pushed commit"
-  fi
 
   return_to_main
   BRANCH_CREATED=0
@@ -528,26 +476,8 @@ deliver() {
 
   PR_NUMBER="$(current_autosync_pr)"
   ensure_pull_request
-  wait_for_checks
 
-  local merge_rc=0
-  merge_pull_request || merge_rc=${?}
-  if [ "${merge_rc}" -eq 2 ]; then
-    log "handed off PR #${PR_NUMBER}; the run that pushed the newer head merges it"
-    return 0
-  fi
-  if [ "${merge_rc}" -ne 0 ]; then
-    return "${merge_rc}"
-  fi
-
-  acquire_lock || fail "timed out waiting for another autosync run"
-  return_to_main
-  if ! git pull --ff-only origin "${BASE_BRANCH}" --quiet; then
-    notify "delivered PR #${PR_NUMBER} but could not fast-forward ${BASE_BRANCH}; resolve the local branch"
-  fi
-  release_lock
-
-  log "delivered PR #${PR_NUMBER} and fast-forwarded ${BASE_BRANCH}"
+  log "opened or updated PR #${PR_NUMBER}; waiting for a person to merge it"
   return 0
 }
 
