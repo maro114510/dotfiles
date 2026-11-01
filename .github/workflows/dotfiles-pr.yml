@@ -1,0 +1,30 @@
+# Tests the dotfiles-pr helper: it commits uncommitted chezmoi source changes
+# on a pull request branch and never commits on main.
+name: dotfiles-pr
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'dot_local/bin/executable_dotfiles-pr.sh'
+      - '.github/testdata/dotfiles-pr.bats'
+      - '.github/workflows/dotfiles-pr.yml'
+  pull_request:
+    paths:
+      - 'dot_local/bin/executable_dotfiles-pr.sh'
+      - '.github/testdata/dotfiles-pr.bats'
+      - '.github/workflows/dotfiles-pr.yml'
+
+jobs:
+  test:
+    name: Test dotfiles-pr
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install bats
+        run: sudo apt-get update && sudo apt-get install --yes bats
+
+      - name: Run the tests
+        run: bats .github/testdata/dotfiles-pr.bats
