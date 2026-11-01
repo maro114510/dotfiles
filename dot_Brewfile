@@ -6,6 +6,7 @@ brew "sheldon"   # zsh plugin manager (.zshrc depends on this)
 
 # Core utilities (not managed by mise, referenced in shell config)
 brew "bat"
+brew "buku"      # .zshrc bb() bookmark picker depends on this
 brew "git-delta"
 brew "git-lfs"
 brew "jq"
