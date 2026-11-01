@@ -39,13 +39,18 @@ EOF
 #!/bin/bash
 printf '%s\n' "\$*" >>"${sandbox}/gh.log"
 if [ "\${1:-}" = "pr" ] && [ "\${2:-}" = "view" ]; then
-  [ -f "${sandbox}/pr-url" ] && cat "${sandbox}/pr-url" && exit 0
-  exit 1
+  [ -f "${sandbox}/pr-url" ] || exit 1
+  if [ -f "${sandbox}/pr-closed" ] && [[ "\$*" == *"--json url,state"* ]]; then
+    exit 0
+  fi
+  cat "${sandbox}/pr-url"
+  exit 0
 fi
 if [ -n "\${GH_FAIL:-}" ]; then
   echo "gh failed" >&2
   exit 1
 fi
+rm -f "${sandbox}/pr-closed"
 printf 'https://example.com/pr/1\n' | tee "${sandbox}/pr-url"
 EOF
   chmod +x "${sandbox}/bin/chezmoi" "${sandbox}/bin/gh"
@@ -122,4 +127,30 @@ script() {
   [ "$(git -C "${source_dir}" log -1 --pretty=%s)" = "feat: follow-up" ]
   [ "$(grep -c -- "pr create" "${sandbox}/gh.log")" -eq 1 ]
   [[ "${output}" == *"https://example.com/pr/1"* ]]
+}
+
+@test "retries the push and pull request on a clean helper branch" {
+  printf 'two\n' >>"${source_dir}/dot_zshrc"
+  GH_FAIL=1 run script "feat: first"
+  [ "${status}" -eq 1 ]
+
+  run script "feat: retry"
+
+  [ "${status}" -eq 0 ]
+  [ -z "$(git -C "${source_dir}" status --porcelain)" ]
+  [ "$(grep -c -- "pr create" "${sandbox}/gh.log")" -eq 2 ]
+  [[ "${output}" == *"https://example.com/pr/1"* ]]
+}
+
+@test "opens a new pull request when the branch's previous one was merged" {
+  printf 'two\n' >>"${source_dir}/dot_zshrc"
+  run script "feat: first"
+  [ "${status}" -eq 0 ]
+  touch "${sandbox}/pr-closed"
+
+  printf 'three\n' >>"${source_dir}/dot_zshrc"
+  run script "feat: after merge"
+
+  [ "${status}" -eq 0 ]
+  [ "$(grep -c -- "pr create" "${sandbox}/gh.log")" -eq 2 ]
 }
