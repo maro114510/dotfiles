@@ -73,6 +73,9 @@ with_timeout() {
 notify() {
   local message="${1}" escaped
   NOTIFIED=1
+  # The zsh wrapper keeps this script's stderr and discards its stdout, so this
+  # line is what puts the reason in the terminal that started the run.
+  printf '%s\n' "${PROG}: ${message}" >&2
   log "FAILURE: ${message}"
   if command -v osascript >/dev/null 2>&1; then
     escaped="${message//\"/}"
@@ -240,7 +243,7 @@ guard() {
 run_mise_lock() {
   command -v mise >/dev/null 2>&1 || fail "mise is not available in PATH"
   log "refreshing the global mise lock"
-  if ! (cd "${ORIGINAL_DIR}" && with_timeout "${TIMEOUT_MISE}" mise lock --global); then
+  if ! (cd "${ORIGINAL_DIR}" && with_timeout "${TIMEOUT_MISE}" mise lock --global >/dev/null 2>&1); then
     fail "mise lock --global failed"
   fi
 }
