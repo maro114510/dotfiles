@@ -290,10 +290,12 @@ function penv {
 # After a tracked apm/mise update succeeds, hand the changed files to the
 # detached sync script. It owns logging; a failed command starts nothing and
 # the command's own exit code is preserved.
+# Only stderr is kept, so a sync failure prints its reason here while a
+# successful run stays silent and the prompt returns without waiting.
 function _dotfiles_autosync() {
 	# $1 scope, $2 exit code of the command that triggered the sync
 	[[ "$2" == 0 ]] || return 0
-	command dotfiles-autosync.sh "$1" >/dev/null 2>&1 &!
+	command dotfiles-autosync.sh "$1" >/dev/null &!
 }
 
 function apm() {
