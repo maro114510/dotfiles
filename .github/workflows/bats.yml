@@ -1,7 +1,8 @@
 # Runs every Bats suite in .github/testdata against the checked-out source.
 # The suites cover the chezmoi-managed pre-push hook, instruction template
-# rendering, and the dotfiles-pr helper; each one builds its own sandbox, so
-# this workflow needs no credentials or network services.
+# rendering, the dotfiles-pr helper, and autosync's worktree isolation; each
+# one builds its own sandbox, so this workflow needs no credentials or network
+# services.
 name: bats
 
 on:
