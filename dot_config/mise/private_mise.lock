@@ -2,6 +2,15 @@
 
 lockfile_version = 2
 
+[[tools."aqua:anomalyco/opencode"]]
+version = "2.2.5"
+backend = "aqua:anomalyco/opencode"
+specifiers = ["latest"]
+
+[tools."aqua:anomalyco/opencode"."platforms.macos-arm64"]
+checksum = "sha256:25ba9908979fa7d764792c82589b4b5768ab1511154e0317d98aa77d216ce767"
+url = "https://opencode.ai/files/bin/2.2.5/opencode-darwin-arm64.zip"
+
 [[tools."aqua:neovim/neovim"]]
 version = "0.12.6"
 backend = "aqua:neovim/neovim"

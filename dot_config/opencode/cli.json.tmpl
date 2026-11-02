@@ -1,11 +1,14 @@
 {{- /* Keep Herdr's runtime plugin registration from the current target. */ -}}
 {{- $managed := fromJson `
 {
-	"$schema": "https://opencode.ai/tui.json",
-	"theme": "system"
+  "$schema": "https://opencode.ai/v2/cli.json",
+  "theme": {
+    "name": "nightowl",
+    "mode": "dark"
+  }
 }
 ` -}}
-{{- $path := joinPath .chezmoi.homeDir ".config/opencode/tui.jsonc" -}}
+{{- $path := joinPath .chezmoi.homeDir ".config/opencode/cli.json" -}}
 {{- $config := dict -}}
 {{- $original := "" -}}
 {{- if stat $path -}}
