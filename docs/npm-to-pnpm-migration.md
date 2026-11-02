@@ -115,7 +115,6 @@ Apply is not intended to remove global tools. New machine bootstrap still requir
 
 ## Compatibility / follow-ups
 
-- The existing OpenCode config uses `op-anthropic-auth@latest`, not ex-machina. Plugin sourcing needs a separate audit before changing to OpenCode v2.
 - Raycast memo-search currently uses `bun install --frozen-lockfile`, so it should not be casually converted.
 - Topgrade's npm step is disabled to avoid bypassing mise/pnpm ownership; mise's existing upgrade behavior remains unchanged.
 - Avoid committing `~/.npmrc`, `pnpm config` exports, token files, and machine inventory.
