@@ -20,8 +20,8 @@
   // Keep the order: external_directory ask -> allow -> ask -> deny -> narrow
   // exceptions to a deny (-> denies that must always win).
   "permissions": [
-    // V1 asked before touching paths outside the project; V2 allows them by
-    // default. Restore the prompt first, then open only what is listed below.
+    // Paths outside the project are allowed by default. Ask first, then open
+    // only what is listed below.
     { "action": "external_directory", "resource": "*", "effect": "ask" },
     // Paths inside the working directory are relative to it; paths outside
     // are absolute. "*" spans "/", so list both the root form and the "*/"
@@ -51,8 +51,8 @@
     // `cd` targets of a shell command. It does NOT cover other path arguments
     // or redirect targets of a shell command (anomalyco/opencode#56288).
     { "action": "external_directory", "resource": "~/*", "effect": "allow" },
-    // Scratch space: temp dirs asked ~1,100 times in 5 days of V1 use, nearly
-    // always for throwaway work. macOS resolves /tmp and /var to /private/*,
+    // Scratch space: temp dirs prompt constantly, nearly always for throwaway
+    // work. macOS resolves /tmp and /var to /private/*,
     // and OpenCode's own temp directory lives under /var/folders.
     { "action": "external_directory", "resource": "/tmp/*", "effect": "allow" },
     { "action": "external_directory", "resource": "/private/tmp/*", "effect": "allow" },
