@@ -246,6 +246,34 @@ function bmb() {
 	open -a "Google Chrome" "$bookmark_url"
 }
 
+### buku
+# Tab selects multiple bookmarks; Esc opens nothing.
+function bb() {
+	setopt local_options pipe_fail
+
+	local urls url failed=0
+	urls=$(
+		buku --nostdin -p -f4 --nc |
+			fzf --multi --reverse --height=80% --border \
+				--delimiter=$'\t' --with-nth=3,4,2 \
+				--prompt='Bookmarks > ' \
+				--preview='buku --nostdin -p {1} --nc' \
+				--preview-window='right:50%:wrap' |
+			cut -f2
+	) || return $?
+
+	[[ -n "$urls" ]] || return 0
+
+	while IFS= read -r url; do
+		[[ "$url" == http://* || "$url" == https://* ]] || {
+			print -ru2 -- "Skipping non-HTTP(S) URL"
+			continue
+		}
+		open -a "Google Chrome" "$url" || failed=1
+	done <<< "$urls"
+	return "$failed"
+}
+
 ### aws profile
 # awsp → abbr (see ~/.config/zsh/abbreviations)
 
