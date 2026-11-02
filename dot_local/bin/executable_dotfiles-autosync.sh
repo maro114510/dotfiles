@@ -1,6 +1,7 @@
 #!/bin/bash
 # dotfiles-autosync.sh: one scope, apm | mise | nvim
 # Do:   chezmoi re-add scope targets into a temporary worktree of origin/main, commit only on change
+# Stop: origin/main changed a file the sync would write since the local base; a person pulls and applies
 # Ship: push chore/autosync, then open or update its PR; a person merges it
 # Need: nothing from the source checkout; it may be on any branch and dirty
 
@@ -318,6 +319,26 @@ autosync_branch_tip() {
   git rev-parse "refs/remotes/origin/${AUTOSYNC_BRANCH}"
 }
 
+# re-add copies the live file over the source, so syncing a file that origin
+# changed since our base writes the older local target back and reverts that
+# change. Refuse instead and let the live files catch up.
+# Rename detection is off on both diffs: a rename reports only its destination,
+# so an upstream rename would hide the old path that re-add recreates from the
+# stale live file.
+refuse_upstream_changes() {
+  local synced upstream overlap
+  synced="$(git diff --cached --name-only --no-renames)" ||
+    fail "cannot list the staged sync paths"
+  upstream="$(git diff --name-only --no-renames "refs/heads/${BASE_BRANCH}" "origin/${BASE_BRANCH}")" ||
+    fail "cannot compare origin/${BASE_BRANCH} with ${BASE_BRANCH}"
+  if [ -n "${synced}" ] && [ -n "${upstream}" ]; then
+    overlap="$(printf '%s\n' "${synced}" | grep -Fxf <(printf '%s\n' "${upstream}") || true)"
+    if [ -n "${overlap}" ]; then
+      fail "refusing to sync $(printf '%s' "${overlap}" | tr '\n' ' ') because origin/${BASE_BRANCH} changed it since ${BASE_BRANCH}; pull and apply before syncing"
+    fi
+  fi
+}
+
 deliver() {
   cd "${WORKTREE_DIR}" || fail "cannot enter the temporary worktree"
 
@@ -349,6 +370,7 @@ deliver() {
     else
       git add -A || fail "git add failed"
     fi
+    refuse_upstream_changes
     if ! git diff --cached --quiet; then
       git commit --quiet -m "$(commit_subject)" || fail "git commit failed"
       log "committed: $(commit_subject)"
