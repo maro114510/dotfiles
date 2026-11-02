@@ -153,3 +153,48 @@ temporary_worktree_dirs() {
   [ "$(temporary_worktree_count)" -eq 1 ]
   [ -z "$(temporary_worktree_dirs)" ]
 }
+
+# A second clone stands in for "someone else changed origin/main"; the live
+# copy here is still the content the local base was applied from, so a sync
+# would write it back over the newer remote config.
+@test "stops without a PR when origin changed a file in the sync scope" {
+  git clone --quiet "${remote_dir}" "${sandbox}/other"
+  git -C "${sandbox}/other" config user.email "autosync-test@example.com"
+  git -C "${sandbox}/other" config user.name "autosync test"
+  printf '{"remote": true}\n' > "${sandbox}/other/dot_config/nvim/lazy-lock.json"
+  git -C "${sandbox}/other" commit --quiet --no-verify --all --message "remote change"
+  git -C "${sandbox}/other" push --quiet origin main
+
+  printf '{"old": true}\n' > "${home_dir}/.config/nvim/lazy-lock.json"
+  source_head_before="$(git -C "${source_dir}" rev-parse HEAD)"
+  source_status_before="$(git -C "${source_dir}" status --porcelain)"
+
+  run run_autosync
+
+  [ "${status}" -ne 0 ]
+  [[ "${output}" == *"dot_config/nvim/lazy-lock.json"* ]]
+  [ ! -s "${GH_LOG}" ]
+  run git -C "${remote_dir}" rev-parse --verify --quiet refs/heads/chore/autosync
+  [ "${status}" -ne 0 ]
+  [ "$(git -C "${source_dir}" rev-parse HEAD)" = "${source_head_before}" ]
+  [ "$(git -C "${source_dir}" status --porcelain)" = "${source_status_before}" ]
+  [ "$(temporary_worktree_count)" -eq 1 ]
+  [ -z "$(temporary_worktree_dirs)" ]
+}
+
+@test "creates a PR when origin changed only files outside the sync scope" {
+  git clone --quiet "${remote_dir}" "${sandbox}/other"
+  git -C "${sandbox}/other" config user.email "autosync-test@example.com"
+  git -C "${sandbox}/other" config user.name "autosync test"
+  printf 'remote edit\n' >> "${sandbox}/other/README.md"
+  git -C "${sandbox}/other" commit --quiet --no-verify --all --message "remote edit"
+  git -C "${sandbox}/other" push --quiet origin main
+
+  printf '{"new": true}\n' > "${home_dir}/.config/nvim/lazy-lock.json"
+
+  run run_autosync
+
+  [ "${status}" -eq 0 ]
+  [ "$(git -C "${remote_dir}" show "chore/autosync:dot_config/nvim/lazy-lock.json")" = '{"new": true}' ]
+  grep -q -- '--head chore/autosync' "${GH_LOG}"
+}
