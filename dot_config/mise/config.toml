@@ -10,6 +10,8 @@ java = "latest"
 lazygit = "latest"
 lsd = "latest"
 "aqua:neovim/neovim" = "latest"
+# OpenCode V2: aqua downloads the release binary, so no pnpm postinstall is needed
+"aqua:anomalyco/opencode" = "latest"
 node = "latest"
 pnpm = "12"
 peco = "latest"
