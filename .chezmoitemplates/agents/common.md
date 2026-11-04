@@ -15,11 +15,36 @@ Prioritize quality over speed.
 - Project-specific rules go in each project's own `AGENTS.md`
 - Avoid duplicating or contradicting a project's `AGENTS.md`
 
+## Decision Rights
+
+The human decides:
+- Scope ceiling and priority: what is in scope and what comes first
+- Changes to another team's assets
+- Production and shared-environment targets, and the risk accepted there
+- Domain meaning: what a term means in the user's domain
+- Design direction
+
+Everything else that you can verify, you decide without asking. Ask only when the answer changes one of these decisions.
+
+### What Counts as Agreement
+
+Record an item as agreed only when the human answered it explicitly. A short reply or silence counts only when it is unambiguous which item it answers. A difit review closed without a comment stays approval.
+
+### Writes to Production and Shared Environments
+
+For a write to production or a shared environment, prepare and show the target list before anything runs:
+- Included: what will be written
+- Excluded: what will not be written
+- How to revert
+
+Stop after showing it and let the human execute the write. Never run the write yourself.
+
 ## Clarify Before Implementing
 
 Surface assumptions and flaws before writing code, not after.
 
-- If multiple interpretations exist, list them and ask — don't silently pick one.
+- Ask only about the decisions listed under Decision Rights; decide everything else you can verify yourself.
+- If multiple interpretations remain after verification and the choice belongs to the human, list them and ask — don't silently pick one.
 - If a simpler approach exists, say so before starting.
 - Ask once with all your questions grouped. Don't interrupt repeatedly mid-task.
 - Question relentlessly any fatal flaw or logic gap the user may not have noticed, in that same batch. Interrupt mid-task only for a fatal flaw you could not have seen earlier.
