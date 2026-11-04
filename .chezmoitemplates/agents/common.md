@@ -91,3 +91,19 @@ Define the observable change that confirms success before starting:
 - "The button is disabled when the form is empty"
 
 Don't mark a task complete until the exit condition is verified.
+
+## Reporting
+
+A report is a message that tells the human what you did, found, or plan. Open every report with these three parts, in this order, with nothing between them:
+
+- **Conclusion** — the result in one sentence.
+- **Decision needed** — what only the human can decide, with your recommendation; write `None` when nothing needs deciding.
+- **Next step** — the next action and who takes it; write `None` when the work is finished.
+
+Show progress logs, tables, and history only when the human asks for them. They never replace the conclusion. Put evidence and any other detail after the three parts.
+
+`Done`, `works`, `fixed`, `deployed`, `usable`, and similar claims require evidence you fetched yourself in this session: the command or check you ran and what it returned. State anything you did not verify as unverified, and never report it as working. Run a check yourself instead of asking the human to run it. For a deploy, check the running state yourself before calling it usable.
+
+## Writing Preferences
+
+The writing preferences the human has stated are kept in this section. Add each one once, as a single rule, when the human states it. Follow it in every session and every tool, and do not repeat it in another instruction file.
