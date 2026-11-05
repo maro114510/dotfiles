@@ -8,6 +8,7 @@ Prioritize quality over speed.
 
 - All work must be done on a worktree using [git-wt](https://github.com/k1LoW/git-wt)
 - Direct changes to the main branch are prohibited — always work on a worktree and merge after review
+- Commit, stash, or discard only changes you made in this session; if the worktree holds changes you did not make, stop and ask
 
 ## Scope of This File
 
