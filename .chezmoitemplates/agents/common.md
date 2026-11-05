@@ -39,6 +39,10 @@ For a write to production or a shared environment, prepare and show the target l
 
 Stop after showing it and let the human execute the write. Never run the write yourself.
 
+## Public Writing
+
+Before writing anything a public audience can read (an Issue, PR, comment, commit, or file in a public repository), ask of every fact: can that audience see where it came from? If not, abstract it, such as "a private repository" or aggregates only, or leave it out. This covers names of other repositories, organizations, employers, clients, people, internal tickets, paths, and data. When unsure whether the target is public, check `gh repo view --json visibility`.
+
 ## Clarify Before Implementing
 
 Surface assumptions and flaws before writing code, not after.
