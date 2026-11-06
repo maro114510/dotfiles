@@ -1,5 +1,5 @@
 lockfile_version: '1'
-generated_at: '2026-11-06T01:06:05.436544+00:00'
+generated_at: '2026-11-06T02:15:03.312595+00:00'
 apm_version: 0.35.0
 dependencies:
 - repo_url: herdrdev/herdr
@@ -95,7 +95,7 @@ dependencies:
 - repo_url: maro114510/skills
   name: skills
   host: github.com
-  resolved_commit: 431e959f864168ed2de424f1fd80fe4bcbc9257e
+  resolved_commit: 665c0e2eab8df9dc365f79a15390f2a2abf0e450
   version: 1.2.0
   package_type: marketplace_plugin
   deployed_files:
@@ -788,9 +788,9 @@ dependencies:
     .agents/skills/orchestrate-epic/scripts/oe-records.sh: sha256:2acf45433316abeeaaab7ec45e1adbfb704a83c1da904e5f46205dbb4cdf6ca0
     .agents/skills/orchestrate-epic/scripts/oe-rereview.sh: sha256:43e75b63b70a56f50dca79cc1118ddcca26e304cdbfd31f779d8aa1a3b93e2ad
     .agents/skills/orchestrate-epic/scripts/oe-status.sh: sha256:37f1dc0b7b16fda72554e923f1f2b00d9eaadf916335d1b0b0d09ba1c5fc7129
-    .agents/skills/orchestrate-epic/scripts/oe-store.sh: sha256:6eb37f573a32e090b627f41f0a4a340976afadce87a998173377227dc45431ab
+    .agents/skills/orchestrate-epic/scripts/oe-store.sh: sha256:b7bb42010fc67dfcdcf2b6fdb2d97fbb4a4954ae3d22010a94daed211c73bc70
     .agents/skills/orchestrate-epic/scripts/oe-verdict.sh: sha256:10b4bc678a6c40907af5500fa0dc2be093134dabb5ffcf108ef7c01a376cd9d8
-    .agents/skills/orchestrate-epic/scripts/oe-wait.sh: sha256:90918efa22f0d28ca6a3302f4d84a42ecc31e7b6b6d928913f212cdca0b7bd6e
+    .agents/skills/orchestrate-epic/scripts/oe-wait.sh: sha256:57216326046ae60bc6854ae1a42ee3c0608f4173f541983696f957e6f621b01f
     .agents/skills/orchestrate-epic/scripts/oe-worktree.sh: sha256:f57598cb7e6f366558da1ca082aae174b6ea74a7bd688bcfd7f763863271e2a4
     .agents/skills/orchestrate-epic/scripts/test-oe-board.bats: sha256:388ffe1fae8121c54a5bb2b1c5f7bc62bfec5369d480c44da57a215145f71682
     .agents/skills/orchestrate-epic/scripts/test-oe-brief.bats: sha256:5402522e53a9a3de966798caaf2345dc3d51bd56e04573e77da9fa4773959dd8
@@ -800,7 +800,7 @@ dependencies:
     .agents/skills/orchestrate-epic/scripts/test-oe-rereview.bats: sha256:9bce32661bc4d720cf2a546d07b7aac5bbf7d11a1efa925e804172845da26c0b
     .agents/skills/orchestrate-epic/scripts/test-oe-status.bats: sha256:77c86f776bc1d0b532540a8fa4d9743167a7380dd7f4563c408271d946d057a6
     .agents/skills/orchestrate-epic/scripts/test-oe-verdict.bats: sha256:9a22ff4d915fe8f787f2d4fb5c7ad6f8010e27eb771030b83ca461777c495202
-    .agents/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:9c9bd0314f52a566c168eabe7ef94be3cc55825e1e2af1bf62e1ee89582c6b5f
+    .agents/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:59f3fe9fc41e2ecdaa4dcbab70dd764c6f88a33705bc578d183458cfe6806a3c
     .agents/skills/orchestrate-epic/scripts/test-oe-worktree.bats: sha256:a15f82f7852fb9836fe15f17f3684f88175cf9caca1674dfd9e94840e6d5572d
     .agents/skills/orchestrate-epic/scripts/testdata/fake-gh.sh: sha256:b927ab55bdc3c1c1ef0e22665516582c536131ce193f06b9ccd8331ccdf4b7f2
     .agents/skills/orchestrate-epic/scripts/testdata/fake-github-write.jq: sha256:c6dc77502804eda14b49eb73520b9bedae6b7467ba98ccca2cd99be37ac0a456
@@ -961,9 +961,9 @@ dependencies:
     .claude/skills/orchestrate-epic/scripts/oe-records.sh: sha256:2acf45433316abeeaaab7ec45e1adbfb704a83c1da904e5f46205dbb4cdf6ca0
     .claude/skills/orchestrate-epic/scripts/oe-rereview.sh: sha256:43e75b63b70a56f50dca79cc1118ddcca26e304cdbfd31f779d8aa1a3b93e2ad
     .claude/skills/orchestrate-epic/scripts/oe-status.sh: sha256:37f1dc0b7b16fda72554e923f1f2b00d9eaadf916335d1b0b0d09ba1c5fc7129
-    .claude/skills/orchestrate-epic/scripts/oe-store.sh: sha256:6eb37f573a32e090b627f41f0a4a340976afadce87a998173377227dc45431ab
+    .claude/skills/orchestrate-epic/scripts/oe-store.sh: sha256:b7bb42010fc67dfcdcf2b6fdb2d97fbb4a4954ae3d22010a94daed211c73bc70
     .claude/skills/orchestrate-epic/scripts/oe-verdict.sh: sha256:10b4bc678a6c40907af5500fa0dc2be093134dabb5ffcf108ef7c01a376cd9d8
-    .claude/skills/orchestrate-epic/scripts/oe-wait.sh: sha256:90918efa22f0d28ca6a3302f4d84a42ecc31e7b6b6d928913f212cdca0b7bd6e
+    .claude/skills/orchestrate-epic/scripts/oe-wait.sh: sha256:57216326046ae60bc6854ae1a42ee3c0608f4173f541983696f957e6f621b01f
     .claude/skills/orchestrate-epic/scripts/oe-worktree.sh: sha256:f57598cb7e6f366558da1ca082aae174b6ea74a7bd688bcfd7f763863271e2a4
     .claude/skills/orchestrate-epic/scripts/test-oe-board.bats: sha256:388ffe1fae8121c54a5bb2b1c5f7bc62bfec5369d480c44da57a215145f71682
     .claude/skills/orchestrate-epic/scripts/test-oe-brief.bats: sha256:5402522e53a9a3de966798caaf2345dc3d51bd56e04573e77da9fa4773959dd8
@@ -973,7 +973,7 @@ dependencies:
     .claude/skills/orchestrate-epic/scripts/test-oe-rereview.bats: sha256:9bce32661bc4d720cf2a546d07b7aac5bbf7d11a1efa925e804172845da26c0b
     .claude/skills/orchestrate-epic/scripts/test-oe-status.bats: sha256:77c86f776bc1d0b532540a8fa4d9743167a7380dd7f4563c408271d946d057a6
     .claude/skills/orchestrate-epic/scripts/test-oe-verdict.bats: sha256:9a22ff4d915fe8f787f2d4fb5c7ad6f8010e27eb771030b83ca461777c495202
-    .claude/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:9c9bd0314f52a566c168eabe7ef94be3cc55825e1e2af1bf62e1ee89582c6b5f
+    .claude/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:59f3fe9fc41e2ecdaa4dcbab70dd764c6f88a33705bc578d183458cfe6806a3c
     .claude/skills/orchestrate-epic/scripts/test-oe-worktree.bats: sha256:a15f82f7852fb9836fe15f17f3684f88175cf9caca1674dfd9e94840e6d5572d
     .claude/skills/orchestrate-epic/scripts/testdata/fake-gh.sh: sha256:b927ab55bdc3c1c1ef0e22665516582c536131ce193f06b9ccd8331ccdf4b7f2
     .claude/skills/orchestrate-epic/scripts/testdata/fake-github-write.jq: sha256:c6dc77502804eda14b49eb73520b9bedae6b7467ba98ccca2cd99be37ac0a456
@@ -1138,9 +1138,9 @@ dependencies:
     .config/opencode/skills/orchestrate-epic/scripts/oe-records.sh: sha256:2acf45433316abeeaaab7ec45e1adbfb704a83c1da904e5f46205dbb4cdf6ca0
     .config/opencode/skills/orchestrate-epic/scripts/oe-rereview.sh: sha256:43e75b63b70a56f50dca79cc1118ddcca26e304cdbfd31f779d8aa1a3b93e2ad
     .config/opencode/skills/orchestrate-epic/scripts/oe-status.sh: sha256:37f1dc0b7b16fda72554e923f1f2b00d9eaadf916335d1b0b0d09ba1c5fc7129
-    .config/opencode/skills/orchestrate-epic/scripts/oe-store.sh: sha256:6eb37f573a32e090b627f41f0a4a340976afadce87a998173377227dc45431ab
+    .config/opencode/skills/orchestrate-epic/scripts/oe-store.sh: sha256:b7bb42010fc67dfcdcf2b6fdb2d97fbb4a4954ae3d22010a94daed211c73bc70
     .config/opencode/skills/orchestrate-epic/scripts/oe-verdict.sh: sha256:10b4bc678a6c40907af5500fa0dc2be093134dabb5ffcf108ef7c01a376cd9d8
-    .config/opencode/skills/orchestrate-epic/scripts/oe-wait.sh: sha256:90918efa22f0d28ca6a3302f4d84a42ecc31e7b6b6d928913f212cdca0b7bd6e
+    .config/opencode/skills/orchestrate-epic/scripts/oe-wait.sh: sha256:57216326046ae60bc6854ae1a42ee3c0608f4173f541983696f957e6f621b01f
     .config/opencode/skills/orchestrate-epic/scripts/oe-worktree.sh: sha256:f57598cb7e6f366558da1ca082aae174b6ea74a7bd688bcfd7f763863271e2a4
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-board.bats: sha256:388ffe1fae8121c54a5bb2b1c5f7bc62bfec5369d480c44da57a215145f71682
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-brief.bats: sha256:5402522e53a9a3de966798caaf2345dc3d51bd56e04573e77da9fa4773959dd8
@@ -1150,7 +1150,7 @@ dependencies:
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-rereview.bats: sha256:9bce32661bc4d720cf2a546d07b7aac5bbf7d11a1efa925e804172845da26c0b
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-status.bats: sha256:77c86f776bc1d0b532540a8fa4d9743167a7380dd7f4563c408271d946d057a6
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-verdict.bats: sha256:9a22ff4d915fe8f787f2d4fb5c7ad6f8010e27eb771030b83ca461777c495202
-    .config/opencode/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:9c9bd0314f52a566c168eabe7ef94be3cc55825e1e2af1bf62e1ee89582c6b5f
+    .config/opencode/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:59f3fe9fc41e2ecdaa4dcbab70dd764c6f88a33705bc578d183458cfe6806a3c
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-worktree.bats: sha256:a15f82f7852fb9836fe15f17f3684f88175cf9caca1674dfd9e94840e6d5572d
     .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-gh.sh: sha256:b927ab55bdc3c1c1ef0e22665516582c536131ce193f06b9ccd8331ccdf4b7f2
     .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-github-write.jq: sha256:c6dc77502804eda14b49eb73520b9bedae6b7467ba98ccca2cd99be37ac0a456
@@ -1208,7 +1208,7 @@ dependencies:
     .config/opencode/skills/write-researched-document/SKILL.md: sha256:1343345606dbef81f1dae69d9c7d92ddbe1bb734c967e8bec5d17c2edf134236
     .config/opencode/skills/write-researched-document/agents/openai.yaml: sha256:1421516b58df14e15896071d2bb116367f59a3186ba7a66e502ecd92e75d6a6d
     .config/opencode/skills/write-researched-document/references/evidence-workflow.md: sha256:51de21573a16a72db453f79debd7fdc9facfc8e6fc1cc26ecf6e090a30e1e0a5
-  content_hash: sha256:8bc997d4619b26a49167eb03edcd3a89e4a3ac0d4dc9864b70a87804016afa50
+  content_hash: sha256:eb875ecc8277bc1c8a9c632beabb45aa987c321f9bf2986be7c6e92de5e4bada
   declared_license: MIT
 - repo_url: mizchi/skills
   name: empirical-prompt-tuning
@@ -2563,7 +2563,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:6eb37f573a32e090b627f41f0a4a340976afadce87a998173377227dc45431ab
+  content_hash: sha256:b7bb42010fc67dfcdcf2b6fdb2d97fbb4a4954ae3d22010a94daed211c73bc70
 - kind: project-relative
   target: claude
   value: .claude/skills/orchestrate-epic/scripts/oe-verdict.sh
@@ -2581,7 +2581,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:90918efa22f0d28ca6a3302f4d84a42ecc31e7b6b6d928913f212cdca0b7bd6e
+  content_hash: sha256:57216326046ae60bc6854ae1a42ee3c0608f4173f541983696f957e6f621b01f
 - kind: project-relative
   target: claude
   value: .claude/skills/orchestrate-epic/scripts/oe-worktree.sh
@@ -2671,7 +2671,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:9c9bd0314f52a566c168eabe7ef94be3cc55825e1e2af1bf62e1ee89582c6b5f
+  content_hash: sha256:59f3fe9fc41e2ecdaa4dcbab70dd764c6f88a33705bc578d183458cfe6806a3c
 - kind: project-relative
   target: claude
   value: .claude/skills/orchestrate-epic/scripts/test-oe-worktree.bats
@@ -4570,7 +4570,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:6eb37f573a32e090b627f41f0a4a340976afadce87a998173377227dc45431ab
+  content_hash: sha256:b7bb42010fc67dfcdcf2b6fdb2d97fbb4a4954ae3d22010a94daed211c73bc70
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/oe-verdict.sh
@@ -4588,7 +4588,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:90918efa22f0d28ca6a3302f4d84a42ecc31e7b6b6d928913f212cdca0b7bd6e
+  content_hash: sha256:57216326046ae60bc6854ae1a42ee3c0608f4173f541983696f957e6f621b01f
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/oe-worktree.sh
@@ -4678,7 +4678,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:9c9bd0314f52a566c168eabe7ef94be3cc55825e1e2af1bf62e1ee89582c6b5f
+  content_hash: sha256:59f3fe9fc41e2ecdaa4dcbab70dd764c6f88a33705bc578d183458cfe6806a3c
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/test-oe-worktree.bats
@@ -6478,7 +6478,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:6eb37f573a32e090b627f41f0a4a340976afadce87a998173377227dc45431ab
+  content_hash: sha256:b7bb42010fc67dfcdcf2b6fdb2d97fbb4a4954ae3d22010a94daed211c73bc70
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/oe-verdict.sh
@@ -6496,7 +6496,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:90918efa22f0d28ca6a3302f4d84a42ecc31e7b6b6d928913f212cdca0b7bd6e
+  content_hash: sha256:57216326046ae60bc6854ae1a42ee3c0608f4173f541983696f957e6f621b01f
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/oe-worktree.sh
@@ -6586,7 +6586,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:9c9bd0314f52a566c168eabe7ef94be3cc55825e1e2af1bf62e1ee89582c6b5f
+  content_hash: sha256:59f3fe9fc41e2ecdaa4dcbab70dd764c6f88a33705bc578d183458cfe6806a3c
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/test-oe-worktree.bats
