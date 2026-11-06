@@ -49,4 +49,7 @@ dot_raycast/memo-search/bun.lockb
 
 tmp/
 
+# git-wt worktrees
+.wt/
+
 # End Of Ignore
