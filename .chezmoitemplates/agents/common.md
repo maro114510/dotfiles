@@ -1,3 +1,12 @@
+## Execution Risk Budget
+
+The accepted execution posture for Codex, Claude Code, and OpenCode — write
+scope, approval requirement, network access, and the actions each may run
+without confirmation — is recorded once in
+`~/.config/agents/execution-risk-budget.md`. Read that record before assuming a
+command is allowed. It is the authority for permissions; this file does not
+restate permission rules, and a rule written only here is not enforced.
+
 ## Working Principles
 
 Keep changes minimal and maintain backward compatibility.
