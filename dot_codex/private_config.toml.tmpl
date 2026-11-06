@@ -1,11 +1,9 @@
 {{- /* Keep Codex-generated settings from the current target; overlay only portable policy. */ -}}
+{{- /* The model and its efforts are per-machine preferences, so Codex keeps whatever was chosen last. */ -}}
 {{- $policy := fromToml `
 hide_agent_reasoning = true
-model = "gpt-5.6-terra"
 network_access = true
 ask_for_approval = "never"
-model_responding_effort = "medium"
-model_reasoning_effort = "high"
 approval_policy = "never"
 personality = "pragmatic"
 approvals_reviewer = "user"
