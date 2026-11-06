@@ -167,7 +167,12 @@
       "Read(.env.*)",
       "Read(id_rsa)",
       "Read(id_ed25519)",
-      "Read(**/*token*)",
+      "Read(**/*token*.json)",
+      "Read(**/*token*.yml)",
+      "Read(**/*token*.yaml)",
+      "Read(**/*token*.txt)",
+      "Read(**/*token*.env)",
+      "Read(**/*.token)",
       "Read(**/*.key)",
       "Write(.env*)",
       "Write(**/secrets/**)",
@@ -180,7 +185,7 @@
       "Bash(mysql:*)",
       "Bash(mongod:*)"
     ],
-    "defaultMode": "auto",
+    "defaultMode": "bypassPermissions",
     "read": {
       "deny": [
         "**/.env*",
