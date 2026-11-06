@@ -76,7 +76,7 @@ Touch only what the task requires.
 ## Deleting Files
 
 - Delete with `trash`, not `rm`, so a mistake can be undone from the Trash
-- `rm` is fine for temporary files a script created itself, and on a host without `trash`
+- `rm` is fine for temporary files a script created itself, and where `trash` is missing or cannot run
 
 ## Docs vs. Code
 
