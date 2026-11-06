@@ -45,6 +45,16 @@ EOF
   [ "$(jq -r .attribution.commit <<<"$output")" = "" ]
 }
 
+@test "claude keeps a deny rule the machine added and drops retired shared rules" {
+  echo '{"permissions":{"deny":["Bash(foo:*)","Write(.env*)","Read(**/*token*)"]}}' > "${home_dir}/.claude/settings.json"
+  run render dot_claude/settings.json.tmpl
+  [ "$status" -eq 0 ]
+  [ "$(jq '.permissions.deny | index("Bash(foo:*)") != null' <<<"$output")" = true ]
+  [ "$(jq '.permissions.deny | index("Write(.env*)") == null' <<<"$output")" = true ]
+  [ "$(jq '.permissions.deny | index("Read(**/*token*)") == null' <<<"$output")" = true ]
+  [ "$(jq '.permissions.deny | length == (unique | length)' <<<"$output")" = true ]
+}
+
 @test "claude drops permissions.read, which Claude Code does not read" {
   echo '{"permissions":{"read":{"deny":["**/.ssh/**"]}}}' > "${home_dir}/.claude/settings.json"
   run render dot_claude/settings.json.tmpl
@@ -63,7 +73,7 @@ EOF
 @test "claude on a new machine writes only the core" {
   run render dot_claude/settings.json.tmpl
   [ "$status" -eq 0 ]
-  [ "$(jq -c 'keys' <<<"$output")" = '["attribution","cleanupPeriodDays","permissions","statusLine"]' ]
+  [ "$(jq -c 'keys' <<<"$output")" = '["attribution","cleanupPeriodDays","permissions"]' ]
   [ "$(jq -c '.permissions | keys' <<<"$output")" = '["deny"]' ]
 }
 
@@ -88,6 +98,12 @@ EOF
   has "[projects.\"${home_dir}/repo\"]"
   lacks '[projects."/"]'
   lacks "[projects.\"${home_dir}\"]"
+}
+
+@test "codex on a new machine writes nothing" {
+  run render dot_codex/private_config.toml.tmpl
+  [ "$status" -eq 0 ]
+  [ -z "$output" ]
 }
 
 @test "codex returns a file with nothing to remove byte for byte" {

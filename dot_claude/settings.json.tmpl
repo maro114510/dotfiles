@@ -6,10 +6,6 @@
     "commit": "",
     "pr": ""
   },
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
-  },
   "permissions": {
     "deny": [
       "Read(.env)",
@@ -55,8 +51,16 @@
   {{- $original = include $path -}}
   {{- $config = fromJson $original -}}
 {{- end -}}
+{{- /* Keep deny rules a machine added itself: mergeOverwrite would replace the whole list. */ -}}
+{{- $liveDeny := list -}}
+{{- with (get $config "permissions") -}}
+  {{- with (get . "deny") -}}{{- $liveDeny = . -}}{{- end -}}
+{{- end -}}
 {{- $config = mergeOverwrite $config $managed -}}
-{{- /* permissions.read is not a Claude Code setting; the deny list above carries those paths. */ -}}
+{{- /* Retired shared rules: Write() is never matched, and the bare token rule also blocked source files such as tokenizer.go. */ -}}
+{{- $deny := without (uniq (concat $managed.permissions.deny $liveDeny)) "Write(.env*)" "Write(**/secrets/**)" "Read(**/*token*)" -}}
+{{- $_ := set (get $config "permissions") "deny" $deny -}}
+{{- /* permissions.read is not a Claude Code setting; the deny list above replaces it. */ -}}
 {{- $_ := unset (get $config "permissions") "read" -}}
 {{- if and $original (deepEqual (fromJson $original) $config) -}}
 {{ $original -}}
