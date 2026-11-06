@@ -1,5 +1,5 @@
 lockfile_version: '1'
-generated_at: '2026-11-06T05:28:05.994726+00:00'
+generated_at: '2026-11-06T12:15:24.893134+00:00'
 apm_version: 0.35.0
 dependencies:
 - repo_url: herdrdev/herdr
@@ -95,7 +95,7 @@ dependencies:
 - repo_url: maro114510/skills
   name: skills
   host: github.com
-  resolved_commit: b5f7ad8de5f5b41ae5f65095473e18873804be0a
+  resolved_commit: 35c504da9cb86d357e68919ff05022c4cbea61ed
   version: 1.2.0
   package_type: marketplace_plugin
   deployed_files:
@@ -233,6 +233,14 @@ dependencies:
   - .agents/skills/orchestrate-epic/scripts/testdata/fake-github.jq
   - .agents/skills/orchestrate-epic/scripts/testdata/fake-herdr.sh
   - .agents/skills/orchestrate-epic/scripts/testdata/records.bash
+  - .agents/skills/pick-next
+  - .agents/skills/pick-next/SKILL.md
+  - .agents/skills/pick-next/scripts/pick-discussions.graphql
+  - .agents/skills/pick-next/scripts/pick-issues.graphql
+  - .agents/skills/pick-next/scripts/pick-prs.graphql
+  - .agents/skills/pick-next/scripts/pick.jq
+  - .agents/skills/pick-next/scripts/pick.sh
+  - .agents/skills/pick-next/scripts/test-pick.bats
   - .agents/skills/pr-doc-review-pe
   - .agents/skills/pr-doc-review-pe/SKILL.md
   - .agents/skills/pr-owner
@@ -430,6 +438,14 @@ dependencies:
   - .claude/skills/orchestrate-epic/scripts/testdata/fake-github.jq
   - .claude/skills/orchestrate-epic/scripts/testdata/fake-herdr.sh
   - .claude/skills/orchestrate-epic/scripts/testdata/records.bash
+  - .claude/skills/pick-next
+  - .claude/skills/pick-next/SKILL.md
+  - .claude/skills/pick-next/scripts/pick-discussions.graphql
+  - .claude/skills/pick-next/scripts/pick-issues.graphql
+  - .claude/skills/pick-next/scripts/pick-prs.graphql
+  - .claude/skills/pick-next/scripts/pick.jq
+  - .claude/skills/pick-next/scripts/pick.sh
+  - .claude/skills/pick-next/scripts/test-pick.bats
   - .claude/skills/pr-doc-review-pe
   - .claude/skills/pr-doc-review-pe/SKILL.md
   - .claude/skills/pr-owner
@@ -483,6 +499,8 @@ dependencies:
   - .claude/skills/shakedown/references/viewpoints.md
   - .claude/skills/skill-cleaner
   - .claude/skills/skill-cleaner/SKILL.md
+  - .claude/skills/skills/.claude-plugin/plugin.json
+  - .claude/skills/skills/bin/pr-review-pe-identify-pr.sh
   - .claude/skills/tear-down
   - .claude/skills/tear-down/SKILL.md
   - .claude/skills/why-man
@@ -629,6 +647,14 @@ dependencies:
   - .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-github.jq
   - .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-herdr.sh
   - .config/opencode/skills/orchestrate-epic/scripts/testdata/records.bash
+  - .config/opencode/skills/pick-next
+  - .config/opencode/skills/pick-next/SKILL.md
+  - .config/opencode/skills/pick-next/scripts/pick-discussions.graphql
+  - .config/opencode/skills/pick-next/scripts/pick-issues.graphql
+  - .config/opencode/skills/pick-next/scripts/pick-prs.graphql
+  - .config/opencode/skills/pick-next/scripts/pick.jq
+  - .config/opencode/skills/pick-next/scripts/pick.sh
+  - .config/opencode/skills/pick-next/scripts/test-pick.bats
   - .config/opencode/skills/pr-doc-review-pe
   - .config/opencode/skills/pr-doc-review-pe/SKILL.md
   - .config/opencode/skills/pr-owner
@@ -716,7 +742,7 @@ dependencies:
     .agents/skills/babysit/scripts/test-worktree.bats: sha256:0f2fb5014126a1f92f6bfb3bc3977d62ccab1a30895c77cdccf14cdfe0b2a279
     .agents/skills/babysit/scripts/wait.sh: sha256:6b3be00e9ab9a06b543c89945de423c815c9a1247a5d9e582d82d56b65c621bd
     .agents/skills/babysit/scripts/worktree.sh: sha256:0adbcb5724bffc46ed93493af276b7e69ec5d2a3a7eafc339003836be60d6d48
-    .agents/skills/commit/SKILL.md: sha256:ee986d504b70ad676edfb23a499aec1f04bfe561da67be10630e17acaa78d5c6
+    .agents/skills/commit/SKILL.md: sha256:af8af5ca4f5a8fd647d08dbde75fdd9fc73c1d95420c7807f5e3e861313493c3
     .agents/skills/commit/references/issue-footer.md: sha256:39af635104ca26017dab47526144b4389e6053d27697da7f43213ad952e8561d
     .agents/skills/commit/references/message-examples.md: sha256:9fa0c8da456b0e37be36f3870824d48859eb9c5695c6649bdbfac23ab4e861de
     .agents/skills/commit/scripts/classify-approval.sh: sha256:9002c46ba84476b00b460ee77c98b69b74553844590729fad554f3a745468aa1
@@ -727,14 +753,14 @@ dependencies:
     .agents/skills/create-github-issues/references/structure.md: sha256:dbfd67cb2bc3dccf639dadac86831ef34fede216fb694c5f43755dd8b2bae8fd
     .agents/skills/create-github-issues/references/templates.en.md: sha256:27bf07cf8aa096094ba8559b1370b28220869ff4e27549ccbab36e39a2748e26
     .agents/skills/create-github-issues/references/templates.ja.md: sha256:f330b1915764f25545511d3a57652ca1475f89125b6d915bf657c394858b43a4
-    .agents/skills/create-pr/SKILL.md: sha256:d70a15eeaa16d61807d6b69933d032524b530654b92e75c18a9a9a5e616e56c2
+    .agents/skills/create-pr/SKILL.md: sha256:ce95e5bcb981f34bd336d1fbdd9368a49e1fc3b3fe098704fecb4aff1203ac18
     .agents/skills/create-pr/references/description.md: sha256:95fb72a31cb921c7391f4ced9e2bffbddfb7221d1e4510addfb03455f49c3a2b
     .agents/skills/create-pr/references/result.md: sha256:aa042f83b57f555c054e78bad9e92f69b761cee8d110373ffb1bb46a1a3de46d
-    .agents/skills/create-pr/scripts/create-linked-pr.sh: sha256:8cbeafe3708d37cda4dfe0e2c58027bffa6bb891a51bb1665b65b09933a5534d
+    .agents/skills/create-pr/scripts/create-linked-pr.sh: sha256:549112d16f417621cf189e7ac83e1ccc856e48018ed4767e3142b87a3bec7a48
     .agents/skills/create-pr/scripts/issue-refs.sh: sha256:18d32c12e45ac35f6cfe171b5a8ad74ed7e766b70ba7f92423bf8312aacd1aaa
     .agents/skills/create-pr/scripts/lang.sh: sha256:2bce3cda52901d4d50766aa17e347387ae6921005a705d1499a4cc051b5b1217
     .agents/skills/create-pr/scripts/pr-context.sh: sha256:b75f730122eb98821e12448562ce438b327a8e26addc56c79dc519af95c98322
-    .agents/skills/create-pr/scripts/test-create-linked-pr.sh: sha256:5c89170b0c7acb8b6c7598195af7df49b3352bb7e648f74e7af3d5111b71783b
+    .agents/skills/create-pr/scripts/test-create-linked-pr.sh: sha256:b2baeead098928475837433c3fb3bf48b0e76adbddcd0e7d8401b7a529ad28f0
     .agents/skills/create-pr/scripts/test-issue-refs.sh: sha256:04973c80bf825a075aaacb1cd1d8611100c47141a9f57108d174a2944e901d5f
     .agents/skills/create-pr/scripts/test-lang.sh: sha256:02d29b598f4fe789c4e5cc1f3f3b1ca5cee47255641fe9ae1959900685cde92e
     .agents/skills/create-pr/scripts/test-pr-context.sh: sha256:8361a12255d0200ebef746da995b7194be29a65a6a1c9dad5da7340d7db747e3
@@ -751,10 +777,10 @@ dependencies:
     .agents/skills/frame-problem/SKILL.md: sha256:e3c253fc110649659f3bf03cc6cbd55c41acef954bd9d8398c89b4719df548a8
     .agents/skills/frame-problem/references/question-loop.md: sha256:8e432ef20504effa9b92c83674110a3c793f3ddeb551afcf7635be740ce6d4ec
     .agents/skills/frame-problem/references/template.md: sha256:e7beb1dbc4f13862166550f429c0bbc6d05dbf59f69f80edc672a34c911000ee
-    .agents/skills/implement/SKILL.md: sha256:c05876ecacd2d4b2c2ac7a5be8bf17ce49b85415ebd0671901bfed13c4169f2f
+    .agents/skills/implement/SKILL.md: sha256:7787dc6c07985baa97b4c269830a2d27163db930a98d6b8870aa5bcc9c2a1ac1
     .agents/skills/implement/references/change-units.md: sha256:00bacdc0b5b9c035b0dfe0b60634893924b8b117d5abe190959874febcfe2777
     .agents/skills/implement/references/evidence.md: sha256:0161238daf377f2efc58bc767d813fd468c7749062cadeaa3935cf2f87d50bf8
-    .agents/skills/implement/references/interactive.md: sha256:17445ee4725bc2ee2b886aa42865382c5a57918dfc7a9d655f0cf198f464a106
+    .agents/skills/implement/references/interactive.md: sha256:57ed7a7771e6dc140d4298565e8c50b102bdcb1642c2dec8965505db3e9dafb9
     .agents/skills/implement/references/playbooks/behavior-change.md: sha256:d46cd7aca956fa25e7a11b2ff553dbc4f6c6b24c4ba8d53da11e6718070cc17e
     .agents/skills/implement/references/playbooks/bug-fix.md: sha256:6014f5181304024b1ef120b58d4c53ccf8cc322ae48c9d15a6214035dbad26a1
     .agents/skills/implement/references/playbooks/refactor.md: sha256:26f41e26844874d47f29e3732d9bf9d298fc5b443ccad250e95a71cc5703e63c
@@ -783,16 +809,16 @@ dependencies:
     .agents/skills/orchestrate-epic/scripts/oe-forget.sh: sha256:b71fbcfaa40eb1b9af048b3e8d9f61b700f3bb04b4172f4cc58bb348e60ec4b6
     .agents/skills/orchestrate-epic/scripts/oe-lock.sh: sha256:e8a4996b7c9e2a15cd833de10e7804a659ee12fdfe661e847bfa83d9f2c80114
     .agents/skills/orchestrate-epic/scripts/oe-question.sh: sha256:b2f2d8e9a8d949d665b24725ff78e472be55d1d66ed7fceb12eed319af8d7423
-    .agents/skills/orchestrate-epic/scripts/oe-ready-checks.graphql: sha256:0c6ca0390f6fd94ace4ba4d0265e7f96bbde6e28414a0ac786dbdef62c9d6848
-    .agents/skills/orchestrate-epic/scripts/oe-ready-epic.graphql: sha256:0af53ecca364ab5b2d52fe0742cbbd22e70b2e9e4d5b9ecd583c6538bae3e71f
-    .agents/skills/orchestrate-epic/scripts/oe-ready-issue.graphql: sha256:288e291f5895a49dc4b1821d3c3d7ed2f40f8b68f680e418a7c991485726deba
-    .agents/skills/orchestrate-epic/scripts/oe-ready.jq: sha256:7bf708970f9ee4c478ccd5730a78165c5dde89768f0260fa07cd873a5aa1a736
+    .agents/skills/orchestrate-epic/scripts/oe-ready-checks.graphql: sha256:e815c4a17fef50204047a4faef72614bbe88311e080872c8b24bdce736f4ca01
+    .agents/skills/orchestrate-epic/scripts/oe-ready-epic.graphql: sha256:30cab2280cbec6eb7b5c9476f2a65352295614262f3f3c260818f53ac100b52e
+    .agents/skills/orchestrate-epic/scripts/oe-ready-issue.graphql: sha256:f922260d910371ee010482dd7ae840a757c18d94f6c87d3211d0fd3ca0482c78
+    .agents/skills/orchestrate-epic/scripts/oe-ready.jq: sha256:1a54d5d20e4bc23d4dc7fca729f54e59b12d2f8d4f8da59e29ebfe10164e67ba
     .agents/skills/orchestrate-epic/scripts/oe-ready.sh: sha256:104828554e82a710ea35055f384d7f0ee3d9bf5b952535a55557299f9658edbe
     .agents/skills/orchestrate-epic/scripts/oe-records.jq: sha256:6fb57c0df136313f820e93a8a9f01e72f0c7ffc625ed4d4b4e90b72007ebeac8
     .agents/skills/orchestrate-epic/scripts/oe-records.sh: sha256:2acf45433316abeeaaab7ec45e1adbfb704a83c1da904e5f46205dbb4cdf6ca0
     .agents/skills/orchestrate-epic/scripts/oe-rereview.sh: sha256:43e75b63b70a56f50dca79cc1118ddcca26e304cdbfd31f779d8aa1a3b93e2ad
     .agents/skills/orchestrate-epic/scripts/oe-start.sh: sha256:4e591accdb59aa5ce84eeb21f0d97d58283de6a5dd113c07b3b984a4bbf73d97
-    .agents/skills/orchestrate-epic/scripts/oe-status.sh: sha256:ee64ee57df05d44e6aca909d6f92c788a646531118bc40db0a0263607dddd8a9
+    .agents/skills/orchestrate-epic/scripts/oe-status.sh: sha256:db7d8e7e8ecb83191ab877884d82e2d2ac40e0e83dfbb364c3d695a093544ee4
     .agents/skills/orchestrate-epic/scripts/oe-store.sh: sha256:3a93b32caa478becb732a26cd8fc3bdb213f0d80bec6c46fb8485d1726102aa0
     .agents/skills/orchestrate-epic/scripts/oe-verdict.sh: sha256:10b4bc678a6c40907af5500fa0dc2be093134dabb5ffcf108ef7c01a376cd9d8
     .agents/skills/orchestrate-epic/scripts/oe-wait.sh: sha256:9e85add14244f5144a3c1c38b182f4c63920611623af93cd590cb6d245ab7b50
@@ -800,23 +826,30 @@ dependencies:
     .agents/skills/orchestrate-epic/scripts/test-oe-board.bats: sha256:388ffe1fae8121c54a5bb2b1c5f7bc62bfec5369d480c44da57a215145f71682
     .agents/skills/orchestrate-epic/scripts/test-oe-brief.bats: sha256:5402522e53a9a3de966798caaf2345dc3d51bd56e04573e77da9fa4773959dd8
     .agents/skills/orchestrate-epic/scripts/test-oe-lock.bats: sha256:33c3c1d323a395101d24d68a0646efedb8ecfd8fbf77e1c3afb669e58d79e0a7
-    .agents/skills/orchestrate-epic/scripts/test-oe-ready.bats: sha256:8c89a9a565977a3642b51667baeb32a9304aa1ebce1311f5a12d33463b7d1b90
+    .agents/skills/orchestrate-epic/scripts/test-oe-ready.bats: sha256:f63c332240aaa3ab7b21574bafd8e6f1bbd00fd6c6fb0974019a4bfab470ca45
     .agents/skills/orchestrate-epic/scripts/test-oe-records.bats: sha256:5e34ccd480a3fb338035ac7eb0effb19082b390008886f4e0f60ea0f1f19750c
     .agents/skills/orchestrate-epic/scripts/test-oe-rereview.bats: sha256:9bce32661bc4d720cf2a546d07b7aac5bbf7d11a1efa925e804172845da26c0b
     .agents/skills/orchestrate-epic/scripts/test-oe-start.bats: sha256:f85b3e3d6f01fc83f548a16419dcd5dd2c3cc70987fce7afe9cbb498d6a8bba6
-    .agents/skills/orchestrate-epic/scripts/test-oe-status.bats: sha256:cfc838e2fede94a140999d7ce487b6cbcb3f4074c54e8bcd18218feeff0294e9
+    .agents/skills/orchestrate-epic/scripts/test-oe-status.bats: sha256:58b804791378ca1f5c908d6b7a47af5091458d6867e175bd49c38a691cc3708b
     .agents/skills/orchestrate-epic/scripts/test-oe-verdict.bats: sha256:9a22ff4d915fe8f787f2d4fb5c7ad6f8010e27eb771030b83ca461777c495202
-    .agents/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:3cd38af56f4610b3e182308532f7c208f639b71ae6968e3a4e00b869d3534092
+    .agents/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:340e24202f1e9c5a705eda720e123756655f7285fbfc2d3db988e5ee9fa194ea
     .agents/skills/orchestrate-epic/scripts/test-oe-worktree.bats: sha256:a15f82f7852fb9836fe15f17f3684f88175cf9caca1674dfd9e94840e6d5572d
     .agents/skills/orchestrate-epic/scripts/testdata/fake-gh.sh: sha256:b927ab55bdc3c1c1ef0e22665516582c536131ce193f06b9ccd8331ccdf4b7f2
     .agents/skills/orchestrate-epic/scripts/testdata/fake-github-write.jq: sha256:c6dc77502804eda14b49eb73520b9bedae6b7467ba98ccca2cd99be37ac0a456
-    .agents/skills/orchestrate-epic/scripts/testdata/fake-github.jq: sha256:9c38080564ac160a81d05858c76cde707073fe4e2af718026baac637b7ba8fa0
+    .agents/skills/orchestrate-epic/scripts/testdata/fake-github.jq: sha256:d5fbea66a6081c38f54896a4f9f5a00694cfede78368cc391763cd82675c9eef
     .agents/skills/orchestrate-epic/scripts/testdata/fake-herdr.sh: sha256:86b35d3d2b0cbb5dbdd3d45759577f54ce518cf5e74b1e6ce4c735028739b709
     .agents/skills/orchestrate-epic/scripts/testdata/records.bash: sha256:22bf8f0d6bba7556527fb10a4252eeaddf0f68e0684ce84c1aa71a07a1104768
+    .agents/skills/pick-next/SKILL.md: sha256:6254890aa27d8979221f6fa7520357c4d36781beaacf3cd4cbf2acb88c54aa5d
+    .agents/skills/pick-next/scripts/pick-discussions.graphql: sha256:181769731b55397814a7927b0c4f2f7d616721450515726fdde2cd7e4d627b73
+    .agents/skills/pick-next/scripts/pick-issues.graphql: sha256:6936a7f5f0ebc6aca33ebc123e0e534d94da3d891e6bed56a80713dece5e4b69
+    .agents/skills/pick-next/scripts/pick-prs.graphql: sha256:db55abd69344c72db908b2472eee76c602e0b71b5e5289539ed4e4c7535ade86
+    .agents/skills/pick-next/scripts/pick.jq: sha256:8539efaa1bb69269b9ae2651073604413bd51275c9ea3a9045529030dc12a97e
+    .agents/skills/pick-next/scripts/pick.sh: sha256:8b01ee58d01bc02f636eb447c56d4195abe54932677187d65c43a376e28a2aaf
+    .agents/skills/pick-next/scripts/test-pick.bats: sha256:56c3600427a9eb32292485deb872c9a48fa8b643f47e3c3074e377c99859556c
     .agents/skills/pr-doc-review-pe/SKILL.md: sha256:8388ca56eab1c15dc64b5746b7ae7cb2869cb5be704aed585165f8ab68460646
-    .agents/skills/pr-owner/SKILL.md: sha256:b1c13004b40514081e7049e0f9320762b8a8b4d6207a23a460b06fef47a73ef9
+    .agents/skills/pr-owner/SKILL.md: sha256:b44989867f826f98a451155b7f6c235320ba4c637fb7bd8b0f1aa454dc0e81c4
     .agents/skills/pr-owner/agents/openai.yaml: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
-    .agents/skills/pr-review-pe/SKILL.md: sha256:2c807ec7486c9438433ec7b8e5a28ae471ad67fc2a8246dc8037c5deeecaaa42
+    .agents/skills/pr-review-pe/SKILL.md: sha256:46237f432eec8f25929581189f2668add4d6a99abb7e0b9f74ea82949608c9a9
     .agents/skills/pr-review-pe/references/ai-specific-risks.md: sha256:dc842fc0dce7d7636e93724f2e2d9d3fa37d2ff82f1470f9a0651fb7328f2fe2
     .agents/skills/pr-review-pe/references/existing-pattern-matching.md: sha256:a07ef21da8d1fe50b9eb0116530ba45a184f7d36d2fa8b613c0a2df402b2c8c8
     .agents/skills/pr-review-pe/references/observability-gap.md: sha256:14512c57e41ab0c1dc8336db2a8482ee34d8d01e3873cfb00c5f94e9481047dd
@@ -891,7 +924,7 @@ dependencies:
     .claude/skills/babysit/scripts/test-worktree.bats: sha256:0f2fb5014126a1f92f6bfb3bc3977d62ccab1a30895c77cdccf14cdfe0b2a279
     .claude/skills/babysit/scripts/wait.sh: sha256:6b3be00e9ab9a06b543c89945de423c815c9a1247a5d9e582d82d56b65c621bd
     .claude/skills/babysit/scripts/worktree.sh: sha256:0adbcb5724bffc46ed93493af276b7e69ec5d2a3a7eafc339003836be60d6d48
-    .claude/skills/commit/SKILL.md: sha256:ee986d504b70ad676edfb23a499aec1f04bfe561da67be10630e17acaa78d5c6
+    .claude/skills/commit/SKILL.md: sha256:af8af5ca4f5a8fd647d08dbde75fdd9fc73c1d95420c7807f5e3e861313493c3
     .claude/skills/commit/references/issue-footer.md: sha256:39af635104ca26017dab47526144b4389e6053d27697da7f43213ad952e8561d
     .claude/skills/commit/references/message-examples.md: sha256:9fa0c8da456b0e37be36f3870824d48859eb9c5695c6649bdbfac23ab4e861de
     .claude/skills/commit/scripts/classify-approval.sh: sha256:9002c46ba84476b00b460ee77c98b69b74553844590729fad554f3a745468aa1
@@ -902,14 +935,14 @@ dependencies:
     .claude/skills/create-github-issues/references/structure.md: sha256:dbfd67cb2bc3dccf639dadac86831ef34fede216fb694c5f43755dd8b2bae8fd
     .claude/skills/create-github-issues/references/templates.en.md: sha256:27bf07cf8aa096094ba8559b1370b28220869ff4e27549ccbab36e39a2748e26
     .claude/skills/create-github-issues/references/templates.ja.md: sha256:f330b1915764f25545511d3a57652ca1475f89125b6d915bf657c394858b43a4
-    .claude/skills/create-pr/SKILL.md: sha256:d70a15eeaa16d61807d6b69933d032524b530654b92e75c18a9a9a5e616e56c2
+    .claude/skills/create-pr/SKILL.md: sha256:ce95e5bcb981f34bd336d1fbdd9368a49e1fc3b3fe098704fecb4aff1203ac18
     .claude/skills/create-pr/references/description.md: sha256:95fb72a31cb921c7391f4ced9e2bffbddfb7221d1e4510addfb03455f49c3a2b
     .claude/skills/create-pr/references/result.md: sha256:aa042f83b57f555c054e78bad9e92f69b761cee8d110373ffb1bb46a1a3de46d
-    .claude/skills/create-pr/scripts/create-linked-pr.sh: sha256:8cbeafe3708d37cda4dfe0e2c58027bffa6bb891a51bb1665b65b09933a5534d
+    .claude/skills/create-pr/scripts/create-linked-pr.sh: sha256:549112d16f417621cf189e7ac83e1ccc856e48018ed4767e3142b87a3bec7a48
     .claude/skills/create-pr/scripts/issue-refs.sh: sha256:18d32c12e45ac35f6cfe171b5a8ad74ed7e766b70ba7f92423bf8312aacd1aaa
     .claude/skills/create-pr/scripts/lang.sh: sha256:2bce3cda52901d4d50766aa17e347387ae6921005a705d1499a4cc051b5b1217
     .claude/skills/create-pr/scripts/pr-context.sh: sha256:b75f730122eb98821e12448562ce438b327a8e26addc56c79dc519af95c98322
-    .claude/skills/create-pr/scripts/test-create-linked-pr.sh: sha256:5c89170b0c7acb8b6c7598195af7df49b3352bb7e648f74e7af3d5111b71783b
+    .claude/skills/create-pr/scripts/test-create-linked-pr.sh: sha256:b2baeead098928475837433c3fb3bf48b0e76adbddcd0e7d8401b7a529ad28f0
     .claude/skills/create-pr/scripts/test-issue-refs.sh: sha256:04973c80bf825a075aaacb1cd1d8611100c47141a9f57108d174a2944e901d5f
     .claude/skills/create-pr/scripts/test-lang.sh: sha256:02d29b598f4fe789c4e5cc1f3f3b1ca5cee47255641fe9ae1959900685cde92e
     .claude/skills/create-pr/scripts/test-pr-context.sh: sha256:8361a12255d0200ebef746da995b7194be29a65a6a1c9dad5da7340d7db747e3
@@ -926,10 +959,10 @@ dependencies:
     .claude/skills/frame-problem/SKILL.md: sha256:e3c253fc110649659f3bf03cc6cbd55c41acef954bd9d8398c89b4719df548a8
     .claude/skills/frame-problem/references/question-loop.md: sha256:8e432ef20504effa9b92c83674110a3c793f3ddeb551afcf7635be740ce6d4ec
     .claude/skills/frame-problem/references/template.md: sha256:e7beb1dbc4f13862166550f429c0bbc6d05dbf59f69f80edc672a34c911000ee
-    .claude/skills/implement/SKILL.md: sha256:c05876ecacd2d4b2c2ac7a5be8bf17ce49b85415ebd0671901bfed13c4169f2f
+    .claude/skills/implement/SKILL.md: sha256:7787dc6c07985baa97b4c269830a2d27163db930a98d6b8870aa5bcc9c2a1ac1
     .claude/skills/implement/references/change-units.md: sha256:00bacdc0b5b9c035b0dfe0b60634893924b8b117d5abe190959874febcfe2777
     .claude/skills/implement/references/evidence.md: sha256:0161238daf377f2efc58bc767d813fd468c7749062cadeaa3935cf2f87d50bf8
-    .claude/skills/implement/references/interactive.md: sha256:17445ee4725bc2ee2b886aa42865382c5a57918dfc7a9d655f0cf198f464a106
+    .claude/skills/implement/references/interactive.md: sha256:57ed7a7771e6dc140d4298565e8c50b102bdcb1642c2dec8965505db3e9dafb9
     .claude/skills/implement/references/playbooks/behavior-change.md: sha256:d46cd7aca956fa25e7a11b2ff553dbc4f6c6b24c4ba8d53da11e6718070cc17e
     .claude/skills/implement/references/playbooks/bug-fix.md: sha256:6014f5181304024b1ef120b58d4c53ccf8cc322ae48c9d15a6214035dbad26a1
     .claude/skills/implement/references/playbooks/refactor.md: sha256:26f41e26844874d47f29e3732d9bf9d298fc5b443ccad250e95a71cc5703e63c
@@ -958,16 +991,16 @@ dependencies:
     .claude/skills/orchestrate-epic/scripts/oe-forget.sh: sha256:b71fbcfaa40eb1b9af048b3e8d9f61b700f3bb04b4172f4cc58bb348e60ec4b6
     .claude/skills/orchestrate-epic/scripts/oe-lock.sh: sha256:e8a4996b7c9e2a15cd833de10e7804a659ee12fdfe661e847bfa83d9f2c80114
     .claude/skills/orchestrate-epic/scripts/oe-question.sh: sha256:b2f2d8e9a8d949d665b24725ff78e472be55d1d66ed7fceb12eed319af8d7423
-    .claude/skills/orchestrate-epic/scripts/oe-ready-checks.graphql: sha256:0c6ca0390f6fd94ace4ba4d0265e7f96bbde6e28414a0ac786dbdef62c9d6848
-    .claude/skills/orchestrate-epic/scripts/oe-ready-epic.graphql: sha256:0af53ecca364ab5b2d52fe0742cbbd22e70b2e9e4d5b9ecd583c6538bae3e71f
-    .claude/skills/orchestrate-epic/scripts/oe-ready-issue.graphql: sha256:288e291f5895a49dc4b1821d3c3d7ed2f40f8b68f680e418a7c991485726deba
-    .claude/skills/orchestrate-epic/scripts/oe-ready.jq: sha256:7bf708970f9ee4c478ccd5730a78165c5dde89768f0260fa07cd873a5aa1a736
+    .claude/skills/orchestrate-epic/scripts/oe-ready-checks.graphql: sha256:e815c4a17fef50204047a4faef72614bbe88311e080872c8b24bdce736f4ca01
+    .claude/skills/orchestrate-epic/scripts/oe-ready-epic.graphql: sha256:30cab2280cbec6eb7b5c9476f2a65352295614262f3f3c260818f53ac100b52e
+    .claude/skills/orchestrate-epic/scripts/oe-ready-issue.graphql: sha256:f922260d910371ee010482dd7ae840a757c18d94f6c87d3211d0fd3ca0482c78
+    .claude/skills/orchestrate-epic/scripts/oe-ready.jq: sha256:1a54d5d20e4bc23d4dc7fca729f54e59b12d2f8d4f8da59e29ebfe10164e67ba
     .claude/skills/orchestrate-epic/scripts/oe-ready.sh: sha256:104828554e82a710ea35055f384d7f0ee3d9bf5b952535a55557299f9658edbe
     .claude/skills/orchestrate-epic/scripts/oe-records.jq: sha256:6fb57c0df136313f820e93a8a9f01e72f0c7ffc625ed4d4b4e90b72007ebeac8
     .claude/skills/orchestrate-epic/scripts/oe-records.sh: sha256:2acf45433316abeeaaab7ec45e1adbfb704a83c1da904e5f46205dbb4cdf6ca0
     .claude/skills/orchestrate-epic/scripts/oe-rereview.sh: sha256:43e75b63b70a56f50dca79cc1118ddcca26e304cdbfd31f779d8aa1a3b93e2ad
     .claude/skills/orchestrate-epic/scripts/oe-start.sh: sha256:4e591accdb59aa5ce84eeb21f0d97d58283de6a5dd113c07b3b984a4bbf73d97
-    .claude/skills/orchestrate-epic/scripts/oe-status.sh: sha256:ee64ee57df05d44e6aca909d6f92c788a646531118bc40db0a0263607dddd8a9
+    .claude/skills/orchestrate-epic/scripts/oe-status.sh: sha256:db7d8e7e8ecb83191ab877884d82e2d2ac40e0e83dfbb364c3d695a093544ee4
     .claude/skills/orchestrate-epic/scripts/oe-store.sh: sha256:3a93b32caa478becb732a26cd8fc3bdb213f0d80bec6c46fb8485d1726102aa0
     .claude/skills/orchestrate-epic/scripts/oe-verdict.sh: sha256:10b4bc678a6c40907af5500fa0dc2be093134dabb5ffcf108ef7c01a376cd9d8
     .claude/skills/orchestrate-epic/scripts/oe-wait.sh: sha256:9e85add14244f5144a3c1c38b182f4c63920611623af93cd590cb6d245ab7b50
@@ -975,23 +1008,30 @@ dependencies:
     .claude/skills/orchestrate-epic/scripts/test-oe-board.bats: sha256:388ffe1fae8121c54a5bb2b1c5f7bc62bfec5369d480c44da57a215145f71682
     .claude/skills/orchestrate-epic/scripts/test-oe-brief.bats: sha256:5402522e53a9a3de966798caaf2345dc3d51bd56e04573e77da9fa4773959dd8
     .claude/skills/orchestrate-epic/scripts/test-oe-lock.bats: sha256:33c3c1d323a395101d24d68a0646efedb8ecfd8fbf77e1c3afb669e58d79e0a7
-    .claude/skills/orchestrate-epic/scripts/test-oe-ready.bats: sha256:8c89a9a565977a3642b51667baeb32a9304aa1ebce1311f5a12d33463b7d1b90
+    .claude/skills/orchestrate-epic/scripts/test-oe-ready.bats: sha256:f63c332240aaa3ab7b21574bafd8e6f1bbd00fd6c6fb0974019a4bfab470ca45
     .claude/skills/orchestrate-epic/scripts/test-oe-records.bats: sha256:5e34ccd480a3fb338035ac7eb0effb19082b390008886f4e0f60ea0f1f19750c
     .claude/skills/orchestrate-epic/scripts/test-oe-rereview.bats: sha256:9bce32661bc4d720cf2a546d07b7aac5bbf7d11a1efa925e804172845da26c0b
     .claude/skills/orchestrate-epic/scripts/test-oe-start.bats: sha256:f85b3e3d6f01fc83f548a16419dcd5dd2c3cc70987fce7afe9cbb498d6a8bba6
-    .claude/skills/orchestrate-epic/scripts/test-oe-status.bats: sha256:cfc838e2fede94a140999d7ce487b6cbcb3f4074c54e8bcd18218feeff0294e9
+    .claude/skills/orchestrate-epic/scripts/test-oe-status.bats: sha256:58b804791378ca1f5c908d6b7a47af5091458d6867e175bd49c38a691cc3708b
     .claude/skills/orchestrate-epic/scripts/test-oe-verdict.bats: sha256:9a22ff4d915fe8f787f2d4fb5c7ad6f8010e27eb771030b83ca461777c495202
-    .claude/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:3cd38af56f4610b3e182308532f7c208f639b71ae6968e3a4e00b869d3534092
+    .claude/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:340e24202f1e9c5a705eda720e123756655f7285fbfc2d3db988e5ee9fa194ea
     .claude/skills/orchestrate-epic/scripts/test-oe-worktree.bats: sha256:a15f82f7852fb9836fe15f17f3684f88175cf9caca1674dfd9e94840e6d5572d
     .claude/skills/orchestrate-epic/scripts/testdata/fake-gh.sh: sha256:b927ab55bdc3c1c1ef0e22665516582c536131ce193f06b9ccd8331ccdf4b7f2
     .claude/skills/orchestrate-epic/scripts/testdata/fake-github-write.jq: sha256:c6dc77502804eda14b49eb73520b9bedae6b7467ba98ccca2cd99be37ac0a456
-    .claude/skills/orchestrate-epic/scripts/testdata/fake-github.jq: sha256:9c38080564ac160a81d05858c76cde707073fe4e2af718026baac637b7ba8fa0
+    .claude/skills/orchestrate-epic/scripts/testdata/fake-github.jq: sha256:d5fbea66a6081c38f54896a4f9f5a00694cfede78368cc391763cd82675c9eef
     .claude/skills/orchestrate-epic/scripts/testdata/fake-herdr.sh: sha256:86b35d3d2b0cbb5dbdd3d45759577f54ce518cf5e74b1e6ce4c735028739b709
     .claude/skills/orchestrate-epic/scripts/testdata/records.bash: sha256:22bf8f0d6bba7556527fb10a4252eeaddf0f68e0684ce84c1aa71a07a1104768
+    .claude/skills/pick-next/SKILL.md: sha256:6254890aa27d8979221f6fa7520357c4d36781beaacf3cd4cbf2acb88c54aa5d
+    .claude/skills/pick-next/scripts/pick-discussions.graphql: sha256:181769731b55397814a7927b0c4f2f7d616721450515726fdde2cd7e4d627b73
+    .claude/skills/pick-next/scripts/pick-issues.graphql: sha256:6936a7f5f0ebc6aca33ebc123e0e534d94da3d891e6bed56a80713dece5e4b69
+    .claude/skills/pick-next/scripts/pick-prs.graphql: sha256:db55abd69344c72db908b2472eee76c602e0b71b5e5289539ed4e4c7535ade86
+    .claude/skills/pick-next/scripts/pick.jq: sha256:8539efaa1bb69269b9ae2651073604413bd51275c9ea3a9045529030dc12a97e
+    .claude/skills/pick-next/scripts/pick.sh: sha256:8b01ee58d01bc02f636eb447c56d4195abe54932677187d65c43a376e28a2aaf
+    .claude/skills/pick-next/scripts/test-pick.bats: sha256:56c3600427a9eb32292485deb872c9a48fa8b643f47e3c3074e377c99859556c
     .claude/skills/pr-doc-review-pe/SKILL.md: sha256:8388ca56eab1c15dc64b5746b7ae7cb2869cb5be704aed585165f8ab68460646
-    .claude/skills/pr-owner/SKILL.md: sha256:b1c13004b40514081e7049e0f9320762b8a8b4d6207a23a460b06fef47a73ef9
+    .claude/skills/pr-owner/SKILL.md: sha256:b44989867f826f98a451155b7f6c235320ba4c637fb7bd8b0f1aa454dc0e81c4
     .claude/skills/pr-owner/agents/openai.yaml: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
-    .claude/skills/pr-review-pe/SKILL.md: sha256:2c807ec7486c9438433ec7b8e5a28ae471ad67fc2a8246dc8037c5deeecaaa42
+    .claude/skills/pr-review-pe/SKILL.md: sha256:46237f432eec8f25929581189f2668add4d6a99abb7e0b9f74ea82949608c9a9
     .claude/skills/pr-review-pe/references/ai-specific-risks.md: sha256:dc842fc0dce7d7636e93724f2e2d9d3fa37d2ff82f1470f9a0651fb7328f2fe2
     .claude/skills/pr-review-pe/references/existing-pattern-matching.md: sha256:a07ef21da8d1fe50b9eb0116530ba45a184f7d36d2fa8b613c0a2df402b2c8c8
     .claude/skills/pr-review-pe/references/observability-gap.md: sha256:14512c57e41ab0c1dc8336db2a8482ee34d8d01e3873cfb00c5f94e9481047dd
@@ -1034,6 +1074,8 @@ dependencies:
     .claude/skills/shakedown/references/template.md: sha256:e7511e302b1a5913575be280eaba943ccfd3acd73e8835079a1a0afabac264e5
     .claude/skills/shakedown/references/viewpoints.md: sha256:1076b156e4ee0a4d0b84637b45ff80506ed40e3026d671e92d7a198eeb97a141
     .claude/skills/skill-cleaner/SKILL.md: sha256:1082f515e13d789008fb3e3a88c8d768f92fd8c1d403f2c25fee4b0994b3df8f
+    .claude/skills/skills/.claude-plugin/plugin.json: sha256:8dbe99bf47c2f6ccd1eccbc94bb70e32b57419f03f8efe1da719d24cb2e49d12
+    .claude/skills/skills/bin/pr-review-pe-identify-pr.sh: sha256:845dc1c54f113ce9bf1ec1e6f1366398e54f40193965f6d5bf6986458fc3a63b
     .claude/skills/tear-down/SKILL.md: sha256:780f8fb7ec25d012d9fe5f9d185cc1c3b172eafe3cf809b1b519368b1fb53f02
     .claude/skills/why-man/SKILL.md: sha256:d5fd24e7ffc3542982c8f3eba4ce0d315327a988073ed2f77422fdbdcd6b1b77
     .claude/skills/write-researched-document/SKILL.md: sha256:1343345606dbef81f1dae69d9c7d92ddbe1bb734c967e8bec5d17c2edf134236
@@ -1068,7 +1110,7 @@ dependencies:
     .config/opencode/skills/babysit/scripts/test-worktree.bats: sha256:0f2fb5014126a1f92f6bfb3bc3977d62ccab1a30895c77cdccf14cdfe0b2a279
     .config/opencode/skills/babysit/scripts/wait.sh: sha256:6b3be00e9ab9a06b543c89945de423c815c9a1247a5d9e582d82d56b65c621bd
     .config/opencode/skills/babysit/scripts/worktree.sh: sha256:0adbcb5724bffc46ed93493af276b7e69ec5d2a3a7eafc339003836be60d6d48
-    .config/opencode/skills/commit/SKILL.md: sha256:ee986d504b70ad676edfb23a499aec1f04bfe561da67be10630e17acaa78d5c6
+    .config/opencode/skills/commit/SKILL.md: sha256:af8af5ca4f5a8fd647d08dbde75fdd9fc73c1d95420c7807f5e3e861313493c3
     .config/opencode/skills/commit/references/issue-footer.md: sha256:39af635104ca26017dab47526144b4389e6053d27697da7f43213ad952e8561d
     .config/opencode/skills/commit/references/message-examples.md: sha256:9fa0c8da456b0e37be36f3870824d48859eb9c5695c6649bdbfac23ab4e861de
     .config/opencode/skills/commit/scripts/classify-approval.sh: sha256:9002c46ba84476b00b460ee77c98b69b74553844590729fad554f3a745468aa1
@@ -1079,14 +1121,14 @@ dependencies:
     .config/opencode/skills/create-github-issues/references/structure.md: sha256:dbfd67cb2bc3dccf639dadac86831ef34fede216fb694c5f43755dd8b2bae8fd
     .config/opencode/skills/create-github-issues/references/templates.en.md: sha256:27bf07cf8aa096094ba8559b1370b28220869ff4e27549ccbab36e39a2748e26
     .config/opencode/skills/create-github-issues/references/templates.ja.md: sha256:f330b1915764f25545511d3a57652ca1475f89125b6d915bf657c394858b43a4
-    .config/opencode/skills/create-pr/SKILL.md: sha256:d70a15eeaa16d61807d6b69933d032524b530654b92e75c18a9a9a5e616e56c2
+    .config/opencode/skills/create-pr/SKILL.md: sha256:ce95e5bcb981f34bd336d1fbdd9368a49e1fc3b3fe098704fecb4aff1203ac18
     .config/opencode/skills/create-pr/references/description.md: sha256:95fb72a31cb921c7391f4ced9e2bffbddfb7221d1e4510addfb03455f49c3a2b
     .config/opencode/skills/create-pr/references/result.md: sha256:aa042f83b57f555c054e78bad9e92f69b761cee8d110373ffb1bb46a1a3de46d
-    .config/opencode/skills/create-pr/scripts/create-linked-pr.sh: sha256:8cbeafe3708d37cda4dfe0e2c58027bffa6bb891a51bb1665b65b09933a5534d
+    .config/opencode/skills/create-pr/scripts/create-linked-pr.sh: sha256:549112d16f417621cf189e7ac83e1ccc856e48018ed4767e3142b87a3bec7a48
     .config/opencode/skills/create-pr/scripts/issue-refs.sh: sha256:18d32c12e45ac35f6cfe171b5a8ad74ed7e766b70ba7f92423bf8312aacd1aaa
     .config/opencode/skills/create-pr/scripts/lang.sh: sha256:2bce3cda52901d4d50766aa17e347387ae6921005a705d1499a4cc051b5b1217
     .config/opencode/skills/create-pr/scripts/pr-context.sh: sha256:b75f730122eb98821e12448562ce438b327a8e26addc56c79dc519af95c98322
-    .config/opencode/skills/create-pr/scripts/test-create-linked-pr.sh: sha256:5c89170b0c7acb8b6c7598195af7df49b3352bb7e648f74e7af3d5111b71783b
+    .config/opencode/skills/create-pr/scripts/test-create-linked-pr.sh: sha256:b2baeead098928475837433c3fb3bf48b0e76adbddcd0e7d8401b7a529ad28f0
     .config/opencode/skills/create-pr/scripts/test-issue-refs.sh: sha256:04973c80bf825a075aaacb1cd1d8611100c47141a9f57108d174a2944e901d5f
     .config/opencode/skills/create-pr/scripts/test-lang.sh: sha256:02d29b598f4fe789c4e5cc1f3f3b1ca5cee47255641fe9ae1959900685cde92e
     .config/opencode/skills/create-pr/scripts/test-pr-context.sh: sha256:8361a12255d0200ebef746da995b7194be29a65a6a1c9dad5da7340d7db747e3
@@ -1103,10 +1145,10 @@ dependencies:
     .config/opencode/skills/frame-problem/SKILL.md: sha256:e3c253fc110649659f3bf03cc6cbd55c41acef954bd9d8398c89b4719df548a8
     .config/opencode/skills/frame-problem/references/question-loop.md: sha256:8e432ef20504effa9b92c83674110a3c793f3ddeb551afcf7635be740ce6d4ec
     .config/opencode/skills/frame-problem/references/template.md: sha256:e7beb1dbc4f13862166550f429c0bbc6d05dbf59f69f80edc672a34c911000ee
-    .config/opencode/skills/implement/SKILL.md: sha256:c05876ecacd2d4b2c2ac7a5be8bf17ce49b85415ebd0671901bfed13c4169f2f
+    .config/opencode/skills/implement/SKILL.md: sha256:7787dc6c07985baa97b4c269830a2d27163db930a98d6b8870aa5bcc9c2a1ac1
     .config/opencode/skills/implement/references/change-units.md: sha256:00bacdc0b5b9c035b0dfe0b60634893924b8b117d5abe190959874febcfe2777
     .config/opencode/skills/implement/references/evidence.md: sha256:0161238daf377f2efc58bc767d813fd468c7749062cadeaa3935cf2f87d50bf8
-    .config/opencode/skills/implement/references/interactive.md: sha256:17445ee4725bc2ee2b886aa42865382c5a57918dfc7a9d655f0cf198f464a106
+    .config/opencode/skills/implement/references/interactive.md: sha256:57ed7a7771e6dc140d4298565e8c50b102bdcb1642c2dec8965505db3e9dafb9
     .config/opencode/skills/implement/references/playbooks/behavior-change.md: sha256:d46cd7aca956fa25e7a11b2ff553dbc4f6c6b24c4ba8d53da11e6718070cc17e
     .config/opencode/skills/implement/references/playbooks/bug-fix.md: sha256:6014f5181304024b1ef120b58d4c53ccf8cc322ae48c9d15a6214035dbad26a1
     .config/opencode/skills/implement/references/playbooks/refactor.md: sha256:26f41e26844874d47f29e3732d9bf9d298fc5b443ccad250e95a71cc5703e63c
@@ -1135,16 +1177,16 @@ dependencies:
     .config/opencode/skills/orchestrate-epic/scripts/oe-forget.sh: sha256:b71fbcfaa40eb1b9af048b3e8d9f61b700f3bb04b4172f4cc58bb348e60ec4b6
     .config/opencode/skills/orchestrate-epic/scripts/oe-lock.sh: sha256:e8a4996b7c9e2a15cd833de10e7804a659ee12fdfe661e847bfa83d9f2c80114
     .config/opencode/skills/orchestrate-epic/scripts/oe-question.sh: sha256:b2f2d8e9a8d949d665b24725ff78e472be55d1d66ed7fceb12eed319af8d7423
-    .config/opencode/skills/orchestrate-epic/scripts/oe-ready-checks.graphql: sha256:0c6ca0390f6fd94ace4ba4d0265e7f96bbde6e28414a0ac786dbdef62c9d6848
-    .config/opencode/skills/orchestrate-epic/scripts/oe-ready-epic.graphql: sha256:0af53ecca364ab5b2d52fe0742cbbd22e70b2e9e4d5b9ecd583c6538bae3e71f
-    .config/opencode/skills/orchestrate-epic/scripts/oe-ready-issue.graphql: sha256:288e291f5895a49dc4b1821d3c3d7ed2f40f8b68f680e418a7c991485726deba
-    .config/opencode/skills/orchestrate-epic/scripts/oe-ready.jq: sha256:7bf708970f9ee4c478ccd5730a78165c5dde89768f0260fa07cd873a5aa1a736
+    .config/opencode/skills/orchestrate-epic/scripts/oe-ready-checks.graphql: sha256:e815c4a17fef50204047a4faef72614bbe88311e080872c8b24bdce736f4ca01
+    .config/opencode/skills/orchestrate-epic/scripts/oe-ready-epic.graphql: sha256:30cab2280cbec6eb7b5c9476f2a65352295614262f3f3c260818f53ac100b52e
+    .config/opencode/skills/orchestrate-epic/scripts/oe-ready-issue.graphql: sha256:f922260d910371ee010482dd7ae840a757c18d94f6c87d3211d0fd3ca0482c78
+    .config/opencode/skills/orchestrate-epic/scripts/oe-ready.jq: sha256:1a54d5d20e4bc23d4dc7fca729f54e59b12d2f8d4f8da59e29ebfe10164e67ba
     .config/opencode/skills/orchestrate-epic/scripts/oe-ready.sh: sha256:104828554e82a710ea35055f384d7f0ee3d9bf5b952535a55557299f9658edbe
     .config/opencode/skills/orchestrate-epic/scripts/oe-records.jq: sha256:6fb57c0df136313f820e93a8a9f01e72f0c7ffc625ed4d4b4e90b72007ebeac8
     .config/opencode/skills/orchestrate-epic/scripts/oe-records.sh: sha256:2acf45433316abeeaaab7ec45e1adbfb704a83c1da904e5f46205dbb4cdf6ca0
     .config/opencode/skills/orchestrate-epic/scripts/oe-rereview.sh: sha256:43e75b63b70a56f50dca79cc1118ddcca26e304cdbfd31f779d8aa1a3b93e2ad
     .config/opencode/skills/orchestrate-epic/scripts/oe-start.sh: sha256:4e591accdb59aa5ce84eeb21f0d97d58283de6a5dd113c07b3b984a4bbf73d97
-    .config/opencode/skills/orchestrate-epic/scripts/oe-status.sh: sha256:ee64ee57df05d44e6aca909d6f92c788a646531118bc40db0a0263607dddd8a9
+    .config/opencode/skills/orchestrate-epic/scripts/oe-status.sh: sha256:db7d8e7e8ecb83191ab877884d82e2d2ac40e0e83dfbb364c3d695a093544ee4
     .config/opencode/skills/orchestrate-epic/scripts/oe-store.sh: sha256:3a93b32caa478becb732a26cd8fc3bdb213f0d80bec6c46fb8485d1726102aa0
     .config/opencode/skills/orchestrate-epic/scripts/oe-verdict.sh: sha256:10b4bc678a6c40907af5500fa0dc2be093134dabb5ffcf108ef7c01a376cd9d8
     .config/opencode/skills/orchestrate-epic/scripts/oe-wait.sh: sha256:9e85add14244f5144a3c1c38b182f4c63920611623af93cd590cb6d245ab7b50
@@ -1152,23 +1194,30 @@ dependencies:
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-board.bats: sha256:388ffe1fae8121c54a5bb2b1c5f7bc62bfec5369d480c44da57a215145f71682
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-brief.bats: sha256:5402522e53a9a3de966798caaf2345dc3d51bd56e04573e77da9fa4773959dd8
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-lock.bats: sha256:33c3c1d323a395101d24d68a0646efedb8ecfd8fbf77e1c3afb669e58d79e0a7
-    .config/opencode/skills/orchestrate-epic/scripts/test-oe-ready.bats: sha256:8c89a9a565977a3642b51667baeb32a9304aa1ebce1311f5a12d33463b7d1b90
+    .config/opencode/skills/orchestrate-epic/scripts/test-oe-ready.bats: sha256:f63c332240aaa3ab7b21574bafd8e6f1bbd00fd6c6fb0974019a4bfab470ca45
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-records.bats: sha256:5e34ccd480a3fb338035ac7eb0effb19082b390008886f4e0f60ea0f1f19750c
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-rereview.bats: sha256:9bce32661bc4d720cf2a546d07b7aac5bbf7d11a1efa925e804172845da26c0b
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-start.bats: sha256:f85b3e3d6f01fc83f548a16419dcd5dd2c3cc70987fce7afe9cbb498d6a8bba6
-    .config/opencode/skills/orchestrate-epic/scripts/test-oe-status.bats: sha256:cfc838e2fede94a140999d7ce487b6cbcb3f4074c54e8bcd18218feeff0294e9
+    .config/opencode/skills/orchestrate-epic/scripts/test-oe-status.bats: sha256:58b804791378ca1f5c908d6b7a47af5091458d6867e175bd49c38a691cc3708b
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-verdict.bats: sha256:9a22ff4d915fe8f787f2d4fb5c7ad6f8010e27eb771030b83ca461777c495202
-    .config/opencode/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:3cd38af56f4610b3e182308532f7c208f639b71ae6968e3a4e00b869d3534092
+    .config/opencode/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:340e24202f1e9c5a705eda720e123756655f7285fbfc2d3db988e5ee9fa194ea
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-worktree.bats: sha256:a15f82f7852fb9836fe15f17f3684f88175cf9caca1674dfd9e94840e6d5572d
     .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-gh.sh: sha256:b927ab55bdc3c1c1ef0e22665516582c536131ce193f06b9ccd8331ccdf4b7f2
     .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-github-write.jq: sha256:c6dc77502804eda14b49eb73520b9bedae6b7467ba98ccca2cd99be37ac0a456
-    .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-github.jq: sha256:9c38080564ac160a81d05858c76cde707073fe4e2af718026baac637b7ba8fa0
+    .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-github.jq: sha256:d5fbea66a6081c38f54896a4f9f5a00694cfede78368cc391763cd82675c9eef
     .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-herdr.sh: sha256:86b35d3d2b0cbb5dbdd3d45759577f54ce518cf5e74b1e6ce4c735028739b709
     .config/opencode/skills/orchestrate-epic/scripts/testdata/records.bash: sha256:22bf8f0d6bba7556527fb10a4252eeaddf0f68e0684ce84c1aa71a07a1104768
+    .config/opencode/skills/pick-next/SKILL.md: sha256:6254890aa27d8979221f6fa7520357c4d36781beaacf3cd4cbf2acb88c54aa5d
+    .config/opencode/skills/pick-next/scripts/pick-discussions.graphql: sha256:181769731b55397814a7927b0c4f2f7d616721450515726fdde2cd7e4d627b73
+    .config/opencode/skills/pick-next/scripts/pick-issues.graphql: sha256:6936a7f5f0ebc6aca33ebc123e0e534d94da3d891e6bed56a80713dece5e4b69
+    .config/opencode/skills/pick-next/scripts/pick-prs.graphql: sha256:db55abd69344c72db908b2472eee76c602e0b71b5e5289539ed4e4c7535ade86
+    .config/opencode/skills/pick-next/scripts/pick.jq: sha256:8539efaa1bb69269b9ae2651073604413bd51275c9ea3a9045529030dc12a97e
+    .config/opencode/skills/pick-next/scripts/pick.sh: sha256:8b01ee58d01bc02f636eb447c56d4195abe54932677187d65c43a376e28a2aaf
+    .config/opencode/skills/pick-next/scripts/test-pick.bats: sha256:56c3600427a9eb32292485deb872c9a48fa8b643f47e3c3074e377c99859556c
     .config/opencode/skills/pr-doc-review-pe/SKILL.md: sha256:8388ca56eab1c15dc64b5746b7ae7cb2869cb5be704aed585165f8ab68460646
-    .config/opencode/skills/pr-owner/SKILL.md: sha256:b1c13004b40514081e7049e0f9320762b8a8b4d6207a23a460b06fef47a73ef9
+    .config/opencode/skills/pr-owner/SKILL.md: sha256:b44989867f826f98a451155b7f6c235320ba4c637fb7bd8b0f1aa454dc0e81c4
     .config/opencode/skills/pr-owner/agents/openai.yaml: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
-    .config/opencode/skills/pr-review-pe/SKILL.md: sha256:2c807ec7486c9438433ec7b8e5a28ae471ad67fc2a8246dc8037c5deeecaaa42
+    .config/opencode/skills/pr-review-pe/SKILL.md: sha256:46237f432eec8f25929581189f2668add4d6a99abb7e0b9f74ea82949608c9a9
     .config/opencode/skills/pr-review-pe/references/ai-specific-risks.md: sha256:dc842fc0dce7d7636e93724f2e2d9d3fa37d2ff82f1470f9a0651fb7328f2fe2
     .config/opencode/skills/pr-review-pe/references/existing-pattern-matching.md: sha256:a07ef21da8d1fe50b9eb0116530ba45a184f7d36d2fa8b613c0a2df402b2c8c8
     .config/opencode/skills/pr-review-pe/references/observability-gap.md: sha256:14512c57e41ab0c1dc8336db2a8482ee34d8d01e3873cfb00c5f94e9481047dd
@@ -1216,7 +1265,7 @@ dependencies:
     .config/opencode/skills/write-researched-document/SKILL.md: sha256:1343345606dbef81f1dae69d9c7d92ddbe1bb734c967e8bec5d17c2edf134236
     .config/opencode/skills/write-researched-document/agents/openai.yaml: sha256:1421516b58df14e15896071d2bb116367f59a3186ba7a66e502ecd92e75d6a6d
     .config/opencode/skills/write-researched-document/references/evidence-workflow.md: sha256:51de21573a16a72db453f79debd7fdc9facfc8e6fc1cc26ecf6e090a30e1e0a5
-  content_hash: sha256:e3ee18de2b469f1bdfa29e3158699f9fe42d557149cc852e1b6d0512cb2a0725
+  content_hash: sha256:02153752fc73bcb0849ed1e76b33100f20dfe6dbbb4fc54592a1a35b7e589e3f
   declared_license: MIT
 - repo_url: mizchi/skills
   name: empirical-prompt-tuning
@@ -1572,7 +1621,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:ee986d504b70ad676edfb23a499aec1f04bfe561da67be10630e17acaa78d5c6
+  content_hash: sha256:af8af5ca4f5a8fd647d08dbde75fdd9fc73c1d95420c7807f5e3e861313493c3
 - kind: project-relative
   target: claude
   value: .claude/skills/commit/references/issue-footer.md
@@ -1806,7 +1855,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:d70a15eeaa16d61807d6b69933d032524b530654b92e75c18a9a9a5e616e56c2
+  content_hash: sha256:ce95e5bcb981f34bd336d1fbdd9368a49e1fc3b3fe098704fecb4aff1203ac18
 - kind: project-relative
   target: claude
   value: .claude/skills/create-pr/references/description.md
@@ -1833,7 +1882,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:8cbeafe3708d37cda4dfe0e2c58027bffa6bb891a51bb1665b65b09933a5534d
+  content_hash: sha256:549112d16f417621cf189e7ac83e1ccc856e48018ed4767e3142b87a3bec7a48
 - kind: project-relative
   target: claude
   value: .claude/skills/create-pr/scripts/issue-refs.sh
@@ -1869,7 +1918,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:5c89170b0c7acb8b6c7598195af7df49b3352bb7e648f74e7af3d5111b71783b
+  content_hash: sha256:b2baeead098928475837433c3fb3bf48b0e76adbddcd0e7d8401b7a529ad28f0
 - kind: project-relative
   target: claude
   value: .claude/skills/create-pr/scripts/test-issue-refs.sh
@@ -2175,7 +2224,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:c05876ecacd2d4b2c2ac7a5be8bf17ce49b85415ebd0671901bfed13c4169f2f
+  content_hash: sha256:7787dc6c07985baa97b4c269830a2d27163db930a98d6b8870aa5bcc9c2a1ac1
 - kind: project-relative
   target: claude
   value: .claude/skills/implement/references/change-units.md
@@ -2202,7 +2251,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:17445ee4725bc2ee2b886aa42865382c5a57918dfc7a9d655f0cf198f464a106
+  content_hash: sha256:57ed7a7771e6dc140d4298565e8c50b102bdcb1642c2dec8965505db3e9dafb9
 - kind: project-relative
   target: claude
   value: .claude/skills/implement/references/playbooks/behavior-change.md
@@ -2490,7 +2539,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:0c6ca0390f6fd94ace4ba4d0265e7f96bbde6e28414a0ac786dbdef62c9d6848
+  content_hash: sha256:e815c4a17fef50204047a4faef72614bbe88311e080872c8b24bdce736f4ca01
 - kind: project-relative
   target: claude
   value: .claude/skills/orchestrate-epic/scripts/oe-ready-epic.graphql
@@ -2499,7 +2548,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:0af53ecca364ab5b2d52fe0742cbbd22e70b2e9e4d5b9ecd583c6538bae3e71f
+  content_hash: sha256:30cab2280cbec6eb7b5c9476f2a65352295614262f3f3c260818f53ac100b52e
 - kind: project-relative
   target: claude
   value: .claude/skills/orchestrate-epic/scripts/oe-ready-issue.graphql
@@ -2508,7 +2557,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:288e291f5895a49dc4b1821d3c3d7ed2f40f8b68f680e418a7c991485726deba
+  content_hash: sha256:f922260d910371ee010482dd7ae840a757c18d94f6c87d3211d0fd3ca0482c78
 - kind: project-relative
   target: claude
   value: .claude/skills/orchestrate-epic/scripts/oe-ready.jq
@@ -2517,7 +2566,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:7bf708970f9ee4c478ccd5730a78165c5dde89768f0260fa07cd873a5aa1a736
+  content_hash: sha256:1a54d5d20e4bc23d4dc7fca729f54e59b12d2f8d4f8da59e29ebfe10164e67ba
 - kind: project-relative
   target: claude
   value: .claude/skills/orchestrate-epic/scripts/oe-ready.sh
@@ -2571,7 +2620,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:ee64ee57df05d44e6aca909d6f92c788a646531118bc40db0a0263607dddd8a9
+  content_hash: sha256:db7d8e7e8ecb83191ab877884d82e2d2ac40e0e83dfbb364c3d695a093544ee4
 - kind: project-relative
   target: claude
   value: .claude/skills/orchestrate-epic/scripts/oe-store.sh
@@ -2643,7 +2692,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:8c89a9a565977a3642b51667baeb32a9304aa1ebce1311f5a12d33463b7d1b90
+  content_hash: sha256:f63c332240aaa3ab7b21574bafd8e6f1bbd00fd6c6fb0974019a4bfab470ca45
 - kind: project-relative
   target: claude
   value: .claude/skills/orchestrate-epic/scripts/test-oe-records.bats
@@ -2679,7 +2728,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:cfc838e2fede94a140999d7ce487b6cbcb3f4074c54e8bcd18218feeff0294e9
+  content_hash: sha256:58b804791378ca1f5c908d6b7a47af5091458d6867e175bd49c38a691cc3708b
 - kind: project-relative
   target: claude
   value: .claude/skills/orchestrate-epic/scripts/test-oe-verdict.bats
@@ -2697,7 +2746,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:3cd38af56f4610b3e182308532f7c208f639b71ae6968e3a4e00b869d3534092
+  content_hash: sha256:340e24202f1e9c5a705eda720e123756655f7285fbfc2d3db988e5ee9fa194ea
 - kind: project-relative
   target: claude
   value: .claude/skills/orchestrate-epic/scripts/test-oe-worktree.bats
@@ -2733,7 +2782,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:9c38080564ac160a81d05858c76cde707073fe4e2af718026baac637b7ba8fa0
+  content_hash: sha256:d5fbea66a6081c38f54896a4f9f5a00694cfede78368cc391763cd82675c9eef
 - kind: project-relative
   target: claude
   value: .claude/skills/orchestrate-epic/scripts/testdata/fake-herdr.sh
@@ -2752,6 +2801,78 @@ deployments:
   - maro114510/skills
   active_owner: maro114510/skills
   content_hash: sha256:22bf8f0d6bba7556527fb10a4252eeaddf0f68e0684ce84c1aa71a07a1104768
+- kind: project-relative
+  target: claude
+  value: .claude/skills/pick-next
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/pick-next/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:6254890aa27d8979221f6fa7520357c4d36781beaacf3cd4cbf2acb88c54aa5d
+- kind: project-relative
+  target: claude
+  value: .claude/skills/pick-next/scripts/pick-discussions.graphql
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:181769731b55397814a7927b0c4f2f7d616721450515726fdde2cd7e4d627b73
+- kind: project-relative
+  target: claude
+  value: .claude/skills/pick-next/scripts/pick-issues.graphql
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:6936a7f5f0ebc6aca33ebc123e0e534d94da3d891e6bed56a80713dece5e4b69
+- kind: project-relative
+  target: claude
+  value: .claude/skills/pick-next/scripts/pick-prs.graphql
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:db55abd69344c72db908b2472eee76c602e0b71b5e5289539ed4e4c7535ade86
+- kind: project-relative
+  target: claude
+  value: .claude/skills/pick-next/scripts/pick.jq
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:8539efaa1bb69269b9ae2651073604413bd51275c9ea3a9045529030dc12a97e
+- kind: project-relative
+  target: claude
+  value: .claude/skills/pick-next/scripts/pick.sh
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:8b01ee58d01bc02f636eb447c56d4195abe54932677187d65c43a376e28a2aaf
+- kind: project-relative
+  target: claude
+  value: .claude/skills/pick-next/scripts/test-pick.bats
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:56c3600427a9eb32292485deb872c9a48fa8b643f47e3c3074e377c99859556c
 - kind: project-relative
   target: claude
   value: .claude/skills/pr-doc-review-pe
@@ -2787,7 +2908,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:b1c13004b40514081e7049e0f9320762b8a8b4d6207a23a460b06fef47a73ef9
+  content_hash: sha256:b44989867f826f98a451155b7f6c235320ba4c637fb7bd8b0f1aa454dc0e81c4
 - kind: project-relative
   target: claude
   value: .claude/skills/pr-owner/agents/openai.yaml
@@ -2814,7 +2935,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:2c807ec7486c9438433ec7b8e5a28ae471ad67fc2a8246dc8037c5deeecaaa42
+  content_hash: sha256:46237f432eec8f25929581189f2668add4d6a99abb7e0b9f74ea82949608c9a9
 - kind: project-relative
   target: claude
   value: .claude/skills/pr-review-pe/references/ai-specific-risks.md
@@ -3258,6 +3379,24 @@ deployments:
   content_hash: sha256:1082f515e13d789008fb3e3a88c8d768f92fd8c1d403f2c25fee4b0994b3df8f
 - kind: project-relative
   target: claude
+  value: .claude/skills/skills/.claude-plugin/plugin.json
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:8dbe99bf47c2f6ccd1eccbc94bb70e32b57419f03f8efe1da719d24cb2e49d12
+- kind: project-relative
+  target: claude
+  value: .claude/skills/skills/bin/pr-review-pe-identify-pr.sh
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:845dc1c54f113ce9bf1ec1e6f1366398e54f40193965f6d5bf6986458fc3a63b
+- kind: project-relative
+  target: claude
   value: .claude/skills/tear-down
   runtime: null
   scope: project
@@ -3579,7 +3718,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:ee986d504b70ad676edfb23a499aec1f04bfe561da67be10630e17acaa78d5c6
+  content_hash: sha256:af8af5ca4f5a8fd647d08dbde75fdd9fc73c1d95420c7807f5e3e861313493c3
 - kind: project-relative
   target: codex
   value: .agents/skills/commit/references/issue-footer.md
@@ -3813,7 +3952,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:d70a15eeaa16d61807d6b69933d032524b530654b92e75c18a9a9a5e616e56c2
+  content_hash: sha256:ce95e5bcb981f34bd336d1fbdd9368a49e1fc3b3fe098704fecb4aff1203ac18
 - kind: project-relative
   target: codex
   value: .agents/skills/create-pr/references/description.md
@@ -3840,7 +3979,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:8cbeafe3708d37cda4dfe0e2c58027bffa6bb891a51bb1665b65b09933a5534d
+  content_hash: sha256:549112d16f417621cf189e7ac83e1ccc856e48018ed4767e3142b87a3bec7a48
 - kind: project-relative
   target: codex
   value: .agents/skills/create-pr/scripts/issue-refs.sh
@@ -3876,7 +4015,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:5c89170b0c7acb8b6c7598195af7df49b3352bb7e648f74e7af3d5111b71783b
+  content_hash: sha256:b2baeead098928475837433c3fb3bf48b0e76adbddcd0e7d8401b7a529ad28f0
 - kind: project-relative
   target: codex
   value: .agents/skills/create-pr/scripts/test-issue-refs.sh
@@ -4182,7 +4321,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:c05876ecacd2d4b2c2ac7a5be8bf17ce49b85415ebd0671901bfed13c4169f2f
+  content_hash: sha256:7787dc6c07985baa97b4c269830a2d27163db930a98d6b8870aa5bcc9c2a1ac1
 - kind: project-relative
   target: codex
   value: .agents/skills/implement/references/change-units.md
@@ -4209,7 +4348,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:17445ee4725bc2ee2b886aa42865382c5a57918dfc7a9d655f0cf198f464a106
+  content_hash: sha256:57ed7a7771e6dc140d4298565e8c50b102bdcb1642c2dec8965505db3e9dafb9
 - kind: project-relative
   target: codex
   value: .agents/skills/implement/references/playbooks/behavior-change.md
@@ -4497,7 +4636,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:0c6ca0390f6fd94ace4ba4d0265e7f96bbde6e28414a0ac786dbdef62c9d6848
+  content_hash: sha256:e815c4a17fef50204047a4faef72614bbe88311e080872c8b24bdce736f4ca01
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/oe-ready-epic.graphql
@@ -4506,7 +4645,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:0af53ecca364ab5b2d52fe0742cbbd22e70b2e9e4d5b9ecd583c6538bae3e71f
+  content_hash: sha256:30cab2280cbec6eb7b5c9476f2a65352295614262f3f3c260818f53ac100b52e
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/oe-ready-issue.graphql
@@ -4515,7 +4654,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:288e291f5895a49dc4b1821d3c3d7ed2f40f8b68f680e418a7c991485726deba
+  content_hash: sha256:f922260d910371ee010482dd7ae840a757c18d94f6c87d3211d0fd3ca0482c78
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/oe-ready.jq
@@ -4524,7 +4663,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:7bf708970f9ee4c478ccd5730a78165c5dde89768f0260fa07cd873a5aa1a736
+  content_hash: sha256:1a54d5d20e4bc23d4dc7fca729f54e59b12d2f8d4f8da59e29ebfe10164e67ba
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/oe-ready.sh
@@ -4578,7 +4717,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:ee64ee57df05d44e6aca909d6f92c788a646531118bc40db0a0263607dddd8a9
+  content_hash: sha256:db7d8e7e8ecb83191ab877884d82e2d2ac40e0e83dfbb364c3d695a093544ee4
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/oe-store.sh
@@ -4650,7 +4789,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:8c89a9a565977a3642b51667baeb32a9304aa1ebce1311f5a12d33463b7d1b90
+  content_hash: sha256:f63c332240aaa3ab7b21574bafd8e6f1bbd00fd6c6fb0974019a4bfab470ca45
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/test-oe-records.bats
@@ -4686,7 +4825,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:cfc838e2fede94a140999d7ce487b6cbcb3f4074c54e8bcd18218feeff0294e9
+  content_hash: sha256:58b804791378ca1f5c908d6b7a47af5091458d6867e175bd49c38a691cc3708b
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/test-oe-verdict.bats
@@ -4704,7 +4843,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:3cd38af56f4610b3e182308532f7c208f639b71ae6968e3a4e00b869d3534092
+  content_hash: sha256:340e24202f1e9c5a705eda720e123756655f7285fbfc2d3db988e5ee9fa194ea
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/test-oe-worktree.bats
@@ -4740,7 +4879,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:9c38080564ac160a81d05858c76cde707073fe4e2af718026baac637b7ba8fa0
+  content_hash: sha256:d5fbea66a6081c38f54896a4f9f5a00694cfede78368cc391763cd82675c9eef
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/testdata/fake-herdr.sh
@@ -4759,6 +4898,78 @@ deployments:
   - maro114510/skills
   active_owner: maro114510/skills
   content_hash: sha256:22bf8f0d6bba7556527fb10a4252eeaddf0f68e0684ce84c1aa71a07a1104768
+- kind: project-relative
+  target: codex
+  value: .agents/skills/pick-next
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/pick-next/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:6254890aa27d8979221f6fa7520357c4d36781beaacf3cd4cbf2acb88c54aa5d
+- kind: project-relative
+  target: codex
+  value: .agents/skills/pick-next/scripts/pick-discussions.graphql
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:181769731b55397814a7927b0c4f2f7d616721450515726fdde2cd7e4d627b73
+- kind: project-relative
+  target: codex
+  value: .agents/skills/pick-next/scripts/pick-issues.graphql
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:6936a7f5f0ebc6aca33ebc123e0e534d94da3d891e6bed56a80713dece5e4b69
+- kind: project-relative
+  target: codex
+  value: .agents/skills/pick-next/scripts/pick-prs.graphql
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:db55abd69344c72db908b2472eee76c602e0b71b5e5289539ed4e4c7535ade86
+- kind: project-relative
+  target: codex
+  value: .agents/skills/pick-next/scripts/pick.jq
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:8539efaa1bb69269b9ae2651073604413bd51275c9ea3a9045529030dc12a97e
+- kind: project-relative
+  target: codex
+  value: .agents/skills/pick-next/scripts/pick.sh
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:8b01ee58d01bc02f636eb447c56d4195abe54932677187d65c43a376e28a2aaf
+- kind: project-relative
+  target: codex
+  value: .agents/skills/pick-next/scripts/test-pick.bats
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:56c3600427a9eb32292485deb872c9a48fa8b643f47e3c3074e377c99859556c
 - kind: project-relative
   target: codex
   value: .agents/skills/pr-doc-review-pe
@@ -4794,7 +5005,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:b1c13004b40514081e7049e0f9320762b8a8b4d6207a23a460b06fef47a73ef9
+  content_hash: sha256:b44989867f826f98a451155b7f6c235320ba4c637fb7bd8b0f1aa454dc0e81c4
 - kind: project-relative
   target: codex
   value: .agents/skills/pr-owner/agents/openai.yaml
@@ -4821,7 +5032,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:2c807ec7486c9438433ec7b8e5a28ae471ad67fc2a8246dc8037c5deeecaaa42
+  content_hash: sha256:46237f432eec8f25929581189f2668add4d6a99abb7e0b9f74ea82949608c9a9
 - kind: project-relative
   target: codex
   value: .agents/skills/pr-review-pe/references/ai-specific-risks.md
@@ -5622,7 +5833,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:ee986d504b70ad676edfb23a499aec1f04bfe561da67be10630e17acaa78d5c6
+  content_hash: sha256:af8af5ca4f5a8fd647d08dbde75fdd9fc73c1d95420c7807f5e3e861313493c3
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/commit/references/issue-footer.md
@@ -5739,7 +5950,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:d70a15eeaa16d61807d6b69933d032524b530654b92e75c18a9a9a5e616e56c2
+  content_hash: sha256:ce95e5bcb981f34bd336d1fbdd9368a49e1fc3b3fe098704fecb4aff1203ac18
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/create-pr/references/description.md
@@ -5766,7 +5977,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:8cbeafe3708d37cda4dfe0e2c58027bffa6bb891a51bb1665b65b09933a5534d
+  content_hash: sha256:549112d16f417621cf189e7ac83e1ccc856e48018ed4767e3142b87a3bec7a48
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/create-pr/scripts/issue-refs.sh
@@ -5802,7 +6013,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:5c89170b0c7acb8b6c7598195af7df49b3352bb7e648f74e7af3d5111b71783b
+  content_hash: sha256:b2baeead098928475837433c3fb3bf48b0e76adbddcd0e7d8401b7a529ad28f0
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/create-pr/scripts/test-issue-refs.sh
@@ -6108,7 +6319,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:c05876ecacd2d4b2c2ac7a5be8bf17ce49b85415ebd0671901bfed13c4169f2f
+  content_hash: sha256:7787dc6c07985baa97b4c269830a2d27163db930a98d6b8870aa5bcc9c2a1ac1
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/implement/references/change-units.md
@@ -6135,7 +6346,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:17445ee4725bc2ee2b886aa42865382c5a57918dfc7a9d655f0cf198f464a106
+  content_hash: sha256:57ed7a7771e6dc140d4298565e8c50b102bdcb1642c2dec8965505db3e9dafb9
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/implement/references/playbooks/behavior-change.md
@@ -6423,7 +6634,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:0c6ca0390f6fd94ace4ba4d0265e7f96bbde6e28414a0ac786dbdef62c9d6848
+  content_hash: sha256:e815c4a17fef50204047a4faef72614bbe88311e080872c8b24bdce736f4ca01
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/oe-ready-epic.graphql
@@ -6432,7 +6643,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:0af53ecca364ab5b2d52fe0742cbbd22e70b2e9e4d5b9ecd583c6538bae3e71f
+  content_hash: sha256:30cab2280cbec6eb7b5c9476f2a65352295614262f3f3c260818f53ac100b52e
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/oe-ready-issue.graphql
@@ -6441,7 +6652,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:288e291f5895a49dc4b1821d3c3d7ed2f40f8b68f680e418a7c991485726deba
+  content_hash: sha256:f922260d910371ee010482dd7ae840a757c18d94f6c87d3211d0fd3ca0482c78
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/oe-ready.jq
@@ -6450,7 +6661,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:7bf708970f9ee4c478ccd5730a78165c5dde89768f0260fa07cd873a5aa1a736
+  content_hash: sha256:1a54d5d20e4bc23d4dc7fca729f54e59b12d2f8d4f8da59e29ebfe10164e67ba
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/oe-ready.sh
@@ -6504,7 +6715,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:ee64ee57df05d44e6aca909d6f92c788a646531118bc40db0a0263607dddd8a9
+  content_hash: sha256:db7d8e7e8ecb83191ab877884d82e2d2ac40e0e83dfbb364c3d695a093544ee4
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/oe-store.sh
@@ -6576,7 +6787,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:8c89a9a565977a3642b51667baeb32a9304aa1ebce1311f5a12d33463b7d1b90
+  content_hash: sha256:f63c332240aaa3ab7b21574bafd8e6f1bbd00fd6c6fb0974019a4bfab470ca45
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/test-oe-records.bats
@@ -6612,7 +6823,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:cfc838e2fede94a140999d7ce487b6cbcb3f4074c54e8bcd18218feeff0294e9
+  content_hash: sha256:58b804791378ca1f5c908d6b7a47af5091458d6867e175bd49c38a691cc3708b
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/test-oe-verdict.bats
@@ -6630,7 +6841,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:3cd38af56f4610b3e182308532f7c208f639b71ae6968e3a4e00b869d3534092
+  content_hash: sha256:340e24202f1e9c5a705eda720e123756655f7285fbfc2d3db988e5ee9fa194ea
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/test-oe-worktree.bats
@@ -6666,7 +6877,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:9c38080564ac160a81d05858c76cde707073fe4e2af718026baac637b7ba8fa0
+  content_hash: sha256:d5fbea66a6081c38f54896a4f9f5a00694cfede78368cc391763cd82675c9eef
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-herdr.sh
@@ -6685,6 +6896,78 @@ deployments:
   - maro114510/skills
   active_owner: maro114510/skills
   content_hash: sha256:22bf8f0d6bba7556527fb10a4252eeaddf0f68e0684ce84c1aa71a07a1104768
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/pick-next
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: null
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/pick-next/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:6254890aa27d8979221f6fa7520357c4d36781beaacf3cd4cbf2acb88c54aa5d
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/pick-next/scripts/pick-discussions.graphql
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:181769731b55397814a7927b0c4f2f7d616721450515726fdde2cd7e4d627b73
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/pick-next/scripts/pick-issues.graphql
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:6936a7f5f0ebc6aca33ebc123e0e534d94da3d891e6bed56a80713dece5e4b69
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/pick-next/scripts/pick-prs.graphql
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:db55abd69344c72db908b2472eee76c602e0b71b5e5289539ed4e4c7535ade86
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/pick-next/scripts/pick.jq
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:8539efaa1bb69269b9ae2651073604413bd51275c9ea3a9045529030dc12a97e
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/pick-next/scripts/pick.sh
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:8b01ee58d01bc02f636eb447c56d4195abe54932677187d65c43a376e28a2aaf
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/pick-next/scripts/test-pick.bats
+  runtime: null
+  scope: project
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:56c3600427a9eb32292485deb872c9a48fa8b643f47e3c3074e377c99859556c
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/pr-doc-review-pe
@@ -6720,7 +7003,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:b1c13004b40514081e7049e0f9320762b8a8b4d6207a23a460b06fef47a73ef9
+  content_hash: sha256:b44989867f826f98a451155b7f6c235320ba4c637fb7bd8b0f1aa454dc0e81c4
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/pr-owner/agents/openai.yaml
@@ -6747,7 +7030,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:2c807ec7486c9438433ec7b8e5a28ae471ad67fc2a8246dc8037c5deeecaaa42
+  content_hash: sha256:46237f432eec8f25929581189f2668add4d6a99abb7e0b9f74ea82949608c9a9
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/pr-review-pe/references/ai-specific-risks.md
