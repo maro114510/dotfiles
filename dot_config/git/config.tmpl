@@ -4,7 +4,6 @@
 [core]
 	pager = delta
 	excludesfile = ~/.config/git/ignore
-	hooksPath = ~/.git_hooks
 
 [interactive]
 	diffFilter = delta --color-only
@@ -58,3 +57,8 @@
 [hook "gitleaks"]
 	event = pre-commit
 	command = gitleaks protect --staged
+[skills]
+	herdr = true
+# Settings for this machine only, such as work hosts and tool IDs; chezmoi never manages this file.
+[include]
+	path = ~/.config/git/config.machine
