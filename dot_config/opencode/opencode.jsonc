@@ -304,7 +304,14 @@
     { "action": "shell", "resource": "*'.env.*", "effect": "deny" },
     { "action": "shell", "resource": "*<.env.*", "effect": "deny" },
     { "action": "shell", "resource": "*@.env.*", "effect": "deny" },
-    { "action": "shell", "resource": "*.envrc*", "effect": "deny" },
+    // .envrc, also as .envrc.local: only as a path, like .env above, so a
+    // command whose text merely names `.envrc`, such as an Issue body, runs.
+    { "action": "shell", "resource": "* .envrc*", "effect": "deny" },
+    { "action": "shell", "resource": "*/.envrc*", "effect": "deny" },
+    { "action": "shell", "resource": "*\".envrc*", "effect": "deny" },
+    { "action": "shell", "resource": "*'.envrc*", "effect": "deny" },
+    { "action": "shell", "resource": "*<.envrc*", "effect": "deny" },
+    { "action": "shell", "resource": "*@.envrc*", "effect": "deny" },
     { "action": "shell", "resource": "*.pem *", "effect": "deny" },
     { "action": "shell", "resource": "*credentials.json*", "effect": "deny" },
     { "action": "shell", "resource": "*.git-credentials*", "effect": "deny" },
