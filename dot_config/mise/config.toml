@@ -30,6 +30,7 @@ gitleaks = "latest"
 zoxide = "latest"
 claude = "latest"
 "npm:difit" = { version = "latest" }
+pi = "latest"
 
 [settings]
 npm.package_manager = "pnpm"
