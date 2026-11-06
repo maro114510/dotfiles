@@ -73,6 +73,11 @@ Touch only what the task requires.
 - If you notice unrelated issues, mention them — don't silently fix them.
 - Remove only the imports/variables/functions that YOUR changes made unused. Leave pre-existing dead code alone.
 
+## Deleting Files
+
+- Delete with `trash`, not `rm`, so a mistake can be undone from the Trash
+- `rm` is fine for temporary files a script created itself, and on a host without `trash`
+
 ## Docs vs. Code
 
 When a repository's documentation and its existing code disagree, follow the conventions used in the existing code, and in your final reply point out each inconsistency you found between the documentation and the code.
