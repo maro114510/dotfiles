@@ -179,6 +179,16 @@ checksum = "sha256:778a4ed7b254294451b5ec1695097e72ce0c70b2e753ee32bfde2158a72c4
 url = "https://github.com/peco/peco/releases/download/v0.6.0/peco_0.6.0_darwin_arm64.zip"
 url_api = "https://api.github.com/repos/peco/peco/releases/assets/361190181"
 
+[[tools.pi]]
+version = "1.5.0"
+backend = "aqua:earendil-works/pi"
+specifiers = ["latest"]
+
+[tools.pi."platforms.macos-arm64"]
+checksum = "sha256:a9bf0d82d58d2a7d337f4ae4171b5fc9ebffe42509527a831364c4b65adf2cdf"
+url = "https://github.com/earendil-works/pi/releases/download/v1.5.0/pi-darwin-arm64.tar.gz"
+url_api = "https://api.github.com/repos/earendil-works/pi/releases/assets/701404873"
+
 [[tools.pipx]]
 version = "1.18.11"
 backend = "aqua:pypa/pipx"
