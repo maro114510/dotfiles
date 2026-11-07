@@ -347,4 +347,18 @@
     { "action": "shell", "resource": "diskutil apfs delete*", "effect": "deny" },
     { "action": "shell", "resource": "diskutil apfs erase*", "effect": "deny" },
   ],
+  "mcp": {
+    "servers": {
+      "browse": {
+        "type": "local",
+        "command": [
+          "browse",
+          "mcp"
+        ],
+        "environment": {
+          "OPENCODE_BROWSER_RUNTIME": "auto-update"
+        }
+      }
+    }
+  },
 }
