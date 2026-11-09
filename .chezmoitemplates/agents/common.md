@@ -82,6 +82,12 @@ Touch only what the task requires.
 
 When a repository's documentation and its existing code disagree, follow the conventions used in the existing code, and in your final reply point out each inconsistency you found between the documentation and the code.
 
+## Repository Tooling
+
+- Run lint, format, and test through the repository's own entry point (a Makefile target, `go tool`, a package script); a binary found on `PATH` may be a different version
+- When a check fails the same way on the default branch, find the cause in the local environment before writing the failure into a PR, Issue, or report
+- To carry one file's change onto another base, apply that branch's diff (`git diff <base>...<branch> -- <file> | git apply --index`); copying the whole file also reverts the newer changes on the base
+
 ## Define Done Before Starting
 
 For any non-trivial task, make the exit condition explicit before writing code.
