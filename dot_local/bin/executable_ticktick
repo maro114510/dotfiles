@@ -12,9 +12,9 @@
 # there is none. This is a guard rail, not a sandbox.
 #
 # Usage:
-#   ticktick-op.sh status          # is the 1Password item readable? (no token output)
-#   ticktick-op.sh login           # human only: OAuth in the browser, store token in 1Password
-#   ticktick-op.sh <ticktick args> # e.g. project list --json
+#   ticktick status          # is the 1Password item readable? (no token output)
+#   ticktick login           # human only: OAuth in the browser, store token in 1Password
+#   ticktick <ticktick args> # e.g. project list --json
 #
 # Environment (non-secret): TICKTICK_OP_VAULT (Personal), TICKTICK_OP_ITEM
 # (TickTick CLI), TICKTICK_OP_CLI (override CLI path for testing).
@@ -25,7 +25,7 @@ vault="${TICKTICK_OP_VAULT:-Personal}"
 item="${TICKTICK_OP_ITEM:-TickTick CLI}"
 ref="op://${vault}/${item}/credential"
 
-die() { printf 'ticktick-op: %s\n' "$1" >&2; exit "${2:-1}"; }
+die() { printf 'ticktick: %s\n' "$1" >&2; exit "${2:-1}"; }
 
 # Resolve absolute paths first: a mise shim breaks once HOME is replaced.
 node_bin="$(mise which node)" || die 'node not found via mise'
@@ -53,7 +53,7 @@ is_allowlisted() {
 
 confirm_human() {
   { : </dev/tty; } 2>/dev/null || die "blocked: '$*' needs human approval and there is no terminal" 3
-  printf 'ticktick-op: run "ticktick %s"? type yes: ' "$*" >/dev/tty
+  printf 'ticktick: run "ticktick %s"? type yes: ' "$*" >/dev/tty
   local ans=''
   read -r ans </dev/tty || true
   [[ "$ans" == yes ]] || die 'not approved' 3
@@ -67,7 +67,7 @@ run_cli() {
 }
 
 new_home() {
-  tmp="$(mktemp -d "${TMPDIR:-/tmp}/ticktick-op.XXXXXX")"
+  tmp="$(mktemp -d "${TMPDIR:-/tmp}/ticktick.XXXXXX")"
   mkdir -p "$tmp/.config/ticktick-cli"
 }
 tmp=''
@@ -83,7 +83,7 @@ case "$cmd" in
     if read_token >/dev/null; then
       printf 'token readable from %s\n' "op://${vault}/${item}"
     else
-      die "cannot read ${ref} (sign in to 1Password or run: ticktick-op.sh login)"
+      die "cannot read ${ref} (sign in to 1Password or run: ticktick login)"
     fi
     exit 0
     ;;
@@ -122,7 +122,7 @@ done
 
 is_allowlisted "$@" || confirm_human "$@"
 
-token="$(read_token)" || die "cannot read ${ref} (run: ticktick-op.sh status)"
+token="$(read_token)" || die "cannot read ${ref} (run: ticktick status)"
 new_home
 printf '{\n  "access_token": "%s"\n}\n' "$token" >"$tmp/.config/ticktick-cli/config.json"
 
