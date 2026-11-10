@@ -40,6 +40,16 @@ Held back for the Rust CLI:
 | Archive or reopen command | None |
 | CSV or JSON export, backup | None; use `--json` per command |
 
+Across candidates (only the official CLI was run against a real account):
+
+| Candidate | Completed or discarded task search | Closed project | Export |
+| --- | --- | --- | --- |
+| Official CLI | `task completed` (verified in code) | `closed` shown, 5 of 19 projects were closed (verified live) | None |
+| CarterT27 Rust | Not checked | Not checked | Not checked |
+| avilabss Go | Not checked | Not checked | Not checked |
+
+No destructive archive operation was run.
+
 ## Install
 
 ```bash
@@ -93,6 +103,41 @@ Exit codes: 0 success, 1 CLI or API error (includes 401 and 429),
   asks for a typed `yes` on the controlling terminal.
   Without a terminal it exits 3.
 - This is a guard rail, not a sandbox. An agent can still read 1Password if it can run `op`.
+
+Example rules for OpenCode (adapt to the existing `permissions` list, last match wins):
+
+```jsonc
+{ "action": "shell", "resource": "ticktick *", "effect": "deny" },
+{ "action": "shell", "resource": "*ticktick-op.sh *", "effect": "allow" }
+```
+
+- Denying the bare `ticktick` command stops an agent from bypassing the wrapper.
+- Pi has no equivalent config in this repository; call the wrapper explicitly there too.
+- Not yet run from OpenCode or Pi with these rules.
+
+## Verification log (2026-11-10, official 0.1.15, one real account)
+
+| Check | Result |
+| --- | --- |
+| `--version` | 0.1.15, exit 0 |
+| `status` | token readable from 1Password |
+| `project list --json` | 19 projects, 5 with `closed: true` |
+| `task create` | Needs `--project`; created in a non-inbox project |
+| `task update` | Needs `--id` as well as the argument |
+| `task get` after `complete` | `status` changed 0 to 2 |
+| `task delete` without a terminal | Blocked, exit 3 |
+| Piped `yes` through a pseudo-terminal | Not accepted, exit 3 |
+| Fake token | 401 body echoed the token; wrapper redacted it, exit 1 |
+| Child environment | HOME, LANG, PATH, TERM only; HOME 0700, config 0600; no leftovers |
+
+Not verified:
+
+- The final delete of the test task, which a human must approve.
+  The test task stayed in the account until then.
+- Rate limit (429) behavior. The CLI has no special handling; it exits 1.
+- Token expiry behavior beyond the 401 shape.
+- Execution from OpenCode or Pi.
+- `mise.lock` content. It needs `mise lock --global` on the machine after `chezmoi apply`.
 
 ## Update
 
