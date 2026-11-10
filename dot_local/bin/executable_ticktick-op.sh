@@ -16,12 +16,12 @@
 #   ticktick-op.sh login           # human only: OAuth in the browser, store token in 1Password
 #   ticktick-op.sh <ticktick args> # e.g. project list --json
 #
-# Environment (non-secret): TICKTICK_OP_VAULT (Private), TICKTICK_OP_ITEM
+# Environment (non-secret): TICKTICK_OP_VAULT (Personal), TICKTICK_OP_ITEM
 # (TickTick CLI), TICKTICK_OP_CLI (override CLI path for testing).
 set -euo pipefail
 umask 077
 
-vault="${TICKTICK_OP_VAULT:-Private}"
+vault="${TICKTICK_OP_VAULT:-Personal}"
 item="${TICKTICK_OP_ITEM:-TickTick CLI}"
 ref="op://${vault}/${item}/credential"
 

@@ -58,7 +58,7 @@ mise which ticktick
 
 1. In the 1Password app, enable the CLI integration and unlock it.
 2. Run `ticktick-op.sh login`. It opens the browser for OAuth.
-3. The token goes into `op://Private/TickTick CLI/credential`.
+3. The token goes into `op://Personal/TickTick CLI/credential`.
    Override the vault and item with `TICKTICK_OP_VAULT` and `TICKTICK_OP_ITEM`.
 4. Run `ticktick-op.sh status`.
 
