@@ -30,6 +30,8 @@ gitleaks = "latest"
 zoxide = "latest"
 claude = "latest"
 "npm:difit" = { version = "latest" }
+# Pinned on purpose: upstream source is not public. See docs/ticktick-cli.md before bumping.
+"npm:@ticktick/ticktick-cli" = "0.1.15"
 pi = "latest"
 
 [settings]

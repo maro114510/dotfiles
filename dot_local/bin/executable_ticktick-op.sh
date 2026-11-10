@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+# Run the pinned TickTick CLI with an access token injected from 1Password.
+#
+# The CLI only reads ~/.config/ticktick-cli/config.json and has no env or
+# keychain support. Each run therefore gets a throwaway HOME (mode 0700) holding
+# a mode-0600 config.json, removed on exit. The token is never in argv or in the
+# environment, and the CLI starts with a minimal environment (env -i).
+#
+# Agent safety: only the allowlisted read/create/update subcommands run without
+# a human. Anything else (delete, move, batch, project or tag changes, ...)
+# needs a typed confirmation on the controlling terminal and is refused when
+# there is none. This is a guard rail, not a sandbox.
+#
+# Usage:
+#   ticktick-op.sh status          # is the 1Password item readable? (no token output)
+#   ticktick-op.sh login           # human only: OAuth in the browser, store token in 1Password
+#   ticktick-op.sh <ticktick args> # e.g. project list --json
+#
+# Environment (non-secret): TICKTICK_OP_VAULT (Personal), TICKTICK_OP_ITEM
+# (TickTick CLI), TICKTICK_OP_CLI (override CLI path for testing).
+set -euo pipefail
+umask 077
+
+vault="${TICKTICK_OP_VAULT:-Personal}"
+item="${TICKTICK_OP_ITEM:-TickTick CLI}"
+ref="op://${vault}/${item}/credential"
+
+die() { printf 'ticktick-op: %s\n' "$1" >&2; exit "${2:-1}"; }
+
+# Resolve absolute paths first: a mise shim breaks once HOME is replaced.
+node_bin="$(mise which node)" || die 'node not found via mise'
+cli_bin="${TICKTICK_OP_CLI:-$(mise which ticktick)}" || die 'ticktick not found; run mise install'
+cli_bin="$(realpath "$cli_bin")"
+
+read_token() { op read --no-newline "$ref" 2>/dev/null; }
+
+# 0 = allowed unattended, 1 = needs human confirmation.
+is_allowlisted() {
+  local -a words=()
+  local a
+  for a in "$@"; do
+    case "$a" in -*) ;; *) words+=("$a") ;; esac
+    [[ ${#words[@]} -ge 2 ]] && break
+  done
+  case "${words[0]:-} ${words[1]:-}" in
+    'project list' | 'project get' | 'project data' | 'project members') return 0 ;;
+    'task get' | 'task create' | 'task update' | 'task complete') return 0 ;;
+    'task completed' | 'task filter' | 'task search') return 0 ;;
+    'tag list' | 'preference get' | 'countdown list') return 0 ;;
+  esac
+  return 1
+}
+
+confirm_human() {
+  { : </dev/tty; } 2>/dev/null || die "blocked: '$*' needs human approval and there is no terminal" 3
+  printf 'ticktick-op: run "ticktick %s"? type yes: ' "$*" >/dev/tty
+  local ans=''
+  read -r ans </dev/tty || true
+  [[ "$ans" == yes ]] || die 'not approved' 3
+}
+
+run_cli() {
+  local home_dir="$1"
+  shift
+  env -i HOME="$home_dir" PATH=/usr/bin:/bin LANG="${LANG:-en_US.UTF-8}" TERM="${TERM:-dumb}" \
+    "$node_bin" "$cli_bin" "$@"
+}
+
+new_home() {
+  tmp="$(mktemp -d "${TMPDIR:-/tmp}/ticktick-op.XXXXXX")"
+  mkdir -p "$tmp/.config/ticktick-cli"
+}
+tmp=''
+trap '[[ -n "$tmp" ]] && rm -rf "$tmp"' EXIT
+
+cmd="${1:-}"
+case "$cmd" in
+  '' | -h | --help)
+    sed -n '2,/^set -euo/p' "$0" | sed '$d' | sed 's/^# \{0,1\}//'
+    exit 0
+    ;;
+  status)
+    if read_token >/dev/null; then
+      printf 'token readable from %s\n' "op://${vault}/${item}"
+    else
+      die "cannot read ${ref} (sign in to 1Password or run: ticktick-op.sh login)"
+    fi
+    exit 0
+    ;;
+  login)
+    [[ -t 0 && -t 1 ]] || die 'login needs an interactive terminal' 3
+    new_home
+    run_cli "$tmp" auth login
+    cfg="$tmp/.config/ticktick-cli/config.json"
+    [[ -s "$cfg" ]] || die 'no token was written'
+    # Token travels over stdin only (jq -R reads it as raw text).
+    template="$(jq -r .access_token "$cfg" | jq -Rn --arg title "$item" \
+      'input as $t | {title:$title, category:"API_CREDENTIAL",
+       fields:[{id:"credential",label:"credential",type:"CONCEALED",value:$t}]}')"
+    if op item get "$item" --vault "$vault" >/dev/null 2>&1; then
+      printf '%s' "$template" | op item edit "$item" --vault "$vault" >/dev/null
+    else
+      printf '%s' "$template" | op item create --vault "$vault" >/dev/null
+    fi
+    printf 'token stored in op://%s/%s\n' "$vault" "$item"
+    exit 0
+    ;;
+esac
+
+# --help / --version never touch the token.
+for a in "$@"; do
+  case "$a" in -h | --help | -V | --version)
+    new_home
+    run_cli "$tmp" "$@"
+    exit $?
+    ;;
+  esac
+done
+
+# `auth` is replaced by the subcommands above: it would print token fragments or rewrite config.
+[[ "$cmd" == auth ]] && die 'use "status" or "login" instead of "auth"' 2
+
+is_allowlisted "$@" || confirm_human "$@"
+
+token="$(read_token)" || die "cannot read ${ref} (run: ticktick-op.sh status)"
+new_home
+printf '{\n  "access_token": "%s"\n}\n' "$token" >"$tmp/.config/ticktick-cli/config.json"
+
+# The API echoes the rejected token in its 401 body. Keep stderr in a file and
+# redact it after the CLI exits, with a shell loop, not sed, so the token never
+# appears in any argv. A file avoids relying on `wait` for a process
+# substitution, which bash 3.2 does not support.
+err="$tmp/stderr"
+rc=0
+run_cli "$tmp" "$@" 2>"$err" || rc=$?
+while IFS= read -r line || [[ -n "$line" ]]; do
+  printf '%s\n' "${line//"$token"/<redacted>}" >&2
+done <"$err"
+exit "$rc"
