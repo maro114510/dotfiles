@@ -46,9 +46,8 @@ is_allowlisted() {
     'project list' | 'project get' | 'project data' | 'project members') return 0 ;;
     'task get' | 'task create' | 'task update' | 'task complete') return 0 ;;
     'task completed' | 'task filter' | 'task search') return 0 ;;
-    'tag list') return 0 ;;
+    'tag list' | 'preference get' | 'countdown list') return 0 ;;
   esac
-  case "${words[0]:-}" in preference | countdown) return 0 ;; esac
   return 1
 }
 
@@ -127,15 +126,14 @@ token="$(read_token)" || die "cannot read ${ref} (run: ticktick-op.sh status)"
 new_home
 printf '{\n  "access_token": "%s"\n}\n' "$token" >"$tmp/.config/ticktick-cli/config.json"
 
-# The API echoes the rejected token in its 401 body. Redact it from stderr
-# with a shell loop, not sed, so the token never appears in any argv.
-redact() {
-  local line
-  while IFS= read -r line || [[ -n "$line" ]]; do
-    printf '%s\n' "${line//"$token"/<redacted>}" >&2
-  done
-}
+# The API echoes the rejected token in its 401 body. Keep stderr in a file and
+# redact it after the CLI exits, with a shell loop, not sed, so the token never
+# appears in any argv. A file avoids relying on `wait` for a process
+# substitution, which bash 3.2 does not support.
+err="$tmp/stderr"
 rc=0
-run_cli "$tmp" "$@" 2> >(redact) || rc=$?
-wait || true
+run_cli "$tmp" "$@" 2>"$err" || rc=$?
+while IFS= read -r line || [[ -n "$line" ]]; do
+  printf '%s\n' "${line//"$token"/<redacted>}" >&2
+done <"$err"
 exit "$rc"
