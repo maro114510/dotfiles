@@ -35,7 +35,7 @@ seed() {
 @test "a fresh home gets every shared default" {
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -S -c . "${settings}")" = '{"autocompleteMaxVisible":10,"defaultModel":"claude-sonnet-5-5","defaultProjectTrust":"ask","defaultProvider":"claude-code","defaultThinkingLevel":"medium","doubleEscapeAction":"tree","editorPaddingX":1,"enableInstallTelemetry":false,"enabledModels":["claude-code/*","opencode-go/*"],"outputPad":1,"packages":["npm:@narumitw/pi-statusline@0.51.0"],"quietStartup":"header","terminal":{"showTerminalProgress":true}}' ]
+  [ "$(jq -S -c . "${settings}")" = '{"autocompleteMaxVisible":10,"defaultModel":"claude-sonnet-5-5","defaultProjectTrust":"ask","defaultProvider":"claude-code","defaultThinkingLevel":"medium","doubleEscapeAction":"tree","editorPaddingX":1,"enableInstallTelemetry":false,"enabledModels":["claude-code/*","opencode-go/*","local/*"],"outputPad":1,"packages":["npm:@narumitw/pi-statusline@0.51.0"],"quietStartup":"header","terminal":{"showTerminalProgress":true}}' ]
 }
 
 @test "a fresh home gets neither theme nor cacheWarming" {
@@ -138,10 +138,11 @@ seed() {
   [ "$(jq -c . "${home_dir}/.pi/agent/pi-statusline.json")" = '{"segments":["provider","model","thinking","cwd","branch","tools","context","tokens","cache","cost","time"]}' ]
 }
 
-@test "the source holds only the settings merge, the statusline settings, and the instruction template under dot_pi" {
+@test "the source holds only the settings merge, the statusline settings, the instruction template, and the go-router extension under dot_pi" {
   run git -C "${repo_root}" ls-files dot_pi
   [ "$status" -eq 0 ]
   [ "$output" = "dot_pi/agent/AGENTS.md.tmpl
+dot_pi/agent/extensions/go-router.ts
 dot_pi/agent/modify_settings.json
 dot_pi/agent/pi-statusline.json" ]
 }
