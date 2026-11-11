@@ -11,8 +11,9 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { realpathSync } from "node:fs";
 import { homedir } from "node:os";
-import { basename, resolve, sep } from "node:path";
+import { basename, dirname, join, resolve, sep } from "node:path";
 
+// Names are compared in lower case: the default macOS filesystem ignores case.
 const SECRET_DIRS = [".ssh", ".aws"];
 const UNREADABLE = [/^\.env/, /\.pem$/, /\.key$/, /id_rsa$/, /id_ed25519$/, /credentials\.json$/];
 const READABLE = [/\.env\.(example|sample|template)$/];
@@ -30,7 +31,8 @@ const DESTRUCTIVE = [
 ];
 
 // The path the tool will open, resolved against the working directory, plus
-// its symlink target when it exists, so a link cannot rename a secret away.
+// its symlink target, so a link cannot rename a secret away. A file that does
+// not exist yet takes the real path of its parent directory.
 function forms(input: unknown, cwd: string): string[] {
 	if (typeof input !== "string") return [];
 	let path = input.replace(/^@/, "");
@@ -39,14 +41,18 @@ function forms(input: unknown, cwd: string): string[] {
 	try {
 		return [absolute, realpathSync(absolute)];
 	} catch {
-		return [absolute];
+		try {
+			return [absolute, join(realpathSync(dirname(absolute)), basename(absolute))];
+		} catch {
+			return [absolute];
+		}
 	}
 }
 
 function isSecret(path: string, blocked: RegExp[], allowed: RegExp[]): boolean {
-	const name = basename(path);
+	const name = basename(path).toLowerCase();
 	if (blocked.some((p) => p.test(name)) && !allowed.some((p) => p.test(name))) return true;
-	return path.split(sep).slice(0, -1).some((dir) => SECRET_DIRS.includes(dir));
+	return path.split(sep).slice(0, -1).some((dir) => SECRET_DIRS.includes(dir.toLowerCase()));
 }
 
 export default function (pi: ExtensionAPI) {
