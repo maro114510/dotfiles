@@ -88,3 +88,33 @@ both_routes='["claude-code/claude-sonnet-5-5","opencode-go/deepseek-v4.1-flash"]
   [ "$status" -eq 0 ]
   [ "$output" = "claude-code/claude-sonnet-5-5 high" ]
 }
+
+@test "a continuation stays on the model and level of the previous response, even after the selection moves to high" {
+  run route '{"reason":"continuation","thinkingLevel":"high","previous":{"model":"opencode-go/deepseek-v4.1-flash","thinkingLevel":"low"}}' "${both_routes}"
+  [ "$status" -eq 0 ]
+  [ "$output" = "opencode-go/deepseek-v4.1-flash low" ]
+}
+
+@test "a retry stays on the model and level of the failed request, not the previous response" {
+  run route '{"reason":"retry","thinkingLevel":"low","previous":{"model":"opencode-go/deepseek-v4.1-flash","thinkingLevel":"low"},"failed":{"model":"claude-code/claude-sonnet-5-5","thinkingLevel":"high"}}' "${both_routes}"
+  [ "$status" -eq 0 ]
+  [ "$output" = "claude-code/claude-sonnet-5-5 high" ]
+}
+
+@test "a retry after routing itself failed stays on the previous response's model" {
+  run route '{"reason":"retry","thinkingLevel":"low","previous":{"model":"claude-code/claude-sonnet-5-5","thinkingLevel":"high"}}' "${both_routes}"
+  [ "$status" -eq 0 ]
+  [ "$output" = "claude-code/claude-sonnet-5-5 high" ]
+}
+
+@test "a direct request such as a compaction summary stays on the previous response's model" {
+  run route '{"reason":"direct","thinkingLevel":"high","previous":{"model":"opencode-go/deepseek-v4.1-flash","thinkingLevel":"medium"}}' "${both_routes}"
+  [ "$status" -eq 0 ]
+  [ "$output" = "opencode-go/deepseek-v4.1-flash medium" ]
+}
+
+@test "a continuation with no previous response is routed by thinking level" {
+  run route '{"reason":"continuation","thinkingLevel":"high"}' "${both_routes}"
+  [ "$status" -eq 0 ]
+  [ "$output" = "claude-code/claude-sonnet-5-5 high" ]
+}
