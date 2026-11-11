@@ -62,4 +62,4 @@ On the first working day of each month:
    ```
 
 4. If either changed, read the change, then apply it with `pi update https://github.com/earendil-works/pi-claude-code`.
-5. Update the date and commit on this page.
+5. Update the notice date and the extension commit in the Detect a billing change table.
