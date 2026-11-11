@@ -10,6 +10,10 @@ export default function (pi: ExtensionAPI) {
     contextWindow: 1_000_000,
     maxTokens: 128_000,
     route(request, ctx) {
+      const sticky = request.failed ?? request.previous;
+      if (request.reason !== "user" && sticky) {
+        return { model: sticky.model, thinkingLevel: sticky.thinkingLevel ?? request.thinkingLevel };
+      }
       const [provider, id] =
         request.thinkingLevel === "high"
           ? ["claude-code", "claude-sonnet-5-5"]
