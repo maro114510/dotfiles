@@ -1,8 +1,9 @@
 /**
  * Guard: the major denials of the managed OpenCode config, for Pi.
  *
- * - read blocks secret files; committed env templates stay readable
- * - write and edit block .env files and anything under .ssh or .aws
+ * - read blocks secret files and OpenCode's credentials; committed env templates stay readable
+ * - write and edit block .env files, anything under .ssh or .aws, and the
+ *   global OpenCode and Pi config, their plugins and extensions, and the srt settings
  * - bash asks before a major destructive command, and blocks it without a UI
  *
  * Best effort, not a security boundary: see docs/pi-guard.md.
@@ -18,6 +19,19 @@ const SECRET_DIRS = [".ssh", ".aws"];
 const UNREADABLE = [/^\.env/, /\.pem$/, /\.key$/, /id_rsa$/, /id_ed25519$/, /credentials\.json$/];
 const READABLE = [/\.env\.(example|sample|template)$/];
 const UNWRITABLE = [/^\.env/];
+
+// The file-tool denials in the managed OpenCode config's policies, matched as
+// a path ending in any directory; one ending in "/" covers everything under it.
+const UNREADABLE_PATHS = [".config/opencode/service.json", ".local/share/opencode/auth.json"];
+const UNWRITABLE_PATHS = [
+	".config/opencode/opencode.json",
+	".config/opencode/opencode.jsonc",
+	".config/opencode/plugin/",
+	".config/opencode/plugins/",
+	".pi/agent/settings.json",
+	".pi/agent/extensions/",
+	".srt-settings.json",
+];
 
 // Arguments up to the next ; & | or newline, so a pattern stays in one command.
 const ARGS = String.raw`(?:[^;&|\n]*\s)?`;
@@ -55,14 +69,23 @@ function isSecret(path: string, blocked: RegExp[], allowed: RegExp[]): boolean {
 	return path.split(sep).slice(0, -1).some((dir) => SECRET_DIRS.includes(dir.toLowerCase()));
 }
 
+function isProtected(path: string, protectedPaths: string[]): boolean {
+	const lower = path.toLowerCase();
+	return protectedPaths.some((p) => (p.endsWith("/") ? lower.includes(`/${p}`) : lower.endsWith(`/${p}`)));
+}
+
 export default function (pi: ExtensionAPI) {
 	pi.on("tool_call", async (event, ctx) => {
 		const input = event.input as { path?: unknown; command?: unknown };
 
 		if (event.toolName === "read" || event.toolName === "write" || event.toolName === "edit") {
-			const [blocked, allowed] = event.toolName === "read" ? [UNREADABLE, READABLE] : [UNWRITABLE, []];
-			if (!forms(input.path, ctx.cwd).some((p) => isSecret(p, blocked, allowed))) return undefined;
-			const reason = `guard: ${event.toolName} of ${String(input.path)} is blocked as a secret file`;
+			const [blocked, allowed, protectedPaths] =
+				event.toolName === "read"
+					? [UNREADABLE, READABLE, UNREADABLE_PATHS]
+					: [UNWRITABLE, [], UNWRITABLE_PATHS];
+			const paths = forms(input.path, ctx.cwd);
+			if (!paths.some((p) => isSecret(p, blocked, allowed) || isProtected(p, protectedPaths))) return undefined;
+			const reason = `guard: ${event.toolName} of ${String(input.path)} is blocked as a secret or protected file`;
 			if (ctx.hasUI) ctx.ui.notify(reason, "warning");
 			return { block: true, reason };
 		}
