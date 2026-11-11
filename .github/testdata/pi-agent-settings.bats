@@ -33,7 +33,7 @@ seed() {
 @test "a fresh home gets every shared default" {
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -S -c . "${settings}")" = '{"autocompleteMaxVisible":10,"defaultModel":"claude-sonnet-5-5","defaultProjectTrust":"ask","defaultProvider":"claude-code","defaultThinkingLevel":"medium","doubleEscapeAction":"tree","editorPaddingX":1,"enableInstallTelemetry":false,"enabledModels":["claude-code/*","opencode-go/*"],"outputPad":1,"quietStartup":"header","terminal":{"showTerminalProgress":true}}' ]
+  [ "$(jq -S -c . "${settings}")" = '{"autocompleteMaxVisible":10,"defaultModel":"claude-sonnet-5-5","defaultProjectTrust":"ask","defaultProvider":"claude-code","defaultThinkingLevel":"medium","doubleEscapeAction":"tree","editorPaddingX":1,"enableInstallTelemetry":false,"enabledModels":["claude-code/*","opencode-go/*"],"outputPad":1,"packages":["npm:@narumitw/pi-file-context@0.54.6"],"quietStartup":"header","terminal":{"showTerminalProgress":true}}' ]
 }
 
 @test "a fresh home gets neither theme nor cacheWarming" {
@@ -45,14 +45,14 @@ seed() {
 @test "a fresh home gets no Pi-owned field" {
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq 'has("packages") or has("deviceId") or has("lastChangelogVersion")' "${settings}")" = false ]
+  [ "$(jq 'has("deviceId") or has("lastChangelogVersion")' "${settings}")" = false ]
 }
 
 @test "Pi-owned fields survive an apply" {
   seed '{"packages":["https://github.com/earendil-works/pi-claude-code"],"deviceId":"1986c36e","lastChangelogVersion":"1.5.0"}'
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -c .packages "${settings}")" = '["https://github.com/earendil-works/pi-claude-code"]' ]
+  [ "$(jq -c .packages "${settings}")" = '["https://github.com/earendil-works/pi-claude-code","npm:@narumitw/pi-file-context@0.54.6"]' ]
   [ "$(jq -r .deviceId "${settings}")" = 1986c36e ]
   [ "$(jq -r .lastChangelogVersion "${settings}")" = 1.5.0 ]
 }
@@ -63,8 +63,36 @@ seed() {
   [ "$status" -eq 0 ]
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -c .packages "${settings}")" = '["a","b"]' ]
+  [ "$(jq -c .packages "${settings}")" = '["a","b","npm:@narumitw/pi-file-context@0.54.6"]' ]
   [ "$(jq -r .deviceId "${settings}")" = d1 ]
+}
+
+@test "another version of pi-file-context is replaced by the pinned one in place" {
+  seed '{"packages":["npm:@narumitw/pi-file-context@0.50.0","a"]}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -c .packages "${settings}")" = '["npm:@narumitw/pi-file-context@0.54.6","a"]' ]
+}
+
+@test "an unversioned pi-file-context declaration is pinned" {
+  seed '{"packages":["a","npm:@narumitw/pi-file-context"]}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -c .packages "${settings}")" = '["a","npm:@narumitw/pi-file-context@0.54.6"]' ]
+}
+
+@test "a pi-file-context object declaration keeps its resource filters when pinned" {
+  seed '{"packages":[{"source":"npm:@narumitw/pi-file-context@0.50.0","skills":[]}]}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -S -c .packages "${settings}")" = '[{"skills":[],"source":"npm:@narumitw/pi-file-context@0.54.6"}]' ]
+}
+
+@test "a package whose name only starts with pi-file-context is left alone" {
+  seed '{"packages":["npm:@narumitw/pi-file-context-extra@1.0.0"]}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -c .packages "${settings}")" = '["npm:@narumitw/pi-file-context-extra@1.0.0","npm:@narumitw/pi-file-context@0.54.6"]' ]
 }
 
 @test "the shared defaults replace a different value already in the target" {
