@@ -102,10 +102,11 @@ seed() {
   [ "$(cat "${settings}")" = '{"deviceId":' ]
 }
 
-@test "the source holds only the settings merge and the instruction template under dot_pi" {
+@test "the source holds only the settings merge, the instruction template, and the go-router extension under dot_pi" {
   run git -C "${repo_root}" ls-files dot_pi
   [ "$status" -eq 0 ]
   [ "$output" = "dot_pi/agent/AGENTS.md.tmpl
+dot_pi/agent/extensions/go-router.ts
 dot_pi/agent/modify_settings.json" ]
 }
 
