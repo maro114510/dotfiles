@@ -1,7 +1,10 @@
 // Pure policy of the srt sandbox plugin: what a sandboxed command may read and write, and which GitHub
 // credential replaces the placeholder it holds. index.js wires this into OpenCode and srt.
 
-import { randomBytes } from 'node:crypto'
+import { execFileSync } from 'node:child_process'
+import { createSign, randomBytes } from 'node:crypto'
+import { realpathSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 // Hosts whose requests get the real credential. Any other host only ever sees the placeholder.
 const GITHUB_HOSTS = new Set(['github.com', 'api.github.com', 'uploads.github.com'])
@@ -71,11 +74,64 @@ export function createBroker({ ownerToken, bot, now = Date.now }) {
   }
 }
 
-export function createAppClient(options) {
+// What a Bot token may do: push, open pull requests, and comment. Never Workflows or Administration.
+const BOT_PERMISSIONS = { contents: 'write', pull_requests: 'write', issues: 'write', metadata: 'read' }
+
+// The App key stays in this process's memory; the JWT is built here and sent only in a request header.
+export function createAppClient({ appId, installationId, key, fetch = globalThis.fetch }) {
+  let account
+
+  function jwt() {
+    const now = Math.floor(Date.now() / 1000)
+    const part = (value) => Buffer.from(JSON.stringify(value)).toString('base64url')
+    const unsigned = `${part({ alg: 'RS256', typ: 'JWT' })}.${part({ iat: now - 60, exp: now + 540, iss: appId })}`
+    return `${unsigned}.${createSign('RSA-SHA256').update(unsigned).sign(key, 'base64url')}`
+  }
+
+  async function call(method, path, body) {
+    return fetch(`https://api.github.com${path}`, {
+      method,
+      headers: { authorization: `Bearer ${jwt()}`, accept: 'application/vnd.github+json' },
+      body: body && JSON.stringify(body),
+    })
+  }
+
   return {
-    async account() {},
-    async mint(name) {},
+    async account() {
+      if (account) return account
+      const response = await call('GET', `/app/installations/${installationId}`)
+      if (!response.ok) throw new Error(`reading the Bot installation failed: ${response.status}`)
+      account = (await response.json()).account.login
+      return account
+    },
+
+    async mint(name) {
+      const response = await call('POST', `/app/installations/${installationId}/access_tokens`, {
+        repositories: [name],
+        permissions: BOT_PERMISSIONS,
+      })
+      // GitHub answers 422 when the installation does not cover the repository.
+      if (response.status === 422) return null
+      if (!response.ok) throw new Error(`minting a Bot token failed: ${response.status}`)
+      const body = await response.json()
+      return { token: body.token, expiresAt: Date.parse(body.expires_at) }
+    },
   }
 }
 
-export function workTreeAt(cwd) {}
+function git(cwd, ...args) {
+  try {
+    return execFileSync('git', ['-C', cwd, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim()
+  } catch {
+    return null
+  }
+}
+
+// The tree a command may write to, the git directory its commits go to, and its GitHub repository.
+export function workTreeAt(cwd) {
+  const top = git(cwd, 'rev-parse', '--show-toplevel')
+  if (!top) return null
+  const gitDir = realpathSync(resolve(cwd, git(cwd, 'rev-parse', '--git-common-dir')))
+  const remote = git(cwd, 'remote', 'get-url', 'origin')
+  return { top: realpathSync(top), gitDir, repo: remote ? repoFromRemote(remote) : null }
+}
