@@ -347,6 +347,35 @@
     { "action": "shell", "resource": "diskutil apfs delete*", "effect": "deny" },
     { "action": "shell", "resource": "diskutil apfs erase*", "effect": "deny" },
   ],
+  // Hard denies for the file tools, which run in the server outside any shell
+  // sandbox. Policies here are evaluated after every repository's, so a
+  // repository cannot lift them, and they deny edits to this file itself.
+  // The resource is "<action>:<path>"; list the absolute "*/" form and the
+  // form relative to a home-directory location. They do not cover grep,
+  // whose resource is the search pattern, nor shell commands.
+  "policies": [
+    // OpenCode's service password and provider credentials
+    { "action": "tool.use", "resource": "read:*/.config/opencode/service.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:.config/opencode/service.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:*/.local/share/opencode/auth.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:.local/share/opencode/auth.json", "effect": "deny" },
+    // global OpenCode and Pi config, their plugins and extensions, where the
+    // sandbox lives, and the srt settings
+    { "action": "tool.use", "resource": "edit:*/.config/opencode/opencode.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*/.config/opencode/opencode.jsonc", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*/.config/opencode/plugin/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*/.config/opencode/plugins/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*/.pi/agent/settings.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*/.pi/agent/extensions/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*/.srt-settings.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:.config/opencode/opencode.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:.config/opencode/opencode.jsonc", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:.config/opencode/plugin/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:.config/opencode/plugins/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:.pi/agent/settings.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:.pi/agent/extensions/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:.srt-settings.json", "effect": "deny" },
+  ],
   "mcp": {
     "servers": {
       "browse": {
