@@ -109,6 +109,22 @@ bash_command() { decide bash "{\"command\":\"$1\"}" "$2"; }
   [ "$output" = block ]
 }
 
+@test "reading a secret file in other letter case is blocked, as macOS opens it" {
+  run read_path .ENV
+  [ "$output" = block ]
+  run read_path certs/server.PEM
+  [ "$output" = block ]
+  run read_path "~/.SSH/config"
+  [ "$output" = block ]
+}
+
+@test "writing a new file through a symlink to .ssh is blocked" {
+  mkdir "${home_dir}/.ssh"
+  ln -s "${home_dir}/.ssh" "${home_dir}/link"
+  run write_path "${home_dir}/link/config"
+  [ "$output" = block ]
+}
+
 @test "reading an ordinary file is allowed" {
   run read_path src/index.ts
   [ "$output" = allow ]
