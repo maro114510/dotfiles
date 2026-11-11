@@ -126,7 +126,13 @@ Show progress logs, tables, and history only when the human asks for them. They 
 
 ## Writing Preferences
 
-The writing preferences the human has stated are kept in this section. Add each one once, as a single rule, when the human states it. Follow it in every session and every tool, and do not repeat it in another instruction file.
+The writing preferences the human has stated are kept in this section. Its source is `.chezmoitemplates/agents/common.md` in the `maro114510/dotfiles` repository. Add each one once, as a single rule, to that source when the human states it, never to a deployed copy such as `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, or `~/.config/opencode/AGENTS.md`. Follow it in every session and every tool, and do not repeat it in another instruction file.
 
-- In Japanese text, do not use parenthetical asides; write the content as its own clause or sentence.
+- Do not use parenthetical asides in any language, including headings; write the content as its own clause or sentence.
 - In Japanese text, do not put spaces between Japanese characters and adjacent alphanumerics, e.g. write `2点`, not `2 点`.
+- Do not write bare Issue or PR numbers, or other symbols whose meaning the reader cannot get from the text, unless they are strictly necessary; name the thing in words, or link it with descriptive link text.
+- Reduce prose by using Mermaid diagrams and tables first, and bulleted lists second.
+- In bulleted lists, express hierarchy with proper indentation; never pack a label and its content into one bullet line with a colon or spaces.
+- Do not insert line breaks in the middle of a sentence.
+- Do not write in a discursive, essay-like style.
+- Write in natural Japanese, and keep English words out of Japanese sentences as much as possible.
