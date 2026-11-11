@@ -102,6 +102,13 @@ bash_command() { decide bash "{\"command\":\"$1\"}" "$2"; }
   [ "$output" = block ]
 }
 
+@test "reading a symlink whose target is a secret file is blocked" {
+  printf 'TOKEN=x\n' > "${home_dir}/.env"
+  ln -s "${home_dir}/.env" "${home_dir}/notes.txt"
+  run read_path "${home_dir}/notes.txt"
+  [ "$output" = block ]
+}
+
 @test "reading an ordinary file is allowed" {
   run read_path src/index.ts
   [ "$output" = allow ]
