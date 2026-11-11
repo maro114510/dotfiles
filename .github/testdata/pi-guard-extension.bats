@@ -125,6 +125,69 @@ bash_command() { decide bash "{\"command\":\"$1\"}" "$2"; }
   [ "$output" = block ]
 }
 
+@test "reading OpenCode's service password file is blocked" {
+  run read_path "~/.config/opencode/service.json"
+  [ "$output" = block ]
+  run read_path /Users/u/.config/opencode/service.json
+  [ "$output" = block ]
+}
+
+@test "reading OpenCode's provider credential file is blocked" {
+  run read_path "~/.local/share/opencode/auth.json"
+  [ "$output" = block ]
+  run read_path ../.local/share/opencode/auth.json
+  [ "$output" = block ]
+}
+
+@test "reading an OpenCode credential file in other letter case is blocked" {
+  run read_path "~/.Config/OpenCode/Service.json"
+  [ "$output" = block ]
+}
+
+@test "writing or editing the global OpenCode config, either extension, is blocked" {
+  run write_path "~/.config/opencode/opencode.jsonc"
+  [ "$output" = block ]
+  run edit_path /Users/u/.config/opencode/opencode.json
+  [ "$output" = block ]
+}
+
+@test "writing or editing a global OpenCode plugin, where the sandbox plugin lives, is blocked" {
+  run write_path "~/.config/opencode/plugins/sandbox/index.ts"
+  [ "$output" = block ]
+  run edit_path /Users/u/.config/opencode/plugin/sandbox.ts
+  [ "$output" = block ]
+}
+
+@test "writing or editing the global Pi settings or a global Pi extension is blocked" {
+  run edit_path "~/.pi/agent/settings.json"
+  [ "$output" = block ]
+  run write_path /Users/u/.pi/agent/extensions/sandbox.ts
+  [ "$output" = block ]
+  run edit_path "~/.pi/agent/extensions/guard.ts"
+  [ "$output" = block ]
+}
+
+@test "writing or editing the srt settings is blocked" {
+  run write_path "~/.srt-settings.json"
+  [ "$output" = block ]
+  run edit_path ../.srt-settings.json
+  [ "$output" = block ]
+}
+
+@test "reading OpenCode's saved tool output is allowed" {
+  run read_path "~/.local/share/opencode/tool-output/tool_1"
+  [ "$output" = allow ]
+}
+
+@test "editing a repository's own OpenCode or Pi config is allowed" {
+  run edit_path opencode.jsonc
+  [ "$output" = allow ]
+  run edit_path /Users/u/work/repo/.opencode/opencode.jsonc
+  [ "$output" = allow ]
+  run edit_path .pi/settings.json
+  [ "$output" = allow ]
+}
+
 @test "reading an ordinary file is allowed" {
   run read_path src/index.ts
   [ "$output" = allow ]
