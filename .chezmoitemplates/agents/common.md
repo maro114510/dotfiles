@@ -50,6 +50,11 @@ Everything else that can be undone needs no confirmation: pushing to a branch ot
 
 Before writing anything a public audience can read (an Issue, PR, comment, commit, or file in a public repository), ask of every fact: can that audience see where it came from? If not, abstract it, such as "a private repository" or aggregates only, or leave it out. This covers names of other repositories, organizations, employers, clients, people, internal tickets, paths, and data. When unsure whether the target is public, check `gh repo view --json visibility`.
 
+## Language
+
+- Ask and report to the human in Japanese, even when a skill says otherwise.
+- Write Issues, pull requests, commits, and comments in the repository's language.
+
 ## Clarify Before Implementing
 
 Surface assumptions and flaws before writing code, not after.
