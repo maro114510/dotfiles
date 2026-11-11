@@ -126,7 +126,7 @@ Show progress logs, tables, and history only when the human asks for them. They 
 
 ## Writing Preferences
 
-The writing preferences the human has stated are kept in this section. Its source is `.chezmoitemplates/agents/common.md` in the `maro114510/dotfiles` repository. Add each one once, as a single rule, to that source when the human states it, never to a deployed copy such as `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, or `~/.config/opencode/AGENTS.md`. Follow it in every session and every tool, and do not repeat it in another instruction file.
+The writing preferences the human has stated are kept in this section. Add each one once, as a single rule, when the human states it. Follow it in every session and every tool, and do not repeat it in another instruction file.
 
 - Do not use parenthetical asides in any language, including headings; write the content as its own clause or sentence.
 - In Japanese text, do not put spaces between Japanese characters and adjacent alphanumerics, e.g. write `2点`, not `2 点`.
