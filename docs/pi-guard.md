@@ -44,6 +44,7 @@ Pi loads it in every project; no setting enables it.
 | A command the patterns cannot see | `bash -c "$CMD"` with the command in a variable, aliases, `eval` of an encoded string, or a script file |
 | An unlisted destructive command | `git clean`, `git checkout -- .`, `git branch -D` |
 | An unlisted secret file | A token in a file whose name matches no pattern |
+| A symlink the guard cannot resolve | A link made through `bash` to a file that does not exist yet, or a new file two or more missing directories below a link |
 
 ## Verify
 
