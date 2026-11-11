@@ -22,7 +22,7 @@ teardown() {
 
 apply() {
   HOME="${home_dir}" "${chezmoi_bin}" --config "${home_dir}/chezmoi.toml" \
-    --source "${repo_root}" --destination "${home_dir}" apply "${home_dir}/.pi/agent/settings.json"
+    --source "${repo_root}" --destination "${home_dir}" apply "${home_dir}/.pi"
 }
 
 seed() {
@@ -98,7 +98,7 @@ seed() {
   seed '{"deviceId":'
   run apply
   [ "$status" -ne 0 ]
-  [ -n "$(grep -F 'unexpected end of JSON input' <<<"$output")" ]
+  [ -n "$(grep -F 'error calling fromJson' <<<"$output")" ]
   [ "$(cat "${settings}")" = '{"deviceId":' ]
 }
 
@@ -106,7 +106,7 @@ seed() {
   run git -C "${repo_root}" ls-files dot_pi
   [ "$status" -eq 0 ]
   [ "$output" = "dot_pi/agent/AGENTS.md.tmpl
-dot_pi/agent/modify_settings.json.tmpl" ]
+dot_pi/agent/modify_settings.json" ]
 }
 
 @test "the source holds no Pi runtime data" {
