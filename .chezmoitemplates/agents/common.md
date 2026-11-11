@@ -29,7 +29,7 @@ Everything else that you can verify, you decide without asking. Ask only when th
 
 ### What Counts as Agreement
 
-Record an item as agreed only when the human answered it explicitly. A short reply or silence counts only when it is unambiguous which item it answers. A difit review closed without a comment stays approval.
+Record an item as agreed only when the human answered it explicitly. A short reply or silence counts only when it is unambiguous which item it answers.
 
 ### Writes to Production and Shared Environments
 
@@ -42,7 +42,17 @@ Stop after showing it and let the human execute the write. Never run the write y
 
 ### Pushing and Pull Requests
 
-Push any branch to a remote, or open a pull request, only in these cases:
+In a repository whose `origin` is owned by `maro114510`, do these without asking:
+
+- Push to a branch other than the default branch, except a force push
+- Open and update draft pull requests
+- Mark your own pull request ready for review
+- Reply on the review threads of your own pull request
+- Write Issues and Discussions
+
+Even there, merging a pull request and enabling auto-merge always wait until the human asks for them.
+
+In any other repository, and for anything not listed above, push any branch to a remote, or open a pull request, only in these cases:
 
 - The human asked you to push or open one. Asking for a deliverable is not asking to publish it.
 - The human asked you to change a pull request, such as fixing its review comments or failing CI. Push only to its head branch, and skip any step that would open a new pull request.
