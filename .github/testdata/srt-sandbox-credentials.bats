@@ -186,3 +186,73 @@ bot_fixture='
   '
   [ "$output" = "token ghs_1 token ghs_1 token ghs_2" ]
 }
+
+# A GitHub App client with a throwaway key and a fake fetch that records
+# every request and answers from `answers`, keyed by "<METHOD> <path>".
+app_fixture='
+  const { generateKeyPairSync, createVerify } = await import("node:crypto");
+  const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
+  const key = privateKey.export({ type: "pkcs8", format: "pem" });
+  const sent = [];
+  const fetch = async (url, init = {}) => {
+    const method = init.method ?? "GET";
+    sent.push({ method, url: String(url), headers: init.headers, body: init.body && JSON.parse(init.body) });
+    const [status, body] = answers[`${method} ${new URL(url).pathname}`] ?? [500, {}];
+    return new Response(JSON.stringify(body), { status });
+  };
+  const app = policy.createAppClient({ appId: "11", installationId: "22", key, fetch });
+'
+
+@test "minting a Bot token asks only for the one repository and the agreed permissions" {
+  run run_policy '
+    const answers = { "POST /app/installations/22/access_tokens": [201, { token: "ghs_x", expires_at: "2030-01-01T00:00:00Z" }] };
+    '"${app_fixture}"'
+    const minted = await app.mint("tool");
+    console.log(minted.token, minted.expiresAt === Date.parse("2030-01-01T00:00:00Z"));
+    console.log(JSON.stringify(sent[0].body));
+  '
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "ghs_x true" ]
+  [ "${lines[1]}" = '{"repositories":["tool"],"permissions":{"contents":"write","pull_requests":"write","issues":"write","metadata":"read"}}' ]
+}
+
+@test "the token request is signed as the App with a short-lived JWT" {
+  run run_policy '
+    const answers = { "POST /app/installations/22/access_tokens": [201, { token: "ghs_x", expires_at: "2030-01-01T00:00:00Z" }] };
+    '"${app_fixture}"'
+    await app.mint("tool");
+    const jwt = sent[0].headers.authorization.replace(/^Bearer /, "");
+    const [h, p, s] = jwt.split(".");
+    const valid = createVerify("RSA-SHA256").update(`${h}.${p}`).verify(publicKey, Buffer.from(s, "base64url"));
+    const claims = JSON.parse(Buffer.from(p, "base64url").toString());
+    console.log(valid, claims.iss, claims.exp - claims.iat <= 600);
+  '
+  [ "$output" = "true 11 true" ]
+}
+
+@test "a repository the installation does not cover mints no Bot token" {
+  run run_policy '
+    const answers = { "POST /app/installations/22/access_tokens": [422, { message: "not accessible to the parent installation" }] };
+    '"${app_fixture}"'
+    console.log(JSON.stringify(await app.mint("elsewhere")));
+  '
+  [ "$output" = null ]
+}
+
+@test "any other token failure is an error, not a fallback" {
+  run run_policy '
+    const answers = { "POST /app/installations/22/access_tokens": [401, { message: "bad credentials" }] };
+    '"${app_fixture}"'
+    console.log(await app.mint("tool").then(() => "minted", () => "failed"));
+  '
+  [ "$output" = failed ]
+}
+
+@test "the Bot account is the login that owns the installation" {
+  run run_policy '
+    const answers = { "GET /app/installations/22": [200, { account: { login: "acme" } }] };
+    '"${app_fixture}"'
+    console.log(await app.account(), await app.account(), sent.length);
+  '
+  [ "$output" = "acme acme 1" ]
+}
