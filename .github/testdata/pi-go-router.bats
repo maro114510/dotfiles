@@ -118,3 +118,15 @@ both_routes='["claude-code/claude-sonnet-5-5","opencode-go/deepseek-v4.1-flash"]
   [ "$status" -eq 0 ]
   [ "$output" = "claude-code/claude-sonnet-5-5 high" ]
 }
+
+@test "a user request at high fails naming claude-sonnet-5-5 when the catalog lacks it, instead of falling back to flash" {
+  run route '{"reason":"user","thinkingLevel":"high"}' '["opencode-go/deepseek-v4.1-flash"]'
+  [ "$status" -eq 0 ]
+  [ "$output" = "error: go-router: claude-code/claude-sonnet-5-5 is not in the model catalog" ]
+}
+
+@test "a user request at low fails naming deepseek-v4.1-flash when the catalog lacks it, instead of falling back to Sonnet" {
+  run route '{"reason":"user","thinkingLevel":"low"}' '["claude-code/claude-sonnet-5-5"]'
+  [ "$status" -eq 0 ]
+  [ "$output" = "error: go-router: opencode-go/deepseek-v4.1-flash is not in the model catalog" ]
+}
