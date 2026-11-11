@@ -25,6 +25,7 @@
 {{- end -}}
 {{- $config = mergeOverwrite $config $managed -}}
 {{- /* Pi installs a declared package at startup, so declaring the pin here is what makes the extension reproducible; an entry of the same package is pinned in place, since Pi identifies an npm package by name and the entry may carry resource filters. */ -}}
+{{- /* Pi does not arbitrate footer ownership, so the pinned pi-statusline replaces every pi-statusline or pi-starship entry and the rest of the package list stays as the machine has it. */ -}}
 {{- $pinnedName := "npm:@narumitw/pi-file-context" -}}
 {{- $pinned := printf "%s@%s" $pinnedName "0.54.6" -}}
 {{- $packages := list -}}
@@ -35,20 +36,22 @@
   {{- if kindIs "map" $entry -}}
     {{- $source = get $entry "source" -}}
   {{- end -}}
-  {{- if and (kindIs "string" $source) (or (eq $source $pinnedName) (hasPrefix (printf "%s@" $pinnedName) $source)) -}}
-    {{- $found = true -}}
-    {{- if kindIs "map" $entry -}}
-      {{- $entry = set (deepCopy $entry) "source" $pinned -}}
-    {{- else -}}
-      {{- $entry = $pinned -}}
+  {{- if not (regexMatch "^npm:@narumitw/pi-(statusline|starship)(@.*)?$" (toString $source)) -}}
+    {{- if and (kindIs "string" $source) (or (eq $source $pinnedName) (hasPrefix (printf "%s@" $pinnedName) $source)) -}}
+      {{- $found = true -}}
+      {{- if kindIs "map" $entry -}}
+        {{- $entry = set (deepCopy $entry) "source" $pinned -}}
+      {{- else -}}
+        {{- $entry = $pinned -}}
+      {{- end -}}
     {{- end -}}
+    {{- $packages = append $packages $entry -}}
   {{- end -}}
-  {{- $packages = append $packages $entry -}}
 {{- end -}}
 {{- if not $found -}}
   {{- $packages = append $packages $pinned -}}
 {{- end -}}
-{{- $config = set $config "packages" $packages -}}
+{{- $config = set $config "packages" (append $packages "npm:@narumitw/pi-statusline@0.51.0") -}}
 {{- if and $original (deepEqual (fromJson $original) $config) -}}
 {{ .chezmoi.stdin -}}
 {{- else -}}

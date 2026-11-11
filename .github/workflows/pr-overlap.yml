@@ -1,0 +1,71 @@
+# Warns on a pull request when another open pull request changes one of the
+# same files, so the overlap shows up before a merge turns it into a conflict.
+#
+# What this workflow guarantees:
+#   - The warning names the other PR and the shared files
+#     (.github/scripts/pr-overlap.sh, tested by .github/testdata/pr-overlap.bats)
+#   - A PR carries at most one warning comment: later runs edit it in place
+#   - The warning never blocks merging: it is a comment, not a failed check
+name: pr-overlap
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: pr-overlap-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  warn:
+    name: Warn about files other open PRs change
+    # Fork and Dependabot PRs get a read-only token, so commenting would fail.
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # A rename's old path counts as changed, since another PR may still edit it.
+      - name: Collect the files each open PR changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh api --paginate "repos/${REPO}/pulls?state=open&per_page=100" --jq '.[].number' |
+            while read -r number; do
+              gh api --paginate "repos/${REPO}/pulls/${number}/files?per_page=100" \
+                --jq '.[] | .filename, (.previous_filename // empty)' |
+                jq -R . | jq -s --argjson number "${number}" '{number: $number, files: .}'
+            done | jq -s . >"${RUNNER_TEMP}/open-prs.json"
+
+      - name: Create or update the overlap comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          marker='<!-- pr-overlap -->'
+          body=$(bash .github/scripts/pr-overlap.sh "${PR}" "${RUNNER_TEMP}/open-prs.json")
+          if [[ -z "${body}" ]]; then
+            echo "No overlap"
+            exit 0
+          fi
+
+          comment_ids=$(gh api --paginate "repos/${REPO}/issues/${PR}/comments?per_page=100" \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"${marker}\"))) | .id")
+          comment_id=${comment_ids%%$'\n'*}
+
+          if [[ -z "${comment_id}" ]]; then
+            gh api "repos/${REPO}/issues/${PR}/comments" -f body="${body}" >/dev/null
+            echo "Posted the overlap warning"
+          else
+            gh api --method PATCH "repos/${REPO}/issues/comments/${comment_id}" -f body="${body}" >/dev/null
+            echo "Updated the overlap warning"
+          fi

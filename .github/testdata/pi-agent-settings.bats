@@ -3,6 +3,8 @@
 # Verifies that the Pi settings merge applies the shared defaults and keeps
 # everything Pi or the user wrote itself, so `chezmoi apply` never drops a
 # package declaration, device ID, or a choice made through /settings.
+# It also pins the footer extension: exactly one version-pinned pi-statusline
+# entry, and no pi-starship, because both claim Pi's footer.
 #
 # Each test applies the source to a throwaway home directory.
 #
@@ -33,7 +35,7 @@ seed() {
 @test "a fresh home gets every shared default" {
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -S -c . "${settings}")" = '{"autocompleteMaxVisible":10,"defaultModel":"claude-sonnet-5-5","defaultProjectTrust":"ask","defaultProvider":"claude-code","defaultThinkingLevel":"medium","doubleEscapeAction":"tree","editorPaddingX":1,"enableInstallTelemetry":false,"enabledModels":["claude-code/*","opencode-go/*","local/*"],"outputPad":1,"packages":["npm:@narumitw/pi-file-context@0.54.6"],"quietStartup":"header","terminal":{"showTerminalProgress":true}}' ]
+  [ "$(jq -S -c . "${settings}")" = '{"autocompleteMaxVisible":10,"defaultModel":"claude-sonnet-5-5","defaultProjectTrust":"ask","defaultProvider":"claude-code","defaultThinkingLevel":"medium","doubleEscapeAction":"tree","editorPaddingX":1,"enableInstallTelemetry":false,"enabledModels":["claude-code/*","opencode-go/*","local/*"],"outputPad":1,"packages":["npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"],"quietStartup":"header","terminal":{"showTerminalProgress":true}}' ]
 }
 
 @test "a fresh home gets neither theme nor cacheWarming" {
@@ -52,7 +54,7 @@ seed() {
   seed '{"packages":["https://github.com/earendil-works/pi-claude-code"],"deviceId":"1986c36e","lastChangelogVersion":"1.5.0"}'
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -c .packages "${settings}")" = '["https://github.com/earendil-works/pi-claude-code","npm:@narumitw/pi-file-context@0.54.6"]' ]
+  [ "$(jq -c .packages "${settings}")" = '["https://github.com/earendil-works/pi-claude-code","npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
   [ "$(jq -r .deviceId "${settings}")" = 1986c36e ]
   [ "$(jq -r .lastChangelogVersion "${settings}")" = 1.5.0 ]
 }
@@ -63,7 +65,7 @@ seed() {
   [ "$status" -eq 0 ]
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -c .packages "${settings}")" = '["a","b","npm:@narumitw/pi-file-context@0.54.6"]' ]
+  [ "$(jq -c .packages "${settings}")" = '["a","b","npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
   [ "$(jq -r .deviceId "${settings}")" = d1 ]
 }
 
@@ -71,28 +73,28 @@ seed() {
   seed '{"packages":["npm:@narumitw/pi-file-context@0.50.0","a"]}'
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -c .packages "${settings}")" = '["npm:@narumitw/pi-file-context@0.54.6","a"]' ]
+  [ "$(jq -c .packages "${settings}")" = '["npm:@narumitw/pi-file-context@0.54.6","a","npm:@narumitw/pi-statusline@0.51.0"]' ]
 }
 
 @test "an unversioned pi-file-context declaration is pinned" {
   seed '{"packages":["a","npm:@narumitw/pi-file-context"]}'
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -c .packages "${settings}")" = '["a","npm:@narumitw/pi-file-context@0.54.6"]' ]
+  [ "$(jq -c .packages "${settings}")" = '["a","npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
 }
 
 @test "a pi-file-context object declaration keeps its resource filters when pinned" {
   seed '{"packages":[{"source":"npm:@narumitw/pi-file-context@0.50.0","skills":[]}]}'
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -S -c .packages "${settings}")" = '[{"skills":[],"source":"npm:@narumitw/pi-file-context@0.54.6"}]' ]
+  [ "$(jq -S -c .packages "${settings}")" = '[{"skills":[],"source":"npm:@narumitw/pi-file-context@0.54.6"},"npm:@narumitw/pi-statusline@0.51.0"]' ]
 }
 
 @test "a package whose name only starts with pi-file-context is left alone" {
   seed '{"packages":["npm:@narumitw/pi-file-context-extra@1.0.0"]}'
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -c .packages "${settings}")" = '["npm:@narumitw/pi-file-context-extra@1.0.0","npm:@narumitw/pi-file-context@0.54.6"]' ]
+  [ "$(jq -c .packages "${settings}")" = '["npm:@narumitw/pi-file-context-extra@1.0.0","npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
 }
 
 @test "the shared defaults replace a different value already in the target" {
@@ -130,13 +132,48 @@ seed() {
   [ "$(cat "${settings}")" = '{"deviceId":' ]
 }
 
-@test "the source holds only the settings merge, the instruction template, and the go-router and guard extensions under dot_pi" {
+@test "an unpinned or other pi-statusline entry is replaced by the pinned one" {
+  seed '{"packages":["npm:@narumitw/pi-statusline","a","npm:@narumitw/pi-statusline@0.40.0"]}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -c .packages "${settings}")" = '["a","npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
+}
+
+@test "a pi-starship entry is removed, in string or object form" {
+  seed '{"packages":["npm:@narumitw/pi-starship","a",{"source":"npm:@narumitw/pi-starship@0.67.1","skills":[]},{"source":"b"}]}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -c .packages "${settings}")" = '["a",{"source":"b"},"npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
+}
+
+@test "a pi-statusline entry in object form is replaced by the pinned one" {
+  seed '{"packages":[{"source":"npm:@narumitw/pi-statusline"}]}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -c .packages "${settings}")" = '["npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
+}
+
+@test "a package whose name only starts with pi-statusline or pi-starship survives" {
+  seed '{"packages":["npm:@narumitw/pi-statusline-extra","npm:@narumitw/pi-starship-extra"]}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -c .packages "${settings}")" = '["npm:@narumitw/pi-statusline-extra","npm:@narumitw/pi-starship-extra","npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
+}
+
+@test "a fresh home gets the statusline segments of the Detailed information level" {
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -c . "${home_dir}/.pi/agent/pi-statusline.json")" = '{"segments":["provider","model","thinking","cwd","branch","tools","context","tokens","cache","cost","time"]}' ]
+}
+
+@test "the source holds only the settings merge, the statusline settings, the instruction template, and the go-router and guard extensions under dot_pi" {
   run git -C "${repo_root}" ls-files dot_pi
   [ "$status" -eq 0 ]
   [ "$output" = "dot_pi/agent/AGENTS.md.tmpl
 dot_pi/agent/extensions/go-router.ts
 dot_pi/agent/extensions/guard.ts
-dot_pi/agent/modify_settings.json" ]
+dot_pi/agent/modify_settings.json
+dot_pi/agent/pi-statusline.json" ]
 }
 
 @test "the source holds no Pi runtime data" {
