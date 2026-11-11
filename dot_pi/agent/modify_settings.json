@@ -1,5 +1,5 @@
 {{- /* chezmoi:modify-template */ -}}
-{{- /* Overlay only the settings every machine shares; Pi rewrites the rest of this file itself (package list, install identity, UI choices), so it stays as the machine has it. */ -}}
+{{- /* Overlay only the settings every machine shares; Pi rewrites the rest of this file itself (other package entries, install identity, UI choices), so it stays as the machine has it. */ -}}
 {{- $managed := fromJson `
 {
   "defaultProvider": "claude-code",
@@ -24,6 +24,31 @@
   {{- $config = fromJson $original -}}
 {{- end -}}
 {{- $config = mergeOverwrite $config $managed -}}
+{{- /* Pi installs a declared package at startup, so declaring the pin here is what makes the extension reproducible; an entry of the same package is pinned in place, since Pi identifies an npm package by name and the entry may carry resource filters. */ -}}
+{{- $pinnedName := "npm:@narumitw/pi-file-context" -}}
+{{- $pinned := printf "%s@%s" $pinnedName "0.54.6" -}}
+{{- $packages := list -}}
+{{- $found := false -}}
+{{- range (get $config "packages" | default list) -}}
+  {{- $entry := . -}}
+  {{- $source := $entry -}}
+  {{- if kindIs "map" $entry -}}
+    {{- $source = get $entry "source" -}}
+  {{- end -}}
+  {{- if and (kindIs "string" $source) (or (eq $source $pinnedName) (hasPrefix (printf "%s@" $pinnedName) $source)) -}}
+    {{- $found = true -}}
+    {{- if kindIs "map" $entry -}}
+      {{- $entry = set (deepCopy $entry) "source" $pinned -}}
+    {{- else -}}
+      {{- $entry = $pinned -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $packages = append $packages $entry -}}
+{{- end -}}
+{{- if not $found -}}
+  {{- $packages = append $packages $pinned -}}
+{{- end -}}
+{{- $config = set $config "packages" $packages -}}
 {{- if and $original (deepEqual (fromJson $original) $config) -}}
 {{ .chezmoi.stdin -}}
 {{- else -}}
