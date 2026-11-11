@@ -1,3 +1,4 @@
+{{- template "agents/no-override.tmpl" . -}}
 ## Working Principles
 
 Keep changes minimal and maintain backward compatibility.
