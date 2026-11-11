@@ -12,7 +12,7 @@ Pi loads it in every project; no setting enables it.
 | `write`, `edit` | `.env*`, anything under `.ssh/` or `.aws/` | Blocked |
 | `bash` | `sudo`, recursive `rm`, `git push` with force or delete, `git reset --hard`, `gh ... delete`, `gh api` with `DELETE` | Asks in the TUI; blocked on refusal and when there is no UI |
 
-- A path is checked as written, resolved against the working directory, and through its symlink target.
+- A path is checked in any letter case, resolved against the working directory, and through its symlink target.
 - These are the major patterns of `dot_config/opencode/opencode.jsonc`, not its full list.
 
 ## Operational rules
