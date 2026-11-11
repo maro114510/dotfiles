@@ -62,3 +62,29 @@ route() {
   [ "$status" -eq 0 ]
   [ "$(jq -S -c . <<<"$output")" = '[{"contextWindow":1000000,"id":"go-auto","maxTokens":128000,"name":"Go Auto","provider":"local","thinkingLevels":["low","medium","high"]}]' ]
 }
+
+both_routes='["claude-code/claude-sonnet-5-5","opencode-go/deepseek-v4.1-flash"]'
+
+@test "a user request at high goes to claude-sonnet-5-5 at high" {
+  run route '{"reason":"user","thinkingLevel":"high"}' "${both_routes}"
+  [ "$status" -eq 0 ]
+  [ "$output" = "claude-code/claude-sonnet-5-5 high" ]
+}
+
+@test "a user request at medium goes to deepseek-v4.1-flash at medium" {
+  run route '{"reason":"user","thinkingLevel":"medium"}' "${both_routes}"
+  [ "$status" -eq 0 ]
+  [ "$output" = "opencode-go/deepseek-v4.1-flash medium" ]
+}
+
+@test "a user request at low goes to deepseek-v4.1-flash at low" {
+  run route '{"reason":"user","thinkingLevel":"low"}' "${both_routes}"
+  [ "$status" -eq 0 ]
+  [ "$output" = "opencode-go/deepseek-v4.1-flash low" ]
+}
+
+@test "a user request at high after a flash turn leaves flash for claude-sonnet-5-5" {
+  run route '{"reason":"user","thinkingLevel":"high","previous":{"model":"opencode-go/deepseek-v4.1-flash","thinkingLevel":"low"}}' "${both_routes}"
+  [ "$status" -eq 0 ]
+  [ "$output" = "claude-code/claude-sonnet-5-5 high" ]
+}
