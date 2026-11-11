@@ -1,4 +1,4 @@
-{{- /* Keep every setting as this machine has it; only refuse to trust the filesystem root or the whole home directory. */ -}}
+{{- /* Keep every setting as this machine has it; only refuse to trust the filesystem root, the whole home directory, or a directory that no longer exists. */ -}}
 {{- $path := joinPath .chezmoi.homeDir ".codex/config.toml" -}}
 {{- $config := dict -}}
 {{- $original := "" -}}
@@ -6,9 +6,19 @@
   {{- $original = include $path -}}
   {{- $config = fromToml $original -}}
 {{- end -}}
-{{- with (get $config "projects") -}}
-  {{- $_ := unset . "/" -}}
-  {{- $_ := unset . (joinPath $.chezmoi.homeDir) -}}
+{{- with $projects := get $config "projects" -}}
+  {{- $_ := unset $projects "/" -}}
+  {{- $_ := unset $projects (joinPath $.chezmoi.homeDir) -}}
+  {{- $missing := list -}}
+  {{- range $dir, $_ := $projects -}}
+    {{- $info := stat $dir -}}
+    {{- if not (and $info $info.isDir) -}}
+      {{- $missing = append $missing $dir -}}
+    {{- end -}}
+  {{- end -}}
+  {{- range $dir := $missing -}}
+    {{- $_ := unset $projects $dir -}}
+  {{- end -}}
 {{- end -}}
 {{- if and $original (deepEqual (fromToml $original) $config) -}}
 {{ $original -}}
