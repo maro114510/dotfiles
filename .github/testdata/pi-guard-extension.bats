@@ -174,6 +174,20 @@ bash_command() { decide bash "{\"command\":\"$1\"}" "$2"; }
   [ "$output" = block ]
 }
 
+@test "reading OpenCode's saved tool output is allowed" {
+  run read_path "~/.local/share/opencode/tool-output/tool_1"
+  [ "$output" = allow ]
+}
+
+@test "editing a repository's own OpenCode or Pi config is allowed" {
+  run edit_path opencode.jsonc
+  [ "$output" = allow ]
+  run edit_path /Users/u/work/repo/.opencode/opencode.jsonc
+  [ "$output" = allow ]
+  run edit_path .pi/settings.json
+  [ "$output" = allow ]
+}
+
 @test "reading an ordinary file is allowed" {
   run read_path src/index.ts
   [ "$output" = allow ]
