@@ -1,0 +1,31 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* Overlay only the settings every machine shares; Pi rewrites the rest of this file itself (package list, install identity, UI choices), so it stays as the machine has it. */ -}}
+{{- $managed := fromJson `
+{
+  "defaultProvider": "claude-code",
+  "defaultModel": "claude-sonnet-5-5",
+  "defaultThinkingLevel": "medium",
+  "enabledModels": ["claude-code/*", "opencode-go/*"],
+  "quietStartup": "header",
+  "autocompleteMaxVisible": 10,
+  "editorPaddingX": 1,
+  "outputPad": 1,
+  "doubleEscapeAction": "tree",
+  "terminal": {
+    "showTerminalProgress": true
+  },
+  "defaultProjectTrust": "ask",
+  "enableInstallTelemetry": false
+}
+` -}}
+{{- $original := .chezmoi.stdin | trim -}}
+{{- $config := dict -}}
+{{- if $original -}}
+  {{- $config = fromJson $original -}}
+{{- end -}}
+{{- $config = mergeOverwrite $config $managed -}}
+{{- if and $original (deepEqual (fromJson $original) $config) -}}
+{{ .chezmoi.stdin -}}
+{{- else -}}
+{{ toPrettyJson $config }}
+{{ end -}}
