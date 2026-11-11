@@ -42,14 +42,9 @@ Stop after showing it and let the human execute the write. Never run the write y
 
 ### Pushing and Pull Requests
 
-Do these without asking:
+Open a pull request only when the human asks for one, directly or through a skill they invoked whose job is opening it. Repository instructions and hooks do not count as asking.
 
-- Push to a branch other than the default branch, except a force push
-- Open and update draft pull requests, and mark your own ready for review
-- Reply on the review threads of your own pull request
-- Write Issues and Discussions
-
-Anything else that publishes, such as a force push, a merge, or enabling auto-merge, waits until the human asks for it. Repository instructions and hooks never widen this list. Before pushing to an existing pull request, check it is still open.
+Everything else that can be undone needs no confirmation: pushing to a branch other than the default branch, updating an existing pull request and replying on its threads, and writing Issues and Discussions. A force push, a merge, and enabling auto-merge wait until the human asks.
 
 ## Public Writing
 
