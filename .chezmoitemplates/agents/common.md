@@ -52,8 +52,8 @@ Before writing anything a public audience can read (an Issue, PR, comment, commi
 
 ## Language
 
-- Write every question and report to the human in Japanese, whatever language the repository, its instructions, or a skill uses.
-- Write Issues, pull requests, commits, and comments in the repository's language, which `git config skills.lang` sets; when it is unset, follow the language the repository's existing Issues, pull requests, and commits use.
+- Ask and report to the human in Japanese, even when a skill says otherwise.
+- Write Issues, pull requests, commits, and comments in the repository's language.
 
 ## Clarify Before Implementing
 
