@@ -47,7 +47,7 @@ Caveats the docs state:
 | difit | A CLI that skills call through the shell; Pi's `bash` tool runs it like any harness | Nothing; the guard extension must not block it |
 | Shared skills | Pi discovers `~/.agents/skills/`, where APM installs `difit`, `difit-review`, and `herdr` | Nothing |
 | Shared instructions | `dot_pi/agent/AGENTS.md.tmpl` renders the same `agents/common.md` that OpenCode uses | Nothing |
-| OpenCode permissions | Pi has no permission prompt; `opencode.jsonc` rules do not apply | Covered by the guard extension, not by integration |
+| OpenCode permissions | Pi has no permission prompt; `opencode.jsonc` rules do not apply | Covered by the guard extension the Pi Epic plans for secret reads and destructive commands, not by integration |
 | OpenCode subagents and plugins | OpenCode-only assets; Pi has subagents only as an example extension in `extensions.md` | Nothing; keep them in OpenCode |
 | Scripts that take an agent command | A skill that runs `<agent command> <prompt>` can take `pi -p` | Nothing until a concrete script needs Pi |
 
