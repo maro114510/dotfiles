@@ -5,7 +5,7 @@
   "defaultProvider": "claude-code",
   "defaultModel": "claude-sonnet-5-5",
   "defaultThinkingLevel": "medium",
-  "enabledModels": ["claude-code/*", "opencode-go/*"],
+  "enabledModels": ["claude-code/*", "opencode-go/*", "local/*"],
   "quietStartup": "header",
   "autocompleteMaxVisible": 10,
   "editorPaddingX": 1,

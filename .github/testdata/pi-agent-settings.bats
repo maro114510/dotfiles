@@ -33,7 +33,7 @@ seed() {
 @test "a fresh home gets every shared default" {
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -S -c . "${settings}")" = '{"autocompleteMaxVisible":10,"defaultModel":"claude-sonnet-5-5","defaultProjectTrust":"ask","defaultProvider":"claude-code","defaultThinkingLevel":"medium","doubleEscapeAction":"tree","editorPaddingX":1,"enableInstallTelemetry":false,"enabledModels":["claude-code/*","opencode-go/*"],"outputPad":1,"packages":["npm:@narumitw/pi-file-context@0.54.6"],"quietStartup":"header","terminal":{"showTerminalProgress":true}}' ]
+  [ "$(jq -S -c . "${settings}")" = '{"autocompleteMaxVisible":10,"defaultModel":"claude-sonnet-5-5","defaultProjectTrust":"ask","defaultProvider":"claude-code","defaultThinkingLevel":"medium","doubleEscapeAction":"tree","editorPaddingX":1,"enableInstallTelemetry":false,"enabledModels":["claude-code/*","opencode-go/*","local/*"],"outputPad":1,"packages":["npm:@narumitw/pi-file-context@0.54.6"],"quietStartup":"header","terminal":{"showTerminalProgress":true}}' ]
 }
 
 @test "a fresh home gets neither theme nor cacheWarming" {
@@ -130,10 +130,11 @@ seed() {
   [ "$(cat "${settings}")" = '{"deviceId":' ]
 }
 
-@test "the source holds only the settings merge and the instruction template under dot_pi" {
+@test "the source holds only the settings merge, the instruction template, and the go-router extension under dot_pi" {
   run git -C "${repo_root}" ls-files dot_pi
   [ "$status" -eq 0 ]
   [ "$output" = "dot_pi/agent/AGENTS.md.tmpl
+dot_pi/agent/extensions/go-router.ts
 dot_pi/agent/modify_settings.json" ]
 }
 
