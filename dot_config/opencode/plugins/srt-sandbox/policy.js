@@ -70,3 +70,12 @@ export function createBroker({ ownerToken, bot, now = Date.now }) {
     },
   }
 }
+
+export function createAppClient(options) {
+  return {
+    async account() {},
+    async mint(name) {},
+  }
+}
+
+export function workTreeAt(cwd) {}
