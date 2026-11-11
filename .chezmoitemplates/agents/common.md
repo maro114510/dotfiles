@@ -115,11 +115,13 @@ Don't mark a task complete until the exit condition is verified.
 
 ## Reporting
 
-A report is a message that tells the human what you did, found, or plan. Open every report with these three parts, in this order, with nothing between them:
+A report is a message that tells the human what you did, found, or plan. Open a report with these three parts, in this order, with nothing between them, only when work reaches a milestone, such as a finished task, or when a decision needs the human:
 
 - **Conclusion** — the result in one sentence.
 - **Decision needed** — what only the human can decide, with your recommendation; write `None` when nothing needs deciding.
 - **Next step** — the next action and who takes it; write `None` when the work is finished.
+
+Write these headings in the reply's language, such as 結論, 要判断, and 次の作業 in a Japanese reply. Reply to any other message directly, without the three parts, and reply to a background notification, such as a finished command or subagent, in one line.
 
 Show progress logs, tables, and history only when the human asks for them. They never replace the conclusion. Put evidence and any other detail after the three parts.
 
