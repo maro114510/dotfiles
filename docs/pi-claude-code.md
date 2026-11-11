@@ -8,17 +8,15 @@ This page records what was measured and how to notice that change.
 
 Run `/claude-code-status` in Pi.
 
-Healthy output:
+Healthy output, as returned on 2026-11-11:
 
 ```text
 Claude Code is installed and logged in (max)
 ```
 
-Anything else: run `claude auth status`, then `claude auth login`.
-
 ## Quota cost of a fresh Claude Code process
 
-Branching, editing an earlier message, or changing settings starts a fresh `claude` process that replays the conversation.
+The extension's README says branching, editing an earlier message, or changing settings starts a fresh `claude` process that replays the conversation.
 Measured on 2026-11-11 with Pi 1.5.0, Claude Code 2.1.316, pi-claude-code `d5b5e04`, and a 21k-token conversation driven through `pi --mode rpc`.
 
 | Step | New process | Input | Cache read | Cache write |
@@ -65,5 +63,3 @@ On the first working day of each month:
 
 4. If either changed, read the change, then apply it with `pi update https://github.com/earendil-works/pi-claude-code`.
 5. Update the date and commit on this page.
-
-If `claude -p` stops drawing from the subscription, switch `defaultProvider` in `dot_pi/agent/modify_settings.json` away from `claude-code`.
