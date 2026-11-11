@@ -138,11 +138,12 @@ seed() {
   [ "$(jq -c . "${home_dir}/.pi/agent/pi-statusline.json")" = '{"segments":["provider","model","thinking","cwd","branch","tools","context","tokens","cache","cost","time"]}' ]
 }
 
-@test "the source holds only the settings merge, the statusline settings, the instruction template, and the go-router extension under dot_pi" {
+@test "the source holds only the settings merge, the statusline settings, the instruction template, and the go-router and guard extensions under dot_pi" {
   run git -C "${repo_root}" ls-files dot_pi
   [ "$status" -eq 0 ]
   [ "$output" = "dot_pi/agent/AGENTS.md.tmpl
 dot_pi/agent/extensions/go-router.ts
+dot_pi/agent/extensions/guard.ts
 dot_pi/agent/modify_settings.json
 dot_pi/agent/pi-statusline.json" ]
 }
