@@ -21,8 +21,17 @@ jobs:
       - name: Install chezmoi
         run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "${HOME}/.local/bin"
 
+      # From GitHub at a pinned commit, not apt: the runner's Ubuntu mirror is
+      # a separate point of failure the suites do not need.
       - name: Install bats
-        run: sudo apt-get update && sudo apt-get install --yes bats
+        env:
+          BATS_COMMIT: 3bca150ec86275d6d9d5a4fd7d48ab8b6c6f3d87 # v1.13.0
+        run: |
+          git init -q "${RUNNER_TEMP}/bats-core"
+          git -C "${RUNNER_TEMP}/bats-core" fetch -q --depth 1 https://github.com/bats-core/bats-core.git "${BATS_COMMIT}"
+          git -C "${RUNNER_TEMP}/bats-core" checkout -q FETCH_HEAD
+          "${RUNNER_TEMP}/bats-core/install.sh" "${HOME}/.local"
+          "${HOME}/.local/bin/bats" --version
 
       - name: Run all suites
-        run: CHEZMOI="${HOME}/.local/bin/chezmoi" bats .github/testdata/*.bats
+        run: CHEZMOI="${HOME}/.local/bin/chezmoi" "${HOME}/.local/bin/bats" .github/testdata/*.bats
