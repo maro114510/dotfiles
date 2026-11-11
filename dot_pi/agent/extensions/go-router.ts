@@ -18,7 +18,10 @@ export default function (pi: ExtensionAPI) {
         request.thinkingLevel === "high"
           ? ["claude-code", "claude-sonnet-5-5"]
           : ["opencode-go", "deepseek-v4.1-flash"];
-      return { model: ctx.modelRegistry.find(provider, id)!, thinkingLevel: request.thinkingLevel };
+      const model = ctx.modelRegistry.find(provider, id);
+      // Falling back to the other route would bill another provider without the user choosing it.
+      if (!model) throw new Error(`go-router: ${provider}/${id} is not in the model catalog`);
+      return { model, thinkingLevel: request.thinkingLevel };
     },
   });
 }
