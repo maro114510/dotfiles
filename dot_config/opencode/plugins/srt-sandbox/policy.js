@@ -92,7 +92,7 @@ export function sandboxConfig({ home, tmp, env = {} }) {
         at('**/.git/hooks'),
         at('**/.git/config'),
         at('**/.git/config.worktree'),
-        at('**/.git/worktrees/*/config.worktree'),
+        at('**/.git/[w]orktrees/*/config.worktree'),
         at('**/.git/modules/**/hooks'),
         at('**/.git/modules/**/config'),
         // OpenCode loads plugin code from its caches outside the sandbox.
@@ -120,7 +120,9 @@ export function filesystemFor(base, tree) {
       join(gitDir, 'hooks'),
       join(gitDir, 'config'),
       join(gitDir, 'config.worktree'),
-      join(gitDir, 'worktrees/*/config.worktree'),
+      // [w] keeps srt from using <gitDir>/worktrees as the pattern's base directory, which it blocks
+      // creating, so the clone's first linked worktree could not be made.
+      join(gitDir, '[w]orktrees/*/config.worktree'),
       join(gitDir, 'modules/**/hooks'),
       join(gitDir, 'modules/**/config'),
     ],

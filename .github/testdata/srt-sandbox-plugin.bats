@@ -326,6 +326,18 @@ new_clone() {
   [[ "$output" =~ ^exit=[1-9] ]] || false
 }
 
+@test "a sandboxed command can create the first linked worktree of its clone but not set its worktree config" {
+  needs_sandbox
+  outside_temp
+  new_clone "${home_work}/clone"
+  [ ! -e "${home_work}/clone/.git/worktrees" ]
+  run status_in_sandbox "${home_work}/clone" "git worktree add --detach '${home_work}/wt'"
+  [ "$output" = "exit=0" ]
+  [ -e "${home_work}/wt/.git" ]
+  run status_in_sandbox "${home_work}/clone" "touch '${home_work}/clone/.git/worktrees/wt/config.worktree'"
+  [[ "$output" =~ ^exit=[1-9] ]] || false
+}
+
 # gh falls back to a plain-text token in hosts.yml when it cannot use the
 # keychain. That file must stay readable for gh to start, so the plugin
 # refuses every command instead of exposing the token to it.
