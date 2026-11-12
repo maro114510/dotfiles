@@ -38,18 +38,28 @@ export function sandboxConfig({ home, tmp }) {
         at('.netrc'),
         at('.git-credentials'),
       ],
-      allowWrite: [
-        tmp,
-        '/private/tmp',
-        at('Library/Caches'),
-        at('.cache'),
-        at('go/pkg/mod'),
-        at('Library/pnpm/store'),
-        at('.bun/install/cache'),
-        at('.npm'),
+      allowWrite: [home, tmp, '/private/tmp'],
+      // The home stays writable except where code is loaded from later outside the sandbox: shell startup
+      // files, tool and agent configuration, PATH and login items, and the hooks and config of every clone.
+      denyWrite: [
+        ...['.zshenv', '.zprofile', '.zshrc', '.zlogin', '.zlogout', '.bashrc', '.bash_profile', '.profile'].map(at),
+        at('.gitconfig'),
+        at('.config'),
+        at('.local/bin'),
+        at('.ssh'),
+        at('Library/LaunchAgents'),
+        at('.claude'),
+        at('.codex'),
+        at('.pi/agent'),
+        at('.local/share/opencode'),
+        at('.local/state/opencode'),
+        at('.srt-settings.json'),
+        // OpenCode loads plugin code from its caches outside the sandbox.
+        at('.cache/opencode'),
+        at('Library/Caches/opencode'),
+        at('**/.git/hooks'),
+        at('**/.git/config'),
       ],
-      // OpenCode loads plugin code from its caches outside the sandbox.
-      denyWrite: [at('.cache/opencode'), at('Library/Caches/opencode')],
     },
     // gh verifies TLS through trustd, which only the weaker isolation lets it reach. The keychain stays closed.
     enableWeakerNetworkIsolation: true,
