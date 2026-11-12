@@ -56,6 +56,28 @@ export function sandboxConfig({ home, tmp }) {
   }
 }
 
+// The filesystem rules of one command: the shared ones plus its working tree and git directory, minus
+// what git reads or runs outside the sandbox later: hooks, config, and the pointer of a linked worktree.
+export function filesystemFor(base, tree) {
+  if (!tree) return base.filesystem
+  const { top, gitDir } = tree
+  const pointer = join(top, '.git')
+  return {
+    ...base.filesystem,
+    allowWrite: [...base.filesystem.allowWrite, top, gitDir],
+    denyWrite: [
+      ...base.filesystem.denyWrite,
+      ...(pointer === gitDir ? [] : [pointer]),
+      join(gitDir, 'hooks'),
+      join(gitDir, 'config'),
+      join(gitDir, 'config.worktree'),
+      join(gitDir, 'worktrees/*/config.worktree'),
+      join(gitDir, 'modules/**/hooks'),
+      join(gitDir, 'modules/**/config'),
+    ],
+  }
+}
+
 export function repoFromRemote(url) {
   const match = /^(?:https:\/\/(?:[^@/]+@)?github\.com\/|ssh:\/\/git@github\.com\/|git@github\.com:)([^/]+)\/([^/]+?)(?:\.git)?\/?$/.exec(
     url.trim(),

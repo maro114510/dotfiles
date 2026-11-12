@@ -7,7 +7,7 @@ import { homedir, tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
-import { createAppClient, createBroker, sandboxConfig, workTreeAt } from './policy.js'
+import { createAppClient, createBroker, filesystemFor, sandboxConfig, workTreeAt } from './policy.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const STAND_IN = join(here, 'zsh')
@@ -73,9 +73,8 @@ export default {
         const placeholder = broker.placeholderFor(tree?.repo ?? null)
         event.env.GH_TOKEN = placeholder
         event.env.GITHUB_TOKEN = placeholder
-        const allowWrite = tree ? [...base.filesystem.allowWrite, tree.top, tree.gitDir] : base.filesystem.allowWrite
         event.env.SRT_WRAPPED = await SandboxManager.wrapWithSandbox(event.command, shell, {
-          filesystem: { ...base.filesystem, allowWrite },
+          filesystem: filesystemFor(base, tree),
         })
       } catch (error) {
         console.error(`srt sandbox: ${error.message}`)
