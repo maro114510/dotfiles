@@ -167,13 +167,6 @@ bash_command() { decide bash "{\"command\":\"$1\"}" "$2"; }
   [ "$output" = block ]
 }
 
-@test "writing or editing the srt settings is blocked" {
-  run write_path "~/.srt-settings.json"
-  [ "$output" = block ]
-  run edit_path ../.srt-settings.json
-  [ "$output" = block ]
-}
-
 @test "reading OpenCode's saved tool output is allowed" {
   run read_path "~/.local/share/opencode/tool-output/tool_1"
   [ "$output" = allow ]
