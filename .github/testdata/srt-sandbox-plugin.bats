@@ -211,3 +211,28 @@ new_clone() {
   run status_in_sandbox "${home_work}/wt" 'touch "$(git rev-parse --git-dir)/config.worktree"'
   [[ "$output" =~ ^exit=[1-9] ]] || false
 }
+
+# gh falls back to a plain-text token in hosts.yml when it cannot use the
+# keychain. That file must stay readable for gh to start, so the plugin
+# refuses every command instead of exposing the token to it.
+gh_hosts() {
+  gh_dir="${work}/gh"
+  mkdir -p "${gh_dir}"
+  printf "%s\n" "$1" > "${gh_dir}/hosts.yml"
+}
+
+@test "every command is refused while gh keeps a token in plain text" {
+  needs_sandbox
+  gh_hosts $'github.com:\n    oauth_token: gho_plaintextexample\n    user: someone'
+  GH_CONFIG_DIR="${gh_dir}" run sandboxed "${work}" "touch ${work}/ran"
+  [ "$status" -eq 126 ]
+  [ ! -e "${work}/ran" ]
+}
+
+@test "a command runs while gh keeps no token in hosts.yml" {
+  needs_sandbox
+  gh_hosts $'github.com:\n    user: someone\n    git_protocol: https'
+  GH_CONFIG_DIR="${gh_dir}" run sandboxed "${work}" "touch ${work}/ran"
+  [ "$status" -eq 0 ]
+  [ -e "${work}/ran" ]
+}

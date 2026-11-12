@@ -128,6 +128,16 @@ bot_fixture='
   [ "$output" = "Bearer ghs_bot_covered covered" ]
 }
 
+@test "a remote spelling the Bot account in other letter case still acts as the Bot" {
+  run run_policy "${bot_fixture}"'
+    const b = withBot(bot);
+    const p = b.placeholderFor({ owner: "Acme", name: "covered" });
+    const d = await b.filterRequest(req("https://api.github.com/repos/Acme/covered", `token ${p}`));
+    console.log(header(d));
+  '
+  [ "$output" = "token ghs_bot_covered" ]
+}
+
 @test "a command in a repository of the Bot account outside the installation acts as the owner" {
   run run_policy "${bot_fixture}"'
     const b = withBot(bot);
@@ -232,11 +242,30 @@ app_fixture='
 
 @test "a repository the installation does not cover mints no Bot token" {
   run run_policy '
-    const answers = { "POST /app/installations/22/access_tokens": [422, { message: "not accessible to the parent installation" }] };
+    const answers = {
+      "POST /app/installations/22/access_tokens": [422, { message: "not accessible to the parent installation" }],
+      "GET /app/installations/22": [200, { account: { login: "acme" } }],
+      "GET /repos/acme/elsewhere/installation": [404, { message: "Not Found" }],
+    };
     '"${app_fixture}"'
     console.log(JSON.stringify(await app.mint("elsewhere")));
   '
   [ "$output" = null ]
+}
+
+# GitHub also answers 422 when the App lacks a requested permission. Falling
+# back to the owner there would act with more power than the Bot was given.
+@test "a 422 for a repository the installation covers is an error, not a fallback" {
+  run run_policy '
+    const answers = {
+      "POST /app/installations/22/access_tokens": [422, { message: "The permissions requested are not granted to this installation." }],
+      "GET /app/installations/22": [200, { account: { login: "acme" } }],
+      "GET /repos/acme/tool/installation": [200, { id: 22 }],
+    };
+    '"${app_fixture}"'
+    console.log(await app.mint("tool").then((m) => `minted ${JSON.stringify(m)}`, () => "failed"));
+  '
+  [ "$output" = failed ]
 }
 
 @test "any other token failure is an error, not a fallback" {
