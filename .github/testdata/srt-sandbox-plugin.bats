@@ -1,0 +1,187 @@
+#!/usr/bin/env bats
+#
+# Verifies the srt sandbox plugin end to end: a command goes through the
+# plugin's shell hook the way OpenCode runs it, as `<shell> -c <command>` with
+# the hook's environment, and the test checks what that command can read,
+# write, and send.
+#
+# The plugin is deployed into a temporary directory the way chezmoi lays it
+# out. Tests that need a working sandbox run only on macOS with Bun, which
+# installs srt from the plugin's lockfile; tests that need GitHub run only
+# with a gh login. The fail-closed test runs everywhere.
+#
+# Usage: bats .github/testdata/srt-sandbox-plugin.bats
+
+setup_file() {
+  repo_root="$(cd "${BATS_TEST_DIRNAME}/../.." && pwd)"
+  export SRT_PLUGIN_SOURCE="${repo_root}/dot_config/opencode/plugins/srt-sandbox"
+  export SRT_PLUGIN="${BATS_FILE_TMPDIR}/plugin"
+  deploy_plugin "${SRT_PLUGIN}"
+  if [ "$(uname -s)" = Darwin ] && command -v bun >/dev/null; then
+    (cd "${SRT_PLUGIN}" && bun install --frozen-lockfile >/dev/null 2>&1) && export SRT_READY=1
+  fi
+}
+
+setup() {
+  work="$(cd "$(mktemp -d)" && pwd -P)"
+}
+
+teardown() {
+  rm -rf "${work}"
+  [ -z "${home_work:-}" ] || rm -rf "${home_work}"
+}
+
+# A directory under the home directory, outside every temporary and cache
+# directory, so only the working-tree rule can make it writable.
+outside_temp() {
+  home_work="$(mktemp -d "${HOME}/.srt-sandbox-test.XXXXXX")"
+}
+
+# Lays the plugin source out as chezmoi deploys it.
+deploy_plugin() {
+  mkdir -p "$1"
+  cp "${SRT_PLUGIN_SOURCE}"/*.js "${SRT_PLUGIN_SOURCE}"/package.json "${SRT_PLUGIN_SOURCE}"/bun.lock "$1"/
+  cp "${SRT_PLUGIN_SOURCE}/executable_zsh" "$1/zsh"
+  chmod +x "$1/zsh"
+}
+
+needs_sandbox() {
+  [ -n "${SRT_READY:-}" ] || skip "needs macOS with Bun to install srt"
+}
+
+needs_gh_login() {
+  gh auth token >/dev/null 2>&1 || skip "needs a gh login"
+}
+
+# Runs command $2 in directory $1 through the plugin at $SRT_PLUGIN, the way
+# OpenCode does, and passes its output and exit status through.
+sandboxed() {
+  node --input-type=module -e '
+    import { spawnSync } from "node:child_process";
+    const [plugin, cwd, command] = process.argv.slice(1);
+    const { default: srt } = await import(`${plugin}/index.js`);
+    let hook;
+    const cleanup = await srt.setup({
+      location: { directory: cwd },
+      shell: { hook: async (name, fn) => { if (name === "create.before") hook = fn; return { dispose: async () => {} }; } },
+    });
+    const event = { command, cwd, timeout: 0, shell: "/bin/zsh", env: { ...process.env } };
+    await hook(event);
+    const child = spawnSync(event.shell, ["-c", event.command], { cwd: event.cwd, env: event.env, encoding: "utf8" });
+    process.stdout.write(child.stdout);
+    process.stderr.write(child.stderr);
+    await cleanup?.();
+    process.exit(child.status ?? 1);
+  ' "${SRT_PLUGIN}" "$1" "$2"
+}
+
+# Runs command $2 in directory $1 in the sandbox and prints only the
+# command's own exit status, so a test can tell a refusal inside the sandbox
+# from a harness that never ran the command.
+status_in_sandbox() {
+  sandboxed "$1" "$2 >/dev/null 2>&1; echo \"exit=\$?\""
+}
+
+new_clone() {
+  git init --quiet "$1"
+  git -C "$1" -c user.email=t@example.com -c user.name=t commit --quiet --allow-empty -m init
+  git -C "$1" remote add origin https://github.com/acme/tool.git
+}
+
+@test "a command is refused, not run unsandboxed, when srt cannot be loaded" {
+  broken="${work}/broken-plugin"
+  deploy_plugin "${broken}"
+  SRT_PLUGIN="${broken}" run sandboxed "${work}" "touch ${work}/ran"
+  [ "$status" -eq 126 ]
+  [ ! -e "${work}/ran" ]
+}
+
+@test "a sandboxed command cannot read the gh login from the keychain" {
+  needs_sandbox
+  needs_gh_login
+  real="$(gh auth token)"
+  run sandboxed "${work}" 'env -u GH_TOKEN -u GITHUB_TOKEN gh auth token 2>&1; echo "exit=$?"'
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"${real}"* ]]
+  [[ "${lines[-1]}" =~ ^exit=[1-9] ]]
+}
+
+@test "a sandboxed command cannot reach 1Password" {
+  needs_sandbox
+  command -v op >/dev/null || skip "needs the 1Password CLI"
+  run status_in_sandbox "${work}" 'op whoami'
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ ^exit=[1-9] ]]
+}
+
+@test "a sandboxed command cannot list the keychain directory" {
+  needs_sandbox
+  run status_in_sandbox "${work}" 'ls "$HOME/Library/Keychains"'
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ ^exit=[1-9] ]]
+}
+
+@test "a sandboxed command cannot list ~/.ssh" {
+  needs_sandbox
+  [ -d "${HOME}/.ssh" ] || skip "no ~/.ssh on this machine"
+  run status_in_sandbox "${work}" 'ls "$HOME/.ssh"'
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ ^exit=[1-9] ]]
+}
+
+@test "a sandboxed command cannot read OpenCode's service password" {
+  needs_sandbox
+  [ -f "${HOME}/.config/opencode/service.json" ] || skip "no OpenCode service password on this machine"
+  run status_in_sandbox "${work}" 'cat "$HOME/.config/opencode/service.json"'
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ ^exit=[1-9] ]]
+}
+
+@test "GH_TOKEN inside the sandbox is a placeholder, not the gh login" {
+  needs_sandbox
+  needs_gh_login
+  real="$(gh auth token)"
+  run sandboxed "${work}" 'printf "%s" "$GH_TOKEN"'
+  [ "$status" -eq 0 ]
+  [ -n "$output" ]
+  [ "$output" != "${real}" ]
+}
+
+@test "a gh request from the sandbox reaches GitHub with the real login" {
+  needs_sandbox
+  needs_gh_login
+  login="$(gh api user --jq .login)"
+  run sandboxed "${work}" 'gh api user --jq .login'
+  [ "$status" -eq 0 ]
+  [ "$output" = "${login}" ]
+}
+
+@test "a sandboxed command can write and commit in the working tree it runs in" {
+  needs_sandbox
+  outside_temp
+  new_clone "${home_work}/clone"
+  run sandboxed "${home_work}/clone" 'echo hi > note && git add note && git -c user.email=t@example.com -c user.name=t commit --quiet -m note && git log --format=%s -1'
+  [ "$status" -eq 0 ]
+  [ "$output" = note ]
+}
+
+@test "a sandboxed command can commit in a linked worktree, whose git directory is elsewhere" {
+  needs_sandbox
+  outside_temp
+  new_clone "${home_work}/main"
+  git -C "${home_work}/main" worktree add --quiet "${home_work}/wt" -b topic
+  run sandboxed "${home_work}/wt" 'git -c user.email=t@example.com -c user.name=t commit --quiet --allow-empty -m wt && git log --format=%s -1'
+  [ "$status" -eq 0 ]
+  [ "$output" = wt ]
+}
+
+@test "a sandboxed command cannot write outside its working tree, temporary and cache directories" {
+  needs_sandbox
+  outside_temp
+  new_clone "${home_work}/clone"
+  target="${home_work}/beside-the-clone"
+  run status_in_sandbox "${home_work}/clone" "touch '${target}'"
+  [ "$status" -eq 0 ]
+  [[ "$output" =~ ^exit=[1-9] ]]
+  [ ! -e "${target}" ]
+}
