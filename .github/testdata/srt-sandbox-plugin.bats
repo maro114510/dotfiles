@@ -57,7 +57,7 @@ needs_gh_login() {
 # OpenCode does, and passes its output and exit status through.
 sandboxed() {
   node --input-type=module -e '
-    import { spawnSync } from "node:child_process";
+    import { spawn } from "node:child_process";
     const [plugin, cwd, command] = process.argv.slice(1);
     const { default: srt } = await import(`${plugin}/index.js`);
     let hook;
@@ -67,11 +67,11 @@ sandboxed() {
     });
     const event = { command, cwd, timeout: 0, shell: "/bin/zsh", env: { ...process.env } };
     await hook(event);
-    const child = spawnSync(event.shell, ["-c", event.command], { cwd: event.cwd, env: event.env, encoding: "utf8" });
-    process.stdout.write(child.stdout);
-    process.stderr.write(child.stderr);
+    // Asynchronous, because the srt proxy runs in this process and must keep serving while the command runs.
+    const child = spawn(event.shell, ["-c", event.command], { cwd: event.cwd, env: event.env, stdio: "inherit" });
+    const status = await new Promise((done) => child.on("close", done));
     await cleanup?.();
-    process.exit(child.status ?? 1);
+    process.exit(status ?? 1);
   ' "${SRT_PLUGIN}" "$1" "$2"
 }
 
@@ -103,7 +103,7 @@ new_clone() {
   run sandboxed "${work}" 'env -u GH_TOKEN -u GITHUB_TOKEN gh auth token 2>&1; echo "exit=$?"'
   [ "$status" -eq 0 ]
   [[ "$output" != *"${real}"* ]]
-  [[ "${lines[-1]}" =~ ^exit=[1-9] ]]
+  [[ "${lines[${#lines[@]}-1]}" =~ ^exit=[1-9] ]]
 }
 
 @test "a sandboxed command cannot reach 1Password" {
@@ -162,7 +162,8 @@ new_clone() {
   new_clone "${home_work}/clone"
   run sandboxed "${home_work}/clone" 'echo hi > note && git add note && git -c user.email=t@example.com -c user.name=t commit --quiet -m note && git log --format=%s -1'
   [ "$status" -eq 0 ]
-  [ "$output" = note ]
+  # The last line, since a global pre-commit hook may print above it.
+  [ "${lines[${#lines[@]}-1]}" = note ]
 }
 
 @test "a sandboxed command can commit in a linked worktree, whose git directory is elsewhere" {
@@ -172,7 +173,7 @@ new_clone() {
   git -C "${home_work}/main" worktree add --quiet "${home_work}/wt" -b topic
   run sandboxed "${home_work}/wt" 'git -c user.email=t@example.com -c user.name=t commit --quiet --allow-empty -m wt && git log --format=%s -1'
   [ "$status" -eq 0 ]
-  [ "$output" = wt ]
+  [ "${lines[${#lines[@]}-1]}" = wt ]
 }
 
 @test "a sandboxed command cannot write outside its working tree, temporary and cache directories" {
