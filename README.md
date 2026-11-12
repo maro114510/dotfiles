@@ -15,3 +15,8 @@ uname -m   # arm64
 ## Setup
 
 See [docs/setup.md](docs/setup.md) for the first-time setup procedure.
+
+## Input settings
+
+Keyboard, macOS preference, and Raycast settings, and where each one is owned,
+are listed in [docs/input-settings.md](docs/input-settings.md).
