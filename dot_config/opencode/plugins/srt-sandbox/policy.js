@@ -3,7 +3,7 @@
 
 import { execFileSync } from 'node:child_process'
 import { createSign, randomBytes } from 'node:crypto'
-import { realpathSync } from 'node:fs'
+import { existsSync, readFileSync, realpathSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 // Hosts whose requests get the real credential. Any other host only ever sees the placeholder.
@@ -76,6 +76,14 @@ export function filesystemFor(base, tree) {
       join(gitDir, 'modules/**/config'),
     ],
   }
+}
+
+// gh keeps its token in hosts.yml when it cannot use the keychain. The file stays readable because gh does
+// not start without it, so a token there must stop the sandbox instead. Same lookup order as gh's.
+export function ghTokenInPlainText({ env, home }) {
+  const dir = env.GH_CONFIG_DIR || (env.XDG_CONFIG_HOME ? join(env.XDG_CONFIG_HOME, 'gh') : join(home, '.config/gh'))
+  const hosts = join(dir, 'hosts.yml')
+  return existsSync(hosts) && /^\s*oauth_token\s*:/m.test(readFileSync(hosts, 'utf8'))
 }
 
 export function repoFromRemote(url) {

@@ -7,7 +7,14 @@ import { homedir, tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
-import { createAppClient, createBroker, filesystemFor, sandboxConfig, workTreeAt } from './policy.js'
+import {
+  createAppClient,
+  createBroker,
+  filesystemFor,
+  ghTokenInPlainText,
+  sandboxConfig,
+  workTreeAt,
+} from './policy.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const STAND_IN = join(here, 'zsh')
@@ -47,6 +54,9 @@ async function ownerToken() {
 let sandbox
 function start() {
   sandbox ??= (async () => {
+    if (ghTokenInPlainText({ env: process.env, home: homedir() })) {
+      throw new Error('gh keeps its token in plain text in hosts.yml; move it to the keychain with `gh auth login`')
+    }
     const { SandboxManager } = await import('@anthropic-ai/sandbox-runtime')
     const broker = createBroker({ ownerToken, bot: await botClient() })
     const base = sandboxConfig({ home: homedir(), tmp: realpathSync(tmpdir()) })
