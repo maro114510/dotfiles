@@ -44,6 +44,8 @@ export function sandboxConfig({ home, tmp, env = {} }) {
       allowedDomains: [],
       deniedDomains: [],
       tlsTerminate: {},
+      // difit and local dev servers listen on a local port, which srt refuses on macOS unless this is set.
+      allowLocalBinding: true,
     },
     filesystem: {
       denyRead: credentials,
