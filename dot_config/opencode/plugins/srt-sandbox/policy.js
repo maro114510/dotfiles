@@ -4,7 +4,7 @@
 import { execFileSync } from 'node:child_process'
 import { createSign, randomBytes } from 'node:crypto'
 import { existsSync, readFileSync, realpathSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { isAbsolute, join, resolve } from 'node:path'
 
 // Hosts whose requests get the real credential. Any other host only ever sees the placeholder.
 const GITHUB_HOSTS = new Set(['github.com', 'api.github.com', 'uploads.github.com'])
@@ -13,8 +13,30 @@ const PLACEHOLDER = /srt_gh_[A-Za-z0-9_-]{32}/
 const REFRESH_MARGIN_MS = 10 * 60 * 1000
 
 // srt settings shared by every command. Each command adds its own working tree to allowWrite.
-export function sandboxConfig({ home, tmp }) {
+// env is the environment of the process that runs commands outside the sandbox later: its PATH and XDG
+// base directories decide where the shell loads code from.
+export function sandboxConfig({ home, tmp, env = {} }) {
   const at = (path) => join(home, path)
+  const searchPath = env.PATH ?? ''
+  const xdg = (name, fallback) => (isAbsolute(env[name] ?? '') ? env[name] : at(fallback))
+  const cache = xdg('XDG_CACHE_HOME', '.cache')
+  const data = xdg('XDG_DATA_HOME', '.local/share')
+  const config = xdg('XDG_CONFIG_HOME', '.config')
+  const pathDirs = searchPath.split(':').filter((dir) => isAbsolute(dir) && dir.startsWith(`${home}/`))
+  const credentials = [
+    at('.ssh'),
+    at('Library/Keychains'),
+    at('.config/op'),
+    at('Library/Group Containers/2BUA8C4S2C.com.1password'),
+    at('Library/Containers/com.1password.1password'),
+    at('.config/opencode/service.json'),
+    at('.local/share/opencode'),
+    at('.local/state/opencode'),
+    at('.pi/agent/auth.json'),
+    at('.aws'),
+    at('.netrc'),
+    at('.git-credentials'),
+  ]
   return {
     network: {
       // Every host is reachable through the ask callback; only requests to GitHub get a real credential,
@@ -24,32 +46,57 @@ export function sandboxConfig({ home, tmp }) {
       tlsTerminate: {},
     },
     filesystem: {
-      denyRead: [
-        at('.ssh'),
-        at('Library/Keychains'),
-        at('.config/op'),
-        at('Library/Group Containers/2BUA8C4S2C.com.1password'),
-        at('Library/Containers/com.1password.1password'),
-        at('.config/opencode/service.json'),
-        at('.local/share/opencode'),
-        at('.local/state/opencode'),
-        at('.pi/agent/auth.json'),
-        at('.aws'),
-        at('.netrc'),
-        at('.git-credentials'),
+      denyRead: credentials,
+      allowWrite: [home, tmp, '/private/tmp'],
+      // The home stays writable except for the credential stores, which some tools also run code from, and
+      // where code is loaded from later outside the sandbox: shell startup files, tool and agent
+      // configuration, PATH and login items, and the hooks and config of every clone.
+      denyWrite: [
+        ...credentials,
+        ...['.zshenv', '.zprofile', '.zshrc', '.zlogin', '.zlogout', '.bashrc', '.bash_profile', '.bash_login', '.profile']
+          .map(at),
+        at('.npmrc'),
+        at('.bunfig.toml'),
+        // Sourced by the zsh startup files, or able to name a program cargo runs. ~/.cargo itself stays
+        // writable, since cargo downloads crates under it.
+        at('.cargo/env'),
+        at('.cargo/config.toml'),
+        at('.cargo/config'),
+        join(cache, 'zsh'),
+        join(cache, 'gtr'),
+        join(data, 'sheldon'),
+        join(config, 'sheldon'),
+        // Every other home entry this repository manages, and tool configs that can name a program to run:
+        // kubeconfig exec plugins, Docker CLI plugins, Gradle init scripts, and editor and tmux configs.
+        ...['.vimrc', '.vim', '.tmux.conf', '.tmux.session.conf', '.tmux', '.Brewfile', '.myclirc', '.raycast', '.apm'].map(at),
+        at('.kube'),
+        at('.docker'),
+        at('.gnupg'),
+        at('.gradle/init.d'),
+        at('.gradle/gradle.properties'),
+        at('.m2/settings.xml'),
+        at('.terraformrc'),
+        at('.ipython'),
+        at('.gitconfig'),
+        at('.config'),
+        ...pathDirs,
+        at('.local/bin'),
+        at('.local/share/mise'),
+        at('Library/LaunchAgents'),
+        at('.claude'),
+        at('.codex'),
+        at('.pi/agent'),
+        at('.srt-settings.json'),
+        at('**/.git/hooks'),
+        at('**/.git/config'),
+        at('**/.git/config.worktree'),
+        at('**/.git/worktrees/*/config.worktree'),
+        at('**/.git/modules/**/hooks'),
+        at('**/.git/modules/**/config'),
+        // OpenCode loads plugin code from its caches outside the sandbox.
+        at('.cache/opencode'),
+        at('Library/Caches/opencode'),
       ],
-      allowWrite: [
-        tmp,
-        '/private/tmp',
-        at('Library/Caches'),
-        at('.cache'),
-        at('go/pkg/mod'),
-        at('Library/pnpm/store'),
-        at('.bun/install/cache'),
-        at('.npm'),
-      ],
-      // OpenCode loads plugin code from its caches outside the sandbox.
-      denyWrite: [at('.cache/opencode'), at('Library/Caches/opencode')],
     },
     // gh verifies TLS through trustd, which only the weaker isolation lets it reach. The keychain stays closed.
     enableWeakerNetworkIsolation: true,
