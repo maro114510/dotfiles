@@ -1,0 +1,43 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* Overlay only the settings every machine shares; Pi rewrites the rest of this file itself (other packages, install identity, UI choices), so it stays as the machine has it. */ -}}
+{{- $managed := fromJson `
+{
+  "defaultProvider": "claude-code",
+  "defaultModel": "claude-sonnet-5-5",
+  "defaultThinkingLevel": "medium",
+  "enabledModels": ["claude-code/*", "opencode-go/*", "local/*"],
+  "quietStartup": "header",
+  "autocompleteMaxVisible": 10,
+  "editorPaddingX": 1,
+  "outputPad": 1,
+  "doubleEscapeAction": "tree",
+  "terminal": {
+    "showTerminalProgress": true
+  },
+  "defaultProjectTrust": "ask",
+  "enableInstallTelemetry": false
+}
+` -}}
+{{- $original := .chezmoi.stdin | trim -}}
+{{- $config := dict -}}
+{{- if $original -}}
+  {{- $config = fromJson $original -}}
+{{- end -}}
+{{- $config = mergeOverwrite $config $managed -}}
+{{- /* Pi does not arbitrate footer ownership, so the pinned pi-statusline replaces every pi-statusline or pi-starship entry and the rest of the package list stays as the machine has it. */ -}}
+{{- $packages := list -}}
+{{- range (get $config "packages" | default list) -}}
+  {{- $source := . -}}
+  {{- if kindIs "map" . -}}
+    {{- $source = get . "source" -}}
+  {{- end -}}
+  {{- if not (regexMatch "^npm:@narumitw/pi-(statusline|starship)(@.*)?$" (toString $source)) -}}
+    {{- $packages = append $packages . -}}
+  {{- end -}}
+{{- end -}}
+{{- $config = set $config "packages" (append $packages "npm:@narumitw/pi-statusline@0.51.0") -}}
+{{- if and $original (deepEqual (fromJson $original) $config) -}}
+{{ .chezmoi.stdin -}}
+{{- else -}}
+{{ toPrettyJson $config }}
+{{ end -}}

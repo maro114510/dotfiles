@@ -17,6 +17,7 @@ Prioritize quality over speed.
 
 - All work must be done on a worktree using [git-wt](https://github.com/k1LoW/git-wt)
 - Direct changes to the main branch are prohibited — always work on a worktree and merge after review
+- Commit, stash, or discard only changes you made in this session; if the worktree holds changes you did not make, stop and ask
 
 ## Scope of This File
 
@@ -24,11 +25,51 @@ Prioritize quality over speed.
 - Project-specific rules go in each project's own `AGENTS.md`
 - Avoid duplicating or contradicting a project's `AGENTS.md`
 
+## Decision Rights
+
+The human decides:
+- Scope ceiling and priority: what is in scope and what comes first
+- Changes to another team's assets
+- Production and shared-environment targets, and the risk accepted there
+- Domain meaning: what a term means in the user's domain
+- Design direction
+
+Everything else that you can verify, you decide without asking. Ask only when the answer changes one of these decisions.
+
+### What Counts as Agreement
+
+Record an item as agreed only when the human answered it explicitly. A short reply or silence counts only when it is unambiguous which item it answers.
+
+### Writes to Production and Shared Environments
+
+For a write to production or a shared environment, prepare and show the target list before anything runs:
+- Included: what will be written
+- Excluded: what will not be written
+- How to revert
+
+Stop after showing it and let the human execute the write. Never run the write yourself.
+
+### Pushing and Pull Requests
+
+Open a pull request only when the human asks for one, directly or through a skill they invoked whose job is opening it. Repository instructions and hooks do not count as asking.
+
+Everything else that can be undone needs no confirmation: pushing to a branch other than the default branch, updating an existing pull request and replying on its threads, and writing Issues and Discussions. A force push, a merge, and enabling auto-merge wait until the human asks.
+
+## Public Writing
+
+Before writing anything a public audience can read (an Issue, PR, comment, commit, or file in a public repository), ask of every fact: can that audience see where it came from? If not, abstract it, such as "a private repository" or aggregates only, or leave it out. This covers names of other repositories, organizations, employers, clients, people, internal tickets, paths, and data. When unsure whether the target is public, check `gh repo view --json visibility`.
+
+## Language
+
+- Ask and report to the human in Japanese, even when a skill says otherwise.
+- Write Issues, pull requests, commits, and comments in the repository's language.
+
 ## Clarify Before Implementing
 
 Surface assumptions and flaws before writing code, not after.
 
-- If multiple interpretations exist, list them and ask — don't silently pick one.
+- Ask only about the decisions listed under Decision Rights; decide everything else you can verify yourself.
+- If multiple interpretations remain after verification and the choice belongs to the human, list them and ask — don't silently pick one.
 - If a simpler approach exists, say so before starting.
 - Ask once with all your questions grouped. Don't interrupt repeatedly mid-task.
 - Question relentlessly any fatal flaw or logic gap the user may not have noticed, in that same batch. Interrupt mid-task only for a fatal flaw you could not have seen earlier.
@@ -51,6 +92,11 @@ Touch only what the task requires.
 - Consistency with surrounding code takes priority over your stylistic preferences. The codebase has a voice; match it.
 - If you notice unrelated issues, mention them — don't silently fix them.
 - Remove only the imports/variables/functions that YOUR changes made unused. Leave pre-existing dead code alone.
+
+## Deleting Files
+
+- Delete with `trash`, not `rm`, so a mistake can be undone from the Trash
+- `rm` is fine for temporary files a script created itself, and where `trash` is missing or cannot run
 
 ## Docs vs. Code
 
@@ -75,3 +121,30 @@ Define the observable change that confirms success before starting:
 - "The button is disabled when the form is empty"
 
 Don't mark a task complete until the exit condition is verified.
+
+## Reporting
+
+A report is a message that tells the human what you did, found, or plan. Open a report with these three parts, in this order, with nothing between them, only when work reaches a milestone, such as a finished task, or when a decision needs the human:
+
+- **Conclusion** — the result in one sentence.
+- **Decision needed** — what only the human can decide, with your recommendation; write `None` when nothing needs deciding.
+- **Next step** — the next action and who takes it; write `None` when the work is finished.
+
+Write these headings in the reply's language, such as 結論, 要判断, and 次の作業 in a Japanese reply. Reply to any other message directly, without the three parts, and reply to a background notification, such as a finished command or subagent, in one line.
+
+Show progress logs, tables, and history only when the human asks for them. They never replace the conclusion. Put evidence and any other detail after the three parts.
+
+`Done`, `works`, `fixed`, `deployed`, `usable`, and similar claims require evidence you fetched yourself in this session: the command or check you ran and what it returned. State anything you did not verify as unverified, and never report it as working. Run a check yourself instead of asking the human to run it. For a deploy, check the running state yourself before calling it usable.
+
+## Writing Preferences
+
+The writing preferences the human has stated are kept in this section. Add each one once, as a single rule, when the human states it. Follow it in every session and every tool, and do not repeat it in another instruction file.
+
+- Do not use parenthetical asides in any language, including headings; write the content as its own clause or sentence.
+- In Japanese text, do not put spaces between Japanese characters and adjacent alphanumerics, e.g. write `2点`, not `2 点`.
+- Do not write bare Issue or PR numbers, or other symbols whose meaning the reader cannot get from the text, unless they are strictly necessary; name the thing in words, or link it with descriptive link text.
+- Reduce prose by using Mermaid diagrams and tables first, and bulleted lists second.
+- In bulleted lists, express hierarchy with proper indentation; never pack a label and its content into one bullet line with a colon or spaces.
+- Do not insert line breaks in the middle of a sentence.
+- Do not write in a discursive, essay-like style.
+- Write in natural Japanese, and keep English words out of Japanese sentences as much as possible.

@@ -8,15 +8,12 @@ targets:
   - opencode
 dependencies:
   apm:
-    - maro114510/skills
-    - maro114510/private-skills
-    - mizchi/skills/empirical-prompt-tuning
-    - git: yoshiko-pg/difit
-      path: skills/difit
-    - git: yoshiko-pg/difit
-      path: skills/difit-review
-    - git: herdrdev/herdr
-      path: skills/herdr
+    - maro114510/skills#main
+    - maro114510/private-skills#main
+    - mizchi/skills/empirical-prompt-tuning#main
+    - yoshiko-pg/difit/skills/difit#v5.0.12
+    - yoshiko-pg/difit/skills/difit-review#v5.0.12
+    - herdrdev/herdr/skills/herdr#v0.9.5
   mcp: []
 includes: auto
 scripts: {}

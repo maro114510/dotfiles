@@ -12,7 +12,8 @@ trap 'rm -rf "${tmp_dir}"' EXIT
 for template in \
   dot_claude/CLAUDE.md.tmpl \
   dot_codex/AGENTS.md.tmpl \
-  dot_config/opencode/AGENTS.md.tmpl; do
+  dot_config/opencode/AGENTS.md.tmpl \
+  dot_pi/agent/AGENTS.md.tmpl; do
   output="${tmp_dir}/$(basename "${template}").rendered"
   "${chezmoi_bin}" execute-template --source "${source_dir}" -f "${source_dir}/${template}" > "${output}"
   if [[ ! -s "${output}" ]]; then

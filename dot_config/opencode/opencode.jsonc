@@ -4,6 +4,8 @@
   "update": "disable",
   // Snapshots git-scan the whole worktree every step; undo edits with git instead
   "snapshots": false,
+  // Default for every agent, including the build agent `opencode run` uses
+  "model": "claude-agent/sonnet",
   "experimental": {
     // Todos are off by default in V2
     "todo": true,
@@ -20,8 +22,8 @@
   // Keep the order: external_directory ask -> allow -> ask -> deny -> narrow
   // exceptions to a deny (-> denies that must always win).
   "permissions": [
-    // Paths outside the project are allowed by default. Ask first, then open
-    // only what is listed below.
+    // V1 asked before touching paths outside the project; V2 allows them by
+    // default. Restore the prompt first, then open only what is listed below.
     { "action": "external_directory", "resource": "*", "effect": "ask" },
     // Paths inside the working directory are relative to it; paths outside
     // are absolute. "*" spans "/", so list both the root form and the "*/"
@@ -51,8 +53,8 @@
     // `cd` targets of a shell command. It does NOT cover other path arguments
     // or redirect targets of a shell command (anomalyco/opencode#56288).
     { "action": "external_directory", "resource": "~/*", "effect": "allow" },
-    // Scratch space: temp dirs prompt constantly, nearly always for throwaway
-    // work. macOS resolves /tmp and /var to /private/*,
+    // Scratch space: temp dirs asked ~1,100 times in 5 days of V1 use, nearly
+    // always for throwaway work. macOS resolves /tmp and /var to /private/*,
     // and OpenCode's own temp directory lives under /var/folders.
     { "action": "external_directory", "resource": "/tmp/*", "effect": "allow" },
     { "action": "external_directory", "resource": "/private/tmp/*", "effect": "allow" },
@@ -302,7 +304,14 @@
     { "action": "shell", "resource": "*'.env.*", "effect": "deny" },
     { "action": "shell", "resource": "*<.env.*", "effect": "deny" },
     { "action": "shell", "resource": "*@.env.*", "effect": "deny" },
-    { "action": "shell", "resource": "*.envrc*", "effect": "deny" },
+    // .envrc, also as .envrc.local: only as a path, like .env above, so a
+    // command whose text merely names `.envrc`, such as an Issue body, runs.
+    { "action": "shell", "resource": "* .envrc*", "effect": "deny" },
+    { "action": "shell", "resource": "*/.envrc*", "effect": "deny" },
+    { "action": "shell", "resource": "*\".envrc*", "effect": "deny" },
+    { "action": "shell", "resource": "*'.envrc*", "effect": "deny" },
+    { "action": "shell", "resource": "*<.envrc*", "effect": "deny" },
+    { "action": "shell", "resource": "*@.envrc*", "effect": "deny" },
     { "action": "shell", "resource": "*.pem *", "effect": "deny" },
     { "action": "shell", "resource": "*credentials.json*", "effect": "deny" },
     { "action": "shell", "resource": "*.git-credentials*", "effect": "deny" },
@@ -338,4 +347,44 @@
     { "action": "shell", "resource": "diskutil apfs delete*", "effect": "deny" },
     { "action": "shell", "resource": "diskutil apfs erase*", "effect": "deny" },
   ],
+  // Hard denies for the file tools, which run in the server outside any shell
+  // sandbox. Policies here are evaluated after every repository's, so a
+  // repository cannot lift them, and they deny edits to this file itself.
+  // The resource is "<action>:<path>"; list the absolute "*/" form and the
+  // form relative to a home-directory location. They do not cover grep,
+  // whose resource is the search pattern, nor shell commands.
+  "policies": [
+    // OpenCode's service password and provider credentials
+    { "action": "tool.use", "resource": "read:*/.config/opencode/service.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:.config/opencode/service.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:*/.local/share/opencode/auth.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:.local/share/opencode/auth.json", "effect": "deny" },
+    // global OpenCode and Pi config, and their plugins and extensions
+    { "action": "tool.use", "resource": "edit:*/.config/opencode/opencode.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*/.config/opencode/opencode.jsonc", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*/.config/opencode/plugin/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*/.config/opencode/plugins/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*/.pi/agent/settings.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:*/.pi/agent/extensions/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:.config/opencode/opencode.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:.config/opencode/opencode.jsonc", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:.config/opencode/plugin/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:.config/opencode/plugins/*", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:.pi/agent/settings.json", "effect": "deny" },
+    { "action": "tool.use", "resource": "edit:.pi/agent/extensions/*", "effect": "deny" },
+  ],
+  "mcp": {
+    "servers": {
+      "browse": {
+        "type": "local",
+        "command": [
+          "browse",
+          "mcp"
+        ],
+        "environment": {
+          "OPENCODE_BROWSER_RUNTIME": "auto-update"
+        }
+      }
+    }
+  },
 }

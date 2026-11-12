@@ -28,14 +28,14 @@ resize-overlay = never
 # ------------------------------------------------ #
 # Background Settings
 # ------------------------------------------------ #
-background-opacity = 0.60
-background-blur = 20
+background-opacity = 0.73
+background-blur = 30
 # background-blur = macos-glass-regular
 
 # ------------------------------------------------ #
 # Font Settings
 # ------------------------------------------------ #
-font-size = 9
+font-size = 9.5
 # font-family = RobotoMono Nerd Font, Noto Sans Mono CJK JP
 font-family = Maple Mono
 font-feature = -calt
