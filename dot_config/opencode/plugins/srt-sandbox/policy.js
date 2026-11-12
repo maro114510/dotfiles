@@ -59,6 +59,17 @@ export function sandboxConfig({ home, tmp, path: searchPath = '' }) {
         at('.cache/zsh'),
         at('.cache/gtr'),
         at('.local/share/sheldon'),
+        // Every other home entry this repository manages, and tool configs that can name a program to run:
+        // kubeconfig exec plugins, Docker CLI plugins, Gradle init scripts, and editor and tmux configs.
+        ...['.vimrc', '.vim', '.tmux.conf', '.tmux.session.conf', '.Brewfile', '.myclirc', '.raycast', '.apm'].map(at),
+        at('.kube'),
+        at('.docker'),
+        at('.gnupg'),
+        at('.gradle/init.d'),
+        at('.gradle/gradle.properties'),
+        at('.m2/settings.xml'),
+        at('.terraformrc'),
+        at('.ipython'),
         at('.gitconfig'),
         at('.config'),
         ...pathDirs,
