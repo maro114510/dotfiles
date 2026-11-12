@@ -211,11 +211,11 @@ new_clone() {
 
 # These run code later outside the sandbox: the shell on its next start, the
 # agents and git on their next run, and launchd at the next login.
-@test "a sandboxed command cannot open a shell startup file for writing" {
+@test "a sandboxed command cannot write a file a shell or tool reads at startup" {
   needs_sandbox
-  for file in .zshenv .zprofile .zshrc .zlogin .zlogout .bashrc .bash_profile .profile; do
-    [ -e "${HOME}/${file}" ] || continue
-    # Appending nothing leaves the file as it was even if the open succeeded.
+  for file in .zshenv .zprofile .zshrc .zlogin .zlogout .bashrc .bash_profile .bash_login .profile .npmrc .bunfig.toml; do
+    # Appending nothing leaves an existing file as it was even if the open succeeded; a missing one is removed at teardown.
+    [ -e "${HOME}/${file}" ] || probes+=("${HOME}/${file}")
     run status_in_sandbox "${work}" ": >> '${HOME}/${file}'"
     [[ "$output" =~ ^exit=[1-9] ]] || { echo "writable: ~/${file}"; false; }
   done
@@ -223,12 +223,34 @@ new_clone() {
 
 @test "a sandboxed command cannot create a file where code is loaded from later" {
   needs_sandbox
-  for dir in .config .config/git .config/opencode .local/bin .ssh Library/LaunchAgents .claude .codex .pi/agent \
-    .local/share/opencode .local/state/opencode; do
+  for dir in .config .config/git .config/opencode .local/bin .local/share/mise .ssh Library/LaunchAgents .claude .codex \
+    .pi/agent .local/share/opencode .local/state/opencode; do
     [ -d "${HOME}/${dir}" ] || continue
     probe "${HOME}/${dir}"
     run status_in_sandbox "${work}" "touch '${probe_path}'"
     [[ "$output" =~ ^exit=[1-9] ]] || { echo "writable: ~/${dir}"; false; }
+  done
+}
+
+@test "a sandboxed command cannot create a file in a PATH directory of the home" {
+  needs_sandbox
+  outside_temp
+  mkdir "${home_work}/bin"
+  PATH="${home_work}/bin:${PATH}" run status_in_sandbox "${work}" "touch '${home_work}/bin/git'"
+  [[ "$output" =~ ^exit=[1-9] ]] || false
+  [ ! -e "${home_work}/bin/git" ]
+}
+
+@test "a sandboxed command cannot change the hooks or config of another clone's submodules and worktrees" {
+  needs_sandbox
+  outside_temp
+  new_clone "${home_work}/clone"
+  new_clone "${home_work}/other"
+  git -C "${home_work}/other" worktree add --quiet "${home_work}/other-wt" -b topic
+  mkdir -p "${home_work}/other/.git/modules/sub/hooks"
+  for target in modules/sub/hooks/pre-commit modules/sub/config config.worktree worktrees/other-wt/config.worktree; do
+    run status_in_sandbox "${home_work}/clone" "touch '${home_work}/other/.git/${target}'"
+    [[ "$output" =~ ^exit=[1-9] ]] || { echo "writable: .git/${target}"; false; }
   done
 }
 
