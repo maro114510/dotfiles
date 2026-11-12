@@ -247,6 +247,16 @@ new_clone() {
   done
 }
 
+@test "a sandboxed command can commit on a branch named like a git config file under the ghq root" {
+  needs_sandbox
+  in_ghq
+  new_clone "${ghq_work}/clone"
+  git -C "${ghq_work}/clone" switch --quiet -c feat/config
+  run sandboxed "${ghq_work}/clone" 'git -c user.email=t@example.com -c user.name=t commit --quiet --allow-empty -m on-config && git log --format=%s -1'
+  [ "$status" -eq 0 ]
+  [ "${lines[${#lines[@]}-1]}" = on-config ]
+}
+
 @test "a sandboxed command cannot change the hooks or config of another clone under the ghq root" {
   needs_sandbox
   in_ghq
