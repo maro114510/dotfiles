@@ -236,3 +236,62 @@ gh_hosts() {
   [ "$status" -eq 0 ]
   [ -e "${work}/ran" ]
 }
+
+# Runs commands $2 and $3 one after the other in directory $1 through one
+# plugin instance, the way one OpenCode process does, and prints each exit
+# status.
+sandboxed_twice() {
+  node --input-type=module -e '
+    import { spawn } from "node:child_process";
+    const [plugin, cwd, ...commands] = process.argv.slice(1);
+    const { default: srt } = await import(`${plugin}/index.js`);
+    let hook;
+    const cleanup = await srt.setup({
+      location: { directory: cwd },
+      shell: { hook: async (name, fn) => { if (name === "create.before") hook = fn; return { dispose: async () => {} }; } },
+    });
+    for (const command of commands) {
+      const event = { command, cwd, timeout: 0, shell: "/bin/zsh", env: { ...process.env } };
+      await hook(event);
+      const child = spawn(event.shell, ["-c", event.command], { cwd, env: event.env, stdio: "ignore" });
+      console.log(`exit=${await new Promise((done) => child.on("close", done))}`);
+    }
+    await cleanup?.();
+    process.exit(0);
+  ' "${SRT_PLUGIN}" "$@"
+}
+
+@test "a command is refused once gh starts keeping a token in plain text mid-session" {
+  needs_sandbox
+  gh_hosts $'github.com:\n    user: someone'
+  GH_CONFIG_DIR="${gh_dir}" run sandboxed_twice "${work}" \
+    "printf '    oauth_token: gho_plaintextexample\n' >> '${gh_dir}/hosts.yml'" \
+    "touch ${work}/ran"
+  [ "${lines[0]}" = exit=0 ]
+  [ "${lines[1]}" = exit=126 ]
+  [ ! -e "${work}/ran" ]
+}
+
+# SSH cannot authenticate inside the sandbox, which hides the SSH keys and
+# agent, so git must reach GitHub over HTTPS, where the credential is swapped.
+@test "git inside the sandbox reaches an SSH remote of GitHub over HTTPS" {
+  needs_sandbox
+  outside_temp
+  new_clone "${home_work}/clone"
+  git -C "${home_work}/clone" remote set-url origin git@github.com:acme/tool.git
+  git -C "${home_work}/clone" remote add other ssh://git@github.com/acme/other.git
+  run sandboxed "${home_work}/clone" 'git ls-remote --get-url origin; git ls-remote --get-url other'
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = https://github.com/acme/tool.git ]
+  [ "${lines[1]}" = https://github.com/acme/other.git ]
+}
+
+@test "git config the command already passes through the environment is kept" {
+  needs_sandbox
+  outside_temp
+  new_clone "${home_work}/clone"
+  GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=user.name GIT_CONFIG_VALUE_0=kept \
+    run sandboxed "${home_work}/clone" 'git config user.name'
+  [ "$status" -eq 0 ]
+  [ "$output" = kept ]
+}
