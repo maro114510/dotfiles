@@ -4,7 +4,7 @@
 import { execFileSync } from 'node:child_process'
 import { createSign, randomBytes } from 'node:crypto'
 import { existsSync, readFileSync, realpathSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { isAbsolute, join, resolve } from 'node:path'
 
 // Hosts whose requests get the real credential. Any other host only ever sees the placeholder.
 const GITHUB_HOSTS = new Set(['github.com', 'api.github.com', 'uploads.github.com'])
@@ -13,8 +13,10 @@ const PLACEHOLDER = /srt_gh_[A-Za-z0-9_-]{32}/
 const REFRESH_MARGIN_MS = 10 * 60 * 1000
 
 // srt settings shared by every command. Each command adds its own working tree to allowWrite.
-export function sandboxConfig({ home, tmp }) {
+// path is the PATH of the process that runs commands outside the sandbox later.
+export function sandboxConfig({ home, tmp, path: searchPath = '' }) {
   const at = (path) => join(home, path)
+  const pathDirs = searchPath.split(':').filter((dir) => isAbsolute(dir) && dir.startsWith(`${home}/`))
   return {
     network: {
       // Every host is reachable through the ask callback; only requests to GitHub get a real credential,
@@ -42,10 +44,15 @@ export function sandboxConfig({ home, tmp }) {
       // The home stays writable except where code is loaded from later outside the sandbox: shell startup
       // files, tool and agent configuration, PATH and login items, and the hooks and config of every clone.
       denyWrite: [
-        ...['.zshenv', '.zprofile', '.zshrc', '.zlogin', '.zlogout', '.bashrc', '.bash_profile', '.profile'].map(at),
+        ...['.zshenv', '.zprofile', '.zshrc', '.zlogin', '.zlogout', '.bashrc', '.bash_profile', '.bash_login', '.profile']
+          .map(at),
+        at('.npmrc'),
+        at('.bunfig.toml'),
         at('.gitconfig'),
         at('.config'),
+        ...pathDirs,
         at('.local/bin'),
+        at('.local/share/mise'),
         at('.ssh'),
         at('Library/LaunchAgents'),
         at('.claude'),
@@ -56,6 +63,10 @@ export function sandboxConfig({ home, tmp }) {
         at('.srt-settings.json'),
         at('**/.git/hooks'),
         at('**/.git/config'),
+        at('**/.git/config.worktree'),
+        at('**/.git/worktrees/*/config.worktree'),
+        at('**/.git/modules/**/hooks'),
+        at('**/.git/modules/**/config'),
         // OpenCode loads plugin code from its caches outside the sandbox.
         at('.cache/opencode'),
         at('Library/Caches/opencode'),

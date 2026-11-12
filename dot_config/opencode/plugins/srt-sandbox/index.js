@@ -57,7 +57,7 @@ function start() {
   sandbox ??= (async () => {
     const { SandboxManager } = await import('@anthropic-ai/sandbox-runtime')
     const broker = createBroker({ ownerToken, bot: await botClient() })
-    const base = sandboxConfig({ home: homedir(), tmp: realpathSync(tmpdir()) })
+    const base = sandboxConfig({ home: homedir(), tmp: realpathSync(tmpdir()), path: process.env.PATH })
     await SandboxManager.initialize(
       { ...base, network: { ...base.network, filterRequest: broker.filterRequest } },
       async () => true,
