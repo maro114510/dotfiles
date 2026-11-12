@@ -16,18 +16,18 @@ Never use `npm install -g` or `npx` for this tool.
 ## Log in
 
 1. Unlock 1Password with its CLI integration enabled.
-2. Run `ticktick-op.sh login` and approve in the browser.
-3. Run `ticktick-op.sh status`.
+2. Run `ticktick login` and approve in the browser.
+3. Run `ticktick status`.
 
 The token is stored at `op://Personal/TickTick CLI/credential`.
 `TICKTICK_OP_VAULT` and `TICKTICK_OP_ITEM` override the vault and item.
-Never run `ticktick auth token <token>`; it puts the token in argv.
+`ticktick auth` is blocked; a token given as an argument would land in argv.
 
 ## Use
 
 ```bash
-ticktick-op.sh project list --json
-ticktick-op.sh task search --help
+ticktick project list --json
+ticktick task search --help
 ```
 
 Exit codes: 0 success, 1 CLI or API error, 2 misuse, 3 blocked for lack of approval.
@@ -40,12 +40,8 @@ Run without a person:
 
 Everything else asks for a typed `yes` on the terminal, and exits 3 without one.
 
-OpenCode rules to deny the bare command and allow the wrapper:
-
-```jsonc
-{ "action": "shell", "resource": "ticktick *", "effect": "deny" },
-{ "action": "shell", "resource": "*ticktick-op.sh *", "effect": "allow" }
-```
+`ticktick` in `~/.local/bin` is the wrapper and shadows the mise shim, so any caller gets the guarded path.
+The unwrapped CLI stays reachable only through the mise install path.
 
 ## Update
 
