@@ -102,8 +102,8 @@ new_clone() {
   real="$(gh auth token)"
   run sandboxed "${work}" 'env -u GH_TOKEN -u GITHUB_TOKEN gh auth token 2>&1; echo "exit=$?"'
   [ "$status" -eq 0 ]
-  [[ "$output" != *"${real}"* ]]
-  [[ "${lines[${#lines[@]}-1]}" =~ ^exit=[1-9] ]]
+  [[ "$output" != *"${real}"* ]] || false
+  [[ "${lines[${#lines[@]}-1]}" =~ ^exit=[1-9] ]] || false
 }
 
 @test "a sandboxed command cannot reach 1Password" {
@@ -111,14 +111,14 @@ new_clone() {
   command -v op >/dev/null || skip "needs the 1Password CLI"
   run status_in_sandbox "${work}" 'op whoami'
   [ "$status" -eq 0 ]
-  [[ "$output" =~ ^exit=[1-9] ]]
+  [[ "$output" =~ ^exit=[1-9] ]] || false
 }
 
 @test "a sandboxed command cannot list the keychain directory" {
   needs_sandbox
   run status_in_sandbox "${work}" 'ls "$HOME/Library/Keychains"'
   [ "$status" -eq 0 ]
-  [[ "$output" =~ ^exit=[1-9] ]]
+  [[ "$output" =~ ^exit=[1-9] ]] || false
 }
 
 @test "a sandboxed command cannot list ~/.ssh" {
@@ -126,7 +126,7 @@ new_clone() {
   [ -d "${HOME}/.ssh" ] || skip "no ~/.ssh on this machine"
   run status_in_sandbox "${work}" 'ls "$HOME/.ssh"'
   [ "$status" -eq 0 ]
-  [[ "$output" =~ ^exit=[1-9] ]]
+  [[ "$output" =~ ^exit=[1-9] ]] || false
 }
 
 @test "a sandboxed command cannot read OpenCode's service password" {
@@ -134,7 +134,7 @@ new_clone() {
   [ -f "${HOME}/.config/opencode/service.json" ] || skip "no OpenCode service password on this machine"
   run status_in_sandbox "${work}" 'cat "$HOME/.config/opencode/service.json"'
   [ "$status" -eq 0 ]
-  [[ "$output" =~ ^exit=[1-9] ]]
+  [[ "$output" =~ ^exit=[1-9] ]] || false
 }
 
 @test "GH_TOKEN inside the sandbox is a placeholder, not the gh login" {
@@ -183,6 +183,30 @@ new_clone() {
   target="${home_work}/beside-the-clone"
   run status_in_sandbox "${home_work}/clone" "touch '${target}'"
   [ "$status" -eq 0 ]
-  [[ "$output" =~ ^exit=[1-9] ]]
+  [[ "$output" =~ ^exit=[1-9] ]] || false
   [ ! -e "${target}" ]
+}
+
+# Git runs hooks and reads its config outside the sandbox the next time the
+# owner uses the repository, so a sandboxed command must not change them.
+@test "a sandboxed command cannot add a git hook or change the git config of its clone" {
+  needs_sandbox
+  outside_temp
+  new_clone "${home_work}/clone"
+  run status_in_sandbox "${home_work}/clone" 'touch .git/hooks/pre-commit'
+  [[ "$output" =~ ^exit=[1-9] ]] || false
+  run status_in_sandbox "${home_work}/clone" 'git config core.hooksPath /tmp'
+  [[ "$output" =~ ^exit=[1-9] ]] || false
+  [ ! -e "${home_work}/clone/.git/hooks/pre-commit" ]
+}
+
+@test "a sandboxed command in a linked worktree cannot redirect its git directory or set worktree config" {
+  needs_sandbox
+  outside_temp
+  new_clone "${home_work}/main"
+  git -C "${home_work}/main" worktree add --quiet "${home_work}/wt" -b topic
+  run status_in_sandbox "${home_work}/wt" 'printf "gitdir: /tmp/elsewhere\n" > .git'
+  [[ "$output" =~ ^exit=[1-9] ]] || false
+  run status_in_sandbox "${home_work}/wt" 'touch "$(git rev-parse --git-dir)/config.worktree"'
+  [[ "$output" =~ ^exit=[1-9] ]] || false
 }
