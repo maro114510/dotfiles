@@ -162,8 +162,16 @@ export function createBroker({ ownerToken, bot, now = Date.now }) {
   }
 }
 
-// What a Bot token may do: push, open pull requests, and comment. Never Workflows or Administration.
-const BOT_PERMISSIONS = { contents: 'write', pull_requests: 'write', issues: 'write', metadata: 'read' }
+// What a Bot token may do: push, open pull requests, comment, set commit statuses, and read check runs.
+// Never Workflows or Administration.
+const BOT_PERMISSIONS = {
+  contents: 'write',
+  pull_requests: 'write',
+  issues: 'write',
+  statuses: 'write',
+  checks: 'read',
+  metadata: 'read',
+}
 
 // The App key stays in this process's memory; the JWT is built here and sent only in a request header.
 export function createAppClient({ appId, installationId, key, fetch = globalThis.fetch }) {
