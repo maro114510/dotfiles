@@ -9,3 +9,8 @@
 - Implementation.
 - Final verification.
 - Trivial lookups: single-file reads, targeted searches, quick commands.
+
+## Parallel Pull Requests
+
+- Do not open a pull request that changes a file another open pull request already changes; wait until that one merges.
+- Merge pull requests in dependency order, and name the one that must merge first in the pull request body.
