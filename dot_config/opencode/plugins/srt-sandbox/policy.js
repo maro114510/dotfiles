@@ -86,6 +86,19 @@ export function ghTokenInPlainText({ env, home }) {
   return existsSync(hosts) && /^\s*oauth_token\s*:/m.test(readFileSync(hosts, 'utf8'))
 }
 
+// SSH cannot authenticate inside the sandbox, which hides the keys and the agent, so git reaches GitHub over
+// HTTPS, where the placeholder is swapped. Appended after any git config the command already passes.
+export function httpsRemoteEnv(env) {
+  const first = Number.parseInt(env.GIT_CONFIG_COUNT ?? '0', 10) || 0
+  const added = {}
+  ;['git@github.com:', 'ssh://git@github.com/'].forEach((from, offset) => {
+    added[`GIT_CONFIG_KEY_${first + offset}`] = 'url.https://github.com/.insteadOf'
+    added[`GIT_CONFIG_VALUE_${first + offset}`] = from
+  })
+  added.GIT_CONFIG_COUNT = String(first + 2)
+  return added
+}
+
 export function repoFromRemote(url) {
   const match = /^(?:https:\/\/(?:[^@/]+@)?github\.com\/|ssh:\/\/git@github\.com\/|git@github\.com:)([^/]+)\/([^/]+?)(?:\.git)?\/?$/.exec(
     url.trim(),

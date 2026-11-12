@@ -12,6 +12,7 @@ import {
   createBroker,
   filesystemFor,
   ghTokenInPlainText,
+  httpsRemoteEnv,
   sandboxConfig,
   workTreeAt,
 } from './policy.js'
@@ -84,6 +85,7 @@ export default {
         const placeholder = broker.placeholderFor(tree?.repo ?? null)
         event.env.GH_TOKEN = placeholder
         event.env.GITHUB_TOKEN = placeholder
+        Object.assign(event.env, httpsRemoteEnv(event.env))
         event.env.SRT_WRAPPED = await SandboxManager.wrapWithSandbox(event.command, shell, {
           filesystem: filesystemFor(base, tree),
         })
