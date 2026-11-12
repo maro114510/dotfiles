@@ -163,7 +163,7 @@ export function createAppClient({ appId, installationId, key, fetch = globalThis
     })
   }
 
-  return {
+  const client = {
     async account() {
       if (account) return account
       const response = await call('GET', `/app/installations/${installationId}`)
@@ -177,13 +177,18 @@ export function createAppClient({ appId, installationId, key, fetch = globalThis
         repositories: [name],
         permissions: BOT_PERMISSIONS,
       })
-      // GitHub answers 422 when the installation does not cover the repository.
-      if (response.status === 422) return null
+      // GitHub answers 422 both for a repository the installation does not cover and for a permission the
+      // App lacks. Only the first may fall back to the owner, so ask GitHub which one it is.
+      if (response.status === 422) {
+        const installed = await call('GET', `/repos/${await client.account()}/${name}/installation`)
+        if (installed.status === 404) return null
+      }
       if (!response.ok) throw new Error(`minting a Bot token failed: ${response.status}`)
       const body = await response.json()
       return { token: body.token, expiresAt: Date.parse(body.expires_at) }
     },
   }
+  return client
 }
 
 function git(cwd, ...args) {
