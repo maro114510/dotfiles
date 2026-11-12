@@ -1,8 +1,0 @@
-#!/bin/sh
-# Stand-in shell for every OpenCode shell command. It is named zsh so OpenCode parses and permission-checks
-# the command the agent wrote, then it ignores its arguments and runs only the sandboxed form index.js
-# prepared. Without one it refuses, so a broken plugin never falls back to an unsandboxed command.
-[ -n "${SRT_WRAPPED:-}" ] || { echo "srt sandbox: no sandboxed command was prepared; refusing to run it" >&2; exit 126; }
-cmd=$SRT_WRAPPED
-unset SRT_WRAPPED
-exec /bin/sh -c "$cmd"

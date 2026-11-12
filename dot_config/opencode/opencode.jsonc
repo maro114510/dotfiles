@@ -359,22 +359,19 @@
     { "action": "tool.use", "resource": "read:.config/opencode/service.json", "effect": "deny" },
     { "action": "tool.use", "resource": "read:*/.local/share/opencode/auth.json", "effect": "deny" },
     { "action": "tool.use", "resource": "read:.local/share/opencode/auth.json", "effect": "deny" },
-    // global OpenCode and Pi config, their plugins and extensions, where the
-    // sandbox lives, and the srt settings
+    // global OpenCode and Pi config, and their plugins and extensions
     { "action": "tool.use", "resource": "edit:*/.config/opencode/opencode.json", "effect": "deny" },
     { "action": "tool.use", "resource": "edit:*/.config/opencode/opencode.jsonc", "effect": "deny" },
     { "action": "tool.use", "resource": "edit:*/.config/opencode/plugin/*", "effect": "deny" },
     { "action": "tool.use", "resource": "edit:*/.config/opencode/plugins/*", "effect": "deny" },
     { "action": "tool.use", "resource": "edit:*/.pi/agent/settings.json", "effect": "deny" },
     { "action": "tool.use", "resource": "edit:*/.pi/agent/extensions/*", "effect": "deny" },
-    { "action": "tool.use", "resource": "edit:*/.srt-settings.json", "effect": "deny" },
     { "action": "tool.use", "resource": "edit:.config/opencode/opencode.json", "effect": "deny" },
     { "action": "tool.use", "resource": "edit:.config/opencode/opencode.jsonc", "effect": "deny" },
     { "action": "tool.use", "resource": "edit:.config/opencode/plugin/*", "effect": "deny" },
     { "action": "tool.use", "resource": "edit:.config/opencode/plugins/*", "effect": "deny" },
     { "action": "tool.use", "resource": "edit:.pi/agent/settings.json", "effect": "deny" },
     { "action": "tool.use", "resource": "edit:.pi/agent/extensions/*", "effect": "deny" },
-    { "action": "tool.use", "resource": "edit:.srt-settings.json", "effect": "deny" },
   ],
   "mcp": {
     "servers": {

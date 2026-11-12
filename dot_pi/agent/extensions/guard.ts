@@ -3,7 +3,7 @@
  *
  * - read blocks secret files and OpenCode's credentials; committed env templates stay readable
  * - write and edit block .env files, anything under .ssh or .aws, and the
- *   global OpenCode and Pi config, their plugins and extensions, and the srt settings
+ *   global OpenCode and Pi config, and their plugins and extensions
  * - bash asks before a major destructive command, and blocks it without a UI
  *
  * Best effort, not a security boundary: see docs/pi-guard.md.
@@ -30,7 +30,6 @@ const UNWRITABLE_PATHS = [
 	".config/opencode/plugins/",
 	".pi/agent/settings.json",
 	".pi/agent/extensions/",
-	".srt-settings.json",
 ];
 
 // Arguments up to the next ; & | or newline, so a pattern stays in one command.

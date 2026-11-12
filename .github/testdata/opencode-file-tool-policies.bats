@@ -67,7 +67,7 @@ decide() {
   [ "$output" = deny ]
 }
 
-@test "editing a global OpenCode plugin, where the sandbox plugin lives, is denied" {
+@test "editing a global OpenCode plugin is denied" {
   run decide "edit:/Users/u/.config/opencode/plugins/sandbox/index.ts"
   [ "$output" = deny ]
   run decide "edit:/Users/u/.config/opencode/plugin/sandbox.ts"
@@ -78,11 +78,6 @@ decide() {
   run decide "edit:/Users/u/.pi/agent/settings.json"
   [ "$output" = deny ]
   run decide "edit:/Users/u/.pi/agent/extensions/sandbox.ts"
-  [ "$output" = deny ]
-}
-
-@test "editing the srt settings is denied" {
-  run decide "edit:/Users/u/.srt-settings.json"
   [ "$output" = deny ]
 }
 
