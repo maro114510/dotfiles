@@ -1,0 +1,83 @@
+# Execution Risk Budget
+
+This is the accepted execution posture for the three agent tools on this Mac:
+Codex, Claude Code, and OpenCode. It is the single record behind the
+permissions in `~/.claude/settings.json`, `~/.codex/config.toml`, and
+`~/.config/opencode/opencode.jsonc`. A tool may be stricter than this record; a
+tool that is looser is a defect in the configuration.
+
+## Routine actions
+
+These run without confirmation, inside the tool's write scope:
+
+- reading, searching, and listing files
+- editing files, and running tests, linters, formatters, and builds
+- read-only Git: `status`, `diff`, `log`, `show`, `fetch`, `branch`, and
+  `worktree`
+- `git add`, `git commit`, and `git push` to a branch other than `main`
+- read-only GitHub: `gh pr view`, `gh pr diff`, `gh run view`, and `gh api`
+  reads
+- read-only documentation fetches and web searches
+
+Everything else waits for the user's answer. This includes recursive or bulk
+deletion, history rewriting, force pushes, remote branch deletion, pushing to
+`main`, package installs and upgrades, cloud or database mutations, opening or
+merging a pull request, and writes outside the write scope. Secret files
+(`.env*`, `*.pem`, `*.key`, SSH keys, cloud credentials, and `*credentials*`
+files) are out of scope for every tool and are denied rather than confirmed.
+
+## Codex
+
+- Write scope: the current worktree and task scratch directories
+  (`sandbox_mode = "workspace-write"`). Writes outside them ask first.
+- Approval requirement: `approval_policy = "on-request"`; the model may ask to
+  leave the sandbox and the user answers. `danger-full-access` with
+  `approval_policy = "never"` is not accepted.
+- Network access: outbound network from sandboxed commands; inbound is not
+  accepted.
+- Runs without confirmation: the routine actions, as long as they stay inside
+  the write scope.
+- Overrides: a project's `.codex/config.toml` may narrow this posture and may
+  not widen it. A full-access warning is never hidden while full access is in
+  effect.
+
+## Claude Code
+
+- Write scope: the current worktree and task scratch directories; writes
+  outside them depend on the auto-mode classifier.
+- Approval requirement: auto mode, where a classifier reviews actions instead
+  of prompting on every one. `bypassPermissions` and `dontAsk` are not
+  accepted.
+- Network access: `WebFetch` and `WebSearch`, plus allow-listed GitHub and
+  documentation commands. Arbitrary `curl`, `wget`, and `nc` stay denied.
+- Runs without confirmation: the routine actions, plus anything else the
+  classifier accepts, always subject to the deny rules.
+- Overrides: a project's `.claude/settings.json` may add denies and may not
+  start a session in auto or bypass mode.
+
+## OpenCode
+
+- Write scope: the current worktree, task scratch directories, and the paths
+  under `~` that the permission rules allow. Secret paths and system paths stay
+  denied.
+- Approval requirement: `allow` runs unprompted, `ask` waits for the user, and
+  `deny` refuses. A project configuration may add asks or denies.
+- Network access: `webfetch` for any URL, with shell network commands bounded
+  by the shell rules.
+- Runs without confirmation: the routine actions that the permission rules
+  permit.
+- Overrides: a project's OpenCode configuration may narrow this posture and may
+  not widen it.
+
+## Widening the budget
+
+Only the user (the repository owner) may widen a posture. A widening happens in
+a change to this file that states the tool, the dimension, the reason, and the
+date, and it takes effect only after that change merges. An agent may propose a
+widening, or narrow a posture on its own, but it may not apply a widening
+without that change. Project-scoped and tool-generated configuration may narrow
+the posture and may not widen it.
+
+The user may grant a single-task exception in the conversation that requests the
+task. That exception ends with the task and is never written into a tool
+configuration.
