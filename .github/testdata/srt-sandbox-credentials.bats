@@ -168,6 +168,53 @@ bot_fixture='
   [ "$output" = "token gho_owner" ]
 }
 
+@test "an API request for another repository with a Bot credential is refused with a reason naming both" {
+  run run_policy "${bot_fixture}"'
+    const b = withBot(bot);
+    const p = b.placeholderFor({ owner: "acme", name: "covered" });
+    const d = await b.filterRequest(req("https://api.github.com/repos/acme/other/issues", `token ${p}`));
+    console.log(d.action, d.status, d.reason.includes("acme/covered") && d.reason.includes("acme/other"));
+  '
+  [ "$status" -eq 0 ]
+  [ "$output" = "deny 403 true" ]
+}
+
+@test "a git request for another repository with a Bot credential is refused the same way" {
+  run run_policy "${bot_fixture}"'
+    const b = withBot(bot);
+    const p = b.placeholderFor({ owner: "acme", name: "covered" });
+    const basic = `Basic ${Buffer.from(`x-access-token:${p}`).toString("base64")}`;
+    const d = await b.filterRequest(req("https://github.com/acme/other.git/info/refs?service=git-receive-pack", basic));
+    console.log(d.action, d.status);
+  '
+  [ "$status" -eq 0 ]
+  [ "$output" = "deny 403" ]
+}
+
+@test "a Bot credential still passes for its own repository by git and for GraphQL" {
+  run run_policy "${bot_fixture}"'
+    const b = withBot(bot);
+    const p = b.placeholderFor({ owner: "acme", name: "covered" });
+    const basic = `Basic ${Buffer.from(`x-access-token:${p}`).toString("base64")}`;
+    const git = await b.filterRequest(req("https://github.com/Acme/covered.git/git-upload-pack", basic));
+    const graphql = await b.filterRequest(req("https://api.github.com/graphql", `bearer ${p}`));
+    console.log(git.action, graphql.action, header(graphql));
+  '
+  [ "$status" -eq 0 ]
+  [ "$output" = "allow allow bearer ghs_bot_covered" ]
+}
+
+@test "the owner's credential passes for any repository" {
+  run run_policy "${bot_fixture}"'
+    const b = withBot(bot);
+    const p = b.placeholderFor({ owner: "someone", name: "x" });
+    const d = await b.filterRequest(req("https://api.github.com/repos/acme/other", `token ${p}`));
+    console.log(d.action, header(d));
+  '
+  [ "$status" -eq 0 ]
+  [ "$output" = "allow token gho_owner" ]
+}
+
 @test "a Bot token failure in a Bot repository is refused instead of acting as the owner" {
   run run_policy '
     const bot = { account: async () => "acme", mint: async () => { throw new Error("GitHub answered 500"); } };

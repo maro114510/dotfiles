@@ -104,16 +104,23 @@ export function ghTokenInPlainText({ env, home }) {
   return existsSync(hosts) && /^\s*oauth_token\s*:/m.test(readFileSync(hosts, 'utf8'))
 }
 
-// SSH cannot authenticate inside the sandbox, which hides the keys and the agent, so git reaches GitHub over
-// HTTPS, where the placeholder is swapped. Appended after any git config the command already passes.
-export function httpsRemoteEnv(env) {
+// Git config every sandboxed command gets, appended after any the command already passes through the
+// environment. SSH cannot authenticate inside the sandbox, which hides the keys and the agent, so git reaches
+// GitHub over HTTPS, where the placeholder is swapped. A new branch records no upstream, because that is a
+// write to .git/config, which the sandbox denies; the owner's own git keeps its defaults.
+export function sandboxGitEnv(env) {
   const first = Number.parseInt(env.GIT_CONFIG_COUNT ?? '0', 10) || 0
+  const entries = [
+    ['url.https://github.com/.insteadOf', 'git@github.com:'],
+    ['url.https://github.com/.insteadOf', 'ssh://git@github.com/'],
+    ['branch.autoSetupMerge', 'false'],
+  ]
   const added = {}
-  ;['git@github.com:', 'ssh://git@github.com/'].forEach((from, offset) => {
-    added[`GIT_CONFIG_KEY_${first + offset}`] = 'url.https://github.com/.insteadOf'
-    added[`GIT_CONFIG_VALUE_${first + offset}`] = from
+  entries.forEach(([key, value], offset) => {
+    added[`GIT_CONFIG_KEY_${first + offset}`] = key
+    added[`GIT_CONFIG_VALUE_${first + offset}`] = value
   })
-  added.GIT_CONFIG_COUNT = String(first + 2)
+  added.GIT_CONFIG_COUNT = String(first + entries.length)
   return added
 }
 
@@ -122,6 +129,22 @@ export function repoFromRemote(url) {
     url.trim(),
   )
   return match ? { owner: match[1], name: match[2] } : null
+}
+
+// The first path segment after owner/name in git's smart HTTP requests.
+const GIT_ENDPOINTS = new Set(['info', 'git-upload-pack', 'git-receive-pack'])
+
+// The repository a REST or git request names in its path, or null when the path names none, as for GraphQL.
+function repoInRequest(url) {
+  const { hostname, pathname } = new URL(url)
+  const parts = pathname.split('/').filter(Boolean)
+  const gitPath = hostname === 'github.com' && GIT_ENDPOINTS.has(parts[2])
+  const [owner, name] = gitPath ? parts : parts[0] === 'repos' ? parts.slice(1) : []
+  return owner && name ? { owner, name: name.replace(/\.git$/, '') } : null
+}
+
+function sameRepo(a, b) {
+  return a.owner.toLowerCase() === b.owner.toLowerCase() && a.name.toLowerCase() === b.name.toLowerCase()
 }
 
 // ownerToken: () => Promise<string>, the owner's own gh login.
@@ -139,13 +162,14 @@ export function createBroker({ ownerToken, bot, now = Date.now }) {
     return minted?.token ?? null
   }
 
+  // Resolves to { token, bot }, where bot says the token is the Bot's, which covers only `repo`.
   async function credentialFor(repo) {
     // GitHub logins are case-insensitive, and a remote may spell the account either way.
     if (bot && repo && repo.owner.toLowerCase() === (await bot.account()).toLowerCase()) {
       const token = await botToken(repo)
-      if (token) return token
+      if (token) return { token, bot: true }
     }
-    return ownerToken()
+    return { token: await ownerToken(), bot: false }
   }
 
   return {
@@ -167,12 +191,24 @@ export function createBroker({ ownerToken, bot, now = Date.now }) {
       if (!repos.has(placeholder)) {
         return { action: 'deny', status: 401, reason: 'srt sandbox: unknown GitHub credential placeholder' }
       }
-      let token
+      const repo = repos.get(placeholder)
+      let credential
       try {
-        token = await credentialFor(repos.get(placeholder))
+        credential = await credentialFor(repo)
       } catch (error) {
         return { action: 'deny', status: 503, reason: `srt sandbox: no GitHub credential: ${error.message}` }
       }
+      // GitHub would answer 404 here, which reads as a missing repository rather than the wrong directory.
+      const target = repoInRequest(request.url)
+      if (credential.bot && target && !sameRepo(target, repo)) {
+        const [covered, asked] = [repo, target].map(({ owner, name }) => `${owner}/${name}`)
+        return {
+          action: 'deny',
+          status: 403,
+          reason: `srt sandbox: this command's GitHub credential covers only ${covered}, not ${asked}; run the command in a clone of ${asked}`,
+        }
+      }
+      const { token } = credential
       const swapped = plain.replace(placeholder, token)
       const value = basic ? `Basic ${Buffer.from(swapped).toString('base64')}` : swapped
       return { action: 'allow', setHeaders: [['authorization', value]] }
