@@ -265,3 +265,29 @@ EOF
   [ "$(temporary_worktree_count)" -eq 1 ]
   [ -z "$(temporary_worktree_dirs)" ]
 }
+
+# The lock is a symlink named after the holder's pid. A run that dies without
+# cleaning up leaves it behind, and a later run has to take it over once it is
+# old enough instead of waiting out LOCK_WAIT_SECONDS.
+@test "takes over a stale lock left by a dead run" {
+  lock="${sandbox}/cache/dotfiles-autosync.lock"
+  mkdir -p "${sandbox}/cache"
+  ln -s 999999 "${lock}"
+  touch -h -t 200001010000 "${lock}"
+  printf '{"new": true}\n' > "${home_dir}/.config/nvim/lazy-lock.json"
+
+  run run_autosync
+
+  [ "${status}" -eq 0 ]
+  [ ! -e "${lock}" ] && [ ! -L "${lock}" ]
+  [ "$(git -C "${remote_dir}" show "chore/autosync:dot_config/nvim/lazy-lock.json")" = '{"new": true}' ]
+}
+
+@test "leaves no lock behind after a run" {
+  printf '{"new": true}\n' > "${home_dir}/.config/nvim/lazy-lock.json"
+
+  run run_autosync
+
+  [ "${status}" -eq 0 ]
+  [ ! -e "${sandbox}/cache/dotfiles-autosync.lock" ] && [ ! -L "${sandbox}/cache/dotfiles-autosync.lock" ]
+}

@@ -22,7 +22,6 @@ LOCK_DIR="${XDG_CACHE_HOME:-${HOME}/.cache}/${PROG}.lock"
 LOCK_STALE_SECONDS=900
 LOCK_WAIT_SECONDS=600
 LOCK_POLL_SECONDS=2
-LOCK_RECLAIM_STALE_SECONDS=60
 TIMEOUT_NETWORK=120
 TIMEOUT_GH=60
 TIMEOUT_MISE=600
@@ -91,9 +90,9 @@ fail() {
 release_lock() {
   if [ "${LOCK_HELD}" = 1 ]; then
     local owner
-    owner="$(cat "${LOCK_DIR}/owner" 2>/dev/null || true)"
+    owner="$(readlink "${LOCK_DIR}" 2>/dev/null || true)"
     if [ -z "${owner}" ] || [ "${owner}" = "${$}" ]; then
-      rm -rf "${LOCK_DIR}" 2>/dev/null || true
+      rm -f "${LOCK_DIR}" 2>/dev/null || true
     fi
     LOCK_HELD=0
   fi
@@ -163,7 +162,13 @@ pr_body() {
 
 path_age_seconds() {
   local path="${1}" mtime now
-  mtime="$(stat -f %m "${path}" 2>/dev/null || stat -c %Y "${path}" 2>/dev/null || true)"
+  # Stat the link itself, not its target, which is a pid and does not exist.
+  # GNU stat takes -c; BSD stat takes -f. GNU stat also accepts -f but prints a
+  # filesystem report, so only a plain integer counts as a time.
+  mtime="$(stat -c %Y "${path}" 2>/dev/null || stat -f %m "${path}" 2>/dev/null || true)"
+  case "${mtime}" in
+    '' | *[!0-9]*) mtime="" ;;
+  esac
   if [ -z "${mtime}" ]; then
     printf '0'
     return 0
@@ -176,32 +181,32 @@ lock_age_seconds() {
   path_age_seconds "${LOCK_DIR}"
 }
 
+# Two runs may both find the lock stale. The stale link is renamed to a name
+# only this run uses, and only the run whose rename succeeds removes it, so a
+# second run cannot delete a lock that a third run has just taken.
 try_reclaim_lock() {
-  local reclaim="${LOCK_DIR}.reclaim" reclaimed=1
-  if [ -d "${reclaim}" ] && [ "$(path_age_seconds "${reclaim}")" -ge "${LOCK_RECLAIM_STALE_SECONDS}" ]; then
-    rm -rf "${reclaim}" 2>/dev/null || true
+  local claimed="${LOCK_DIR}.stale.${$}"
+  if [ -L "${LOCK_DIR}" ] && [ "$(lock_age_seconds)" -ge "${LOCK_STALE_SECONDS}" ]; then
+    if mv "${LOCK_DIR}" "${claimed}" 2>/dev/null; then
+      rm -f "${claimed}" 2>/dev/null || true
+      return 0
+    fi
   fi
-  if ! mkdir "${reclaim}" 2>/dev/null; then
-    return 1
-  fi
-  if [ -d "${LOCK_DIR}" ] && [ "$(lock_age_seconds)" -ge "${LOCK_STALE_SECONDS}" ]; then
-    rm -rf "${LOCK_DIR}" 2>/dev/null || true
-    reclaimed=0
-  fi
-  rmdir "${reclaim}" 2>/dev/null || rm -rf "${reclaim}" 2>/dev/null || true
-  return "${reclaimed}"
+  return 1
 }
 
 acquire_lock() {
   local waited=0
   mkdir -p "$(dirname "${LOCK_DIR}")" 2>/dev/null || true
   while :; do
-    if mkdir "${LOCK_DIR}" 2>/dev/null; then
-      printf '%s\n' "${$}" >"${LOCK_DIR}/owner" 2>/dev/null || true
+    # A symlink is created atomically and its target is the owner, so taking
+    # the lock and recording who holds it are one step. mkdir is not used: the
+    # uutils mkdir on current Ubuntu returns success to two racing callers.
+    if ln -s "${$}" "${LOCK_DIR}" 2>/dev/null; then
       LOCK_HELD=1
       return 0
     fi
-    if [ -d "${LOCK_DIR}" ] && [ "$(lock_age_seconds)" -ge "${LOCK_STALE_SECONDS}" ]; then
+    if [ -L "${LOCK_DIR}" ] && [ "$(lock_age_seconds)" -ge "${LOCK_STALE_SECONDS}" ]; then
       if try_reclaim_lock; then
         log "removed stale lock"
         continue
