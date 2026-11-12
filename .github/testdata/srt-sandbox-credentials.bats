@@ -223,7 +223,7 @@ app_fixture='
   '
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "ghs_x true" ]
-  [ "${lines[1]}" = '{"repositories":["tool"],"permissions":{"contents":"write","pull_requests":"write","issues":"write","statuses":"write","checks":"read","metadata":"read"}}' ]
+  [ "${lines[1]}" = '{"repositories":["tool"],"permissions":{"contents":"write","pull_requests":"write","issues":"write","statuses":"write","checks":"read","actions":"read","metadata":"read"}}' ]
 }
 
 @test "the token request is signed as the App with a short-lived JWT" {
