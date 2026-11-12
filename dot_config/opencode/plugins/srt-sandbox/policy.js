@@ -101,7 +101,8 @@ export function createBroker({ ownerToken, bot, now = Date.now }) {
   }
 
   async function credentialFor(repo) {
-    if (bot && repo && repo.owner === (await bot.account())) {
+    // GitHub logins are case-insensitive, and a remote may spell the account either way.
+    if (bot && repo && repo.owner.toLowerCase() === (await bot.account()).toLowerCase()) {
       const token = await botToken(repo)
       if (token) return token
     }
