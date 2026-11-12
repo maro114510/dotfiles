@@ -54,9 +54,6 @@ async function ownerToken() {
 let sandbox
 function start() {
   sandbox ??= (async () => {
-    if (ghTokenInPlainText({ env: process.env, home: homedir() })) {
-      throw new Error('gh keeps its token in plain text in hosts.yml; move it to the keychain with `gh auth login`')
-    }
     const { SandboxManager } = await import('@anthropic-ai/sandbox-runtime')
     const broker = createBroker({ ownerToken, bot: await botClient() })
     const base = sandboxConfig({ home: homedir(), tmp: realpathSync(tmpdir()) })
@@ -78,6 +75,10 @@ export default {
       event.shell = STAND_IN
       delete event.env.SRT_WRAPPED
       try {
+        // Checked for every command, since gh can switch to plain text at any time while OpenCode runs.
+        if (ghTokenInPlainText({ env: event.env, home: homedir() })) {
+          throw new Error('gh keeps its token in plain text in hosts.yml; move it to the keychain with `gh auth login`')
+        }
         const { SandboxManager, broker, base } = await start()
         const tree = workTreeAt(resolve(ctx.location.directory, event.cwd))
         const placeholder = broker.placeholderFor(tree?.repo ?? null)
