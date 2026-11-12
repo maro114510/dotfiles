@@ -24,11 +24,21 @@ setup_file() {
 
 setup() {
   work="$(cd "$(mktemp -d)" && pwd -P)"
+  probes=()
 }
 
 teardown() {
   rm -rf "${work}"
   [ -z "${home_work:-}" ] || rm -rf "${home_work}"
+  # A probe that a failing test let through must not stay in the owner's home.
+  for path in "${probes[@]}"; do rm -f "${path}"; done
+}
+
+# Sets probe_path to a file name in directory $1 that does not exist yet, and
+# removes it at teardown.
+probe() {
+  probe_path="$1/.srt-sandbox-probe.$$.${RANDOM}"
+  probes+=("${probe_path}")
 }
 
 # A directory under the home directory, outside every temporary and cache
@@ -177,15 +187,61 @@ new_clone() {
   [ "${lines[${#lines[@]}-1]}" = wt ]
 }
 
-@test "a sandboxed command cannot write outside its working tree, temporary and cache directories" {
+@test "a sandboxed command can write under the home directory outside its working tree" {
   needs_sandbox
   outside_temp
   new_clone "${home_work}/clone"
   target="${home_work}/beside-the-clone"
   run status_in_sandbox "${home_work}/clone" "touch '${target}'"
   [ "$status" -eq 0 ]
+  [ "$output" = exit=0 ]
+  [ -e "${target}" ]
+}
+
+@test "a sandboxed command can write under the orchestrate-epic record store" {
+  needs_sandbox
+  store="${HOME}/.local/state/orchestrate-epic"
+  mkdir -p "${store}"
+  probe "${store}"
+  run status_in_sandbox "${work}" "touch '${probe_path}'"
+  [ "$status" -eq 0 ]
+  [ "$output" = exit=0 ]
+  [ -e "${probe_path}" ]
+}
+
+# These run code later outside the sandbox: the shell on its next start, the
+# agents and git on their next run, and launchd at the next login.
+@test "a sandboxed command cannot open a shell startup file for writing" {
+  needs_sandbox
+  for file in .zshenv .zprofile .zshrc .zlogin .zlogout .bashrc .bash_profile .profile; do
+    [ -e "${HOME}/${file}" ] || continue
+    # Appending nothing leaves the file as it was even if the open succeeded.
+    run status_in_sandbox "${work}" ": >> '${HOME}/${file}'"
+    [[ "$output" =~ ^exit=[1-9] ]] || { echo "writable: ~/${file}"; false; }
+  done
+}
+
+@test "a sandboxed command cannot create a file where code is loaded from later" {
+  needs_sandbox
+  for dir in .config .config/git .config/opencode .local/bin .ssh Library/LaunchAgents .claude .codex .pi/agent \
+    .local/share/opencode .local/state/opencode; do
+    [ -d "${HOME}/${dir}" ] || continue
+    probe "${HOME}/${dir}"
+    run status_in_sandbox "${work}" "touch '${probe_path}'"
+    [[ "$output" =~ ^exit=[1-9] ]] || { echo "writable: ~/${dir}"; false; }
+  done
+}
+
+@test "a sandboxed command cannot add a git hook or change the git config of another clone" {
+  needs_sandbox
+  outside_temp
+  new_clone "${home_work}/clone"
+  new_clone "${home_work}/other"
+  run status_in_sandbox "${home_work}/clone" "touch '${home_work}/other/.git/hooks/pre-commit'"
   [[ "$output" =~ ^exit=[1-9] ]] || false
-  [ ! -e "${target}" ]
+  run status_in_sandbox "${home_work}/clone" "git -C '${home_work}/other' config core.hooksPath /tmp"
+  [[ "$output" =~ ^exit=[1-9] ]] || false
+  [ ! -e "${home_work}/other/.git/hooks/pre-commit" ]
 }
 
 # Git runs hooks and reads its config outside the sandbox the next time the
