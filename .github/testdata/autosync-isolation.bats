@@ -1,8 +1,12 @@
 #!/usr/bin/env bats
 #
-# Verifies that dotfiles-autosync.sh never changes the chezmoi source checkout:
-# the sync commit is built in a temporary worktree of origin/main, and that
-# worktree is removed on success and on failure.
+# Integration tests for dotfiles-autosync.sh. One command runs every case:
+#   - a sync from a work branch or a dirty checkout never changes the source
+#     checkout, and its temporary worktree of origin/main is removed on success
+#     and on failure
+#   - a sync stops when origin/main changed a file it would write
+#   - two runs started at once never push or open a PR at the same time
+#   - a run with nothing to sync exits without a PR
 #
 # Each test builds a throwaway chezmoi source, destination, and bare origin in
 # a sandbox, then runs the script against them with a fake gh. Pushes go to the
@@ -72,6 +76,8 @@ teardown() {
 
 # Runs the script the way a shell on this machine does: only the sandbox home
 # and directories, a fake gh, and a TMPDIR the test can inspect afterwards.
+# fd 3 is closed because the script's timeout watchers leave a sleep behind, and
+# bats would otherwise wait for it, minutes after the last test finished.
 run_autosync() {
   env -u XDG_CONFIG_HOME -u XDG_DATA_HOME \
     HOME="${home_dir}" \
@@ -80,7 +86,7 @@ run_autosync() {
     TMPDIR="${tmp_dir}" \
     GH_LOG="${GH_LOG}" \
     PATH="${bin_dir}:${PATH}" \
-    bash "${repo_root}/dot_local/bin/executable_dotfiles-autosync.sh" nvim
+    bash "${repo_root}/dot_local/bin/executable_dotfiles-autosync.sh" nvim 3>&-
 }
 
 temporary_worktree_count() {
@@ -197,4 +203,65 @@ temporary_worktree_dirs() {
   [ "${status}" -eq 0 ]
   [ "$(git -C "${remote_dir}" show "chore/autosync:dot_config/nvim/lazy-lock.json")" = '{"new": true}' ]
   grep -q -- '--head chore/autosync' "${GH_LOG}"
+}
+
+# A slow pre-receive hook and a slow fake gh pr create each log when they enter
+# and leave the part of a run that publishes. Two runs overlapping there would
+# race on the same branch and PR, so no moment may have two runs inside.
+@test "never pushes or opens a PR from two runs at the same time" {
+  gh_state="${sandbox}/pr-exists"
+  phase_log="${sandbox}/phases.log"
+  cat > "${bin_dir}/gh" <<'EOF'
+#!/bin/bash
+printf '%s\n' "$*" >> "${GH_LOG}"
+case "${1:-} ${2:-}" in
+  "pr list")
+    if [ -e "${GH_STATE}" ]; then printf '1\n'; fi
+    exit 0
+    ;;
+  "pr create")
+    printf 'begin pr-create\n' >> "${PHASE_LOG}"
+    sleep 1
+    if [ -e "${GH_STATE}" ]; then
+      printf 'end pr-create\n' >> "${PHASE_LOG}"
+      exit 1
+    fi
+    : > "${GH_STATE}"
+    printf 'end pr-create\n' >> "${PHASE_LOG}"
+    printf 'https://example.invalid/pull/1\n'
+    exit 0
+    ;;
+  "pr view") printf '1\n'; exit 0 ;;
+esac
+exit 0
+EOF
+  cat > "${remote_dir}/hooks/pre-receive" <<EOF
+#!/bin/bash
+printf 'begin push\n' >> "${phase_log}"
+sleep 1
+printf 'end push\n' >> "${phase_log}"
+EOF
+  chmod +x "${remote_dir}/hooks/pre-receive"
+  printf '{"new": true}\n' > "${home_dir}/.config/nvim/lazy-lock.json"
+
+  first_status=0
+  second_status=0
+  GH_STATE="${gh_state}" PHASE_LOG="${phase_log}" run_autosync >/dev/null 2>&1 &
+  first_pid=$!
+  GH_STATE="${gh_state}" PHASE_LOG="${phase_log}" run_autosync >/dev/null 2>&1 &
+  second_pid=$!
+  wait "${first_pid}" || first_status=$?
+  wait "${second_pid}" || second_status=$?
+
+  [ "${first_status}" -eq 0 ]
+  [ "${second_status}" -eq 0 ]
+
+  # Both runs reached the push, so the overlap check below is not vacuous.
+  [ "$(grep -c '^begin push$' "${phase_log}")" -eq 2 ]
+  max_inside="$(awk '/^begin /{n++; if (n>m) m=n} /^end /{n--} END{print m+0}' "${phase_log}")"
+  [ "${max_inside}" -eq 1 ]
+
+  [ "$(git -C "${remote_dir}" show "chore/autosync:dot_config/nvim/lazy-lock.json")" = '{"new": true}' ]
+  [ "$(temporary_worktree_count)" -eq 1 ]
+  [ -z "$(temporary_worktree_dirs)" ]
 }
