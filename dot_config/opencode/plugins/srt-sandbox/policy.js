@@ -217,6 +217,7 @@ const BOT_PERMISSIONS = {
   issues: 'write',
   statuses: 'write',
   checks: 'read',
+  actions: 'read',
   metadata: 'read',
 }
 
