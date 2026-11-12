@@ -87,7 +87,9 @@ export function filesystemFor(base, tree) {
       join(gitDir, 'hooks'),
       join(gitDir, 'config'),
       join(gitDir, 'config.worktree'),
-      join(gitDir, 'worktrees/*/config.worktree'),
+      // [w] keeps srt from using <gitDir>/worktrees as the pattern's base directory, which it blocks
+      // creating, so the clone's first linked worktree could not be made.
+      join(gitDir, '[w]orktrees/*/config.worktree'),
       join(gitDir, 'modules/**/hooks'),
       join(gitDir, 'modules/**/config'),
     ],
