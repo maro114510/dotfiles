@@ -54,11 +54,11 @@ export function sandboxConfig({ home, tmp }) {
         at('.local/share/opencode'),
         at('.local/state/opencode'),
         at('.srt-settings.json'),
+        at('**/.git/hooks'),
+        at('**/.git/config'),
         // OpenCode loads plugin code from its caches outside the sandbox.
         at('.cache/opencode'),
         at('Library/Caches/opencode'),
-        at('**/.git/hooks'),
-        at('**/.git/config'),
       ],
     },
     // gh verifies TLS through trustd, which only the weaker isolation lets it reach. The keychain stays closed.
