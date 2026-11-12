@@ -104,16 +104,23 @@ export function ghTokenInPlainText({ env, home }) {
   return existsSync(hosts) && /^\s*oauth_token\s*:/m.test(readFileSync(hosts, 'utf8'))
 }
 
-// SSH cannot authenticate inside the sandbox, which hides the keys and the agent, so git reaches GitHub over
-// HTTPS, where the placeholder is swapped. Appended after any git config the command already passes.
-export function httpsRemoteEnv(env) {
+// Git config every sandboxed command gets, appended after any the command already passes through the
+// environment. SSH cannot authenticate inside the sandbox, which hides the keys and the agent, so git reaches
+// GitHub over HTTPS, where the placeholder is swapped. A new branch records no upstream, because that is a
+// write to .git/config, which the sandbox denies; the owner's own git keeps its defaults.
+export function sandboxGitEnv(env) {
   const first = Number.parseInt(env.GIT_CONFIG_COUNT ?? '0', 10) || 0
+  const entries = [
+    ['url.https://github.com/.insteadOf', 'git@github.com:'],
+    ['url.https://github.com/.insteadOf', 'ssh://git@github.com/'],
+    ['branch.autoSetupMerge', 'false'],
+  ]
   const added = {}
-  ;['git@github.com:', 'ssh://git@github.com/'].forEach((from, offset) => {
-    added[`GIT_CONFIG_KEY_${first + offset}`] = 'url.https://github.com/.insteadOf'
-    added[`GIT_CONFIG_VALUE_${first + offset}`] = from
+  entries.forEach(([key, value], offset) => {
+    added[`GIT_CONFIG_KEY_${first + offset}`] = key
+    added[`GIT_CONFIG_VALUE_${first + offset}`] = value
   })
-  added.GIT_CONFIG_COUNT = String(first + 2)
+  added.GIT_CONFIG_COUNT = String(first + entries.length)
   return added
 }
 
