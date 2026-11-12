@@ -17,6 +17,20 @@ const REFRESH_MARGIN_MS = 10 * 60 * 1000
 export function sandboxConfig({ home, tmp, path: searchPath = '' }) {
   const at = (path) => join(home, path)
   const pathDirs = searchPath.split(':').filter((dir) => isAbsolute(dir) && dir.startsWith(`${home}/`))
+  const credentials = [
+    at('.ssh'),
+    at('Library/Keychains'),
+    at('.config/op'),
+    at('Library/Group Containers/2BUA8C4S2C.com.1password'),
+    at('Library/Containers/com.1password.1password'),
+    at('.config/opencode/service.json'),
+    at('.local/share/opencode'),
+    at('.local/state/opencode'),
+    at('.pi/agent/auth.json'),
+    at('.aws'),
+    at('.netrc'),
+    at('.git-credentials'),
+  ]
   return {
     network: {
       // Every host is reachable through the ask callback; only requests to GitHub get a real credential,
@@ -26,24 +40,13 @@ export function sandboxConfig({ home, tmp, path: searchPath = '' }) {
       tlsTerminate: {},
     },
     filesystem: {
-      denyRead: [
-        at('.ssh'),
-        at('Library/Keychains'),
-        at('.config/op'),
-        at('Library/Group Containers/2BUA8C4S2C.com.1password'),
-        at('Library/Containers/com.1password.1password'),
-        at('.config/opencode/service.json'),
-        at('.local/share/opencode'),
-        at('.local/state/opencode'),
-        at('.pi/agent/auth.json'),
-        at('.aws'),
-        at('.netrc'),
-        at('.git-credentials'),
-      ],
+      denyRead: credentials,
       allowWrite: [home, tmp, '/private/tmp'],
-      // The home stays writable except where code is loaded from later outside the sandbox: shell startup
-      // files, tool and agent configuration, PATH and login items, and the hooks and config of every clone.
+      // The home stays writable except for the credential stores, which some tools also run code from, and
+      // where code is loaded from later outside the sandbox: shell startup files, tool and agent
+      // configuration, PATH and login items, and the hooks and config of every clone.
       denyWrite: [
+        ...credentials,
         ...['.zshenv', '.zprofile', '.zshrc', '.zlogin', '.zlogout', '.bashrc', '.bash_profile', '.bash_login', '.profile']
           .map(at),
         at('.npmrc'),
@@ -53,13 +56,10 @@ export function sandboxConfig({ home, tmp, path: searchPath = '' }) {
         ...pathDirs,
         at('.local/bin'),
         at('.local/share/mise'),
-        at('.ssh'),
         at('Library/LaunchAgents'),
         at('.claude'),
         at('.codex'),
         at('.pi/agent'),
-        at('.local/share/opencode'),
-        at('.local/state/opencode'),
         at('.srt-settings.json'),
         at('**/.git/hooks'),
         at('**/.git/config'),
