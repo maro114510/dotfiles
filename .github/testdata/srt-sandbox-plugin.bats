@@ -79,7 +79,8 @@ sandboxed() {
 # command's own exit status, so a test can tell a refusal inside the sandbox
 # from a harness that never ran the command.
 status_in_sandbox() {
-  sandboxed "$1" "$2 >/dev/null 2>&1; echo \"exit=\$?\""
+  # A subshell, so a redirect inside $2 that fails reports into /dev/null too.
+  sandboxed "$1" "( $2 ) >/dev/null 2>&1; echo \"exit=\$?\""
 }
 
 new_clone() {
