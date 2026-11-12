@@ -213,7 +213,9 @@ new_clone() {
 # agents and git on their next run, and launchd at the next login.
 @test "a sandboxed command cannot write a file a shell or tool reads at startup" {
   needs_sandbox
-  for file in .zshenv .zprofile .zshrc .zlogin .zlogout .bashrc .bash_profile .bash_login .profile .npmrc .bunfig.toml; do
+  for file in .zshenv .zprofile .zshrc .zlogin .zlogout .bashrc .bash_profile .bash_login .profile .npmrc .bunfig.toml \
+    .cargo/env .cargo/config.toml; do
+    [ -d "$(dirname "${HOME}/${file}")" ] || continue
     # Appending nothing leaves an existing file as it was even if the open succeeded; a missing one is removed at teardown.
     [ -e "${HOME}/${file}" ] || probes+=("${HOME}/${file}")
     run status_in_sandbox "${work}" ": >> '${HOME}/${file}'"
@@ -224,7 +226,7 @@ new_clone() {
 @test "a sandboxed command cannot create a file where code is loaded from later" {
   needs_sandbox
   for dir in .config .config/git .config/opencode .local/bin .local/share/mise .ssh Library/LaunchAgents .claude .codex \
-    .pi/agent .local/share/opencode .local/state/opencode; do
+    .pi/agent .local/share/opencode .local/state/opencode .cache/zsh .cache/gtr .local/share/sheldon; do
     [ -d "${HOME}/${dir}" ] || continue
     probe "${HOME}/${dir}"
     run status_in_sandbox "${work}" "touch '${probe_path}'"
