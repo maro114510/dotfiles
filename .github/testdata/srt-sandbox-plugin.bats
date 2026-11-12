@@ -238,8 +238,8 @@ gh_hosts() {
 }
 
 # Runs commands $2 and $3 one after the other in directory $1 through one
-# plugin instance, the way one OpenCode process does, and prints each exit
-# status.
+# plugin instance, the way one OpenCode process does, and prints only each
+# exit status; the plugin's own messages go to stderr, which is dropped.
 sandboxed_twice() {
   node --input-type=module -e '
     import { spawn } from "node:child_process";
@@ -258,7 +258,7 @@ sandboxed_twice() {
     }
     await cleanup?.();
     process.exit(0);
-  ' "${SRT_PLUGIN}" "$@"
+  ' "${SRT_PLUGIN}" "$@" 2>/dev/null
 }
 
 @test "a command is refused once gh starts keeping a token in plain text mid-session" {
