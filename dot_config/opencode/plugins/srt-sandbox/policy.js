@@ -13,9 +13,15 @@ const PLACEHOLDER = /srt_gh_[A-Za-z0-9_-]{32}/
 const REFRESH_MARGIN_MS = 10 * 60 * 1000
 
 // srt settings shared by every command. Each command adds its own working tree to allowWrite.
-// path is the PATH of the process that runs commands outside the sandbox later.
-export function sandboxConfig({ home, tmp, path: searchPath = '' }) {
+// env is the environment of the process that runs commands outside the sandbox later: its PATH and XDG
+// base directories decide where the shell loads code from.
+export function sandboxConfig({ home, tmp, env = {} }) {
   const at = (path) => join(home, path)
+  const searchPath = env.PATH ?? ''
+  const xdg = (name, fallback) => (isAbsolute(env[name] ?? '') ? env[name] : at(fallback))
+  const cache = xdg('XDG_CACHE_HOME', '.cache')
+  const data = xdg('XDG_DATA_HOME', '.local/share')
+  const config = xdg('XDG_CONFIG_HOME', '.config')
   const pathDirs = searchPath.split(':').filter((dir) => isAbsolute(dir) && dir.startsWith(`${home}/`))
   const credentials = [
     at('.ssh'),
@@ -56,12 +62,13 @@ export function sandboxConfig({ home, tmp, path: searchPath = '' }) {
         at('.cargo/env'),
         at('.cargo/config.toml'),
         at('.cargo/config'),
-        at('.cache/zsh'),
-        at('.cache/gtr'),
-        at('.local/share/sheldon'),
+        join(cache, 'zsh'),
+        join(cache, 'gtr'),
+        join(data, 'sheldon'),
+        join(config, 'sheldon'),
         // Every other home entry this repository manages, and tool configs that can name a program to run:
         // kubeconfig exec plugins, Docker CLI plugins, Gradle init scripts, and editor and tmux configs.
-        ...['.vimrc', '.vim', '.tmux.conf', '.tmux.session.conf', '.Brewfile', '.myclirc', '.raycast', '.apm'].map(at),
+        ...['.vimrc', '.vim', '.tmux.conf', '.tmux.session.conf', '.tmux', '.Brewfile', '.myclirc', '.raycast', '.apm'].map(at),
         at('.kube'),
         at('.docker'),
         at('.gnupg'),
