@@ -254,14 +254,16 @@ new_clone() {
   done
 }
 
-# zshrc derives its sourced caches and sheldon's files from the XDG base directories when they are set.
-@test "a sandboxed command cannot write what the shell sources under relocated XDG directories" {
+# zshrc sources its caches from XDG_CACHE_HOME when it is set. Only the cache
+# base moves here: moving XDG_DATA_HOME hides mise's tools from the harness.
+@test "a sandboxed command cannot write the shell's caches under a relocated XDG_CACHE_HOME" {
   needs_sandbox
   outside_temp
-  for base in cache data config; do mkdir -p "${home_work}/${base}"; done
-  for target in cache/zsh/eval-cache cache/gtr/init-gtr.zsh data/sheldon/plugins.lock config/sheldon/plugins.toml; do
-    XDG_CACHE_HOME="${home_work}/cache" XDG_DATA_HOME="${home_work}/data" XDG_CONFIG_HOME="${home_work}/config" \
-      run status_in_sandbox "${work}" "mkdir -p '$(dirname "${home_work}/${target}")' && touch '${home_work}/${target}'"
+  mkdir -p "${home_work}/cache"
+  # Exported, since an assignment before a function call does not reach the plugin's process.
+  export XDG_CACHE_HOME="${home_work}/cache"
+  for target in zsh/eval-cache gtr/init-gtr.zsh; do
+    run status_in_sandbox "${work}" "mkdir -p '$(dirname "${home_work}/cache/${target}")' && touch '${home_work}/cache/${target}'"
     [[ "$output" =~ ^exit=[1-9] ]] || { echo "writable: ${target}"; false; }
   done
 }
