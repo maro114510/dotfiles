@@ -299,9 +299,9 @@ new_clone() {
   outside_temp
   new_clone "${home_work}/clone"
   [ ! -e "${home_work}/clone/.git/worktrees" ]
-  run status_in_sandbox "${home_work}/clone" "git worktree add --detach '${home_work}/wt'"
+  run status_in_sandbox "${home_work}/clone" "git worktree add --detach '${home_work}/clone/wt'"
   [ "$output" = "exit=0" ]
-  [ -e "${home_work}/wt/.git" ]
+  [ -e "${home_work}/clone/wt/.git" ]
   run status_in_sandbox "${home_work}/clone" "touch '${home_work}/clone/.git/worktrees/wt/config.worktree'"
   [[ "$output" =~ ^exit=[1-9] ]] || false
 }
