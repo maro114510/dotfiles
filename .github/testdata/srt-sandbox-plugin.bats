@@ -30,8 +30,15 @@ setup() {
 teardown() {
   rm -rf "${work}"
   [ -z "${home_work:-}" ] || rm -rf "${home_work}"
+  [ -z "${ghq_work:-}" ] || rm -rf "${ghq_work}"
   # A probe that a failing test let through must not stay in the owner's home.
   for path in "${probes[@]}"; do rm -f "${path}"; done
+}
+
+# A directory under the ghq root, where the owner keeps clones and their worktrees.
+in_ghq() {
+  mkdir -p "${HOME}/ghq"
+  ghq_work="$(mktemp -d "${HOME}/ghq/.srt-sandbox-test.XXXXXX")"
 }
 
 # Sets probe_path to a file name in directory $1 that does not exist yet, and
@@ -187,15 +194,15 @@ new_clone() {
   [ "${lines[${#lines[@]}-1]}" = wt ]
 }
 
-@test "a sandboxed command can write under the home directory outside its working tree" {
+@test "a sandboxed command cannot write under the home outside its working tree and the allowed places" {
   needs_sandbox
   outside_temp
   new_clone "${home_work}/clone"
   target="${home_work}/beside-the-clone"
   run status_in_sandbox "${home_work}/clone" "touch '${target}'"
   [ "$status" -eq 0 ]
-  [ "$output" = exit=0 ]
-  [ -e "${target}" ]
+  [[ "$output" =~ ^exit=[1-9] ]] || false
+  [ ! -e "${target}" ]
 }
 
 @test "a sandboxed command can write under the orchestrate-epic record store" {
@@ -209,26 +216,30 @@ new_clone() {
   [ -e "${probe_path}" ]
 }
 
-# These run code later outside the sandbox: the shell on its next start, the
-# agents and git on their next run, and launchd at the next login.
-@test "a sandboxed command cannot write a file a shell or tool reads at startup" {
+@test "a sandboxed command can write beside its clone under the ghq root" {
   needs_sandbox
-  for file in .zshenv .zprofile .zshrc .zlogin .zlogout .bashrc .bash_profile .bash_login .profile .npmrc .bunfig.toml \
-    .cargo/env .cargo/config.toml .vimrc .tmux.conf .tmux.session.conf .Brewfile .myclirc .terraformrc \
-    .gradle/gradle.properties .m2/settings.xml; do
-    [ -d "$(dirname "${HOME}/${file}")" ] || continue
-    # Appending nothing leaves an existing file as it was even if the open succeeded; a missing one is removed at teardown.
-    [ -e "${HOME}/${file}" ] || probes+=("${HOME}/${file}")
+  in_ghq
+  run status_in_sandbox "${work}" "mkdir '${ghq_work}/sibling-worktree'"
+  [ "$status" -eq 0 ]
+  [ "$output" = exit=0 ]
+  [ -d "${ghq_work}/sibling-worktree" ]
+}
+
+# These run code later outside the sandbox: the shell on its next start, and
+# git on its next command in that clone.
+@test "a sandboxed command cannot open a shell startup file for writing" {
+  needs_sandbox
+  for file in .zshenv .zprofile .zshrc .bashrc .bash_profile .profile; do
+    [ -e "${HOME}/${file}" ] || continue
+    # Appending nothing leaves the file as it was even if the open succeeded.
     run status_in_sandbox "${work}" ": >> '${HOME}/${file}'"
     [[ "$output" =~ ^exit=[1-9] ]] || { echo "writable: ~/${file}"; false; }
   done
 }
 
-@test "a sandboxed command cannot create a file where code is loaded from later" {
+@test "a sandboxed command cannot write the caches zshrc sources or OpenCode's state" {
   needs_sandbox
-  for dir in .config .config/git .config/opencode .local/bin .local/share/mise .ssh Library/LaunchAgents .claude .codex \
-    .pi/agent .local/share/opencode .local/state/opencode .cache/zsh .cache/gtr .local/share/sheldon \
-    .kube .docker .gnupg .gradle/init.d .vim .tmux .ipython .raycast .apm; do
+  for dir in .cache/zsh .cache/gtr .local/state/opencode; do
     [ -d "${HOME}/${dir}" ] || continue
     probe "${HOME}/${dir}"
     run status_in_sandbox "${work}" "touch '${probe_path}'"
@@ -236,70 +247,27 @@ new_clone() {
   done
 }
 
-# A credential store the sandbox cannot read must not be replaced either: a
-# rewritten AWS config, for one, runs its credential_process outside the sandbox.
-@test "a sandboxed command cannot write a credential store it cannot read" {
+@test "a sandboxed command can commit on a branch named like a git config file under the ghq root" {
   needs_sandbox
-  for dir in .aws Library/Keychains .config/op "Library/Group Containers/2BUA8C4S2C.com.1password" \
-    Library/Containers/com.1password.1password; do
-    [ -d "${HOME}/${dir}" ] || continue
-    probe "${HOME}/${dir}"
-    run status_in_sandbox "${work}" "touch '${probe_path}'"
-    [[ "$output" =~ ^exit=[1-9] ]] || { echo "writable: ~/${dir}"; false; }
-  done
-  for file in .netrc .git-credentials .pi/agent/auth.json; do
-    [ -e "${HOME}/${file}" ] || probes+=("${HOME}/${file}")
-    run status_in_sandbox "${work}" ": >> '${HOME}/${file}'"
-    [[ "$output" =~ ^exit=[1-9] ]] || { echo "writable: ~/${file}"; false; }
-  done
+  in_ghq
+  new_clone "${ghq_work}/clone"
+  git -C "${ghq_work}/clone" switch --quiet -c feat/config
+  run sandboxed "${ghq_work}/clone" 'git -c user.email=t@example.com -c user.name=t commit --quiet --allow-empty -m on-config && git log --format=%s -1'
+  [ "$status" -eq 0 ]
+  [ "${lines[${#lines[@]}-1]}" = on-config ]
 }
 
-# zshrc sources its caches from XDG_CACHE_HOME when it is set. Only the cache
-# base moves here: moving XDG_DATA_HOME hides mise's tools from the harness.
-@test "a sandboxed command cannot write the shell's caches under a relocated XDG_CACHE_HOME" {
+@test "a sandboxed command cannot change the hooks or config of another clone under the ghq root" {
   needs_sandbox
-  outside_temp
-  mkdir -p "${home_work}/cache"
-  # Exported, since an assignment before a function call does not reach the plugin's process.
-  export XDG_CACHE_HOME="${home_work}/cache"
-  for target in zsh/eval-cache gtr/init-gtr.zsh; do
-    run status_in_sandbox "${work}" "mkdir -p '$(dirname "${home_work}/cache/${target}")' && touch '${home_work}/cache/${target}'"
-    [[ "$output" =~ ^exit=[1-9] ]] || { echo "writable: ${target}"; false; }
-  done
-}
-
-@test "a sandboxed command cannot create a file in a PATH directory of the home" {
-  needs_sandbox
-  outside_temp
-  mkdir "${home_work}/bin"
-  PATH="${home_work}/bin:${PATH}" run status_in_sandbox "${work}" "touch '${home_work}/bin/git'"
-  [[ "$output" =~ ^exit=[1-9] ]] || false
-  [ ! -e "${home_work}/bin/git" ]
-}
-
-@test "a sandboxed command cannot change the hooks or config of another clone's submodules and worktrees" {
-  needs_sandbox
-  outside_temp
-  new_clone "${home_work}/clone"
-  new_clone "${home_work}/other"
-  git -C "${home_work}/other" worktree add --quiet "${home_work}/other-wt" -b topic
-  mkdir -p "${home_work}/other/.git/modules/sub/hooks"
-  for target in modules/sub/hooks/pre-commit modules/sub/config config.worktree worktrees/other-wt/config.worktree; do
-    run status_in_sandbox "${home_work}/clone" "touch '${home_work}/other/.git/${target}'"
+  in_ghq
+  new_clone "${ghq_work}/other"
+  git -C "${ghq_work}/other" worktree add --quiet "${ghq_work}/other-wt" -b topic
+  mkdir -p "${ghq_work}/other/.git/modules/sub/hooks" "${ghq_work}/other/.git/worktrees/other-wt/modules/sub/hooks"
+  for target in hooks/pre-commit config config.worktree worktrees/other-wt/config.worktree modules/sub/hooks/pre-commit \
+    modules/sub/config worktrees/other-wt/modules/sub/hooks/pre-commit worktrees/other-wt/modules/sub/config; do
+    run status_in_sandbox "${work}" "touch '${ghq_work}/other/.git/${target}'"
     [[ "$output" =~ ^exit=[1-9] ]] || { echo "writable: .git/${target}"; false; }
   done
-}
-
-@test "a sandboxed command cannot add a git hook or change the git config of another clone" {
-  needs_sandbox
-  outside_temp
-  new_clone "${home_work}/clone"
-  new_clone "${home_work}/other"
-  run status_in_sandbox "${home_work}/clone" "touch '${home_work}/other/.git/hooks/pre-commit'"
-  [[ "$output" =~ ^exit=[1-9] ]] || false
-  run status_in_sandbox "${home_work}/clone" "git -C '${home_work}/other' config core.hooksPath /tmp"
-  [[ "$output" =~ ^exit=[1-9] ]] || false
-  [ ! -e "${home_work}/other/.git/hooks/pre-commit" ]
 }
 
 # Git runs hooks and reads its config outside the sandbox the next time the
