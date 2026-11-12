@@ -9,3 +9,14 @@ updates:
       - "maro114510"
     cooldown:
       default-days: 5
+
+  - package-ecosystem: "apm"
+    directory: "/dot_apm"
+    schedule:
+      interval: "daily"
+    assignees:
+      - "maro114510"
+    cooldown:
+      default-days: 5
+      exclude:
+        - "maro114510/*"

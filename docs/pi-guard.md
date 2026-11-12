@@ -11,7 +11,7 @@ Pi loads it in every project; no setting enables it.
 | `read` | OpenCode's `.config/opencode/service.json` and `.local/share/opencode/auth.json` | Blocked |
 | `read` | `*.env.example`, `*.env.sample`, `*.env.template` | Allowed |
 | `write`, `edit` | `.env*`, anything under `.ssh/` or `.aws/` | Blocked |
-| `write`, `edit` | `.config/opencode/opencode.json`, `.config/opencode/opencode.jsonc`, anything under `.config/opencode/plugin/` or `.config/opencode/plugins/`, `.pi/agent/settings.json`, anything under `.pi/agent/extensions/`, `.srt-settings.json` | Blocked |
+| `write`, `edit` | `.config/opencode/opencode.json`, `.config/opencode/opencode.jsonc`, anything under `.config/opencode/plugin/` or `.config/opencode/plugins/`, `.pi/agent/settings.json`, anything under `.pi/agent/extensions/` | Blocked |
 | `bash` | `sudo`, recursive `rm`, `git push` with force or delete, `git reset --hard`, `gh ... delete`, `gh api` with `DELETE` | Asks in the TUI; blocked on refusal and when there is no UI |
 
 - A path is checked in any letter case, resolved against the working directory, and through its symlink target.
@@ -62,6 +62,6 @@ Manual checks in a Pi session:
 - Reading `.env` is blocked; reading `.env.example` works.
 - Writing `~/.ssh/config` is blocked.
 - Reading `~/.config/opencode/service.json` is blocked.
-- Editing `~/.pi/agent/extensions/guard.ts` or a file under `~/.config/opencode/plugins/`, where the sandbox plugin lives, is blocked.
+- Editing `~/.pi/agent/extensions/guard.ts` or a file under `~/.config/opencode/plugins/` is blocked.
 - `git reset --hard` asks, and refusing blocks it.
 - Changing `~/.pi/agent/extensions/guard.ts` through `bash`, then `chezmoi apply`, restores it.

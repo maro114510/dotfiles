@@ -7,7 +7,7 @@ The CLI reads its token only from a plaintext `~/.config/ticktick-cli/config.jso
 
 ## Decision
 Pin `@ticktick/ticktick-cli` to 0.1.15 in mise, which installs it with pnpm.
-Run it only through `ticktick-op.sh`, which for each run:
+Ship a wrapper named `ticktick` in `~/.local/bin`, ahead of the mise shim on PATH, which for each run:
 
 - Writes the token from 1Password into a throwaway HOME.
 - Starts the CLI with a minimal environment.
