@@ -1,0 +1,10 @@
+#!/bin/bash
+# Deploys the agent skills pinned in ~/.apm/apm.lock.yaml whenever the lockfile changes, so a merged
+# Dependabot update reaches every harness on the next chezmoi apply.
+# apm.lock.yaml hash: {{ include "dot_apm/apm.lock.yaml" | sha256sum }}
+set -euo pipefail
+command -v apm >/dev/null 2>&1 || { echo "apm not found; skipping skill deployment" >&2; exit 0; }
+cd "${HOME}"
+apm install -g --frozen
+# apm writes the lockfile owner-only; keep the mode the source declares so chezmoi sees no change.
+chmod 644 "${HOME}/.apm/apm.lock.yaml"

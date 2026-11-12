@@ -342,6 +342,12 @@ refuse_upstream_changes() {
 deliver() {
   cd "${WORKTREE_DIR}" || fail "cannot enter the temporary worktree"
 
+  # apm writes its lockfile owner-only, and re-add would then rename the source
+  # to private_apm.lock.yaml, a name Dependabot does not read.
+  if [ "${SCOPE}" = apm ] && [ -f "${HOME}/.apm/apm.lock.yaml" ]; then
+    chmod 644 "${HOME}/.apm/apm.lock.yaml" || fail "cannot make the apm lockfile readable"
+  fi
+
   # --source keeps re-add writing into the temporary worktree, never into the
   # checkout the person is working in.
   if ! chezmoi --source "${WORKTREE_DIR}" re-add "${TARGETS[@]}" >/dev/null 2>&1; then
