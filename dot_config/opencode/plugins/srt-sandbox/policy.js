@@ -59,12 +59,13 @@ export function sandboxConfig({ home, tmp }) {
         at('.cache/zsh'),
         at('.cache/gtr'),
         // Git runs the hooks and reads the config of any clone under the ghq root outside the sandbox.
+        // At any depth under a .git, so submodules and linked worktrees are covered too.
         at('ghq/**/.git/hooks'),
+        at('ghq/**/.git/**/hooks'),
         at('ghq/**/.git/config'),
+        at('ghq/**/.git/**/config'),
         at('ghq/**/.git/config.worktree'),
-        at('ghq/**/.git/worktrees/*/config.worktree'),
-        at('ghq/**/.git/modules/**/hooks'),
-        at('ghq/**/.git/modules/**/config'),
+        at('ghq/**/.git/**/config.worktree'),
       ],
     },
     // gh verifies TLS through trustd, which only the weaker isolation lets it reach. The keychain stays closed.
