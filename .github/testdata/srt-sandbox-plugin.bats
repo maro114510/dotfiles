@@ -237,9 +237,9 @@ new_clone() {
   done
 }
 
-@test "a sandboxed command cannot write the caches zshrc sources" {
+@test "a sandboxed command cannot write the caches zshrc sources or OpenCode's state" {
   needs_sandbox
-  for dir in .cache/zsh .cache/gtr; do
+  for dir in .cache/zsh .cache/gtr .local/state/opencode; do
     [ -d "${HOME}/${dir}" ] || continue
     probe "${HOME}/${dir}"
     run status_in_sandbox "${work}" "touch '${probe_path}'"
@@ -252,9 +252,9 @@ new_clone() {
   in_ghq
   new_clone "${ghq_work}/other"
   git -C "${ghq_work}/other" worktree add --quiet "${ghq_work}/other-wt" -b topic
-  mkdir -p "${ghq_work}/other/.git/modules/sub/hooks"
+  mkdir -p "${ghq_work}/other/.git/modules/sub/hooks" "${ghq_work}/other/.git/worktrees/other-wt/modules/sub/hooks"
   for target in hooks/pre-commit config config.worktree worktrees/other-wt/config.worktree modules/sub/hooks/pre-commit \
-    modules/sub/config; do
+    modules/sub/config worktrees/other-wt/modules/sub/hooks/pre-commit worktrees/other-wt/modules/sub/config; do
     run status_in_sandbox "${work}" "touch '${ghq_work}/other/.git/${target}'"
     [[ "$output" =~ ^exit=[1-9] ]] || { echo "writable: .git/${target}"; false; }
   done
