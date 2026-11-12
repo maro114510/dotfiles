@@ -194,6 +194,18 @@ new_clone() {
   [ "${lines[${#lines[@]}-1]}" = wt ]
 }
 
+@test "a sandboxed command creates a branch from a remote branch without trying to record an upstream" {
+  needs_sandbox
+  outside_temp
+  new_clone "${home_work}/clone"
+  git -C "${home_work}/clone" update-ref refs/remotes/origin/main HEAD
+  run sandboxed "${home_work}/clone" 'git switch --quiet -c topic origin/main 2>&1 && git rev-parse --abbrev-ref HEAD && { git config --get branch.topic.merge || echo no-upstream; }'
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"could not write config"* ]] || false
+  [ "${lines[${#lines[@]}-2]}" = topic ]
+  [ "${lines[${#lines[@]}-1]}" = no-upstream ]
+}
+
 @test "a sandboxed command cannot write under the home outside its working tree and the allowed places" {
   needs_sandbox
   outside_temp
