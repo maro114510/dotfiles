@@ -232,6 +232,24 @@ new_clone() {
   done
 }
 
+# A credential store the sandbox cannot read must not be replaced either: a
+# rewritten AWS config, for one, runs its credential_process outside the sandbox.
+@test "a sandboxed command cannot write a credential store it cannot read" {
+  needs_sandbox
+  for dir in .aws Library/Keychains .config/op "Library/Group Containers/2BUA8C4S2C.com.1password" \
+    Library/Containers/com.1password.1password; do
+    [ -d "${HOME}/${dir}" ] || continue
+    probe "${HOME}/${dir}"
+    run status_in_sandbox "${work}" "touch '${probe_path}'"
+    [[ "$output" =~ ^exit=[1-9] ]] || { echo "writable: ~/${dir}"; false; }
+  done
+  for file in .netrc .git-credentials .pi/agent/auth.json; do
+    [ -e "${HOME}/${file}" ] || probes+=("${HOME}/${file}")
+    run status_in_sandbox "${work}" ": >> '${HOME}/${file}'"
+    [[ "$output" =~ ^exit=[1-9] ]] || { echo "writable: ~/${file}"; false; }
+  done
+}
+
 @test "a sandboxed command cannot create a file in a PATH directory of the home" {
   needs_sandbox
   outside_temp
