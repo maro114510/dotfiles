@@ -4,13 +4,57 @@
 import { execFileSync } from 'node:child_process'
 import { createSign, randomBytes } from 'node:crypto'
 import { realpathSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { join, resolve } from 'node:path'
 
 // Hosts whose requests get the real credential. Any other host only ever sees the placeholder.
 const GITHUB_HOSTS = new Set(['github.com', 'api.github.com', 'uploads.github.com'])
 const PLACEHOLDER = /srt_gh_[A-Za-z0-9_-]{32}/
 // A Bot token is replaced this long before it expires, so a long command never sends an expired one.
 const REFRESH_MARGIN_MS = 10 * 60 * 1000
+
+// srt settings shared by every command. Each command adds its own working tree to allowWrite.
+export function sandboxConfig({ home, tmp }) {
+  const at = (path) => join(home, path)
+  return {
+    network: {
+      // Every host is reachable through the ask callback; only requests to GitHub get a real credential,
+      // which needs their TLS terminated.
+      allowedDomains: [],
+      deniedDomains: [],
+      tlsTerminate: {},
+    },
+    filesystem: {
+      denyRead: [
+        at('.ssh'),
+        at('Library/Keychains'),
+        at('.config/op'),
+        at('Library/Group Containers/2BUA8C4S2C.com.1password'),
+        at('Library/Containers/com.1password.1password'),
+        at('.config/opencode/service.json'),
+        at('.local/share/opencode'),
+        at('.local/state/opencode'),
+        at('.pi/agent/auth.json'),
+        at('.aws'),
+        at('.netrc'),
+        at('.git-credentials'),
+      ],
+      allowWrite: [
+        tmp,
+        '/private/tmp',
+        at('Library/Caches'),
+        at('.cache'),
+        at('go/pkg/mod'),
+        at('Library/pnpm/store'),
+        at('.bun/install/cache'),
+        at('.npm'),
+      ],
+      // OpenCode loads plugin code from its caches outside the sandbox.
+      denyWrite: [at('.cache/opencode'), at('Library/Caches/opencode')],
+    },
+    // gh verifies TLS through trustd, which only the weaker isolation lets it reach. The keychain stays closed.
+    enableWeakerNetworkIsolation: true,
+  }
+}
 
 export function repoFromRemote(url) {
   const match = /^(?:https:\/\/(?:[^@/]+@)?github\.com\/|ssh:\/\/git@github\.com\/|git@github\.com:)([^/]+)\/([^/]+?)(?:\.git)?\/?$/.exec(
