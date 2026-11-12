@@ -51,6 +51,14 @@ export function sandboxConfig({ home, tmp, path: searchPath = '' }) {
           .map(at),
         at('.npmrc'),
         at('.bunfig.toml'),
+        // Sourced by the zsh startup files, or able to name a program cargo runs. ~/.cargo itself stays
+        // writable, since cargo downloads crates under it.
+        at('.cargo/env'),
+        at('.cargo/config.toml'),
+        at('.cargo/config'),
+        at('.cache/zsh'),
+        at('.cache/gtr'),
+        at('.local/share/sheldon'),
         at('.gitconfig'),
         at('.config'),
         ...pathDirs,
