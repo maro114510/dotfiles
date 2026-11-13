@@ -144,6 +144,14 @@ function apiRequest(method, pathname, jwt, body) {
 
 function createAppClient(config, key) {
   return {
+    async account() {
+      const response = await apiRequest('GET', `/app/installations/${config.installationId}`, createJwt(config.appId, key))
+      if (response.status !== 200 || !response.body?.account?.login) {
+        throw new Error(`reading the Bot installation failed: ${response.status}`)
+      }
+      return response.body.account.login
+    },
+
     async mintToken(name) {
       const response = await apiRequest(
         'POST',
@@ -162,6 +170,7 @@ function createAppClient(config, key) {
 // The background process: reads the config and the key, and answers token
 // requests. It never logs a token and never writes one to disk.
 const cache = new Map()
+let accountPromise = null
 
 async function handleRequest(request) {
   if (request.op === 'ping') return { ok: true }
@@ -172,7 +181,13 @@ async function handleRequest(request) {
   if (cached && Date.now() < cached.expiresAt - REFRESH_MARGIN_MS) return { ok: true, token: cached.token }
   const config = readConfig()
   const appKey = await readAppKey(config.keyRef)
-  const { token, expiresAt } = await createAppClient(config, appKey).mintToken(name)
+  const client = createAppClient(config, appKey)
+  accountPromise ??= client.account()
+  const account = await accountPromise
+  if (owner.toLowerCase() !== account.toLowerCase()) {
+    throw new Error(`refusing ${owner}/${name}: the Bot installation belongs to ${account}`)
+  }
+  const { token, expiresAt } = await client.mintToken(name)
   cache.set(repoKey, { token, expiresAt })
   return { ok: true, token }
 }
