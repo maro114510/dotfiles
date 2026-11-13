@@ -33,8 +33,9 @@ const STATE_DIR = path.join(HOME, '.local/state/maronium')
 const SOCKET_PATH = path.join(STATE_DIR, 'helper.sock')
 const PID_PATH = path.join(STATE_DIR, 'helper.pid')
 // The API base is fixed in production. Tests point it at a fake GitHub on this
-// machine, which is the only override accepted: an environment value must never
-// send the App's JWT, and the token it mints, to another host.
+// machine, the only override accepted: an environment value must not send the
+// App's JWT, and the token it mints, to another host. This is not a boundary
+// against the same user, who can bind a local port themselves.
 function apiBase() {
   const override = process.env.MARONIUM_HELPER_API_BASE
   if (!override) return 'https://api.github.com'
@@ -205,17 +206,25 @@ function loadApp() {
   return setupPromise
 }
 
+const inflight = new Map()
+
 async function mintFor(repo) {
   const { owner, name } = parseRepo(repo)
   // Repository names are case-insensitive, so the cache key is too.
   const key = `${owner}/${name}`.toLowerCase()
   const cached = cache.get(key)
   if (cached && Date.now() < cached.expiresAt - REFRESH_MARGIN_MS) return { ok: true, token: cached.token }
+  // Two callers asking at once must not mint two tokens for one repository.
+  if (inflight.has(key)) return inflight.get(key)
+  const pending = mintTokenFor(owner, name, key).finally(() => inflight.delete(key))
+  inflight.set(key, pending)
+  return pending
+}
 
+async function mintTokenFor(owner, name, key) {
   const { config, key: appKey } = await loadApp()
   const client = createAppClient(config, appKey)
-  accountPromise ??= client.account()
-  const account = await accountPromise
+  const account = await installationAccount(client)
   // GitHub logins are case-insensitive, and a remote may spell the account either way.
   if (owner.toLowerCase() !== account.toLowerCase()) {
     throw new Error(`refusing ${owner}/${name}: the Bot installation belongs to ${account}`)
@@ -225,17 +234,30 @@ async function mintFor(repo) {
   return { ok: true, token }
 }
 
-function answer(socket, reply) {
-  if (socket.destroyed) return
-  socket.end(`${JSON.stringify(reply)}\n`)
+// A failed account read is not cached, unlike the key: a network failure may pass
+// on the next call, while a second key read would prompt 1Password again.
+function installationAccount(client) {
+  accountPromise ??= client.account().catch((error) => {
+    accountPromise = null
+    throw error
+  })
+  return accountPromise
 }
 
-function serve() {
+function answer(socket, reply, done) {
+  if (socket.destroyed) {
+    if (done) done()
+    return
+  }
+  socket.end(`${JSON.stringify(reply)}\n`, done)
+}
+
+async function serve() {
   fs.mkdirSync(STATE_DIR, { recursive: true, mode: 0o700 })
   fs.chmodSync(STATE_DIR, 0o700)
   // One process serves the socket. The pid file is created exclusively, so a
   // second start finds the first and leaves instead of taking the socket over.
-  if (!claimProcess()) return
+  if (!(await claimProcess())) return
 
   const stagingPath = `${SOCKET_PATH}.${process.pid}`
   try {
@@ -262,8 +284,7 @@ function serve() {
         return
       }
       if (request.op === 'stop') {
-        answer(socket, { ok: true })
-        shutdown()
+        answer(socket, { ok: true }, shutdown)
         return
       }
       if (request.op === 'ping') {
@@ -277,10 +298,7 @@ function serve() {
     })
   })
 
-  function shutdown() {
-    if (shuttingDown) return
-    shuttingDown = true
-    server.close()
+  function cleanup() {
     try {
       if (socketInode !== null && fs.statSync(SOCKET_PATH).ino === socketInode) fs.unlinkSync(SOCKET_PATH)
     } catch {
@@ -291,10 +309,25 @@ function serve() {
     } catch {
       // Already gone.
     }
+  }
+
+  function shutdown() {
+    if (shuttingDown) return
+    shuttingDown = true
+    server.close()
+    cleanup()
     process.exit(0)
   }
 
-  server.on('error', () => process.exit(1))
+  server.on('error', () => {
+    try {
+      fs.unlinkSync(stagingPath)
+    } catch {
+      // Never bound.
+    }
+    cleanup()
+    process.exit(1)
+  })
   server.listen(stagingPath, () => {
     fs.chmodSync(stagingPath, 0o600)
     fs.renameSync(stagingPath, SOCKET_PATH)
@@ -304,9 +337,9 @@ function serve() {
   process.on('SIGINT', shutdown)
 }
 
-// Creates the pid file exclusively. Leaves for good when a live process already
-// owns it, and replaces a stale one whose process is gone.
-function claimProcess() {
+// Creates the pid file exclusively. Leaves for good when a process already serves
+// the socket, and replaces a stale file whose process is gone.
+async function claimProcess() {
   for (let attempt = 0; attempt < 2; attempt += 1) {
     try {
       fs.writeFileSync(PID_PATH, String(process.pid), { flag: 'wx', mode: 0o600 })
@@ -320,19 +353,39 @@ function claimProcess() {
     } catch {
       // Unreadable: treat it as stale.
     }
-    if (Number.isInteger(owner) && owner !== process.pid) {
-      try {
-        process.kill(owner, 0)
-        return false
-      } catch {
-        // The owner is gone, so the file is stale.
-      }
-    }
+    // After a reboot the recorded pid can name an unrelated process, so a live
+    // pid only counts when the socket answers. A peer that has just written its
+    // pid but has not bound yet gets a short grace period.
+    if (Number.isInteger(owner) && owner !== process.pid && isAlive(owner) && (await socketAnswers())) return false
     try {
       fs.unlinkSync(PID_PATH)
     } catch {
       // Another start removed it first; the next attempt decides.
     }
+  }
+  return false
+}
+
+function isAlive(pid) {
+  try {
+    process.kill(pid, 0)
+    return true
+  } catch {
+    return false
+  }
+}
+
+async function socketAnswers() {
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    let socket
+    try {
+      socket = await connect()
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, 50))
+      continue
+    }
+    socket.end()
+    return true
   }
   return false
 }
