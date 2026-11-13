@@ -13,7 +13,8 @@ for template in \
   dot_claude/AGENTS.md.tmpl \
   dot_codex/AGENTS.md.tmpl \
   dot_config/opencode/AGENTS.md.tmpl \
-  dot_pi/agent/AGENTS.md.tmpl; do
+  dot_pi/agent/AGENTS.md.tmpl \
+  dot_dsh/AGENTS.md.tmpl; do
   output="${tmp_dir}/$(basename "${template}").rendered"
   "${chezmoi_bin}" execute-template --source "${source_dir}" -f "${source_dir}/${template}" > "${output}"
   if [[ ! -s "${output}" ]]; then
