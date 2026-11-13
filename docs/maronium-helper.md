@@ -62,13 +62,20 @@ for `github.com`, with `credential.useHttpPath` turned on so the path names the
 repository:
 
 ```bash
-GIT_CONFIG_COUNT=2 \
+GIT_CONFIG_COUNT=3 \
 GIT_CONFIG_KEY_0=credential.https://github.com.helper \
-GIT_CONFIG_VALUE_0='!maronium-helper' \
-GIT_CONFIG_KEY_1=credential.https://github.com.useHttpPath \
-GIT_CONFIG_VALUE_1=true \
+GIT_CONFIG_VALUE_0='' \
+GIT_CONFIG_KEY_1=credential.https://github.com.helper \
+GIT_CONFIG_VALUE_1='!maronium-helper' \
+GIT_CONFIG_KEY_2=credential.https://github.com.useHttpPath \
+GIT_CONFIG_VALUE_2=true \
 git push
 ```
+
+The empty value first clears the helpers the deployed git config registers for
+`github.com`, which is `!gh auth git-credential`. A helper list is multi-valued,
+so without the reset the person's own login answers first and this helper is never
+asked.
 
 Wiring this into the agents that orchestrate-epic and babysit start is the skills
 repository's job; this file only provides the command.
