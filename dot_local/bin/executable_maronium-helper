@@ -32,9 +32,18 @@ const CONFIG_PATH = path.join(HOME, '.config/maronium/helper.json')
 const STATE_DIR = path.join(HOME, '.local/state/maronium')
 const SOCKET_PATH = path.join(STATE_DIR, 'helper.sock')
 const PID_PATH = path.join(STATE_DIR, 'helper.pid')
-// The API base is fixed in production. Tests point it at a fake GitHub, since a
-// process that may set the environment can already act as the owner.
-const API_BASE = process.env.MARONIUM_HELPER_API_BASE || 'https://api.github.com'
+// The API base is fixed in production. Tests point it at a fake GitHub on this
+// machine, which is the only override accepted: an environment value must never
+// send the App's JWT, and the token it mints, to another host.
+function apiBase() {
+  const override = process.env.MARONIUM_HELPER_API_BASE
+  if (!override) return 'https://api.github.com'
+  const url = new URL(override)
+  if (url.protocol !== 'http:' || !['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname)) {
+    throw new Error('MARONIUM_HELPER_API_BASE must name this machine')
+  }
+  return override
+}
 // A token is renewed this long before it expires, so a command that outlives its
 // token never sends an expired one.
 const REFRESH_MARGIN_MS = 10 * 60 * 1000
@@ -107,7 +116,7 @@ function createJwt(appId, key) {
 }
 
 function apiRequest(method, pathname, jwt, body) {
-  const url = new URL(API_BASE + pathname)
+  const url = new URL(apiBase() + pathname)
   const client = url.protocol === 'https:' ? https : http
   const payload = body === undefined ? undefined : JSON.stringify(body)
   return new Promise((resolve, reject) => {
@@ -432,6 +441,8 @@ async function commandStop() {
 }
 
 async function main() {
+  // Validated before any process starts, so a bad override fails in this process.
+  apiBase()
   const [command, ...args] = process.argv.slice(2)
   switch (command) {
     case '__serve':
