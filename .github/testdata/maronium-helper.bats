@@ -115,3 +115,14 @@ api_requests() {
   [ "${output}" = "ghs_test_1" ]
   [ "$(jq -s '[.[] | select(.method == "POST")] | length' "${sandbox}/api-log")" -eq 1 ]
 }
+
+@test "mints a new token when the cached one is within ten minutes of expiring" {
+  run "${helper}" token acme/short
+  [ "${status}" -eq 0 ]
+  [ "${output}" = "ghs_test_1" ]
+
+  run "${helper}" token acme/short
+  [ "${status}" -eq 0 ]
+  [ "${output}" = "ghs_test_2" ]
+  [ "$(jq -s '[.[] | select(.method == "POST")] | length' "${sandbox}/api-log")" -eq 2 ]
+}
