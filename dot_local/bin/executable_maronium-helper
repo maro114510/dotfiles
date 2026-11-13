@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+// maronium-helper: hand agents a GitHub App installation token for one repository.
+//
+// The App key is read from 1Password once by a background process and kept only
+// in its memory; this command never writes the key, a JWT, or a token to disk.
+//
+// Usage:
+//   maronium-helper token <owner>/<repo>   # print an installation token for that repository
+//   maronium-helper get                    # git credential helper protocol (github.com only)
+//   maronium-helper store|erase            # accepted and ignored, as git expects
+//   maronium-helper stop                   # stop the background process
+//
+// Not implemented yet.
+
+process.exitCode = 1
+console.error('maronium-helper: not implemented')
