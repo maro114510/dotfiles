@@ -175,6 +175,7 @@ temporary_worktree_dirs() {
   run run_autosync
 
   [ "${status}" -ne 0 ]
+  [[ "${output}" == *"git push to chore/autosync failed"* ]]
   [ ! -s "${NOTIFY_LOG}" ]
 }
 
