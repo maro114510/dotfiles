@@ -167,10 +167,13 @@ async function handleRequest(request) {
   if (request.op === 'ping') return { ok: true }
   if (request.op !== 'token') throw new Error(`unsupported request: ${request.op}`)
   const { owner, name } = parseRepo(request.repo)
+  const repoKey = `${owner}/${name}`
+  const cached = cache.get(repoKey)
+  if (cached) return { ok: true, token: cached.token }
   const config = readConfig()
-  const key = await readAppKey(config.keyRef)
-  const { token, expiresAt } = await createAppClient(config, key).mintToken(name)
-  cache.set(`${owner}/${name}`, { token, expiresAt })
+  const appKey = await readAppKey(config.keyRef)
+  const { token, expiresAt } = await createAppClient(config, appKey).mintToken(name)
+  cache.set(repoKey, { token, expiresAt })
   return { ok: true, token }
 }
 
