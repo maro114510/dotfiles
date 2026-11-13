@@ -134,3 +134,11 @@ api_requests() {
   [[ "${output}" == *"acme"* ]]
   [ "$(jq -s '[.[] | select(.method == "POST")] | length' "${sandbox}/api-log" 2>/dev/null)" -eq 0 ]
 }
+
+@test "refuses a repository the installation does not cover with a reason" {
+  run "${helper}" token acme/missing
+
+  [ "${status}" -eq 1 ]
+  [[ "${output}" == *"does not cover"* ]]
+  [ "$(jq -s '[.[] | select(.method == "POST")] | length' "${sandbox}/api-log")" -eq 1 ]
+}
