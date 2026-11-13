@@ -9,8 +9,9 @@
 #   - a run with nothing to sync exits without a PR
 #
 # Each test builds a throwaway chezmoi source, destination, and bare origin in
-# a sandbox, then runs the script against them with a fake gh. Pushes go to the
-# bare repository inside the sandbox: nothing leaves the machine.
+# a sandbox, then runs the script against them with a fake gh and a fake
+# notifier. Pushes go to the bare repository inside the sandbox: nothing leaves
+# the machine, and no notification reaches the desktop.
 #
 # Usage: CHEZMOI=/path/to/chezmoi bats .github/testdata/autosync-isolation.bats
 # Set CHEZMOI to the chezmoi binary when it is not on PATH.
@@ -45,6 +46,18 @@ exit 0
 EOF
   chmod +x "${bin_dir}/gh"
 
+  # The notifier is stubbed like gh: a real failing run would otherwise pop a
+  # macOS banner on the machine running this suite, and a test could not tell
+  # what the script asked to show.
+  NOTIFY_LOG="${sandbox}/notify.log"
+  : > "${NOTIFY_LOG}"
+  cat > "${bin_dir}/osascript" <<'EOF'
+#!/bin/bash
+printf '%s\n' "$*" >> "${NOTIFY_LOG}"
+exit 0
+EOF
+  chmod +x "${bin_dir}/osascript"
+
   cat > "${home_dir}/.config/chezmoi/chezmoi.toml" <<EOF
 sourceDir = "${source_dir}"
 destDir = "${home_dir}"
@@ -75,7 +88,8 @@ teardown() {
 }
 
 # Runs the script the way a shell on this machine does: only the sandbox home
-# and directories, a fake gh, and a TMPDIR the test can inspect afterwards.
+# and directories, a fake gh and notifier, and a TMPDIR the test can inspect
+# afterwards. A run is muted, so no failure pops a banner while the suite runs.
 # fd 3 is closed because the script's timeout watchers leave a sleep behind, and
 # bats would otherwise wait for it, minutes after the last test finished.
 run_autosync() {
@@ -85,6 +99,8 @@ run_autosync() {
     XDG_CACHE_HOME="${sandbox}/cache" \
     TMPDIR="${tmp_dir}" \
     GH_LOG="${GH_LOG}" \
+    NOTIFY_LOG="${NOTIFY_LOG}" \
+    DOTFILES_AUTOSYNC_NO_NOTIFY=1 \
     PATH="${bin_dir}:${PATH}" \
     bash "${repo_root}/dot_local/bin/executable_dotfiles-autosync.sh" nvim 3>&-
 }
@@ -147,6 +163,19 @@ temporary_worktree_dirs() {
   [ "$(git -C "${source_dir}" status --porcelain)" = "${source_status_before}" ]
   [ "$(temporary_worktree_count)" -eq 1 ]
   [ -z "$(temporary_worktree_dirs)" ]
+}
+
+# A rejected push is a failure a person would be notified about, so without the
+# mute this run would reach the sandbox's osascript stub.
+@test "sends no notification when DOTFILES_AUTOSYNC_NO_NOTIFY is set" {
+  printf '#!/bin/bash\nexit 1\n' > "${remote_dir}/hooks/pre-receive"
+  chmod +x "${remote_dir}/hooks/pre-receive"
+  printf '{"new": true}\n' > "${home_dir}/.config/nvim/lazy-lock.json"
+
+  run run_autosync
+
+  [ "${status}" -ne 0 ]
+  [ ! -s "${NOTIFY_LOG}" ]
 }
 
 @test "exits without a PR when nothing changed" {
