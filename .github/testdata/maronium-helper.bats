@@ -92,6 +92,13 @@ teardown() {
   rm -rf "${sandbox}"
 }
 
+stat_mode() {
+  case "$(uname -s)" in
+    Darwin) stat -f '%Lp' "${1}" ;;
+    *) stat -c '%a' "${1}" ;;
+  esac
+}
+
 api_requests() {
   jq -r "${1}" "${sandbox}/api-log"
 }
@@ -177,4 +184,16 @@ api_requests() {
   [ "${status}" -eq 0 ]
   [ "${output}" = "ghs_test_2" ]
   [ "$(wc -l <"${sandbox}/op-reads" | tr -d ' ')" -eq 1 ]
+}
+
+@test "keeps the state directory and socket owner-only" {
+  # A leftover directory from an older helper may be world-readable.
+  mkdir -p "${HOME}/.local/state/maronium"
+  chmod 755 "${HOME}/.local/state/maronium"
+
+  run "${helper}" token acme/widgets
+
+  [ "${status}" -eq 0 ]
+  [ "$(stat_mode "${HOME}/.local/state/maronium")" = "700" ]
+  [ "$(stat_mode "${HOME}/.local/state/maronium/helper.sock")" = "600" ]
 }
