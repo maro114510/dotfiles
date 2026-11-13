@@ -78,6 +78,7 @@ EOF
 }
 
 @test "codex keeps the machine's settings and refuses to trust the root or home" {
+  mkdir -p "${home_dir}/repo"
   cat > "${home_dir}/.codex/config.toml" <<EOF
 model = "m1"
 sandbox_mode = "workspace-write"
@@ -98,6 +99,26 @@ EOF
   has "[projects.\"${home_dir}/repo\"]"
   lacks '[projects."/"]'
   lacks "[projects.\"${home_dir}\"]"
+}
+
+@test "codex drops a trust entry whose directory is missing and keeps an existing one" {
+  mkdir -p "${home_dir}/kept"
+  : > "${home_dir}/a-file"
+  cat > "${home_dir}/.codex/config.toml" <<EOF
+[projects."${home_dir}/kept"]
+trust_level = "trusted"
+
+[projects."${home_dir}/gone"]
+trust_level = "trusted"
+
+[projects."${home_dir}/a-file"]
+trust_level = "trusted"
+EOF
+  run render dot_codex/private_config.toml.tmpl
+  [ "$status" -eq 0 ]
+  has "[projects.\"${home_dir}/kept\"]"
+  lacks "[projects.\"${home_dir}/gone\"]"
+  lacks "[projects.\"${home_dir}/a-file\"]"
 }
 
 @test "codex on a new machine writes nothing" {

@@ -1,0 +1,7 @@
+{{- /* Each tool reads AGENTS.override.md instead of the managed AGENTS.md, so a stray one would silently drop every managed instruction. */ -}}
+{{- range $dir := list ".codex" ".claude" ".config/opencode" -}}
+  {{- $override := joinPath $.chezmoi.homeDir $dir "AGENTS.override.md" -}}
+  {{- if stat $override -}}
+    {{- fail (printf "%s replaces the managed instructions; remove it or move its rules into the managed templates" $override) -}}
+  {{- end -}}
+{{- end -}}
