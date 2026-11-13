@@ -206,3 +206,8 @@ api_requests() {
   matches="$(find "${HOME}" -type f -exec grep -l -F "${token}" {} + 2>/dev/null | wc -l | tr -d ' ')"
   [ "${matches}" -eq 0 ]
 }
+
+@test "keeps key material and GitHub tokens out of the tracked files" {
+  matches="$(cd "${repo_root}" && git ls-files -z | xargs -0 grep -l -E -e '-----BEGIN [A-Z ]*PRIVATE KEY-----|gh[opsu]_[A-Za-z0-9]{20,}' 2>/dev/null | wc -l | tr -d ' ')"
+  [ "${matches}" -eq 0 ]
+}
