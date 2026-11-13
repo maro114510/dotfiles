@@ -14,6 +14,7 @@ setup() {
   helper="${repo_root}/dot_local/bin/executable_maronium-helper"
   sandbox="$(mktemp -d /tmp/maronium-helper.XXXXXX)"
   export helper
+  real_home="${HOME}"
   export HOME="${sandbox}/home"
   mkdir -p "${HOME}/.config/maronium" "${sandbox}/bin"
 
@@ -54,6 +55,10 @@ http
       const body = raw ? JSON.parse(raw) : null
       fs.appendFileSync(logFile, `${JSON.stringify({ method: req.method, url: req.url, body })}\n`)
       if (req.method === 'GET' && req.url === '/app/installations/67890') {
+        if (fs.existsSync(`${__dirname}/fail-first-installation`)) {
+          fs.unlinkSync(`${__dirname}/fail-first-installation`)
+          return send(res, 500, { message: 'Server Error' })
+        }
         return send(res, 200, { id: 67890, account: { login: 'acme' } })
       }
       if (req.method === 'POST' && req.url === '/app/installations/67890/access_tokens') {
@@ -212,9 +217,44 @@ api_requests() {
   [ "${matches}" -eq 0 ]
 }
 
+@test "keeps this machine's App identifiers out of the tracked files" {
+  config="${real_home}/.config/maronium/helper.json"
+  [ -f "${config}" ] || skip "no local maronium config on this machine"
+
+  hits=""
+  for value in "$(jq -r '.appId' "${config}")" "$(jq -r '.installationId' "${config}")" "$(jq -r '.keyRef' "${config}")"; do
+    found="$(cd "${repo_root}" && git ls-files -z | xargs -0 grep -l -F -e "${value}" 2>/dev/null || true)"
+    hits="${hits}${found}"
+  done
+  [ -z "${hits}" ]
+}
+
 @test "refuses an API override that names another machine" {
-  run env MARONIUM_HELPER_API_BASE="https://127.0.0.1:1" "${helper}" token acme/widgets
+  run env MARONIUM_HELPER_API_BASE="http://192.0.2.10:8080" "${helper}" token acme/widgets
 
   [ "${status}" -eq 1 ]
   [[ "${output}" == *"must name this machine"* ]]
+}
+
+@test "starts when a stale pid file names a live process" {
+  mkdir -p "${HOME}/.local/state/maronium"
+  printf '%s\n' "$$" >"${HOME}/.local/state/maronium/helper.pid"
+  chmod 600 "${HOME}/.local/state/maronium/helper.pid"
+
+  run "${helper}" token acme/widgets
+
+  [ "${status}" -eq 0 ]
+  [ "${output}" = "ghs_test_1" ]
+}
+
+@test "retries the installation read after a transient failure" {
+  touch "${sandbox}/fail-first-installation"
+
+  run "${helper}" token acme/widgets
+  [ "${status}" -eq 1 ]
+  [[ "${output}" == *"reading the Bot installation failed: 500"* ]]
+
+  run "${helper}" token acme/widgets
+  [ "${status}" -eq 0 ]
+  [ "${output}" = "ghs_test_1" ]
 }
