@@ -211,3 +211,10 @@ api_requests() {
   matches="$(cd "${repo_root}" && git ls-files -z | xargs -0 grep -l -E -e '-----BEGIN [A-Z ]*PRIVATE KEY-----|gh[opsu]_[A-Za-z0-9]{20,}' 2>/dev/null | wc -l | tr -d ' ')"
   [ "${matches}" -eq 0 ]
 }
+
+@test "refuses an API override that names another machine" {
+  run env MARONIUM_HELPER_API_BASE="https://127.0.0.1:1" "${helper}" token acme/widgets
+
+  [ "${status}" -eq 1 ]
+  [[ "${output}" == *"must name this machine"* ]]
+}
