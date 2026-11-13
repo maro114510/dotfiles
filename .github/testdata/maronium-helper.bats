@@ -167,3 +167,14 @@ api_requests() {
   [ "${status}" -eq 1 ]
   [[ "${output}" == *"helper.json"* ]]
 }
+
+@test "reads the App key from 1Password once across repositories" {
+  run "${helper}" token acme/widgets
+  [ "${status}" -eq 0 ]
+  [ "${output}" = "ghs_test_1" ]
+
+  run "${helper}" token acme/gadgets
+  [ "${status}" -eq 0 ]
+  [ "${output}" = "ghs_test_2" ]
+  [ "$(wc -l <"${sandbox}/op-reads" | tr -d ' ')" -eq 1 ]
+}
