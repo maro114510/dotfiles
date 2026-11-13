@@ -223,8 +223,10 @@ function answer(socket, reply) {
 function serve() {
   fs.mkdirSync(STATE_DIR, { recursive: true, mode: 0o700 })
   fs.chmodSync(STATE_DIR, 0o700)
-  // Bind a private name and rename it into place, so a second start never
-  // unlinks the socket a running process is serving on.
+  // One process serves the socket. The pid file is created exclusively, so a
+  // second start finds the first and leaves instead of taking the socket over.
+  if (!claimProcess()) return
+
   const stagingPath = `${SOCKET_PATH}.${process.pid}`
   try {
     fs.unlinkSync(stagingPath)
@@ -272,28 +274,57 @@ function serve() {
     try {
       if (socketInode !== null && fs.statSync(SOCKET_PATH).ino === socketInode) fs.unlinkSync(SOCKET_PATH)
     } catch {
-      // Already gone, or another process owns the path now.
+      // Already gone.
     }
     try {
       if (fs.readFileSync(PID_PATH, 'utf8') === String(process.pid)) fs.unlinkSync(PID_PATH)
     } catch {
-      // Already gone, or another process owns the path now.
+      // Already gone.
     }
     process.exit(0)
   }
 
-  server.on('error', (error) => {
-    // Another process may have won the race to serve; it answers this request too.
-    process.exit(error.code === 'EADDRINUSE' ? 0 : 1)
-  })
+  server.on('error', () => process.exit(1))
   server.listen(stagingPath, () => {
     fs.chmodSync(stagingPath, 0o600)
     fs.renameSync(stagingPath, SOCKET_PATH)
     socketInode = fs.statSync(SOCKET_PATH).ino
-    fs.writeFileSync(PID_PATH, String(process.pid), { mode: 0o600 })
   })
   process.on('SIGTERM', shutdown)
   process.on('SIGINT', shutdown)
+}
+
+// Creates the pid file exclusively. Leaves for good when a live process already
+// owns it, and replaces a stale one whose process is gone.
+function claimProcess() {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      fs.writeFileSync(PID_PATH, String(process.pid), { flag: 'wx', mode: 0o600 })
+      return true
+    } catch (error) {
+      if (error.code !== 'EEXIST') throw error
+    }
+    let owner = NaN
+    try {
+      owner = Number(fs.readFileSync(PID_PATH, 'utf8'))
+    } catch {
+      // Unreadable: treat it as stale.
+    }
+    if (Number.isInteger(owner) && owner !== process.pid) {
+      try {
+        process.kill(owner, 0)
+        return false
+      } catch {
+        // The owner is gone, so the file is stale.
+      }
+    }
+    try {
+      fs.unlinkSync(PID_PATH)
+    } catch {
+      // Another start removed it first; the next attempt decides.
+    }
+  }
+  return false
 }
 
 function connect() {
