@@ -35,7 +35,7 @@ seed() {
 @test "a fresh home gets every shared default" {
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -S -c . "${settings}")" = '{"autocompleteMaxVisible":10,"defaultModel":"claude-sonnet-5-5","defaultProjectTrust":"ask","defaultProvider":"claude-code","defaultThinkingLevel":"medium","doubleEscapeAction":"tree","editorPaddingX":1,"enableInstallTelemetry":false,"enabledModels":["claude-code/*","opencode-go/*","local/*"],"outputPad":1,"packages":["npm:@narumitw/pi-statusline@0.51.0"],"quietStartup":"header","terminal":{"showTerminalProgress":true}}' ]
+  [ "$(jq -S -c . "${settings}")" = '{"autocompleteMaxVisible":10,"defaultModel":"claude-sonnet-5-5","defaultProjectTrust":"ask","defaultProvider":"claude-code","defaultThinkingLevel":"medium","doubleEscapeAction":"tree","editorPaddingX":1,"enableInstallTelemetry":false,"enabledModels":["claude-code/*","opencode-go/*","local/*"],"outputPad":1,"packages":["npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"],"quietStartup":"header","terminal":{"showTerminalProgress":true}}' ]
 }
 
 @test "a fresh home gets neither theme nor cacheWarming" {
@@ -54,7 +54,7 @@ seed() {
   seed '{"packages":["https://github.com/earendil-works/pi-claude-code"],"deviceId":"1986c36e","lastChangelogVersion":"1.5.0"}'
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -c .packages "${settings}")" = '["https://github.com/earendil-works/pi-claude-code","npm:@narumitw/pi-statusline@0.51.0"]' ]
+  [ "$(jq -c .packages "${settings}")" = '["https://github.com/earendil-works/pi-claude-code","npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
   [ "$(jq -r .deviceId "${settings}")" = 1986c36e ]
   [ "$(jq -r .lastChangelogVersion "${settings}")" = 1.5.0 ]
 }
@@ -65,8 +65,36 @@ seed() {
   [ "$status" -eq 0 ]
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -c .packages "${settings}")" = '["a","b","npm:@narumitw/pi-statusline@0.51.0"]' ]
+  [ "$(jq -c .packages "${settings}")" = '["a","b","npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
   [ "$(jq -r .deviceId "${settings}")" = d1 ]
+}
+
+@test "another version of pi-file-context is replaced by the pinned one in place" {
+  seed '{"packages":["npm:@narumitw/pi-file-context@0.50.0","a"]}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -c .packages "${settings}")" = '["npm:@narumitw/pi-file-context@0.54.6","a","npm:@narumitw/pi-statusline@0.51.0"]' ]
+}
+
+@test "an unversioned pi-file-context declaration is pinned" {
+  seed '{"packages":["a","npm:@narumitw/pi-file-context"]}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -c .packages "${settings}")" = '["a","npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
+}
+
+@test "a pi-file-context object declaration keeps its resource filters when pinned" {
+  seed '{"packages":[{"source":"npm:@narumitw/pi-file-context@0.50.0","skills":[]}]}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -S -c .packages "${settings}")" = '[{"skills":[],"source":"npm:@narumitw/pi-file-context@0.54.6"},"npm:@narumitw/pi-statusline@0.51.0"]' ]
+}
+
+@test "a package whose name only starts with pi-file-context is left alone" {
+  seed '{"packages":["npm:@narumitw/pi-file-context-extra@1.0.0"]}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -c .packages "${settings}")" = '["npm:@narumitw/pi-file-context-extra@1.0.0","npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
 }
 
 @test "the shared defaults replace a different value already in the target" {
@@ -108,28 +136,28 @@ seed() {
   seed '{"packages":["npm:@narumitw/pi-statusline","a","npm:@narumitw/pi-statusline@0.40.0"]}'
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -c .packages "${settings}")" = '["a","npm:@narumitw/pi-statusline@0.51.0"]' ]
+  [ "$(jq -c .packages "${settings}")" = '["a","npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
 }
 
 @test "a pi-starship entry is removed, in string or object form" {
   seed '{"packages":["npm:@narumitw/pi-starship","a",{"source":"npm:@narumitw/pi-starship@0.67.1","skills":[]},{"source":"b"}]}'
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -c .packages "${settings}")" = '["a",{"source":"b"},"npm:@narumitw/pi-statusline@0.51.0"]' ]
+  [ "$(jq -c .packages "${settings}")" = '["a",{"source":"b"},"npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
 }
 
 @test "a pi-statusline entry in object form is replaced by the pinned one" {
   seed '{"packages":[{"source":"npm:@narumitw/pi-statusline"}]}'
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -c .packages "${settings}")" = '["npm:@narumitw/pi-statusline@0.51.0"]' ]
+  [ "$(jq -c .packages "${settings}")" = '["npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
 }
 
 @test "a package whose name only starts with pi-statusline or pi-starship survives" {
   seed '{"packages":["npm:@narumitw/pi-statusline-extra","npm:@narumitw/pi-starship-extra"]}'
   run apply
   [ "$status" -eq 0 ]
-  [ "$(jq -c .packages "${settings}")" = '["npm:@narumitw/pi-statusline-extra","npm:@narumitw/pi-starship-extra","npm:@narumitw/pi-statusline@0.51.0"]' ]
+  [ "$(jq -c .packages "${settings}")" = '["npm:@narumitw/pi-statusline-extra","npm:@narumitw/pi-starship-extra","npm:@narumitw/pi-file-context@0.54.6","npm:@narumitw/pi-statusline@0.51.0"]' ]
 }
 
 @test "a fresh home gets the statusline segments of the Detailed information level" {
