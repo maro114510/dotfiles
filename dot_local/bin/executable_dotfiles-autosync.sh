@@ -4,6 +4,7 @@
 # Stop: origin/main changed a file the sync would write since the local base; a person pulls and applies
 # Ship: push chore/autosync, then open or update its PR; a person merges it
 # Need: nothing from the source checkout; it may be on any branch and dirty
+# Mute: DOTFILES_AUTOSYNC_NO_NOTIFY=1 skips the desktop notification
 
 set -euo pipefail
 
@@ -76,6 +77,9 @@ notify() {
   # line is what puts the reason in the terminal that started the run.
   printf '%s\n' "${PROG}: ${message}" >&2
   log "FAILURE: ${message}"
+  if [ "${DOTFILES_AUTOSYNC_NO_NOTIFY:-0}" = 1 ]; then
+    return 0
+  fi
   if command -v osascript >/dev/null 2>&1; then
     escaped="${message//\"/}"
     osascript -e "display notification \"${escaped}\" with title \"${PROG}\"" >/dev/null 2>&1 || true
