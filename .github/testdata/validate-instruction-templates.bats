@@ -6,7 +6,7 @@ setup() {
   mkdir -p "${source_dir}/dot_claude" "${source_dir}/dot_codex" "${source_dir}/dot_pi/agent" \
     "${source_dir}/dot_config/opencode" "${source_dir}/.chezmoitemplates/agents"
   cp "${repo_root}/.chezmoitemplates/agents/"* "${source_dir}/.chezmoitemplates/agents/"
-  cp "${repo_root}/dot_claude/CLAUDE.md.tmpl" "${source_dir}/dot_claude/"
+  cp "${repo_root}/dot_claude/AGENTS.md.tmpl" "${source_dir}/dot_claude/"
   cp "${repo_root}/dot_codex/AGENTS.md.tmpl" "${source_dir}/dot_codex/"
   cp "${repo_root}/dot_pi/agent/AGENTS.md.tmpl" "${source_dir}/dot_pi/agent/"
   cp "${repo_root}/dot_config/opencode/AGENTS.md.tmpl" "${source_dir}/dot_config/opencode/"
@@ -22,13 +22,13 @@ teardown() {
 }
 
 @test "a missing include target fails validation" {
-  printf '{{ template "agents/missing.md" . }}\n' > "${source_dir}/dot_claude/CLAUDE.md.tmpl"
+  printf '{{ template "agents/missing.md" . }}\n' > "${source_dir}/dot_claude/AGENTS.md.tmpl"
   run bash "${repo_root}/.github/testdata/validate-instruction-templates.sh" "${source_dir}"
   [ "$status" -ne 0 ]
 }
 
 @test "a generated file without the common body fails validation" {
-  printf '# Tool-specific content only\n' > "${source_dir}/dot_claude/CLAUDE.md.tmpl"
+  printf '# Tool-specific content only\n' > "${source_dir}/dot_claude/AGENTS.md.tmpl"
   run bash "${repo_root}/.github/testdata/validate-instruction-templates.sh" "${source_dir}"
   [ "$status" -ne 0 ]
 }
