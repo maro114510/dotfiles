@@ -14,9 +14,11 @@
 // The App and installation to act as live in an uncommitted local file,
 // ~/.config/maronium/helper.json: {"appId": ..., "installationId": ..., "keyRef": "op://..."}.
 // The process listens on a Unix socket in an owner-only directory,
-// ~/.local/state/maronium/, and starts on the first call.
+// ~/.local/state/maronium/, and starts on the first call. Both the config and
+// the key are settled for the life of the process, so after editing the config
+// or unlocking 1Password, run `maronium-helper stop` and call it again.
 
-const { execFile } = require('node:child_process')
+const { execFile, spawn } = require('node:child_process')
 const crypto = require('node:crypto')
 const fs = require('node:fs')
 const http = require('node:http')
@@ -48,6 +50,7 @@ const BOT_PERMISSIONS = {
   metadata: 'read',
 }
 const OP_READ_TIMEOUT_MS = 120 * 1000
+const CONNECT_TIMEOUT_MS = 5 * 1000
 
 function fail(message) {
   console.error(`maronium-helper: ${message}`)
@@ -64,7 +67,7 @@ function readConfig() {
   try {
     raw = fs.readFileSync(CONFIG_PATH, 'utf8')
   } catch {
-    throw new Error(`no local config at ${CONFIG_PATH}; create it with appId, installationId, and keyRef`)
+    throw new Error(`no local config at ${CONFIG_PATH}; create it with appId, installationId, and keyRef, then run \`maronium-helper stop\``)
   }
   let config
   try {
@@ -88,7 +91,7 @@ function readAppKey(keyRef) {
   return new Promise((resolve, reject) => {
     execFile('op', ['read', keyRef], { timeout: OP_READ_TIMEOUT_MS, maxBuffer: 1024 * 1024 }, (error, stdout) => {
       if (error) {
-        reject(new Error('the App key could not be read from 1Password; unlock it and restart the helper with `maronium-helper stop`'))
+        reject(new Error('the App key could not be read from 1Password; unlock it and run `maronium-helper stop`'))
         return
       }
       resolve(stdout)
@@ -143,9 +146,10 @@ function apiRequest(method, pathname, jwt, body) {
 }
 
 function createAppClient(config, key) {
+  const jwt = () => createJwt(config.appId, key)
   return {
     async account() {
-      const response = await apiRequest('GET', `/app/installations/${config.installationId}`, createJwt(config.appId, key))
+      const response = await apiRequest('GET', `/app/installations/${config.installationId}`, jwt())
       if (response.status !== 200 || !response.body?.account?.login) {
         throw new Error(`reading the Bot installation failed: ${response.status}`)
       }
@@ -156,13 +160,13 @@ function createAppClient(config, key) {
       const response = await apiRequest(
         'POST',
         `/app/installations/${config.installationId}/access_tokens`,
-        createJwt(config.appId, key),
+        jwt(),
         { repositories: [name], permissions: BOT_PERMISSIONS },
       )
       if (response.status === 422) {
         // 422 also means a permission the App lacks, so ask which one it is:
         // only a repository outside the installation falls back to a refusal.
-        const installed = await apiRequest('GET', `/repos/${account}/${name}/installation`, createJwt(config.appId, key))
+        const installed = await apiRequest('GET', `/repos/${account}/${name}/installation`, jwt())
         if (installed.status === 404) {
           throw new Error(`refusing ${account}/${name}: the Bot installation does not cover this repository`)
         }
@@ -175,58 +179,61 @@ function createAppClient(config, key) {
   }
 }
 
-// The background process: reads the config and the key, and answers token
+// The background process: reads the config and the App key, and answers token
 // requests. It never logs a token and never writes one to disk.
 const cache = new Map()
+let setupPromise = null
 let accountPromise = null
-let keyPromise = null
 
-async function handleRequest(request) {
-  if (request.op === 'ping') return { ok: true }
-  if (request.op !== 'token') throw new Error(`unsupported request: ${request.op}`)
-  const { owner, name } = parseRepo(request.repo)
-  const repoKey = `${owner}/${name}`
-  const cached = cache.get(repoKey)
+// Loaded once per process, including a failed read, so the person approves
+// 1Password once per boot instead of once per repository.
+function loadApp() {
+  setupPromise ??= (async () => {
+    const config = readConfig()
+    const key = await readAppKey(config.keyRef)
+    return { config, key }
+  })()
+  return setupPromise
+}
+
+async function mintFor(repo) {
+  const { owner, name } = parseRepo(repo)
+  const key = `${owner}/${name}`
+  const cached = cache.get(key)
   if (cached && Date.now() < cached.expiresAt - REFRESH_MARGIN_MS) return { ok: true, token: cached.token }
-  const config = readConfig()
-  // Read once per process: a failed read stays failed, so the message tells the
-  // person to unlock 1Password and restart the helper rather than prompting again.
-  keyPromise ??= readAppKey(config.keyRef)
-  const appKey = await keyPromise
+
+  const { config, key: appKey } = await loadApp()
   const client = createAppClient(config, appKey)
   accountPromise ??= client.account()
   const account = await accountPromise
+  // GitHub logins are case-insensitive, and a remote may spell the account either way.
   if (owner.toLowerCase() !== account.toLowerCase()) {
     throw new Error(`refusing ${owner}/${name}: the Bot installation belongs to ${account}`)
   }
   const { token, expiresAt } = await client.mintToken(name, account)
-  cache.set(repoKey, { token, expiresAt })
+  cache.set(key, { token, expiresAt })
   return { ok: true, token }
+}
+
+function answer(socket, reply) {
+  if (socket.destroyed) return
+  socket.end(`${JSON.stringify(reply)}\n`)
 }
 
 function serve() {
   fs.mkdirSync(STATE_DIR, { recursive: true, mode: 0o700 })
   fs.chmodSync(STATE_DIR, 0o700)
+  // Bind a private name and rename it into place, so a second start never
+  // unlinks the socket a running process is serving on.
+  const stagingPath = `${SOCKET_PATH}.${process.pid}`
   try {
-    fs.unlinkSync(SOCKET_PATH)
+    fs.unlinkSync(stagingPath)
   } catch {
-    // No socket left over: nothing to remove.
+    // Nothing left over.
   }
 
+  let socketInode = null
   let shuttingDown = false
-  const shutdown = () => {
-    if (shuttingDown) return
-    shuttingDown = true
-    server.close()
-    try {
-      fs.unlinkSync(SOCKET_PATH)
-      fs.unlinkSync(PID_PATH)
-    } catch {
-      // Already gone.
-    }
-    process.exit(0)
-  }
-
   const server = net.createServer((socket) => {
     socket.setEncoding('utf8')
     let buffer = ''
@@ -235,24 +242,54 @@ function serve() {
       buffer += chunk
       const end = buffer.indexOf('\n')
       if (end < 0) return
-      const request = JSON.parse(buffer.slice(0, end))
-      if (request.op === 'stop') {
-        socket.end(`${JSON.stringify({ ok: true })}\n`, shutdown)
+      let request
+      try {
+        request = JSON.parse(buffer.slice(0, end))
+      } catch {
+        answer(socket, { ok: false, error: 'unreadable request' })
         return
       }
-      handleRequest(request).then(
-        (reply) => socket.end(`${JSON.stringify(reply)}\n`),
-        (error) => socket.end(`${JSON.stringify({ ok: false, error: error.message })}\n`),
+      if (request.op === 'stop') {
+        answer(socket, { ok: true })
+        shutdown()
+        return
+      }
+      if (request.op === 'ping') {
+        answer(socket, { ok: true })
+        return
+      }
+      mintFor(request.repo).then(
+        (reply) => answer(socket, reply),
+        (error) => answer(socket, { ok: false, error: error.message }),
       )
     })
   })
 
+  function shutdown() {
+    if (shuttingDown) return
+    shuttingDown = true
+    server.close()
+    try {
+      if (socketInode !== null && fs.statSync(SOCKET_PATH).ino === socketInode) fs.unlinkSync(SOCKET_PATH)
+    } catch {
+      // Already gone, or another process owns the path now.
+    }
+    try {
+      if (fs.readFileSync(PID_PATH, 'utf8') === String(process.pid)) fs.unlinkSync(PID_PATH)
+    } catch {
+      // Already gone, or another process owns the path now.
+    }
+    process.exit(0)
+  }
+
   server.on('error', (error) => {
-    // Another client won the race to listen; it serves this request too.
+    // Another process may have won the race to serve; it answers this request too.
     process.exit(error.code === 'EADDRINUSE' ? 0 : 1)
   })
-  server.listen(SOCKET_PATH, () => {
-    fs.chmodSync(SOCKET_PATH, 0o600)
+  server.listen(stagingPath, () => {
+    fs.chmodSync(stagingPath, 0o600)
+    fs.renameSync(stagingPath, SOCKET_PATH)
+    socketInode = fs.statSync(SOCKET_PATH).ino
     fs.writeFileSync(PID_PATH, String(process.pid), { mode: 0o600 })
   })
   process.on('SIGTERM', shutdown)
@@ -263,26 +300,33 @@ function connect() {
   return new Promise((resolve, reject) => {
     const socket = net.connect(SOCKET_PATH)
     socket.setEncoding('utf8')
-    socket.once('connect', () => resolve(socket))
+    socket.setTimeout(CONNECT_TIMEOUT_MS)
+    socket.once('connect', () => {
+      socket.setTimeout(0)
+      resolve(socket)
+    })
+    socket.once('timeout', () => socket.destroy(new Error('the helper did not answer')))
     socket.once('error', reject)
   })
 }
 
 async function waitForServer(deadline) {
   while (Date.now() < deadline) {
+    let socket
     try {
-      const socket = await connect()
-      socket.end()
-      return
+      socket = await connect()
     } catch {
       await new Promise((resolve) => setTimeout(resolve, 50))
+      continue
     }
+    socket.end()
+    return
   }
   throw new Error('the helper process did not start')
 }
 
 function startServer() {
-  const child = require('node:child_process').spawn(process.execPath, [process.argv[1], '__serve'], {
+  const child = spawn(process.execPath, [process.argv[1], '__serve'], {
     detached: true,
     stdio: 'ignore',
     env: process.env,
@@ -290,25 +334,22 @@ function startServer() {
   child.unref()
 }
 
-async function requestToServer(payload) {
-  try {
-    const socket = await connect()
-    const response = await new Promise((resolve, reject) => {
-      let buffer = ''
-      socket.setEncoding('utf8')
-      socket.on('data', (chunk) => {
-        buffer += chunk
-        const end = buffer.indexOf('\n')
-        if (end >= 0) resolve(JSON.parse(buffer.slice(0, end)))
-      })
-      socket.on('error', reject)
-      socket.write(`${JSON.stringify(payload)}\n`)
-    })
-    socket.end()
-    return response
-  } catch (error) {
-    throw error
-  }
+function requestToServer(payload) {
+  return connect().then(
+    (socket) =>
+      new Promise((resolve, reject) => {
+        let buffer = ''
+        socket.on('data', (chunk) => {
+          buffer += chunk
+          const end = buffer.indexOf('\n')
+          if (end >= 0) resolve(JSON.parse(buffer.slice(0, end)))
+        })
+        socket.on('error', reject)
+        // A process that dies mid-request must not leave the caller waiting.
+        socket.on('close', () => reject(new Error('the helper closed the connection')))
+        socket.write(`${JSON.stringify(payload)}\n`)
+      }),
+  )
 }
 
 async function ask(payload) {
@@ -351,8 +392,12 @@ async function commandGet() {
 }
 
 async function commandStop() {
-  const reply = await ask({ op: 'stop' }).catch(() => ({ ok: true }))
-  if (!reply.ok) return fail(reply.error)
+  // Never start a process only to stop it.
+  try {
+    await requestToServer({ op: 'stop' })
+  } catch {
+    // No process was running.
+  }
 }
 
 async function main() {
@@ -362,13 +407,13 @@ async function main() {
       return serve()
     case 'token':
       return commandToken(args)
-    case 'stop':
-      return commandStop()
+    case 'get':
+      return commandGet()
     case 'store':
     case 'erase':
       return undefined
-    case 'get':
-      return commandGet()
+    case 'stop':
+      return commandStop()
     default:
       return usage()
   }
