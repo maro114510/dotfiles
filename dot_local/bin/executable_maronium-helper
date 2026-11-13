@@ -152,13 +152,21 @@ function createAppClient(config, key) {
       return response.body.account.login
     },
 
-    async mintToken(name) {
+    async mintToken(name, account) {
       const response = await apiRequest(
         'POST',
         `/app/installations/${config.installationId}/access_tokens`,
         createJwt(config.appId, key),
         { repositories: [name], permissions: BOT_PERMISSIONS },
       )
+      if (response.status === 422) {
+        // 422 also means a permission the App lacks, so ask which one it is:
+        // only a repository outside the installation falls back to a refusal.
+        const installed = await apiRequest('GET', `/repos/${account}/${name}/installation`, createJwt(config.appId, key))
+        if (installed.status === 404) {
+          throw new Error(`refusing ${account}/${name}: the Bot installation does not cover this repository`)
+        }
+      }
       if (response.status !== 201 || !response.body?.token) {
         throw new Error(`minting a Bot token failed: ${response.status}`)
       }
@@ -187,7 +195,7 @@ async function handleRequest(request) {
   if (owner.toLowerCase() !== account.toLowerCase()) {
     throw new Error(`refusing ${owner}/${name}: the Bot installation belongs to ${account}`)
   }
-  const { token, expiresAt } = await client.mintToken(name)
+  const { token, expiresAt } = await client.mintToken(name, account)
   cache.set(repoKey, { token, expiresAt })
   return { ok: true, token }
 }
