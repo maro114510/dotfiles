@@ -169,7 +169,7 @@ async function handleRequest(request) {
   const { owner, name } = parseRepo(request.repo)
   const repoKey = `${owner}/${name}`
   const cached = cache.get(repoKey)
-  if (cached) return { ok: true, token: cached.token }
+  if (cached && Date.now() < cached.expiresAt - REFRESH_MARGIN_MS) return { ok: true, token: cached.token }
   const config = readConfig()
   const appKey = await readAppKey(config.keyRef)
   const { token, expiresAt } = await createAppClient(config, appKey).mintToken(name)
