@@ -325,6 +325,27 @@ async function commandToken(args) {
   process.stdout.write(`${reply.token}\n`)
 }
 
+function readCredentialRequest() {
+  const fields = {}
+  for (const line of fs.readFileSync(0, 'utf8').split('\n')) {
+    const at = line.indexOf('=')
+    if (at > 0) fields[line.slice(0, at)] = line.slice(at + 1).trim()
+  }
+  return fields
+}
+
+async function commandGet() {
+  const credential = readCredentialRequest()
+  // Every other host keeps using whatever credential it already has.
+  if (credential.host !== 'github.com') return
+  const segments = (credential.path || '').split('/').filter(Boolean)
+  if (segments.length < 2) return fail('the credential request names no repository')
+  const repo = `${segments[0]}/${segments[1].replace(/\.git$/, '')}`
+  const reply = await ask({ op: 'token', repo })
+  if (!reply.ok) return fail(reply.error)
+  process.stdout.write(`username=x-access-token\npassword=${reply.token}\n`)
+}
+
 async function commandStop() {
   const reply = await ask({ op: 'stop' }).catch(() => ({ ok: true }))
   if (!reply.ok) return fail(reply.error)
@@ -343,7 +364,7 @@ async function main() {
     case 'erase':
       return undefined
     case 'get':
-      return fail('the git credential helper is not implemented yet')
+      return commandGet()
     default:
       return usage()
   }
