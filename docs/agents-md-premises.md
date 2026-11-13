@@ -17,6 +17,7 @@ This page records what was observed for each, on which tool version, and what is
 - The first request carries a baseline message with the user-global chain first, `$DSH_HOME/AGENTS.md` and then `<agentsHome>/AGENTS.md`, and the project chain after it.
 - `$DSH_HOME` defaults to `~/.dsh` and `<agentsHome>` to `~/.agents`.
 - A `CLAUDE.md` that duplicates an `AGENTS.md` is loaded once.
+
 Live session on 2026-11-13, run by the user in the browser; the session did not report its version, and 0.2.2-rc.1 above is the version installed by pnpm for the source check:
 
 - Asked what the `commit` skill does, the session described its steps, such as the secret screening and the `STOPPED: foreign changes` stop. These come from the skill file, so the shared skill was loaded.
