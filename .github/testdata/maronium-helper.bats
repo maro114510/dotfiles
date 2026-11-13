@@ -197,3 +197,12 @@ api_requests() {
   [ "$(stat_mode "${HOME}/.local/state/maronium")" = "700" ]
   [ "$(stat_mode "${HOME}/.local/state/maronium/helper.sock")" = "600" ]
 }
+
+@test "never writes the token to disk" {
+  run "${helper}" token acme/widgets
+  [ "${status}" -eq 0 ]
+  token="${output}"
+
+  matches="$(find "${HOME}" -type f -exec grep -l -F "${token}" {} + 2>/dev/null | wc -l | tr -d ' ')"
+  [ "${matches}" -eq 0 ]
+}
