@@ -151,3 +151,10 @@ api_requests() {
   [[ "${output}" == *"username=x-access-token"* ]]
   [[ "${output}" == *"password=ghs_test_1"* ]]
 }
+
+@test "stays silent for a host other than github.com" {
+  run bash -c 'printf "protocol=https\nhost=example.com\npath=acme/widgets.git\n" | "${helper}" get'
+
+  [ "${status}" -eq 0 ]
+  [ "${output}" = "" ]
+}
