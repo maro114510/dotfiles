@@ -104,3 +104,14 @@ api_requests() {
   [ "$(api_requests 'select(.method == "POST") | .body.repositories | join(",")')" = "widgets" ]
   [ "$(api_requests 'select(.method == "POST") | .body.permissions | to_entries | sort_by(.key) | map("\(.key)=\(.value)") | join(" ")')" = "actions=read checks=read contents=write issues=write metadata=read pull_requests=write statuses=write" ]
 }
+
+@test "reuses a cached token while it has more than ten minutes left" {
+  run "${helper}" token acme/widgets
+  [ "${status}" -eq 0 ]
+  [ "${output}" = "ghs_test_1" ]
+
+  run "${helper}" token acme/widgets
+  [ "${status}" -eq 0 ]
+  [ "${output}" = "ghs_test_1" ]
+  [ "$(jq -s '[.[] | select(.method == "POST")] | length' "${sandbox}/api-log")" -eq 1 ]
+}
