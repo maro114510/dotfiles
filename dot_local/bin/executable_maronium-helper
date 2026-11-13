@@ -179,6 +179,7 @@ function createAppClient(config, key) {
 // requests. It never logs a token and never writes one to disk.
 const cache = new Map()
 let accountPromise = null
+let keyPromise = null
 
 async function handleRequest(request) {
   if (request.op === 'ping') return { ok: true }
@@ -188,7 +189,10 @@ async function handleRequest(request) {
   const cached = cache.get(repoKey)
   if (cached && Date.now() < cached.expiresAt - REFRESH_MARGIN_MS) return { ok: true, token: cached.token }
   const config = readConfig()
-  const appKey = await readAppKey(config.keyRef)
+  // Read once per process: a failed read stays failed, so the message tells the
+  // person to unlock 1Password and restart the helper rather than prompting again.
+  keyPromise ??= readAppKey(config.keyRef)
+  const appKey = await keyPromise
   const client = createAppClient(config, appKey)
   accountPromise ??= client.account()
   const account = await accountPromise
