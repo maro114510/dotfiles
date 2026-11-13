@@ -207,7 +207,8 @@ function loadApp() {
 
 async function mintFor(repo) {
   const { owner, name } = parseRepo(repo)
-  const key = `${owner}/${name}`
+  // Repository names are case-insensitive, so the cache key is too.
+  const key = `${owner}/${name}`.toLowerCase()
   const cached = cache.get(key)
   if (cached && Date.now() < cached.expiresAt - REFRESH_MARGIN_MS) return { ok: true, token: cached.token }
 
