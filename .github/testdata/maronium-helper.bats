@@ -158,3 +158,12 @@ api_requests() {
   [ "${status}" -eq 0 ]
   [ "${output}" = "" ]
 }
+
+@test "refuses without the local config file" {
+  rm "${HOME}/.config/maronium/helper.json"
+
+  run "${helper}" token acme/widgets
+
+  [ "${status}" -eq 1 ]
+  [[ "${output}" == *"helper.json"* ]]
+}
