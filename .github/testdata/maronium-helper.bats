@@ -126,3 +126,11 @@ api_requests() {
   [ "${output}" = "ghs_test_2" ]
   [ "$(jq -s '[.[] | select(.method == "POST")] | length' "${sandbox}/api-log")" -eq 2 ]
 }
+
+@test "refuses a repository outside the installation's account with a reason" {
+  run "${helper}" token otherorg/widgets
+
+  [ "${status}" -eq 1 ]
+  [[ "${output}" == *"acme"* ]]
+  [ "$(jq -s '[.[] | select(.method == "POST")] | length' "${sandbox}/api-log" 2>/dev/null)" -eq 0 ]
+}
