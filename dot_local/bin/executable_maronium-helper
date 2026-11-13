@@ -1,0 +1,518 @@
+#!/usr/bin/env node
+// maronium-helper: hand agents a GitHub App installation token for one repository.
+//
+// The App key is read from 1Password by a background process and kept only in
+// its memory; this command never writes the key, a JWT, or a token to disk, and
+// never passes one as a process argument.
+//
+// Usage:
+//   maronium-helper token <owner>/<repo>   # print an installation token for that repository
+//   maronium-helper get                    # git credential helper protocol (github.com only)
+//   maronium-helper store|erase            # accepted and ignored, as git expects
+//   maronium-helper stop                   # stop the background process
+//
+// The App and installation to act as live in an uncommitted local file,
+// ~/.config/maronium/helper.json: {"appId": ..., "installationId": ..., "keyRef": "op://..."}.
+// The process listens on a Unix socket in an owner-only directory,
+// ~/.local/state/maronium/, and starts on the first call. Both the config and
+// the key are settled for the life of the process, so after editing the config
+// or unlocking 1Password, run `maronium-helper stop` and call it again.
+
+const { execFile, spawn } = require('node:child_process')
+const crypto = require('node:crypto')
+const fs = require('node:fs')
+const http = require('node:http')
+const https = require('node:https')
+const net = require('node:net')
+const os = require('node:os')
+const path = require('node:path')
+
+const HOME = os.homedir()
+const CONFIG_PATH = path.join(HOME, '.config/maronium/helper.json')
+const STATE_DIR = path.join(HOME, '.local/state/maronium')
+const SOCKET_PATH = path.join(STATE_DIR, 'helper.sock')
+const PID_PATH = path.join(STATE_DIR, 'helper.pid')
+// The API base is fixed in production. Tests point it at a fake GitHub on this
+// machine, the only override accepted: an environment value must not send the
+// App's JWT, and the token it mints, to another host. This is not a boundary
+// against the same user, who can bind a local port themselves.
+function apiBase() {
+  const override = process.env.MARONIUM_HELPER_API_BASE
+  if (!override) return 'https://api.github.com'
+  const url = new URL(override)
+  if (url.protocol !== 'http:' || !['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname)) {
+    throw new Error('MARONIUM_HELPER_API_BASE must name this machine')
+  }
+  return override
+}
+// A token is renewed this long before it expires, so a command that outlives its
+// token never sends an expired one.
+const REFRESH_MARGIN_MS = 10 * 60 * 1000
+// What a Bot token may do: push, open pull requests, comment, set commit
+// statuses, and read check runs. Never Workflows or Administration.
+const BOT_PERMISSIONS = {
+  contents: 'write',
+  pull_requests: 'write',
+  issues: 'write',
+  statuses: 'write',
+  checks: 'read',
+  actions: 'read',
+  metadata: 'read',
+}
+const OP_READ_TIMEOUT_MS = 120 * 1000
+const CONNECT_TIMEOUT_MS = 5 * 1000
+
+function fail(message) {
+  console.error(`maronium-helper: ${message}`)
+  process.exitCode = 1
+}
+
+function usage() {
+  console.error('usage: maronium-helper token <owner>/<repo> | get | store | erase | stop')
+  process.exitCode = 2
+}
+
+function readConfig() {
+  let raw
+  try {
+    raw = fs.readFileSync(CONFIG_PATH, 'utf8')
+  } catch {
+    throw new Error(`no local config at ${CONFIG_PATH}; create it with appId, installationId, and keyRef, then run \`maronium-helper stop\``)
+  }
+  let config
+  try {
+    config = JSON.parse(raw)
+  } catch {
+    throw new Error(`${CONFIG_PATH} is not valid JSON`)
+  }
+  if (!config.appId || !config.installationId || !config.keyRef) {
+    throw new Error(`${CONFIG_PATH} needs appId, installationId, and keyRef`)
+  }
+  return config
+}
+
+function parseRepo(value) {
+  const match = /^([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)$/.exec(value || '')
+  if (!match) throw new Error(`not a repository: ${value}`)
+  return { owner: match[1], name: match[2] }
+}
+
+function readAppKey(keyRef) {
+  return new Promise((resolve, reject) => {
+    execFile('op', ['read', keyRef], { timeout: OP_READ_TIMEOUT_MS, maxBuffer: 1024 * 1024 }, (error, stdout) => {
+      if (error) {
+        reject(new Error('the App key could not be read from 1Password; unlock it and run `maronium-helper stop`'))
+        return
+      }
+      resolve(stdout)
+    })
+  })
+}
+
+function createJwt(appId, key) {
+  const now = Math.floor(Date.now() / 1000)
+  const part = (value) => Buffer.from(JSON.stringify(value)).toString('base64url')
+  const unsigned = `${part({ alg: 'RS256', typ: 'JWT' })}.${part({ iat: now - 60, exp: now + 540, iss: appId })}`
+  return `${unsigned}.${crypto.createSign('RSA-SHA256').update(unsigned).sign(key, 'base64url')}`
+}
+
+function apiRequest(method, pathname, jwt, body) {
+  const url = new URL(apiBase() + pathname)
+  const client = url.protocol === 'https:' ? https : http
+  const payload = body === undefined ? undefined : JSON.stringify(body)
+  return new Promise((resolve, reject) => {
+    const request = client.request(
+      url,
+      {
+        method,
+        headers: {
+          authorization: `Bearer ${jwt}`,
+          accept: 'application/vnd.github+json',
+          'content-type': 'application/json',
+          'user-agent': 'maronium-helper',
+        },
+        timeout: 30 * 1000,
+      },
+      (response) => {
+        let raw = ''
+        response.setEncoding('utf8')
+        response.on('data', (chunk) => (raw += chunk))
+        response.on('end', () => {
+          let parsed = null
+          try {
+            parsed = raw ? JSON.parse(raw) : null
+          } catch {
+            parsed = null
+          }
+          resolve({ status: response.statusCode, body: parsed })
+        })
+      },
+    )
+    request.on('timeout', () => request.destroy(new Error('GitHub did not answer in time')))
+    request.on('error', reject)
+    if (payload) request.write(payload)
+    request.end()
+  })
+}
+
+function createAppClient(config, key) {
+  const jwt = () => createJwt(config.appId, key)
+  return {
+    async account() {
+      const response = await apiRequest('GET', `/app/installations/${config.installationId}`, jwt())
+      if (response.status !== 200 || !response.body?.account?.login) {
+        throw new Error(`reading the Bot installation failed: ${response.status}`)
+      }
+      return response.body.account.login
+    },
+
+    async mintToken(name, account) {
+      const response = await apiRequest(
+        'POST',
+        `/app/installations/${config.installationId}/access_tokens`,
+        jwt(),
+        { repositories: [name], permissions: BOT_PERMISSIONS },
+      )
+      if (response.status === 422) {
+        // 422 also means a permission the App lacks, so ask which one it is:
+        // only a repository outside the installation falls back to a refusal.
+        const installed = await apiRequest('GET', `/repos/${account}/${name}/installation`, jwt())
+        if (installed.status === 404) {
+          throw new Error(`refusing ${account}/${name}: the Bot installation does not cover this repository`)
+        }
+      }
+      if (response.status !== 201 || !response.body?.token) {
+        throw new Error(`minting a Bot token failed: ${response.status}`)
+      }
+      return { token: response.body.token, expiresAt: Date.parse(response.body.expires_at) }
+    },
+  }
+}
+
+// The background process: reads the config and the App key, and answers token
+// requests. It never logs a token and never writes one to disk.
+const cache = new Map()
+let setupPromise = null
+let accountPromise = null
+
+// Loaded once per process, including a failed read, so the person approves
+// 1Password once per boot instead of once per repository.
+function loadApp() {
+  setupPromise ??= (async () => {
+    const config = readConfig()
+    const key = await readAppKey(config.keyRef)
+    return { config, key }
+  })()
+  return setupPromise
+}
+
+const inflight = new Map()
+
+async function mintFor(repo) {
+  const { owner, name } = parseRepo(repo)
+  // Repository names are case-insensitive, so the cache key is too.
+  const key = `${owner}/${name}`.toLowerCase()
+  const cached = cache.get(key)
+  if (cached && Date.now() < cached.expiresAt - REFRESH_MARGIN_MS) return { ok: true, token: cached.token }
+  // Two callers asking at once must not mint two tokens for one repository.
+  if (inflight.has(key)) return inflight.get(key)
+  const pending = mintTokenFor(owner, name, key).finally(() => inflight.delete(key))
+  inflight.set(key, pending)
+  return pending
+}
+
+async function mintTokenFor(owner, name, key) {
+  const { config, key: appKey } = await loadApp()
+  const client = createAppClient(config, appKey)
+  const account = await installationAccount(client)
+  // GitHub logins are case-insensitive, and a remote may spell the account either way.
+  if (owner.toLowerCase() !== account.toLowerCase()) {
+    throw new Error(`refusing ${owner}/${name}: the Bot installation belongs to ${account}`)
+  }
+  const { token, expiresAt } = await client.mintToken(name, account)
+  cache.set(key, { token, expiresAt })
+  return { ok: true, token }
+}
+
+// A failed account read is not cached, unlike the key: a network failure may pass
+// on the next call, while a second key read would prompt 1Password again.
+function installationAccount(client) {
+  accountPromise ??= client.account().catch((error) => {
+    accountPromise = null
+    throw error
+  })
+  return accountPromise
+}
+
+function answer(socket, reply, done) {
+  if (socket.destroyed) {
+    if (done) done()
+    return
+  }
+  socket.end(`${JSON.stringify(reply)}\n`, done)
+}
+
+async function serve() {
+  fs.mkdirSync(STATE_DIR, { recursive: true, mode: 0o700 })
+  fs.chmodSync(STATE_DIR, 0o700)
+  // One process serves the socket. The pid file is created exclusively, so a
+  // second start finds the first and leaves instead of taking the socket over.
+  if (!(await claimProcess())) return
+
+  const stagingPath = `${SOCKET_PATH}.${process.pid}`
+  try {
+    fs.unlinkSync(stagingPath)
+  } catch {
+    // Nothing left over.
+  }
+
+  let socketInode = null
+  let shuttingDown = false
+  const server = net.createServer((socket) => {
+    socket.setEncoding('utf8')
+    let buffer = ''
+    socket.on('error', () => {})
+    socket.on('data', (chunk) => {
+      buffer += chunk
+      const end = buffer.indexOf('\n')
+      if (end < 0) return
+      let request
+      try {
+        request = JSON.parse(buffer.slice(0, end))
+      } catch {
+        answer(socket, { ok: false, error: 'unreadable request' })
+        return
+      }
+      if (request.op === 'stop') {
+        answer(socket, { ok: true }, shutdown)
+        return
+      }
+      if (request.op === 'ping') {
+        answer(socket, { ok: true })
+        return
+      }
+      mintFor(request.repo).then(
+        (reply) => answer(socket, reply),
+        (error) => answer(socket, { ok: false, error: error.message }),
+      )
+    })
+  })
+
+  function cleanup() {
+    try {
+      if (socketInode !== null && fs.statSync(SOCKET_PATH).ino === socketInode) fs.unlinkSync(SOCKET_PATH)
+    } catch {
+      // Already gone.
+    }
+    try {
+      if (fs.readFileSync(PID_PATH, 'utf8') === String(process.pid)) fs.unlinkSync(PID_PATH)
+    } catch {
+      // Already gone.
+    }
+  }
+
+  function shutdown() {
+    if (shuttingDown) return
+    shuttingDown = true
+    server.close()
+    cleanup()
+    process.exit(0)
+  }
+
+  server.on('error', () => {
+    try {
+      fs.unlinkSync(stagingPath)
+    } catch {
+      // Never bound.
+    }
+    cleanup()
+    process.exit(1)
+  })
+  server.listen(stagingPath, () => {
+    fs.chmodSync(stagingPath, 0o600)
+    fs.renameSync(stagingPath, SOCKET_PATH)
+    socketInode = fs.statSync(SOCKET_PATH).ino
+  })
+  process.on('SIGTERM', shutdown)
+  process.on('SIGINT', shutdown)
+}
+
+// Creates the pid file exclusively. Leaves for good when a process already serves
+// the socket, and replaces a stale file whose process is gone.
+async function claimProcess() {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      fs.writeFileSync(PID_PATH, String(process.pid), { flag: 'wx', mode: 0o600 })
+      return true
+    } catch (error) {
+      if (error.code !== 'EEXIST') throw error
+    }
+    let owner = NaN
+    try {
+      owner = Number(fs.readFileSync(PID_PATH, 'utf8'))
+    } catch {
+      // Unreadable: treat it as stale.
+    }
+    // After a reboot the recorded pid can name an unrelated process, so a live
+    // pid only counts when the socket answers. A peer that has just written its
+    // pid but has not bound yet gets a short grace period.
+    if (Number.isInteger(owner) && owner !== process.pid && isAlive(owner) && (await socketAnswers())) return false
+    try {
+      fs.unlinkSync(PID_PATH)
+    } catch {
+      // Another start removed it first; the next attempt decides.
+    }
+  }
+  return false
+}
+
+function isAlive(pid) {
+  try {
+    process.kill(pid, 0)
+    return true
+  } catch {
+    return false
+  }
+}
+
+async function socketAnswers() {
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    let socket
+    try {
+      socket = await connect()
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, 50))
+      continue
+    }
+    socket.end()
+    return true
+  }
+  return false
+}
+
+function connect() {
+  return new Promise((resolve, reject) => {
+    const socket = net.connect(SOCKET_PATH)
+    socket.setEncoding('utf8')
+    socket.setTimeout(CONNECT_TIMEOUT_MS)
+    socket.once('connect', () => {
+      socket.setTimeout(0)
+      resolve(socket)
+    })
+    socket.once('timeout', () => socket.destroy(new Error('the helper did not answer')))
+    socket.once('error', reject)
+  })
+}
+
+async function waitForServer(deadline) {
+  while (Date.now() < deadline) {
+    let socket
+    try {
+      socket = await connect()
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, 50))
+      continue
+    }
+    socket.end()
+    return
+  }
+  throw new Error('the helper process did not start')
+}
+
+function startServer() {
+  const child = spawn(process.execPath, [process.argv[1], '__serve'], {
+    detached: true,
+    stdio: 'ignore',
+    env: process.env,
+  })
+  child.unref()
+}
+
+function requestToServer(payload) {
+  return connect().then(
+    (socket) =>
+      new Promise((resolve, reject) => {
+        let buffer = ''
+        socket.on('data', (chunk) => {
+          buffer += chunk
+          const end = buffer.indexOf('\n')
+          if (end >= 0) resolve(JSON.parse(buffer.slice(0, end)))
+        })
+        socket.on('error', reject)
+        // A process that dies mid-request must not leave the caller waiting.
+        socket.on('close', () => reject(new Error('the helper closed the connection')))
+        socket.write(`${JSON.stringify(payload)}\n`)
+      }),
+  )
+}
+
+async function ask(payload) {
+  try {
+    return await requestToServer(payload)
+  } catch (error) {
+    if (error.code !== 'ENOENT' && error.code !== 'ECONNREFUSED') throw error
+  }
+  startServer()
+  await waitForServer(Date.now() + 10 * 1000)
+  return requestToServer(payload)
+}
+
+async function commandToken(args) {
+  if (args.length !== 1) return usage()
+  const reply = await ask({ op: 'token', repo: args[0] })
+  if (!reply.ok) return fail(reply.error)
+  process.stdout.write(`${reply.token}\n`)
+}
+
+function readCredentialRequest() {
+  const fields = {}
+  for (const line of fs.readFileSync(0, 'utf8').split('\n')) {
+    const at = line.indexOf('=')
+    if (at > 0) fields[line.slice(0, at)] = line.slice(at + 1).trim()
+  }
+  return fields
+}
+
+async function commandGet() {
+  const credential = readCredentialRequest()
+  // Every other host keeps using whatever credential it already has.
+  if (credential.host !== 'github.com') return
+  const segments = (credential.path || '').split('/').filter(Boolean)
+  if (segments.length < 2) return fail('the credential request names no repository')
+  const repo = `${segments[0]}/${segments[1].replace(/\.git$/, '')}`
+  const reply = await ask({ op: 'token', repo })
+  if (!reply.ok) return fail(reply.error)
+  process.stdout.write(`username=x-access-token\npassword=${reply.token}\n`)
+}
+
+async function commandStop() {
+  // Never start a process only to stop it.
+  try {
+    await requestToServer({ op: 'stop' })
+  } catch {
+    // No process was running.
+  }
+}
+
+async function main() {
+  // Validated before any process starts, so a bad override fails in this process.
+  apiBase()
+  const [command, ...args] = process.argv.slice(2)
+  switch (command) {
+    case '__serve':
+      return serve()
+    case 'token':
+      return commandToken(args)
+    case 'get':
+      return commandGet()
+    case 'store':
+    case 'erase':
+      return undefined
+    case 'stop':
+      return commandStop()
+    default:
+      return usage()
+  }
+}
+
+main().catch((error) => fail(error.message))
