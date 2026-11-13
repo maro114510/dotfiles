@@ -13,6 +13,7 @@ setup() {
   repo_root="$(cd "${BATS_TEST_DIRNAME}/../.." && pwd)"
   helper="${repo_root}/dot_local/bin/executable_maronium-helper"
   sandbox="$(mktemp -d /tmp/maronium-helper.XXXXXX)"
+  export helper
   export HOME="${sandbox}/home"
   mkdir -p "${HOME}/.config/maronium" "${sandbox}/bin"
 
@@ -141,4 +142,12 @@ api_requests() {
   [ "${status}" -eq 1 ]
   [[ "${output}" == *"does not cover"* ]]
   [ "$(jq -s '[.[] | select(.method == "POST")] | length' "${sandbox}/api-log")" -eq 1 ]
+}
+
+@test "answers the git credential helper for github.com with a Bot token" {
+  run bash -c 'printf "protocol=https\nhost=github.com\npath=acme/widgets.git\n" | "${helper}" get'
+
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *"username=x-access-token"* ]]
+  [[ "${output}" == *"password=ghs_test_1"* ]]
 }
