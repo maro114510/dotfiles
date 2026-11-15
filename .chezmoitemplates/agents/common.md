@@ -10,6 +10,10 @@ Prioritize quality over speed.
 - Direct changes to the main branch are prohibited — always work on a worktree and merge after review
 - Commit, stash, or discard only changes you made in this session; if the worktree holds changes you did not make, stop and ask
 
+## Execution Posture
+
+What each agent tool may do without asking, and who may widen it, is recorded in `~/.agents/execution-posture.md`. Read it before relying on a permission, and never widen a posture yourself.
+
 ## Scope of This File
 
 - This file applies to all projects, so only generic rules belong here
