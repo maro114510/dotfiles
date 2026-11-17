@@ -1,0 +1,77 @@
+# Auto-merges a Dependabot pull request once every check on it has passed.
+#
+# This file is called by a small pull_request_target workflow in each repository
+# that wants the behavior: a caller declares only the trigger, the permissions,
+# and the merge method. The workflow never checks out a pull request, so the
+# privileged trigger runs no untrusted code.
+#
+# The trigger is pull_request_target, not pull_request: a Dependabot pull request
+# in a public repository gets a read-only token and no secrets under pull_request,
+# so a job on that trigger could neither label nor merge.
+name: reusable-dependabot-auto-merge
+
+on:
+  workflow_call:
+    inputs:
+      merge-method:
+        description: Merge method for gh pr merge, one of squash, merge, or rebase.
+        required: false
+        type: string
+        default: squash
+
+jobs:
+  automerge:
+    name: Auto-merge a patch or minor Dependabot update
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Read the update type
+        id: metadata
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+        with:
+          github-token: ${{ github.token }}
+
+      - name: Leave anything but a patch or minor update to a person
+        if: >-
+          steps.metadata.outputs.update-type != 'version-update:semver-patch' &&
+          steps.metadata.outputs.update-type != 'version-update:semver-minor'
+        run: echo "::notice::Not a patch or minor update; leaving the pull request open."
+
+      - name: Merge once every check has passed
+        if: >-
+          steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-minor'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          MERGE_METHOD: ${{ inputs.merge-method }}
+        run: |
+          set -euo pipefail
+          case "$MERGE_METHOD" in
+            squash|merge|rebase) ;;
+            *) echo "::error::Unsupported merge-method: $MERGE_METHOD"; exit 1 ;;
+          esac
+          deadline=$(( SECONDS + 1500 ))
+          while :; do
+            checks="$(gh pr checks "$PR" --repo "$REPO" --json name,bucket 2>/dev/null || true)"
+            [[ "$checks" == \[* ]] || checks='[]'
+            checks="$(jq -c '[.[] | select(.name != "Auto-merge a patch or minor Dependabot update")]' <<<"$checks")"
+            if jq -e 'any(.[]; .bucket == "fail" or .bucket == "cancel")' <<<"$checks" >/dev/null; then
+              echo "::notice::A check did not pass; leaving the pull request open."
+              exit 0
+            fi
+            if jq -e 'length > 0 and (any(.[]; .bucket == "pending") | not)' <<<"$checks" >/dev/null; then
+              head="$(gh pr view "$PR" --repo "$REPO" --json headRefOid --jq '.headRefOid')"
+              if ! gh pr merge "$PR" --repo "$REPO" "--$MERGE_METHOD" --match-head-commit "$head"; then
+                echo "::notice::Could not merge; leaving the pull request to a person."
+              fi
+              exit 0
+            fi
+            if (( SECONDS >= deadline )); then
+              echo "::notice::Checks did not finish in time; leaving the pull request open."
+              exit 0
+            fi
+            sleep 20
+          done
