@@ -257,6 +257,15 @@ run_supervisor() {
   [ "${lines[1]}" = 'last-good=none' ]
 }
 
+@test "the supervisor reads the last good release the wrapper keeps" {
+  supervisor_env
+  mkdir -p "${home_dir}/.local/state/dsh"
+  printf '0.2.2-rc.1\n' > "${home_dir}/.local/state/dsh/last-good"
+  run_supervisor check
+  [ "$status" -eq 0 ]
+  [ "${lines[1]}" = 'last-good=0.2.2-rc.1' ]
+}
+
 @test "the supervisor refuses to start without its machine-local config" {
   supervisor_env
   rm "${dsh_dir}/web-launch.conf"

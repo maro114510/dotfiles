@@ -15,6 +15,9 @@ set -uo pipefail
 prog="dsh-web-supervisor"
 conf="${DSH_WEB_CONF:-${DSH_HOME:-${HOME}/.dsh}/web-launch.conf}"
 state_dir="${XDG_STATE_HOME:-${HOME}/.local/state}/dsh-web"
+shared_state="${XDG_STATE_HOME:-${HOME}/.local/state}/dsh"
+last_good_file="${shared_state}/last-good"
+failing_dir="${shared_state}/failing"
 dsh_bin="${HOME}/.local/bin/dsh"
 plist="${HOME}/Library/LaunchAgents/local.dsh-web.plist"
 label="local.dsh-web"
@@ -123,7 +126,8 @@ cmd_run() {
   ( "${dsh_bin}" "${web_args[@]}" ) >>"${log_file}" 2>&1 &
   local pid=$!
   if wait_healthy 120; then
-    printf '%s\n' "${version}" >"${state_dir}/last-good"
+    mkdir -p "${shared_state}"
+    printf '%s\n' "${version}" >"${last_good_file}"
     record_url
     log "dsh ${version} is healthy on port ${port}"
     notify "DSH web ${version} is running"
@@ -132,8 +136,8 @@ cmd_run() {
   fi
   kill "${pid}" 2>/dev/null || true
   wait "${pid}" 2>/dev/null || true
-  mkdir -p "${state_dir}/failing"
-  date +%s >"${state_dir}/failing/${version}"
+  mkdir -p "${failing_dir}"
+  date +%s >"${failing_dir}/${version}"
   log "dsh ${version} did not become healthy; marked failing and exiting"
   notify "DSH web ${version} failed to start"
   exit 1
@@ -143,7 +147,7 @@ cmd_status() {
   load_conf
   local version last_good pid code
   version="$("${dsh_bin}" --resolved-version 2>/dev/null || printf unknown)"
-  last_good="$(cat "${state_dir}/last-good" 2>/dev/null || printf none)"
+  last_good="$(cat "${last_good_file}" 2>/dev/null || printf none)"
   pid="$(listener_pid)"
   code="$(health_code)"
   printf 'resolved: %s\n' "${version}"
@@ -156,7 +160,7 @@ cmd_status() {
 cmd_check() {
   load_conf
   printf 'resolved=%s\n' "$("${dsh_bin}" --resolved-version 2>/dev/null || printf unknown)"
-  printf 'last-good=%s\n' "$(cat "${state_dir}/last-good" 2>/dev/null || printf none)"
+  printf 'last-good=%s\n' "$(cat "${last_good_file}" 2>/dev/null || printf none)"
 }
 
 cmd_takeover() {
@@ -193,8 +197,8 @@ cmd_takeover() {
   fi
   local version
   version="$("${dsh_bin}" --resolved-version 2>/dev/null || printf unknown)"
-  mkdir -p "${state_dir}/failing"
-  date +%s >"${state_dir}/failing/${version}"
+  mkdir -p "${failing_dir}"
+  date +%s >"${failing_dir}/${version}"
   log "the newest release failed after takeover; retrying with the last good release"
   notify "DSH web ${version} failed; rolling back"
   launchctl kickstart -k "gui/$(id -u)/${label}" || fail "cannot restart ${label}"
