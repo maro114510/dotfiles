@@ -1,0 +1,76 @@
+# Auto-merges a Dependabot pull request once every check on it has passed.
+#
+# What this workflow guarantees:
+#   - It only acts on pull requests Dependabot opened
+#   - Patch and minor updates merge with a squash merge; anything else stays open
+#   - It waits for every check on the pull request, not only the required one
+#   - It never checks out the pull request, so the privileged trigger runs no untrusted code
+#
+# The trigger is pull_request_target, not pull_request: a Dependabot pull request in a
+# public repository gets a read-only token and no secrets under pull_request, so it
+# could neither merge nor label anything.
+name: dependabot-auto-merge
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: dependabot-auto-merge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  automerge:
+    name: Auto-merge a patch or minor Dependabot update
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Read the update type
+        id: metadata
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Leave anything but a patch or minor update to a person
+        if: >-
+          steps.metadata.outputs.update-type != 'version-update:semver-patch' &&
+          steps.metadata.outputs.update-type != 'version-update:semver-minor'
+        run: echo "::notice::Not a patch or minor update; leaving the pull request open."
+
+      - name: Merge once every check has passed
+        if: >-
+          steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-minor'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          deadline=$(( SECONDS + 900 ))
+          while :; do
+            checks="$(gh pr checks "$PR" --repo "$REPO" --json name,bucket 2>/dev/null || true)"
+            [[ "$checks" == \[* ]] || checks='[]'
+            checks="$(jq -c '[.[] | select(.name != "Auto-merge a patch or minor Dependabot update")]' <<<"$checks")"
+            if jq -e 'any(.[]; .bucket == "fail" or .bucket == "cancel")' <<<"$checks" >/dev/null; then
+              echo "::notice::A check did not pass; leaving the pull request open."
+              exit 0
+            fi
+            if jq -e 'length > 0 and (any(.[]; .bucket == "pending") | not) and any(.[]; .name == "Scan for secrets" and .bucket == "pass")' <<<"$checks" >/dev/null; then
+              head="$(gh pr view "$PR" --repo "$REPO" --json headRefOid --jq '.headRefOid')"
+              if ! gh pr merge "$PR" --repo "$REPO" --squash --match-head-commit "$head"; then
+                echo "::notice::Could not merge; leaving the pull request to a person."
+              fi
+              exit 0
+            fi
+            if (( SECONDS >= deadline )); then
+              echo "::notice::Checks did not finish in time; leaving the pull request open."
+              exit 0
+            fi
+            sleep 20
+          done
