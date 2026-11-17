@@ -1,0 +1,5 @@
+#!/bin/sh
+# Runs the pinned DSH release so every Mac boots the same runtime.
+# Bump it together with the managed dependency versions in
+# private_dot_dsh/profiles/web/modify_private_package.json.
+exec npx --yes @deepseek-ai/dsh@0.2.2-rc.1 "$@"
