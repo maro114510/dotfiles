@@ -45,9 +45,6 @@
   {{- end -}}
 {{- end -}}
 {{- $profile = set $profile "bundles" $merged -}}
-{{- if not $original -}}
-  {{- $profile = set $profile "patchReload" "live" -}}
-{{- end -}}
 {{- $config = set $config "dsh" (set $dsh "profile" $profile) -}}
 {{- if and $original (deepEqual (fromJson $original) $config) -}}
 {{ .chezmoi.stdin -}}

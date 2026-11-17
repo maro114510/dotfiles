@@ -9,11 +9,6 @@
         apiKeyEnv: OPENCODE_GO_API_KEY
         baseURL: https://opencode.ai/inference/go/openai/v1
         models: []
-- id: agent-preset-registry
-  name: "@deepseek-ai/dsh-agent-preset-registry"
-  config:
-    default: standard
-    selectedDefault: standard
 - id: permission
   name: "@deepseek-ai/dsh-permission-presets"
   config:
@@ -37,10 +32,6 @@
   config:
     provider: claude
     model: claude-sonnet-5-5
-- id: dsh-context
-  name: dsh-context
-  config:
-    defaultOverviewRange: 30d
 # Not loaded until enabled: an unused server costs tens of thousands of tool-definition tokens on every request.
 - insert:
     - id: mcp-notion
