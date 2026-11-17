@@ -1,6 +1,6 @@
 {{- /* chezmoi:modify-template */ -}}
 {{- /* DSH writes this manifest when a plugin is installed from the UI, so only the shared dependencies and bundles are enforced here and everything else stays as the machine has it. */ -}}
-{{- /* Bump DSH by changing the version in dot_local/bin/executable_dsh and the dependency versions below together. */ -}}
+{{- /* The dependency versions below are the last set tested against the runtime. The dsh wrapper tracks the newest published release, so update these only after testing a new runtime. */ -}}
 {{- $dependencies := fromJson `
 {
   "@deepseek-ai/dsh-subagent-codex": "0.2.2-rc.1",

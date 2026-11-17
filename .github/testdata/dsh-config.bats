@@ -141,12 +141,128 @@ seed_manifest() {
 
 # --- wrapper ---
 
-@test "the dsh wrapper runs the pinned release and passes every argument" {
-  printf '#!/bin/sh\nprintf "%%s\\n" "$*"\n' > "${stub_dir}/npx"
+# --- wrapper ---
+
+wrapper_env() {
+  printf '#!/bin/sh\nprintf "%%s\\n" "$*" >> "%s/npx.log"\n' "${stub_dir}" > "${stub_dir}/npx"
   chmod +x "${stub_dir}/npx"
-  PATH="${stub_dir}:${PATH}" run bash "${repo_root}/dot_local/bin/executable_dsh" web --no-open
+  cat > "${stub_dir}/releases.json" <<'JSON'
+[{"tag_name":"dsh-v0.2.2-rc.2","draft":false,"published_at":"2026-11-12T02:16:12Z"},
+ {"tag_name":"dsh-v0.2.2-rc.3","draft":false,"published_at":"2026-11-13T08:05:45Z"}]
+JSON
+  cat > "${stub_dir}/dist-tags.json" <<'JSON'
+{"latest":"0.2.2-rc.1","next":"0.2.2-rc.3"}
+JSON
+  cat > "${stub_dir}/curl" <<'CURL'
+#!/bin/sh
+case "$*" in
+  *api.github.com*) [ -f "${STUB_DIR}/github-fails" ] && exit 22; cat "${STUB_DIR}/releases.json" ;;
+  *registry.npmjs.org*) cat "${STUB_DIR}/dist-tags.json" ;;
+  *) exit 22 ;;
+esac
+CURL
+  chmod +x "${stub_dir}/curl"
+  export STUB_DIR="${stub_dir}"
+  export HOME="${home_dir}"
+  export XDG_STATE_HOME="${home_dir}/.local/state"
+}
+
+run_wrapper() {
+  PATH="${stub_dir}:/opt/homebrew/bin:/usr/bin:/bin" run bash "${repo_root}/dot_local/bin/executable_dsh" "$@"
+}
+
+@test "the dsh wrapper runs the newest published release and passes every argument" {
+  wrapper_env
+  run_wrapper web --no-open
   [ "$status" -eq 0 ]
-  [ "$output" = '--yes @deepseek-ai/dsh@0.2.2-rc.1 web --no-open' ]
+  [ "$(cat "${stub_dir}/npx.log")" = '--yes @deepseek-ai/dsh@0.2.2-rc.3 web --no-open' ]
+}
+
+@test "the dsh wrapper reuses a fresh resolution instead of asking again" {
+  wrapper_env
+  run_wrapper --resolved-version
+  run_wrapper --resolved-version
+  [ "$status" -eq 0 ]
+  [ "$output" = '0.2.2-rc.3' ]
+  [ ! -e "${stub_dir}/npx.log" ]
+}
+
+@test "the dsh wrapper honors DSH_VERSION" {
+  wrapper_env
+  DSH_VERSION=0.2.2-rc.9 run_wrapper web
+  [ "$status" -eq 0 ]
+  [ "$(cat "${stub_dir}/npx.log")" = '--yes @deepseek-ai/dsh@0.2.2-rc.9 web' ]
+}
+
+@test "the dsh wrapper falls back to npm when GitHub is unreachable" {
+  wrapper_env
+  : > "${stub_dir}/github-fails"
+  run_wrapper --resolved-version
+  [ "$status" -eq 0 ]
+  [ "$output" = '0.2.2-rc.3' ]
+}
+
+@test "a release marked failing is replaced by the last good one" {
+  wrapper_env
+  mkdir -p "${home_dir}/.local/state/dsh/failing"
+  printf '%s\n' "$(date +%s)" > "${home_dir}/.local/state/dsh/failing/0.2.2-rc.3"
+  printf '%s\n' 0.2.2-rc.1 > "${home_dir}/.local/state/dsh/last-good"
+  run_wrapper --resolved-version
+  [ "$status" -eq 0 ]
+  [[ "${output}" == *0.2.2-rc.1* ]]
+}
+
+@test "the wrapper no longer pins a release" {
+  ! grep -q '@deepseek-ai/dsh@0\.' "${repo_root}/dot_local/bin/executable_dsh"
+}
+
+# --- LaunchAgent and supervisor ---
+
+apply_agent() {
+  mkdir -p "${home_dir}/Library/LaunchAgents"
+  HOME="${home_dir}" "${chezmoi_bin}" --config "${home_dir}/chezmoi.toml" \
+    --source "${repo_root}" --destination "${home_dir}" apply "${home_dir}/Library/LaunchAgents/local.dsh-web.plist"
+}
+
+supervisor_env() {
+  mkdir -p "${home_dir}/.local/bin" "${dsh_dir}" "${home_dir}/.local/state/dsh-web"
+  printf '#!/bin/sh\n[ "${1:-}" = "--resolved-version" ] && { echo 0.2.2-rc.3; exit 0; }\nexit 0\n' \
+    > "${home_dir}/.local/bin/dsh"
+  chmod +x "${home_dir}/.local/bin/dsh"
+  printf 'PORT=3080\nPUBLIC_URL=https://example.invalid/\nTRUSTED_HOST=example.invalid\n' \
+    > "${dsh_dir}/web-launch.conf"
+}
+
+run_supervisor() {
+  HOME="${home_dir}" DSH_HOME="${dsh_dir}" PATH="${stub_dir}:/opt/homebrew/bin:/usr/bin:/bin" \
+    run bash "${repo_root}/dot_local/bin/executable_dsh-web-supervisor" "$@"
+}
+
+@test "a LaunchAgent keeps the Web GUI on the newest release" {
+  run apply_agent
+  [ "$status" -eq 0 ]
+  agent="${home_dir}/Library/LaunchAgents/local.dsh-web.plist"
+  [ -f "${agent}" ]
+  grep -q '<string>local.dsh-web</string>' "${agent}"
+  grep -q 'dsh-web-supervisor' "${agent}"
+  grep -A1 '<key>KeepAlive</key>' "${agent}" | grep -q '<true/>'
+  grep -A1 '<key>RunAtLoad</key>' "${agent}" | grep -q '<true/>'
+}
+
+@test "the supervisor reports the resolved and last good releases" {
+  supervisor_env
+  run_supervisor check
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = 'resolved=0.2.2-rc.3' ]
+  [ "${lines[1]}" = 'last-good=none' ]
+}
+
+@test "the supervisor refuses to start without its machine-local config" {
+  supervisor_env
+  rm "${dsh_dir}/web-launch.conf"
+  run_supervisor status
+  [ "$status" -ne 0 ]
+  [[ "$output" == *web-launch.conf* ]]
 }
 
 # --- install script ---
@@ -217,9 +333,4 @@ run_install() {
   [[ "$output" == *failed* ]]
 }
 
-@test "the wrapper version matches the managed DSH subagent dependency" {
-  wrapper_version="$(sed -n 's/.*@deepseek-ai\/dsh@\([^ ]*\) .*/\1/p' "${repo_root}/dot_local/bin/executable_dsh")"
-  run apply
-  [ "$status" -eq 0 ]
-  [ "$(jq -r '.dependencies["@deepseek-ai/dsh-subagent-codex"]' "${manifest}")" = "${wrapper_version}" ]
-}
+
