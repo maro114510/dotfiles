@@ -1,0 +1,229 @@
+#!/bin/bash
+# Keeps the DSH Web GUI on the newest published release.
+# run      starts the server and waits for it; launchd restarts it when it exits.
+# status   shows the resolved release, the last good one, the listener and health.
+# check    prints the resolved and last-good releases.
+# takeover stops a running server, loads the LaunchAgent, and starts the supervised one.
+#
+# Machine-local values live in ~/.dsh/web-launch.conf, never in this repository:
+#   PORT=3080
+#   PUBLIC_URL=https://example.ts.net/
+#   TRUSTED_HOST=example.ts.net
+#   PATCH_FILE=/Users/me/.dsh/web-extra.patch.yml
+set -uo pipefail
+
+prog="dsh-web-supervisor"
+conf="${DSH_WEB_CONF:-${DSH_HOME:-${HOME}/.dsh}/web-launch.conf}"
+state_dir="${XDG_STATE_HOME:-${HOME}/.local/state}/dsh-web"
+shared_state="${XDG_STATE_HOME:-${HOME}/.local/state}/dsh"
+last_good_file="${shared_state}/last-good"
+failing_dir="${shared_state}/failing"
+dsh_bin="${HOME}/.local/bin/dsh"
+plist="${HOME}/Library/LaunchAgents/local.dsh-web.plist"
+label="local.dsh-web"
+log_file="${state_dir}/server.log"
+launchd_log="${state_dir}/launchd.log"
+url_file="${state_dir}/url"
+port="3080"
+public_url=""
+trusted_host=""
+patch_file=""
+
+mkdir -p "${state_dir}"
+
+log() {
+  printf '%s %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" | tee -a "${launchd_log}" >&2
+}
+
+notify() {
+  command -v osascript >/dev/null 2>&1 || return 0
+  osascript -e "display notification \"$1\" with title \"DSH web\"" >/dev/null 2>&1 || true
+}
+
+fail() {
+  log "error: $*"
+  exit 1
+}
+
+load_conf() {
+  [ -f "${conf}" ] || fail "missing ${conf}; copy the keys from docs/dsh.md"
+  while IFS='=' read -r key value; do
+    case "${key}" in
+      PORT) port="${value}" ;;
+      PUBLIC_URL) public_url="${value}" ;;
+      TRUSTED_HOST) trusted_host="${value}" ;;
+      PATCH_FILE) patch_file="${value}" ;;
+      '' | '#'*) ;;
+      *) : ;;
+    esac
+  done <"${conf}"
+  case "${port}" in
+    '' | *[!0-9]*) fail "PORT must be a number in ${conf}" ;;
+  esac
+  [ -n "${public_url}" ] || fail "PUBLIC_URL is required in ${conf}"
+  [ -n "${trusted_host}" ] || fail "TRUSTED_HOST is required in ${conf}"
+}
+
+resolved_version() {
+  [ -x "${dsh_bin}" ] || fail "${dsh_bin} is missing; apply dotfiles first"
+  "${dsh_bin}" --resolved-version || fail "cannot resolve the newest release"
+}
+
+lsof_bin=""
+if command -v lsof >/dev/null 2>&1; then
+  lsof_bin="$(command -v lsof)"
+elif [ -x /usr/sbin/lsof ]; then
+  lsof_bin="/usr/sbin/lsof"
+fi
+
+listener_pid() {
+  [ -n "${lsof_bin}" ] || return 1
+  "${lsof_bin}" -nP -iTCP:"${port}" -sTCP:LISTEN -t 2>/dev/null | head -1
+}
+
+port_free() {
+  [ -n "${lsof_bin}" ] || fail "lsof is required to check whether port ${port} is free"
+  [ -z "$(listener_pid)" ]
+}
+
+health_code() {
+  curl -s -o /dev/null -m 2 -w '%{http_code}' "http://127.0.0.1:${port}/" 2>/dev/null || true
+}
+
+healthy() {
+  case "$(health_code)" in 200 | 401) return 0 ;; *) return 1 ;; esac
+}
+
+wait_healthy() {
+  local deadline=$((SECONDS + ${1:-120}))
+  while [ "${SECONDS}" -lt "${deadline}" ]; do
+    healthy && return 0
+    sleep 2
+  done
+  return 1
+}
+
+web_arguments() {
+  web_args=(web --no-open --public-url "${public_url}" --trusted-host "${trusted_host}")
+  [ -n "${patch_file}" ] && [ -f "${patch_file}" ] && web_args+=(--patch "${patch_file}")
+  [ "${#web_args[@]}" -gt 0 ]
+}
+
+record_url() {
+  local found
+  found="$(grep -Eo 'https?://[^ ]*token=[A-Za-z0-9._-]+' "${log_file}" 2>/dev/null | tail -1)"
+  [ -n "${found}" ] && printf '%s\n' "${found}" >"${url_file}"
+}
+
+cmd_run() {
+  load_conf
+  local version
+  version="$(resolved_version)" || exit 3
+  # A manually started server may still hold the port. Stay alive and wait for
+  # it to exit instead of exiting, so launchd does not restart this job in a loop.
+  if ! port_free; then
+    log "port ${port} is used by pid $(listener_pid); waiting for it to exit"
+    local waited=0
+    while ! port_free; do
+      [ "${waited}" -ge 3600 ] && fail "port ${port} stayed busy for an hour"
+      sleep 5
+      waited=$((waited + 5))
+    done
+  fi
+  web_arguments
+  log "starting dsh ${version}: dsh ${web_args[*]}"
+  ( "${dsh_bin}" "${web_args[@]}" ) >>"${log_file}" 2>&1 &
+  local pid=$!
+  if wait_healthy 120; then
+    mkdir -p "${shared_state}"
+    printf '%s\n' "${version}" >"${last_good_file}"
+    record_url
+    log "dsh ${version} is healthy on port ${port}"
+    notify "DSH web ${version} is running"
+    wait "${pid}"
+    exit $?
+  fi
+  kill "${pid}" 2>/dev/null || true
+  wait "${pid}" 2>/dev/null || true
+  mkdir -p "${failing_dir}"
+  date +%s >"${failing_dir}/${version}"
+  log "dsh ${version} did not become healthy; marked failing and exiting"
+  notify "DSH web ${version} failed to start"
+  exit 1
+}
+
+cmd_status() {
+  load_conf
+  local version last_good pid code
+  version="$("${dsh_bin}" --resolved-version 2>/dev/null || printf unknown)"
+  last_good="$(cat "${last_good_file}" 2>/dev/null || printf none)"
+  pid="$(listener_pid)"
+  code="$(health_code)"
+  printf 'resolved: %s\n' "${version}"
+  printf 'last-good: %s\n' "${last_good}"
+  printf 'listener: %s\n' "${pid:-none}"
+  printf 'health: %s\n' "${code:-none}"
+  printf 'url: %s\n' "$(cat "${url_file}" 2>/dev/null || printf none)"
+}
+
+cmd_check() {
+  load_conf
+  printf 'resolved=%s\n' "$("${dsh_bin}" --resolved-version 2>/dev/null || printf unknown)"
+  printf 'last-good=%s\n' "$(cat "${last_good_file}" 2>/dev/null || printf none)"
+}
+
+cmd_takeover() {
+  load_conf
+  local pid
+  pid="$(listener_pid)"
+  if [ -n "${pid}" ]; then
+    if ps -o command= -p "${pid}" | grep -q 'dsh.*web'; then
+      log "stopping the running DSH web server on pid ${pid}"
+      kill -TERM "${pid}" 2>/dev/null || true
+      local deadline=$((SECONDS + 20))
+      while [ "${SECONDS}" -lt "${deadline}" ] && [ -n "$(listener_pid)" ]; do
+        sleep 1
+      done
+      if [ -n "$(listener_pid)" ]; then
+        kill -KILL "${pid}" 2>/dev/null || true
+        sleep 1
+      fi
+    else
+      fail "port ${port} is held by pid ${pid}, which is not a DSH web server"
+    fi
+  fi
+  command -v launchctl >/dev/null 2>&1 || fail "launchctl is unavailable"
+  if ! launchctl print "gui/$(id -u)/${label}" >/dev/null 2>&1; then
+    [ -f "${plist}" ] || fail "missing ${plist}; apply dotfiles first"
+    launchctl bootstrap "gui/$(id -u)" "${plist}" || fail "cannot load ${label}"
+  fi
+  launchctl kickstart -k "gui/$(id -u)/${label}" || fail "cannot start ${label}"
+  if wait_healthy 150; then
+    log "takeover complete on port ${port}"
+    notify "DSH web is running on the newest release"
+    cmd_status
+    exit 0
+  fi
+  local version
+  version="$("${dsh_bin}" --resolved-version 2>/dev/null || printf unknown)"
+  mkdir -p "${failing_dir}"
+  date +%s >"${failing_dir}/${version}"
+  log "the newest release failed after takeover; retrying with the last good release"
+  notify "DSH web ${version} failed; rolling back"
+  launchctl kickstart -k "gui/$(id -u)/${label}" || fail "cannot restart ${label}"
+  wait_healthy 150 || fail "the last good release did not become healthy"
+  log "rollback complete on port ${port}"
+  notify "DSH web rolled back to the last good release"
+  cmd_status
+}
+
+case "${1:-run}" in
+  run) cmd_run ;;
+  status) cmd_status ;;
+  check) cmd_check ;;
+  takeover) cmd_takeover ;;
+  *)
+    printf '%s\n' "usage: ${prog} [run|status|check|takeover]" >&2
+    exit 2
+    ;;
+esac
