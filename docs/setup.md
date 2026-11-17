@@ -203,7 +203,17 @@ test -f "$HOME/.raycast/memo-search/raycast-env.d.ts"
 Finally, register the extension in Raycast: **Raycast → Import Extension →
 `~/.raycast/memo-search`**.
 
-## 9. Verify
+## 9. DSH
+
+`chezmoi apply` deploys the shared DSH configuration and installs the web profile's plugins when `pnpm` is available.
+See [docs/dsh.md](dsh.md) for what dotfiles owns and how to change it.
+
+```bash
+dsh --version                      # 0.2.2-rc.1
+dsh --profile web --dump-config    # shows the shared policy
+```
+
+## 10. Verify
 
 ```bash
 chezmoi diff        # no output
