@@ -49,7 +49,7 @@ Credentials, sessions, and other runtime state stay out of this repository.
 
 - The shared policy sets approval `never` with full access, so every restored Mac inherits it.
 - The pinned DSH release is a prerelease, so a bump needs the coordinated change above.
-- The first restore needs network access for `npx` and `pnpm`.
+- The first restore needs network access for `npx` and `pnpm`. A failed install prints a message and the apply still succeeds, so run `dsh plugin --profile web install` again before `dsh web`.
 - The home patch applies to every profile, so a Notion server that someone enables is defined in profiles that did not load it before.
 - A UI change to a setting that the home patch overrides is refused, and a change to a managed dependency or bundle is restored by the next apply.
 - Local additions are preserved, but their transitive versions can differ between Macs.
