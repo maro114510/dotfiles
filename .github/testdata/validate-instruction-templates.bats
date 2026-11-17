@@ -3,13 +3,13 @@
 setup() {
   repo_root="$(cd "${BATS_TEST_DIRNAME}/../.." && pwd)"
   source_dir="$(mktemp -d)"
-  mkdir -p "${source_dir}/dot_claude/rules" "${source_dir}/dot_codex" "${source_dir}/dot_pi/agent" "${source_dir}/dot_dsh" \
+  mkdir -p "${source_dir}/dot_claude/rules" "${source_dir}/dot_codex" "${source_dir}/dot_pi/agent" "${source_dir}/private_dot_dsh" \
     "${source_dir}/dot_config/opencode" "${source_dir}/.chezmoitemplates/agents"
   cp "${repo_root}/.chezmoitemplates/agents/"* "${source_dir}/.chezmoitemplates/agents/"
   cp "${repo_root}/dot_claude/rules/AGENTS.md.tmpl" "${source_dir}/dot_claude/rules/"
   cp "${repo_root}/dot_codex/AGENTS.md.tmpl" "${source_dir}/dot_codex/"
   cp "${repo_root}/dot_pi/agent/AGENTS.md.tmpl" "${source_dir}/dot_pi/agent/"
-  cp "${repo_root}/dot_dsh/AGENTS.md.tmpl" "${source_dir}/dot_dsh/"
+  cp "${repo_root}/private_dot_dsh/AGENTS.md.tmpl" "${source_dir}/private_dot_dsh/"
   cp "${repo_root}/dot_config/opencode/AGENTS.md.tmpl" "${source_dir}/dot_config/opencode/"
 }
 
@@ -41,7 +41,7 @@ teardown() {
 }
 
 @test "a DSH instruction file without the common body fails validation" {
-  printf '# DSH-specific content only\n' > "${source_dir}/dot_dsh/AGENTS.md.tmpl"
+  printf '# DSH-specific content only\n' > "${source_dir}/private_dot_dsh/AGENTS.md.tmpl"
   run bash "${repo_root}/.github/testdata/validate-instruction-templates.sh" "${source_dir}"
   [ "$status" -ne 0 ]
 }

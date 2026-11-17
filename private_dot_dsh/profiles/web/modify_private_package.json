@@ -1,0 +1,56 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* DSH writes this manifest when a plugin is installed from the UI, so only the shared dependencies and bundles are enforced here and everything else stays as the machine has it. */ -}}
+{{- /* Bump DSH by changing the version in dot_local/bin/executable_dsh and the dependency versions below together. */ -}}
+{{- $dependencies := fromJson `
+{
+  "@deepseek-ai/dsh-subagent-codex": "0.2.2-rc.1",
+  "@wxg-prc-cpg/browser-skill-dsh-plugin": "0.5.0",
+  "dsh-context": "0.84.1",
+  "dsh-mermaid": "^0.4.5",
+  "dsh-ops": "^0.5.4",
+  "dsh-plugin-subscriptions": "^0.9.13",
+  "dshmarket": "^1.73.19"
+}
+` -}}
+{{- /* The order is the precedence order of the layers, so the managed bundles keep this order and local additions follow them. */ -}}
+{{- $bundles := list
+  "@deepseek-ai/dsh-base"
+  "@deepseek-ai/dsh-web-app"
+  "@deepseek-ai/dsh-experimental-agent-team-profile"
+  "@deepseek-ai/dsh-experimental-auto-review"
+  "@deepseek-ai/dsh-experimental-inspector-profile"
+  "dsh-plugin-subscriptions"
+  "@deepseek-ai/dsh-experimental-forge-bundle"
+  "@deepseek-ai/dsh-experimental-plugin-market-bundle"
+  "@deepseek-ai/dsh-subagent-codex"
+  "dsh-mermaid"
+  "@deepseek-ai/dsh-experimental-session-titles-bundle"
+  "dshmarket"
+  "dsh-context"
+  "@wxg-prc-cpg/browser-skill-dsh-plugin"
+  "dsh-ops"
+-}}
+{{- $original := .chezmoi.stdin | trim -}}
+{{- $config := dict "name" "dsh-profile-web" "private" true -}}
+{{- if $original -}}
+  {{- $config = fromJson $original -}}
+{{- end -}}
+{{- $config = set $config "dependencies" (mergeOverwrite (get $config "dependencies" | default dict) $dependencies) -}}
+{{- $dsh := get $config "dsh" | default dict -}}
+{{- $profile := get $dsh "profile" | default dict -}}
+{{- $merged := $bundles -}}
+{{- range (get $profile "bundles" | default list) -}}
+  {{- if not (has . $bundles) -}}
+    {{- $merged = append $merged . -}}
+  {{- end -}}
+{{- end -}}
+{{- $profile = set $profile "bundles" $merged -}}
+{{- if not $original -}}
+  {{- $profile = set $profile "patchReload" "live" -}}
+{{- end -}}
+{{- $config = set $config "dsh" (set $dsh "profile" $profile) -}}
+{{- if and $original (deepEqual (fromJson $original) $config) -}}
+{{ .chezmoi.stdin -}}
+{{- else -}}
+{{ toPrettyJson $config }}
+{{ end -}}

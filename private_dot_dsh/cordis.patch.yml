@@ -1,0 +1,53 @@
+# Shared DSH policy, applied after every profile layer and never written by DSH.
+# A patch entry replaces the whole configuration of its target, so each entry restates every setting it keeps.
+# Web UI preferences stay in ~/.dsh/profiles/web/cordis.patch.yml, which DSH writes.
+- id: llm-pi-ai
+  name: "@deepseek-ai/dsh-llm-pi-ai"
+  config:
+    providers:
+      opencode-go:
+        apiKeyEnv: OPENCODE_GO_API_KEY
+        baseURL: https://opencode.ai/inference/go/openai/v1
+        models: []
+- id: agent-preset-registry
+  name: "@deepseek-ai/dsh-agent-preset-registry"
+  config:
+    default: standard
+    selectedDefault: standard
+- id: permission
+  name: "@deepseek-ai/dsh-permission-presets"
+  config:
+    presets:
+      read-only:
+        sandbox: read-only
+        approval: ask
+      workspace-write:
+        sandbox: workspace-write
+        approval: ask
+      danger-full-access:
+        sandbox: danger-full-access
+        approval: never
+    defaultPreset: danger-full-access
+- id: session-log-deepseek
+  name: "@deepseek-ai/dsh-session-log-deepseek"
+  config:
+    enabled: false
+- id: agent-default-model
+  name: "@deepseek-ai/dsh-agent-default-model"
+  config:
+    provider: claude
+    model: claude-sonnet-5-5
+- id: dsh-context
+  name: dsh-context
+  config:
+    defaultOverviewRange: 30d
+# Not loaded until enabled: an unused server costs tens of thousands of tool-definition tokens on every request.
+- insert:
+    - id: mcp-notion
+      disabled: true
+      name: "@deepseek-ai/dsh-mcp-client"
+      config:
+        serverName: notion
+        transport: stdio
+        command: npx
+        args: [ "-y", "mcp-remote", "https://mcp.notion.com/mcp" ]
