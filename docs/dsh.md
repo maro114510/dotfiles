@@ -48,7 +48,6 @@ Credentials, sessions, and other runtime state stay out of this repository.
 ## Risks
 
 - The shared policy sets approval `never` with full access, so every restored Mac inherits it.
-- A UI change to a managed dependency or bundle is restored by the next apply.
 - The pinned DSH release is a prerelease, so a bump needs the coordinated change above.
 - The first restore needs network access for `npx` and `pnpm`.
 - The home patch applies to every profile, so a Notion server that someone enables is defined in profiles that did not load it before.

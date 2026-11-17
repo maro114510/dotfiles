@@ -31,7 +31,7 @@ apply() {
 }
 
 mode_of() {
-  stat -f %Lp "$1" 2>/dev/null || stat -c %a "$1"
+  stat -c %a "$1" 2>/dev/null || stat -f %Lp "$1"
 }
 
 seed_manifest() {
@@ -158,7 +158,8 @@ stub_install_env() {
   printf '#!/bin/sh\nprintf "%%s\\n" "$*" >> "%s/dsh.log"\n' "${stub_dir}" > "${home_dir}/.local/bin/dsh"
   chmod +x "${home_dir}/.local/bin/dsh"
   printf '#!/bin/sh\n' > "${stub_dir}/pnpm"
-  chmod +x "${stub_dir}/pnpm"
+  printf '#!/bin/sh\n' > "${stub_dir}/npx"
+  chmod +x "${stub_dir}/pnpm" "${stub_dir}/npx"
   : > "${manifest}"
 }
 
@@ -197,4 +198,28 @@ run_install() {
   [ "$status" -eq 0 ]
   [[ "$output" == *skipping* ]]
   [ ! -e "${stub_dir}/dsh.log" ]
+}
+
+@test "the install script skips with a message when npx is missing" {
+  stub_install_env
+  rm "${stub_dir}/npx"
+  run_install
+  [ "$status" -eq 0 ]
+  [[ "$output" == *skipping* ]]
+  [ ! -e "${stub_dir}/dsh.log" ]
+}
+
+@test "the install script reports a failed install and still succeeds" {
+  stub_install_env
+  printf '#!/bin/sh\nexit 1\n' > "${home_dir}/.local/bin/dsh"
+  run_install
+  [ "$status" -eq 0 ]
+  [[ "$output" == *failed* ]]
+}
+
+@test "the wrapper version matches the managed DSH subagent dependency" {
+  wrapper_version="$(sed -n 's/.*@deepseek-ai\/dsh@\([^ ]*\) .*/\1/p' "${repo_root}/dot_local/bin/executable_dsh")"
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -r '.dependencies["@deepseek-ai/dsh-subagent-codex"]' "${manifest}")" = "${wrapper_version}" ]
 }
