@@ -47,9 +47,9 @@ finish_source() {
   resolve_source
   local source="${SOURCE}"
 
-  git -C "${source}" switch "${BASE_BRANCH}"
-  git -C "${source}" pull --ff-only
-  chezmoi apply
+  git -C "${source}" switch "${BASE_BRANCH}" || fail "git switch ${BASE_BRANCH} failed"
+  git -C "${source}" pull --ff-only || fail "git pull --ff-only failed"
+  chezmoi apply || fail "chezmoi apply failed"
 }
 
 main() {
@@ -80,6 +80,9 @@ main() {
     esac
   done
   if [ -n "${finish}" ]; then
+    if [ -n "${message}" ] || [ ${#} -gt 0 ]; then
+      fail "--finish takes no commit message"
+    fi
     finish_source
     return 0
   fi
