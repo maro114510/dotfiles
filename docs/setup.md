@@ -224,6 +224,23 @@ gh auth status
 pi list              # pi-claude-code is present
 ```
 
+## Notifications for items that wait on you
+
+`chezmoi apply` sets the git setting `skills.notify` to
+`notify-owner "$1" "$2"`. The orchestrate-epic skill runs that command each
+time a child Issue starts waiting for your answer or your merge, and repeats it
+hourly while the item remains. `notify-owner` ships with the other
+`dot_local/bin` commands: it shows the message and the Issue link through Herdr
+when Herdr is on `PATH`, and through macOS Notification Center otherwise. Herdr
+is not in the `Brewfile`, so a rebuilt machine notifies from the notification
+center until you install Herdr.
+
+Check the setting:
+
+```bash
+git config --global --get skills.notify   # notify-owner "$1" "$2"
+```
+
 ## Applying changes on another Mac
 
 Fetch `main` in the chezmoi source, review the pending changes, then apply them:
