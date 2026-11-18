@@ -24,7 +24,7 @@ jobs:
     name: Auto-merge a patch or minor Dependabot update
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - name: Read the update type
         id: metadata
@@ -47,30 +47,75 @@ jobs:
           REPO: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
           MERGE_METHOD: ${{ inputs.merge-method }}
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
           case "$MERGE_METHOD" in
             squash|merge|rebase) ;;
             *) echo "::error::Unsupported merge-method: $MERGE_METHOD"; exit 1 ;;
           esac
+          # The update type was checked for EXPECTED_HEAD. Never merge a newer revision
+          # with the metadata or the green checks from an older one.
           deadline=$(( SECONDS + 1500 ))
+          stable_checks=""
+          stable_since=0
           while :; do
-            checks="$(gh pr checks "$PR" --repo "$REPO" --json name,bucket 2>/dev/null || true)"
-            [[ "$checks" == \[* ]] || checks='[]'
-            checks="$(jq -c '[.[] | select(.name != "Auto-merge a patch or minor Dependabot update")]' <<<"$checks")"
+            head_before="$(gh pr view "$PR" --repo "$REPO" --json headRefOid --jq '.headRefOid')"
+            if [[ "$head_before" != "$EXPECTED_HEAD" ]]; then
+              echo "::notice::PR head changed; a synchronize run must re-evaluate the update."
+              exit 0
+            fi
+
+            # gh returns nonzero for failed/pending checks even when JSON is valid.
+            # A genuine API failure must not be interpreted as an empty check list.
+            checks="$(gh pr checks "$PR" --repo "$REPO" --json name,bucket 2>/dev/null)" || true
+            if ! jq -e 'type == "array" and all(.[]; (.name | type) == "string" and (.bucket | IN("pass", "fail", "pending", "skipping", "cancel")))' <<<"$checks" >/dev/null; then
+              echo "::error::Could not read a valid, complete PR check list."
+              exit 1
+            fi
+            # Do not exclude checks by name: another job may use the same display name.
             if jq -e 'any(.[]; .bucket == "fail" or .bucket == "cancel")' <<<"$checks" >/dev/null; then
-              echo "::notice::A check did not pass; leaving the pull request open."
+              echo "::notice::A check failed or was cancelled; leaving the PR open."
               exit 0
             fi
-            if jq -e 'length > 0 and (any(.[]; .bucket == "pending") | not)' <<<"$checks" >/dev/null; then
-              head="$(gh pr view "$PR" --repo "$REPO" --json headRefOid --jq '.headRefOid')"
-              if ! gh pr merge "$PR" --repo "$REPO" "--$MERGE_METHOD" --match-head-commit "$head"; then
-                echo "::notice::Could not merge; leaving the pull request to a person."
+
+            if jq -e 'length > 0 and all(.[]; .bucket == "pass" or .bucket == "skipping")' <<<"$checks" >/dev/null; then
+              # Give slow-to-register checks time to appear before accepting the set.
+              signature="$(jq -cS 'sort_by(.name, .bucket) | map({name, bucket})' <<<"$checks")"
+              if [[ "$signature" != "$stable_checks" ]]; then
+                stable_checks="$signature"
+                stable_since=$SECONDS
               fi
-              exit 0
+
+              if (( SECONDS - stable_since >= 60 )); then
+                # Recheck the check set and head after the settling period. A final
+                # --match-head-commit also closes the last head-update race.
+                final_checks="$(gh pr checks "$PR" --repo "$REPO" --json name,bucket 2>/dev/null)" || true
+                if ! jq -e 'type == "array" and all(.[]; (.name | type) == "string" and (.bucket | IN("pass", "fail", "pending", "skipping", "cancel")))' <<<"$final_checks" >/dev/null; then
+                  echo "::error::Could not re-read PR checks."
+                  exit 1
+                fi
+                final_signature="$(jq -cS 'sort_by(.name, .bucket) | map({name, bucket})' <<<"$final_checks")"
+                if [[ "$final_signature" == "$signature" ]] &&
+                  jq -e 'length > 0 and all(.[]; .bucket == "pass" or .bucket == "skipping")' <<<"$final_checks" >/dev/null; then
+                  head_after="$(gh pr view "$PR" --repo "$REPO" --json headRefOid --jq '.headRefOid')"
+                  if [[ "$head_after" != "$EXPECTED_HEAD" ]]; then
+                    echo "::notice::PR head changed during check polling; leaving it open."
+                    exit 0
+                  fi
+                  if ! gh pr merge "$PR" --repo "$REPO" "--$MERGE_METHOD" --match-head-commit "$EXPECTED_HEAD"; then
+                    echo "::notice::Could not merge; leaving the PR to a person."
+                  fi
+                  exit 0
+                fi
+                stable_checks=""
+              fi
+            else
+              stable_checks=""
             fi
+
             if (( SECONDS >= deadline )); then
-              echo "::notice::Checks did not finish in time; leaving the pull request open."
+              echo "::notice::Checks did not settle in time; leaving the PR open."
               exit 0
             fi
             sleep 20
