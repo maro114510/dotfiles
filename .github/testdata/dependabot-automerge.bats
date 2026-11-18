@@ -15,6 +15,7 @@ setup() {
   awk '
     /^        run: \|$/ { in_run=1; next }
     in_run && /^          / { sub(/^          /, ""); print; next }
+    in_run && /^$/ { print ""; next }
     in_run { exit }
   ' "$BATS_TEST_DIRNAME/../workflows/reusable-dependabot-auto-merge.yml" > "$TEST_TMP/merge.sh"
   [ -s "$TEST_TMP/merge.sh" ]
