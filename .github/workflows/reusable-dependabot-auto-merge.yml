@@ -5,9 +5,9 @@
 # and the merge method. The workflow never checks out a pull request, so the
 # privileged trigger runs no untrusted code.
 #
-# The trigger is pull_request_target, not pull_request: a Dependabot pull request
-# in a public repository gets a read-only token and no secrets under pull_request,
-# so a job on that trigger could neither label nor merge.
+# For public repositories, pull_request_target requires an applicable Actions
+# event policy that allows the event (default policy enforcement: 2026-12-02).
+# Dependabot-triggered pull_request also normally has a read-only token.
 name: reusable-dependabot-auto-merge
 
 on:
@@ -18,13 +18,18 @@ on:
         required: false
         type: string
         default: squash
+      wait-minutes:
+        description: Polling deadline (1 to 25 minutes)
+        required: false
+        type: number
+        default: 20
 
 jobs:
   automerge:
     name: Auto-merge a patch or minor Dependabot update
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - name: Read the update type
         id: metadata
@@ -47,30 +52,60 @@ jobs:
           REPO: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
           MERGE_METHOD: ${{ inputs.merge-method }}
+          WAIT_MINUTES: ${{ inputs.wait-minutes }}
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
           case "$MERGE_METHOD" in
             squash|merge|rebase) ;;
             *) echo "::error::Unsupported merge-method: $MERGE_METHOD"; exit 1 ;;
           esac
-          deadline=$(( SECONDS + 1500 ))
+          if ! [[ "$WAIT_MINUTES" =~ ^([1-9]|1[0-9]|2[0-5])$ ]]; then
+            echo "::error::wait-minutes must be an integer between 1 and 25"
+            exit 1
+          fi
+          deadline=$(( SECONDS + WAIT_MINUTES * 60 ))
           while :; do
-            checks="$(gh pr checks "$PR" --repo "$REPO" --json name,bucket 2>/dev/null || true)"
-            [[ "$checks" == \[* ]] || checks='[]'
-            checks="$(jq -c '[.[] | select(.name != "Auto-merge a patch or minor Dependabot update")]' <<<"$checks")"
-            if jq -e 'any(.[]; .bucket == "fail" or .bucket == "cancel")' <<<"$checks" >/dev/null; then
-              echo "::notice::A check did not pass; leaving the pull request open."
+            head="$(gh pr view "$PR" --repo "$REPO" --json headRefOid --jq '.headRefOid')"
+            if [[ "$head" != "$EXPECTED_HEAD" ]]; then
+              echo "::notice::PR head changed; a new run must handle it."
               exit 0
             fi
-            if jq -e 'length > 0 and (any(.[]; .bucket == "pending") | not)' <<<"$checks" >/dev/null; then
+
+            # gh pr checks can exit nonzero when checks are pending or failed,
+            # even if its stdout contains valid JSON. Do not ignore malformed output.
+            raw="$(gh pr checks "$PR" --repo "$REPO" --json name,bucket,link)" || :
+            if ! jq -e 'type == "array" and all(.[]; .bucket | type == "string")' <<<"$raw" >/dev/null; then
+              echo "::error::Unable to retrieve a valid check list"
+              exit 1
+            fi
+
+            # Exclude checks belonging to this Actions run only.
+            # E2E must confirm the link format for a reusable workflow.
+            checks="$(jq -c --arg self "/actions/runs/${GITHUB_RUN_ID}" \
+              '[.[] | select((.link // "" | contains($self)) | not)]' <<<"$raw")"
+            if jq -e 'any(.[]; .bucket == "fail" or .bucket == "cancel")' <<<"$checks" >/dev/null; then
+              echo "::notice::A check failed or was cancelled; leaving the PR open."
+              exit 0
+            fi
+            if jq -e 'any(.[]; .bucket != "pass" and .bucket != "skipping" and .bucket != "pending")' <<<"$checks" >/dev/null; then
+              echo "::error::Unknown check state; refusing to merge."
+              exit 1
+            fi
+            if jq -e 'length > 0 and all(.[]; .bucket == "pass" or .bucket == "skipping")' <<<"$checks" >/dev/null; then
               head="$(gh pr view "$PR" --repo "$REPO" --json headRefOid --jq '.headRefOid')"
-              if ! gh pr merge "$PR" --repo "$REPO" "--$MERGE_METHOD" --match-head-commit "$head"; then
-                echo "::notice::Could not merge; leaving the pull request to a person."
+              if [[ "$head" != "$EXPECTED_HEAD" ]]; then
+                echo "::notice::PR head changed while evaluating checks."
+                exit 0
+              fi
+              if ! gh pr merge "$PR" --repo "$REPO" "--$MERGE_METHOD" \
+                --match-head-commit "$EXPECTED_HEAD"; then
+                echo "::warning::Merge was rejected; check permissions and branch rules."
               fi
               exit 0
             fi
             if (( SECONDS >= deadline )); then
-              echo "::notice::Checks did not finish in time; leaving the pull request open."
+              echo "::notice::Checks did not finish in time; leaving the PR open."
               exit 0
             fi
             sleep 20
