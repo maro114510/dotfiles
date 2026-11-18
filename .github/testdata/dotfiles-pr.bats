@@ -33,7 +33,14 @@ setup() {
   mkdir -p "${sandbox}/bin"
   cat >"${sandbox}/bin/chezmoi" <<EOF
 #!/bin/bash
-[ "\${1:-}" = "source-path" ] && printf '%s\n' "${source_dir}"
+case "\${1:-}" in
+  source-path)
+    printf '%s\n' "${source_dir}"
+    ;;
+  apply)
+    git -C "${source_dir}" rev-parse HEAD >"${sandbox}/apply-head"
+    ;;
+esac
 EOF
   cat >"${sandbox}/bin/gh" <<EOF
 #!/bin/bash
@@ -78,6 +85,24 @@ script() {
   [ "$(git -C "${remote}" rev-parse "refs/heads/${branch}")" = "$(git -C "${source_dir}" rev-parse HEAD)" ]
   grep -q -- "pr create --fill --base main" "${sandbox}/gh.log"
   [[ "${output}" == *"https://example.com/pr/1"* ]]
+  [[ "${output}" == *"dotfiles-pr --finish"* ]]
+}
+
+@test "on a merged pull request, --finish switches to main, fast-forwards it, then applies" {
+  # What a merge leaves behind: the source still on its PR branch, origin/main ahead.
+  git -C "${source_dir}" switch --quiet -c chore/dotfiles-20260101-000000
+  printf 'two\n' >>"${seed}/dot_zshrc"
+  git -C "${seed}" commit --quiet --no-verify --all --message "merged change"
+  git -C "${seed}" push --quiet origin main
+  merged="$(git -C "${remote}" rev-parse refs/heads/main)"
+
+  run script --finish
+
+  [ "${status}" -eq 0 ]
+  [ "$(git -C "${source_dir}" branch --show-current)" = "main" ]
+  [ "$(git -C "${source_dir}" rev-parse HEAD)" = "${merged}" ]
+  # The apply saw the merged commit, so the pull ran before it.
+  [ "$(cat "${sandbox}/apply-head")" = "${merged}" ]
 }
 
 @test "refuses when there is nothing to commit" {
