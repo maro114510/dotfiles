@@ -105,6 +105,45 @@ script() {
   [ "$(cat "${sandbox}/apply-head")" = "${merged}" ]
 }
 
+@test "on a diverged source, --finish names the failing pull and applies nothing" {
+  printf 'remote\n' >>"${seed}/dot_zshrc"
+  git -C "${seed}" commit --quiet --no-verify --all --message "remote change"
+  git -C "${seed}" push --quiet origin main
+  printf 'local\n' >>"${source_dir}/dot_zshrc"
+  git -C "${source_dir}" commit --quiet --no-verify --all --message "local change"
+  local_head="$(git -C "${source_dir}" rev-parse HEAD)"
+
+  run script --finish
+
+  [ "${status}" -ne 0 ]
+  [[ "${output}" == *"git pull --ff-only failed"* ]]
+  [ "$(git -C "${source_dir}" rev-parse HEAD)" = "${local_head}" ]
+  [ ! -f "${sandbox}/apply-head" ]
+}
+
+@test "on a branch with uncommitted edits, --finish names the failing switch and applies nothing" {
+  printf 'main\n' >>"${source_dir}/dot_zshrc"
+  git -C "${source_dir}" commit --quiet --no-verify --all --message "main change"
+  git -C "${source_dir}" switch --quiet -c feat/unmerged HEAD~1
+  printf 'branch\n' >>"${source_dir}/dot_zshrc"
+
+  run script --finish
+
+  [ "${status}" -ne 0 ]
+  [[ "${output}" == *"git switch main failed"* ]]
+  [ "$(git -C "${source_dir}" branch --show-current)" = "feat/unmerged" ]
+  [ ! -f "${sandbox}/apply-head" ]
+}
+
+@test "--finish refuses a commit message" {
+  run script --finish "feat: extra"
+
+  [ "${status}" -ne 0 ]
+  [[ "${output}" == *"--finish takes no commit message"* ]]
+  [ "$(git -C "${source_dir}" branch --show-current)" = "main" ]
+  [ ! -f "${sandbox}/apply-head" ]
+}
+
 @test "refuses when there is nothing to commit" {
   run script "feat: nothing"
 
