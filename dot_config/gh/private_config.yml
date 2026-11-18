@@ -11,6 +11,10 @@ pager:
 # Aliases allow you to create nicknames for gh commands
 aliases:
     co: pr checkout
+    # One GitHub request for the whole open board. Known limits: a repository with
+    # more than 200 open Issues needs a higher --limit, and children of a closed
+    # Epic need --state all.
+    board: "!gh issue list --state open --limit 200 --json number,state,parent,title,subIssuesSummary --jq '.[]|[.number,.state,(.parent.number//\"-\"),.title,((.subIssuesSummary.total//0)|tostring)]|@tsv'"
 # The path to a unix socket through which send HTTP connections. If blank, HTTP traffic will be handled by net/http.DefaultTransport.
 http_unix_socket:
 # What web browser gh should use when opening URLs. If blank, will refer to environment.
