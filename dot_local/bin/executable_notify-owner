@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Notify the operator of an Issue that waits for them; skills.notify runs it.
+set -euo pipefail
+
+exit 0
