@@ -7,3 +7,5 @@ docs/**
 .config/opencode/herdr-tui-session.js
 .config/opencode/herdr-opencode
 .config/opencode/herdr-opencode/**
+tmp/
+.raycast/memo-search/node_modules/
