@@ -1,23 +1,28 @@
 #!/bin/bash
 # dotfiles-pr.sh: turn uncommitted chezmoi source changes into a pull request.
 # Do:   branch off origin/main, commit, push, open the PR
+#       --finish: switch main, pull --ff-only, chezmoi apply
 # Need: the chezmoi source synced with origin/main
 
 set -euo pipefail
 
 PROG="dotfiles-pr"
 BASE_BRANCH="main"
+SOURCE=""
 
 usage() {
   cat <<EOF
 Usage: ${PROG} <commit message>
+       ${PROG} --finish
 
 Commit the uncommitted changes in the chezmoi source and open a pull request
 against ${BASE_BRANCH}. Run chezmoi edit, add, or re-add first.
 
+After the PR merges, ${PROG} --finish switches the source to ${BASE_BRANCH},
+fast-forwards it, and runs chezmoi apply.
+
 On ${BASE_BRANCH} it creates a chore/dotfiles-* branch. On such a branch it adds
-to the same pull request. The source stays on the branch; after the PR merges,
-switch back and pull.
+to the same pull request.
 EOF
 }
 
@@ -26,13 +31,39 @@ fail() {
   exit 1
 }
 
+resolve_source() {
+  SOURCE="$(chezmoi source-path 2>/dev/null)" || fail "cannot resolve the chezmoi source directory"
+  if [ -z "${SOURCE}" ]; then
+    fail "chezmoi returned an empty source directory"
+  fi
+  SOURCE="$(git -C "${SOURCE}" rev-parse --show-toplevel 2>/dev/null)" ||
+    fail "chezmoi source is not a git worktree"
+}
+
+finish_source() {
+  command -v chezmoi >/dev/null 2>&1 || fail "chezmoi is not in PATH"
+  command -v git >/dev/null 2>&1 || fail "git is not in PATH"
+
+  resolve_source
+  local source="${SOURCE}"
+
+  git -C "${source}" switch "${BASE_BRANCH}" || fail "git switch ${BASE_BRANCH} failed"
+  git -C "${source}" pull --ff-only || fail "git pull --ff-only failed"
+  chezmoi apply || fail "chezmoi apply failed"
+}
+
 main() {
   local message=""
+  local finish=""
   while [ ${#} -gt 0 ]; do
     case "${1}" in
       -h | --help)
         usage
         exit 0
+        ;;
+      --finish)
+        finish=1
+        shift
         ;;
       --)
         shift
@@ -48,6 +79,13 @@ main() {
         ;;
     esac
   done
+  if [ -n "${finish}" ]; then
+    if [ -n "${message}" ] || [ ${#} -gt 0 ]; then
+      fail "--finish takes no commit message"
+    fi
+    finish_source
+    return 0
+  fi
   if [ -z "${message}" ]; then
     usage >&2
     exit 2
@@ -60,13 +98,8 @@ main() {
   command -v git >/dev/null 2>&1 || fail "git is not in PATH"
   command -v gh >/dev/null 2>&1 || fail "gh is not in PATH"
 
-  local source
-  source="$(chezmoi source-path 2>/dev/null)" || fail "cannot resolve the chezmoi source directory"
-  if [ -z "${source}" ]; then
-    fail "chezmoi returned an empty source directory"
-  fi
-  source="$(git -C "${source}" rev-parse --show-toplevel 2>/dev/null)" ||
-    fail "chezmoi source is not a git worktree"
+  resolve_source
+  local source="${SOURCE}"
 
   local current
   current="$(git -C "${source}" symbolic-ref --quiet --short HEAD 2>/dev/null || true)"
@@ -111,7 +144,7 @@ main() {
 
   printf '%s\n' "${url}"
   printf 'Next: merge the pull request, then run:\n'
-  printf '  git -C %q switch %s && git -C %q pull --ff-only\n' "${source}" "${BASE_BRANCH}" "${source}"
+  printf '  %s --finish\n' "${PROG}"
 }
 
 main "${@}"

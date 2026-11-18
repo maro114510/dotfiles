@@ -33,7 +33,14 @@ setup() {
   mkdir -p "${sandbox}/bin"
   cat >"${sandbox}/bin/chezmoi" <<EOF
 #!/bin/bash
-[ "\${1:-}" = "source-path" ] && printf '%s\n' "${source_dir}"
+case "\${1:-}" in
+  source-path)
+    printf '%s\n' "${source_dir}"
+    ;;
+  apply)
+    git -C "${source_dir}" rev-parse HEAD >"${sandbox}/apply-head"
+    ;;
+esac
 EOF
   cat >"${sandbox}/bin/gh" <<EOF
 #!/bin/bash
@@ -78,6 +85,63 @@ script() {
   [ "$(git -C "${remote}" rev-parse "refs/heads/${branch}")" = "$(git -C "${source_dir}" rev-parse HEAD)" ]
   grep -q -- "pr create --fill --base main" "${sandbox}/gh.log"
   [[ "${output}" == *"https://example.com/pr/1"* ]]
+  [[ "${output}" == *"dotfiles-pr --finish"* ]]
+}
+
+@test "on a merged pull request, --finish switches to main, fast-forwards it, then applies" {
+  # What a merge leaves behind: the source still on its PR branch, origin/main ahead.
+  git -C "${source_dir}" switch --quiet -c chore/dotfiles-20260101-000000
+  printf 'two\n' >>"${seed}/dot_zshrc"
+  git -C "${seed}" commit --quiet --no-verify --all --message "merged change"
+  git -C "${seed}" push --quiet origin main
+  merged="$(git -C "${remote}" rev-parse refs/heads/main)"
+
+  run script --finish
+
+  [ "${status}" -eq 0 ]
+  [ "$(git -C "${source_dir}" branch --show-current)" = "main" ]
+  [ "$(git -C "${source_dir}" rev-parse HEAD)" = "${merged}" ]
+  # The apply saw the merged commit, so the pull ran before it.
+  [ "$(cat "${sandbox}/apply-head")" = "${merged}" ]
+}
+
+@test "on a diverged source, --finish names the failing pull and applies nothing" {
+  printf 'remote\n' >>"${seed}/dot_zshrc"
+  git -C "${seed}" commit --quiet --no-verify --all --message "remote change"
+  git -C "${seed}" push --quiet origin main
+  printf 'local\n' >>"${source_dir}/dot_zshrc"
+  git -C "${source_dir}" commit --quiet --no-verify --all --message "local change"
+  local_head="$(git -C "${source_dir}" rev-parse HEAD)"
+
+  run script --finish
+
+  [ "${status}" -ne 0 ]
+  [[ "${output}" == *"git pull --ff-only failed"* ]]
+  [ "$(git -C "${source_dir}" rev-parse HEAD)" = "${local_head}" ]
+  [ ! -f "${sandbox}/apply-head" ]
+}
+
+@test "on a branch with uncommitted edits, --finish names the failing switch and applies nothing" {
+  printf 'main\n' >>"${source_dir}/dot_zshrc"
+  git -C "${source_dir}" commit --quiet --no-verify --all --message "main change"
+  git -C "${source_dir}" switch --quiet -c feat/unmerged HEAD~1
+  printf 'branch\n' >>"${source_dir}/dot_zshrc"
+
+  run script --finish
+
+  [ "${status}" -ne 0 ]
+  [[ "${output}" == *"git switch main failed"* ]]
+  [ "$(git -C "${source_dir}" branch --show-current)" = "feat/unmerged" ]
+  [ ! -f "${sandbox}/apply-head" ]
+}
+
+@test "--finish refuses a commit message" {
+  run script --finish "feat: extra"
+
+  [ "${status}" -ne 0 ]
+  [[ "${output}" == *"--finish takes no commit message"* ]]
+  [ "$(git -C "${source_dir}" branch --show-current)" = "main" ]
+  [ ! -f "${sandbox}/apply-head" ]
 }
 
 @test "refuses when there is nothing to commit" {
