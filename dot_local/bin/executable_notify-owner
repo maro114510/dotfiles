@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Notify the operator of an Issue that waits for them.
+#
+# git config skills.notify names this command, and oe wait runs it with the
+# one-line message as $1 and the Issue link as $2, discarding its output.
+#
+# Herdr is not in the Brewfile, so a machine rebuilt from this repository can
+# lack it; macOS Notification Center takes over there.
+set -euo pipefail
+
+message="${1:?notify-owner: missing message}"
+link="${2:?notify-owner: missing link}"
+
+if command -v herdr >/dev/null 2>&1; then
+  if herdr notification show "${message}" --body "${link}"; then
+    exit 0
+  fi
+  echo "notify-owner: herdr could not show a notification; using osascript" >&2
+fi
+
+if command -v osascript >/dev/null 2>&1; then
+  # A Notification Center banner cannot open a URL, so the link is the body the
+  # operator reads and copies; Herdr receives the link the same way.
+  exec osascript \
+    -e 'on run argv' \
+    -e 'display notification (item 2 of argv) with title (item 1 of argv)' \
+    -e 'end run' -- "${message}" "${link}"
+fi
+
+echo "notify-owner: neither herdr nor osascript is available" >&2
+exit 1
