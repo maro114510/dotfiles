@@ -4,7 +4,7 @@
 
 setup() {
   export TEST_TMP="$(mktemp -d)"
-  export REPO="example/repo" PR="42" MERGE_METHOD="squash"
+  export REPO="example/repo" PR="42" MERGE_METHOD="squash" WAIT_MINUTES="20"
   export EXPECTED_HEAD="head-approved-by-dependabot-metadata" GH_TOKEN="fake"
   export GITHUB_RUN_ID="99999"
   export FAKE_CHECKS_JSON='[{"name":"build","bucket":"pass"}]'
@@ -87,7 +87,7 @@ teardown() {
   export FAKE_CHECKS_EXIT="1"
   run bash "$TEST_TMP/merge.sh"
   [ "$status" -eq 1 ]
-  [[ "$output" == *"Could not read a valid"* ]]
+  [[ "$output" == *"Unable to retrieve a valid check list"* ]]
   [[ "$output" != *"MERGED:"* ]]
 }
 
@@ -95,15 +95,11 @@ teardown() {
   export FAKE_CHECKS_JSON='[{"name":"test","bucket":"future-state"}]'
   run bash "$TEST_TMP/merge.sh"
   [ "$status" -eq 1 ]
-  [[ "$output" == *"Could not read a valid"* ]]
+  [[ "$output" == *"Unknown check state"* ]]
 }
 
-@test "all passing checks merge only the approved head after a stable set" {
-  # Elide just the real-time 60-second wait; the complete command/guard path
-  # runs against stubbed responses. Timing itself needs a real Actions E2E.
-  sed 's/SECONDS - stable_since >= 60/SECONDS - stable_since >= 0/' \
-    "$TEST_TMP/merge.sh" > "$TEST_TMP/fast-merge.sh"
-  run bash "$TEST_TMP/fast-merge.sh"
+@test "all passing checks merge only the approved head" {
+  run bash "$TEST_TMP/merge.sh"
   [ "$status" -eq 0 ]
   [[ "$output" == *"MERGED:"* ]]
   [[ "$output" == *"--match-head-commit $EXPECTED_HEAD"* ]]
@@ -111,9 +107,7 @@ teardown() {
 
 @test "a changed head immediately before merge blocks it" {
   export FAKE_HEAD_AFTER_FIRST="unchecked-new-commit"
-  sed 's/SECONDS - stable_since >= 60/SECONDS - stable_since >= 0/' \
-    "$TEST_TMP/merge.sh" > "$TEST_TMP/fast-merge.sh"
-  run bash "$TEST_TMP/fast-merge.sh"
+  run bash "$TEST_TMP/merge.sh"
   [ "$status" -eq 0 ]
   [[ "$output" == *"PR head changed"* ]]
   [[ "$output" != *"MERGED:"* ]]

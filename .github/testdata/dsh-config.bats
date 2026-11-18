@@ -90,7 +90,8 @@ seed_manifest() {
   run apply
   [ "$status" -eq 0 ]
   [ "$(mode_of "${manifest}")" = 600 ]
-  [ "$(jq -r '.dependencies["@deepseek-ai/dsh-subagent-codex"]' "${manifest}")" = 0.2.2-rc.1 ]
+  [ "$(jq -r '.dependencies | has("@deepseek-ai/dsh-subagent-codex")' "${manifest}")" = false ]
+  [ "$(jq -r '.dsh.profile.bundles | index("@deepseek-ai/dsh-subagent-codex") == null' "${manifest}")" = true ]
   [ "$(jq -r '.dependencies["dsh-ops"]' "${manifest}")" = '^0.5.4' ]
   [ "$(jq -r '.dsh.profile.bundles[0]' "${manifest}")" = '@deepseek-ai/dsh-base' ]
   [ "$(jq -r '.dsh.profile.bundles | index("dsh-context") != null' "${manifest}")" = true ]
@@ -103,6 +104,16 @@ seed_manifest() {
   [ "$(jq -r '.dependencies["left-pad"]' "${manifest}")" = 1.3.0 ]
   [ "$(jq -r '.dsh.profile.bundles[-1]' "${manifest}")" = left-pad ]
   [ "$(jq -r '.dsh.profile.bundles | index("dsh-context") != null' "${manifest}")" = true ]
+}
+
+@test "the subagent plugins left in a manifest are removed by an apply" {
+  seed_manifest '{"dependencies":{"@deepseek-ai/dsh-subagent-codex":"0.2.2-rc.1","@deepseek-ai/dsh-subagent-claude-code":"0.2.2-rc.1","left-pad":"1.3.0"},"dsh":{"profile":{"bundles":["@deepseek-ai/dsh-base","@deepseek-ai/dsh-subagent-codex","@deepseek-ai/dsh-subagent-claude-code","left-pad"]}}}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -r '.dependencies | keys | map(select(startswith("@deepseek-ai/dsh-subagent-"))) | length' "${manifest}")" = 0 ]
+  [ "$(jq -r '.dsh.profile.bundles | map(select(startswith("@deepseek-ai/dsh-subagent-"))) | length' "${manifest}")" = 0 ]
+  [ "$(jq -r '.dependencies["left-pad"]' "${manifest}")" = 1.3.0 ]
+  [ "$(jq -r '.dsh.profile.bundles[-1]' "${manifest}")" = left-pad ]
 }
 
 @test "a differing managed version is restored to the managed value" {

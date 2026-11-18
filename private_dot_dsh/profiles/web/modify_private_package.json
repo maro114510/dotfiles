@@ -3,7 +3,6 @@
 {{- /* The dependency versions below are the last set tested against the runtime. The dsh wrapper tracks the newest published release, so update these only after testing a new runtime. */ -}}
 {{- $dependencies := fromJson `
 {
-  "@deepseek-ai/dsh-subagent-codex": "0.2.2-rc.1",
   "@wxg-prc-cpg/browser-skill-dsh-plugin": "0.5.0",
   "dsh-context": "0.84.1",
   "dsh-mermaid": "^0.4.5",
@@ -22,7 +21,6 @@
   "dsh-plugin-subscriptions"
   "@deepseek-ai/dsh-experimental-forge-bundle"
   "@deepseek-ai/dsh-experimental-plugin-market-bundle"
-  "@deepseek-ai/dsh-subagent-codex"
   "dsh-mermaid"
   "@deepseek-ai/dsh-experimental-session-titles-bundle"
   "dshmarket"
@@ -35,12 +33,15 @@
 {{- if $original -}}
   {{- $config = fromJson $original -}}
 {{- end -}}
-{{- $config = set $config "dependencies" (mergeOverwrite (get $config "dependencies" | default dict) $dependencies) -}}
+{{- /* The subagent plugins are not wanted, so an earlier install of them is dropped too. */ -}}
+{{- $removed := list "@deepseek-ai/dsh-subagent-codex" "@deepseek-ai/dsh-subagent-claude-code" -}}
+{{- $existing := omit (get $config "dependencies" | default dict) "@deepseek-ai/dsh-subagent-codex" "@deepseek-ai/dsh-subagent-claude-code" -}}
+{{- $config = set $config "dependencies" (mergeOverwrite $existing $dependencies) -}}
 {{- $dsh := get $config "dsh" | default dict -}}
 {{- $profile := get $dsh "profile" | default dict -}}
 {{- $merged := $bundles -}}
 {{- range (get $profile "bundles" | default list) -}}
-  {{- if not (has . $bundles) -}}
+  {{- if and (not (has . $bundles)) (not (has . $removed)) -}}
     {{- $merged = append $merged . -}}
   {{- end -}}
 {{- end -}}
