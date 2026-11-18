@@ -1,7 +1,8 @@
 #!/bin/bash
-# Deploys the agent skills pinned in ~/.apm/apm.lock.yaml whenever the lockfile changes, so a merged
-# Dependabot update reaches every harness on the next chezmoi apply.
+# Deploys the agent skills pinned in ~/.apm/apm.lock.yaml whenever the manifest or the lockfile
+# changes, so a merged Dependabot update reaches every harness on the next chezmoi apply.
 # apm.lock.yaml hash: {{ include "dot_apm/apm.lock.yaml" | sha256sum }}
+# apm.yml hash: {{ include "dot_apm/apm.yml" | sha256sum }}
 set -euo pipefail
 command -v apm >/dev/null 2>&1 || { echo "apm not found; skipping skill deployment" >&2; exit 0; }
 cd "${HOME}"
