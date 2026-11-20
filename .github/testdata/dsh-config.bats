@@ -65,6 +65,12 @@ seed_manifest() {
   grep -q 'model: claude-sonnet-5-5' "${home_patch}"
 }
 
+@test "the home patch caps automatic goal rounds" {
+  run apply
+  [ "$status" -eq 0 ]
+  grep -A4 '^- id: goal$' "${home_patch}" | grep -q 'defaultMaxGoalRounds: 8'
+}
+
 @test "the home patch disables the official session log upload" {
   run apply
   [ "$status" -eq 0 ]
