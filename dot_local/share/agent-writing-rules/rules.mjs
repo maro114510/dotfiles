@@ -3,9 +3,11 @@
 
 const JAPANESE = String.raw`\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}ー`;
 const SPACED = new RegExp(String.raw`[${JAPANESE}][ \u3000]+(?=[A-Za-z0-9])|[A-Za-z0-9][ \u3000]+(?=[${JAPANESE}])`, "gu");
-// A token holding "/" counts as a URL or a path. The class is printable ASCII
-// without the backtick, so a path never swallows the start of a code span.
-const EXEMPT = /```[\s\S]*?(?:```|$)|`[^`\n]*`|[\x21-\x5f\x61-\x7e]*\/[\x21-\x5f\x61-\x7e]*/g;
+// A token holding "/" counts as a URL or a path. Its class leaves out the
+// backtick, brackets, parentheses, and angle brackets, so a path never
+// swallows the start of a code span or a Markdown link.
+const EXEMPT = /```[\s\S]*?(?:```|$)|`[^`\n]*`|\]\(<[^>\n]*>\)|\]\([^)\n]*\)|[!-'*-;=?-Z\\^_a-z{-~]*\/[!-'*-;=?-Z\\^_a-z{-~]*/g;
+const ASIDE = /\([^()\n]*\)|（[^（）\n]*）/g;
 
 /** Replaces code and paths with filler of the same length, so indices still point into the original text. */
 function maskExempt(text) {
@@ -20,8 +22,8 @@ export function spacingViolations(text) {
 }
 
 /** Parenthetical asides in prose, as `{ snippet }` items. */
-export function parentheticalAsides(_text) {
-	return [];
+export function parentheticalAsides(text) {
+	return [...maskExempt(text).matchAll(ASIDE)].map((match) => ({ snippet: match[0] }));
 }
 
 /** `rm` targets outside the temporary directories, as path strings. */
