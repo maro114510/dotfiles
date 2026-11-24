@@ -1,0 +1,4 @@
+- insert:
+    - id: agent-writing-rules
+      name: agent-writing-rules
+      config: {}
