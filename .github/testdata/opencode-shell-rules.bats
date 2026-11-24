@@ -10,7 +10,8 @@
 # ending in " *" also matches the bare command, the last matching rule wins,
 # and no match asks. OpenCode splits a compound command into simple commands
 # and denies the whole when any one is denied, so the helper splits on `&&`,
-# `||`, `;`, `|` and newlines and lets the strictest piece win.
+# `||`, `;`, `|` and newlines, and treats the body of `$(...)`, backticks and
+# `<(...)` as a piece of its own. The strictest piece wins.
 #
 # Usage: bats .github/testdata/opencode-shell-rules.bats
 
@@ -43,7 +44,7 @@ decide() {
       return hit;
     };
     const pieces = action === "shell"
-      ? resource.split(/\n|;|&&|\|\||\|/).map((s) => s.trim()).filter(Boolean)
+      ? resource.split(/\n|;|&&|\|\||\||\$\(|<\(|>\(|`|\)/).map((s) => s.trim()).filter(Boolean)
       : [resource];
     const rank = { allow: 0, ask: 1, deny: 2 };
     let worst;
@@ -81,6 +82,9 @@ assert_denied() {
   assert_runs "docker ps --format '{{.Names}}'"
   assert_runs "test -d node_modules"
   assert_runs "grep -rn foo docs"
+  assert_runs "node -e \"[1].map(x => process.env.FOO)\""
+  assert_runs "git commit -m \"a => b.envelope\""
+  assert_runs "go test ./... > out.log --cfg=a.env.json"
 }
 
 @test "existence checks on an env file run" {
@@ -137,9 +141,14 @@ assert_denied() {
   assert_denied "ls .env > .env"
   assert_denied "ls .env >.env"
   assert_denied "ls .env >> dir/.env"
+  assert_denied "ls .env > \".env\""
+  assert_denied "ls .env &>.env"
   assert_denied "test -f .env && cat .env"
   assert_denied "ls .env; cat .env"
   assert_denied "ls .env | grep X .env"
+  assert_denied "ls .env \$(cat .env)"
+  assert_denied "ls .env \`cat .env\`"
+  assert_denied "ls .env <(cat .env)"
 }
 
 @test "an existence check next to another secret file is still denied" {

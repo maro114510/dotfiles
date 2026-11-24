@@ -321,8 +321,15 @@
     { "action": "shell", "resource": "git check-ignore .env 2>/dev/null", "effect": "allow" },
     { "action": "shell", "resource": "git check-ignore -? .env 2>/dev/null", "effect": "allow" },
     // The "*" in the rules above spans a redirect, so a write into an env file
-    // stays denied.
-    { "action": "shell", "resource": "*>*.env*", "effect": "deny" },
+    // stays denied. Match ">" only right before the path, so `=> process.env`
+    // in a script or a message still runs.
+    { "action": "shell", "resource": "*>.env*", "effect": "deny" },
+    { "action": "shell", "resource": "*> .env*", "effect": "deny" },
+    { "action": "shell", "resource": "*>*/.env*", "effect": "deny" },
+    { "action": "shell", "resource": "*>\"*.env*", "effect": "deny" },
+    { "action": "shell", "resource": "*> \"*.env*", "effect": "deny" },
+    { "action": "shell", "resource": "*>'*.env*", "effect": "deny" },
+    { "action": "shell", "resource": "*> '*.env*", "effect": "deny" },
     // .envrc, also as .envrc.local: only as a path, like .env above, so a
     // command whose text merely names `.envrc`, such as an Issue body, runs.
     { "action": "shell", "resource": "* .envrc*", "effect": "deny" },
