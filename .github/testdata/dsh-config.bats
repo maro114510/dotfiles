@@ -382,6 +382,25 @@ kept_version_file() {
   [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.1 ]
 }
 
+@test "a first start that fails its health check without a last good release records nothing" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  printf '#!/bin/sh\nprintf 000\n' > "${stub_dir}/curl"
+  DSH_WEB_HEALTH_SECONDS=0 run_supervisor run
+  [ "$status" -ne 0 ]
+  [ ! -e "$(kept_version_file)" ]
+}
+
+@test "takeover fails when the server came back on another release than it recorded" {
+  supervisor_run_env
+  # launchd restarted on the last good release after the newest one failed.
+  printf '#!/bin/sh\nprintf "%%s\\n" "$*" >> "%s/launchctl.log"\nprintf "0.2.2-rc.1\\n" > "%s"\n' \
+    "${stub_dir}" "$(kept_version_file)" > "${stub_dir}/launchctl"
+  run_supervisor takeover
+  [ "$status" -ne 0 ]
+  [[ "$output" == *0.2.2-rc.1* ]]
+}
+
 @test "takeover moves the recorded release to the newest one and restarts the agent" {
   supervisor_run_env
   printf '0.2.2-rc.1\n' > "$(kept_version_file)"
