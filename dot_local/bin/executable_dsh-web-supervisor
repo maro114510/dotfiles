@@ -28,6 +28,7 @@ launchd_log="${state_dir}/launchd.log"
 url_file="${state_dir}/url"
 kept_file="${state_dir}/version"
 health_seconds="${DSH_WEB_HEALTH_SECONDS:-120}"
+takeover_seconds="${DSH_WEB_TAKEOVER_SECONDS:-150}"
 port="3080"
 public_url=""
 trusted_host=""
@@ -107,13 +108,14 @@ healthy() {
   case "$(health_code)" in 200 | 401) return 0 ;; *) return 1 ;; esac
 }
 
+# Checks at least once, so a zero wait still reports a server that is already up.
 wait_healthy() {
   local deadline=$((SECONDS + ${1:-120}))
-  while [ "${SECONDS}" -lt "${deadline}" ]; do
+  while :; do
     healthy && return 0
+    [ "${SECONDS}" -lt "${deadline}" ] || return 1
     sleep 2
   done
-  return 1
 }
 
 web_arguments() {
@@ -226,7 +228,7 @@ cmd_takeover() {
     launchctl bootstrap "gui/$(id -u)" "${plist}" || fail "cannot load ${label}"
   fi
   launchctl kickstart -k "gui/$(id -u)/${label}" || fail "cannot start ${label}"
-  if wait_healthy 150; then
+  if wait_healthy "${takeover_seconds}"; then
     local running
     running="$(cat "${kept_file}" 2>/dev/null || printf none)"
     if [ "${running}" != "${version}" ]; then
@@ -241,7 +243,7 @@ cmd_takeover() {
   log "dsh ${version} failed after takeover; retrying with the last good release"
   notify "DSH web ${version} failed; rolling back"
   launchctl kickstart -k "gui/$(id -u)/${label}" || fail "cannot restart ${label}"
-  wait_healthy 150 || fail "the last good release did not become healthy"
+  wait_healthy "${takeover_seconds}" || fail "the last good release did not become healthy"
   log "rollback complete on port ${port}"
   notify "DSH web rolled back to the last good release"
   cmd_status
