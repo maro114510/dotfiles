@@ -4,6 +4,7 @@
 {{- $dependencies := fromJson `
 {
   "@wxg-prc-cpg/browser-skill-dsh-plugin": "0.5.0",
+  "agent-writing-rules": "link:~/.local/share/agent-writing-rules/dsh",
   "dsh-context": "0.84.1",
   "dsh-mermaid": "^0.4.5",
   "dsh-ops": "^0.5.4",
@@ -27,6 +28,7 @@
   "dsh-context"
   "@wxg-prc-cpg/browser-skill-dsh-plugin"
   "dsh-ops"
+  "agent-writing-rules"
 -}}
 {{- $original := .chezmoi.stdin | trim -}}
 {{- $config := dict "name" "dsh-profile-web" "private" true -}}
