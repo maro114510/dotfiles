@@ -326,6 +326,54 @@ SH
   [ "$(cut -d'|' -f2 "${stub_dir}/dsh.log")" = 'web --no-open' ]
 }
 
+kept_version_file() {
+  printf '%s' "${home_dir}/.local/state/dsh-web/version"
+}
+
+@test "a first start records the release it resolved" {
+  supervisor_run_env
+  run_supervisor run
+  [ "$status" -eq 0 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.3 ]
+  [ "$(cat "${stub_dir}/dsh.log")" = '0.2.2-rc.3|web --no-open' ]
+}
+
+@test "a restart keeps the recorded release even when a newer one is published" {
+  supervisor_run_env
+  printf '0.2.2-rc.1\n' > "$(kept_version_file)"
+  run_supervisor run
+  [ "$status" -eq 0 ]
+  [ "$(cat "${stub_dir}/dsh.log")" = '0.2.2-rc.1|web --no-open' ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.1 ]
+}
+
+@test "a recorded release that fails its health check is replaced by the last good one" {
+  supervisor_run_env
+  printf '#!/bin/sh\nprintf 000\n' > "${stub_dir}/curl"
+  printf '0.2.2-rc.3\n' > "$(kept_version_file)"
+  mkdir -p "${home_dir}/.local/state/dsh"
+  printf '0.2.2-rc.1\n' > "${home_dir}/.local/state/dsh/last-good"
+  DSH_WEB_HEALTH_SECONDS=0 run_supervisor run
+  [ "$status" -ne 0 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.1 ]
+}
+
+@test "takeover moves the recorded release to the newest one and restarts the agent" {
+  supervisor_run_env
+  printf '0.2.2-rc.1\n' > "$(kept_version_file)"
+  run_supervisor takeover
+  [ "$status" -eq 0 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.3 ]
+  grep -q '^kickstart -k gui/' "${stub_dir}/launchctl.log"
+}
+
+@test "takeover records the release DSH_VERSION names" {
+  supervisor_run_env
+  DSH_VERSION=0.2.2-rc.5 run_supervisor takeover
+  [ "$status" -eq 0 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.5 ]
+}
+
 # --- install script ---
 
 install_script="run_after_dsh-profile-install.sh"
