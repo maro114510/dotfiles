@@ -1,0 +1,104 @@
+# Labels an Issue with its rough size, judged by the decision model Jev from
+# the Issue's title and body.
+#
+# This file is called by a small issues workflow in each repository that wants
+# the behavior: a caller declares only the trigger and the permissions, and
+# passes the TYPESAFE_API_KEY secret.
+#
+# The work is split in two jobs so that no job holds both the model key and a
+# token that can write:
+#   - judge holds the key, reads nothing from the repository, and writes only
+#     its job summary and one output, the label name.
+#   - label holds the token that can write labels and no outside secret. It
+#     accepts only names from a fixed list, takes the Issue number from the
+#     event and never from the model, and never replaces the label set.
+#
+# The title and body are untrusted input: they reach the model only through
+# environment variables, built into JSON by jq, and never enter a command line.
+name: reusable-issue-size
+
+on:
+  workflow_call:
+    secrets:
+      TYPESAFE_API_KEY:
+        required: true
+
+jobs:
+  judge:
+    name: Judge the Issue's size
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    outputs:
+      label: ${{ steps.decide.outputs.label }}
+    steps:
+      - name: Fetch the decision script
+        env:
+          SCRIPT_URL: https://raw.githubusercontent.com/maro114510/dotfiles/main/.github/scripts/issue-size-decide.sh
+        run: |
+          curl -fsS --retry 2 -o "${RUNNER_TEMP}/decide.sh" "${SCRIPT_URL}"
+          chmod +x "${RUNNER_TEMP}/decide.sh"
+
+      - name: Ask the model
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+          TITLE: ${{ github.event.issue.title }}
+          BODY: ${{ github.event.issue.body }}
+        run: |
+          jq -n --arg title "${TITLE}" --arg body "${BODY:0:20000}" '{
+            model: "jev-1.14.0",
+            state: {issue: {title: $title, body: $body}},
+            questions: {size: {
+              type: "score",
+              instructions: "How large will the pull request that completes this Issue be?",
+              criteria: [
+                "Small: one focused edit, such as a sentence, a condition, or a setting",
+                "Medium: one component changes, with its tests or docs",
+                "Large: several components, a new script or subcommand with tests, or a design doc with code"
+              ]}}}' >"${RUNNER_TEMP}/request.json"
+          curl -sS --max-time 60 --retry 2 \
+            -H "Authorization: Bearer ${TYPESAFE_API_KEY}" \
+            -H 'Content-Type: application/json' \
+            --data @"${RUNNER_TEMP}/request.json" \
+            -o "${RUNNER_TEMP}/answer.json" \
+            https://api.typesafe.ai/v1/systemone || true
+
+      - name: Decide the label
+        id: decide
+        run: |
+          label="$("${RUNNER_TEMP}/decide.sh" "${RUNNER_TEMP}/answer.json")"
+          printf 'label=%s\n' "${label}" >>"${GITHUB_OUTPUT}"
+          {
+            echo "### Size"
+            echo
+            echo "Label: \`${label:-none}\`"
+            echo
+            echo '```json'
+            jq '{model, size: .answers.size, usage}' "${RUNNER_TEMP}/answer.json" 2>/dev/null ||
+              echo '"no usable answer"'
+            echo '```'
+          } >>"${GITHUB_STEP_SUMMARY}"
+
+  label:
+    name: Apply the size label
+    needs: judge
+    if: needs.judge.outputs.label != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - name: Fetch the label script
+        env:
+          SCRIPT_URL: https://raw.githubusercontent.com/maro114510/dotfiles/main/.github/scripts/issue-size-apply.sh
+        run: |
+          curl -fsS --retry 2 -o "${RUNNER_TEMP}/apply.sh" "${SCRIPT_URL}"
+          chmod +x "${RUNNER_TEMP}/apply.sh"
+
+      - name: Apply
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+          LABEL: ${{ needs.judge.outputs.label }}
+        run: '"${RUNNER_TEMP}/apply.sh" "${REPO}" "${ISSUE}" "${LABEL}"'
