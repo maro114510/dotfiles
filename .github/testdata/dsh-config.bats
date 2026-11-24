@@ -196,6 +196,17 @@ run_wrapper() {
   [ "$(cat "${stub_dir}/npx.log")" = '--yes @deepseek-ai/dsh@0.2.2-rc.3 web --no-open' ]
 }
 
+@test "the dsh wrapper skips an alpha release newer than the newest release candidate" {
+  wrapper_env
+  cat > "${stub_dir}/releases.json" <<'JSON'
+[{"tag_name":"dsh-v0.2.2-rc.3","draft":false,"published_at":"2026-11-13T08:05:45Z"},
+ {"tag_name":"dsh-v0.2.3-alpha.2","draft":false,"published_at":"2026-11-22T11:00:39Z"}]
+JSON
+  run_wrapper --resolved-version
+  [ "$status" -eq 0 ]
+  [ "$output" = '0.2.2-rc.3' ]
+}
+
 @test "the dsh wrapper reuses a fresh resolution instead of asking again" {
   wrapper_env
   run_wrapper --resolved-version
