@@ -12,6 +12,8 @@ On a GitHub rate limit, stop and report instead of retrying. Combine terms into 
 
 Disable the test result cache only in the final verification run. Measure coverage only when a requirement asks for it. Run a full test run that takes minutes in the background.
 
+Run a command that may take minutes as a background job, or give it an explicit time limit.
+
 ## Worktree Workflow
 
 - All work must be done on a worktree using [git-wt](https://github.com/k1LoW/git-wt)
@@ -76,7 +78,6 @@ Surface assumptions and flaws before writing code, not after.
 
 Solve the stated problem. Nothing more.
 
-- No features beyond what was asked.
 - No abstractions for single-use code.
 - No "future-proofing" that wasn't requested.
 
@@ -87,7 +88,7 @@ Touch only what the task requires.
 - Don't improve adjacent code, comments, or formatting — even if they're suboptimal.
 - Consistency with surrounding code takes priority over your stylistic preferences. The codebase has a voice; match it.
 - If you notice unrelated issues, mention them — don't silently fix them.
-- Remove only the imports/variables/functions that YOUR changes made unused. Leave pre-existing dead code alone.
+- Remove only the imports/variables/functions that YOUR changes made unused.
 
 ## Deleting Files
 
