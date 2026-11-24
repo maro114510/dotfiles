@@ -477,6 +477,125 @@ kept_version_file() {
   [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.5 ]
 }
 
+# A takeover run that sees how dsh reports an incompatible plugin: the stubbed
+# server appends the lines when launchd starts it, and the release dry run
+# prints its own to stderr.
+incompatible_bundle_line='dsh: skipping profile bundle "dsh-ops": Error: Plugin dsh-ops@0.5.5 is incompatible with dsh 0.2.2-rc.3: requirements {"engines.dsh":">=0.2.2-rc.1 <0.2.2-rc.3"}. Running it may cause crashes or data loss.'
+incompatible_row_line='dsh: disabling profile plugin row "subagent-model-selection-settings": Plugin @deepseek-ai/dsh-tool-subagent@0.2.2-rc.1 is incompatible with dsh 0.2.2-rc.3: requirements {"@deepseek-ai/dsh-agent":"0.2.2-rc.1"}. Running it may cause crashes or data loss.'
+
+server_log() {
+  printf '%s' "${home_dir}/.local/state/dsh-web/server.log"
+}
+
+# launchctl stub that makes the restarted server write the given lines.
+launchctl_writes_to_server_log() {
+  printf '#!/bin/sh\nprintf "%%s\\n" "$*" >> "%s/launchctl.log"\n' "${stub_dir}" > "${stub_dir}/launchctl"
+  for line in "$@"; do
+    printf 'printf "%%s\\n" '"'%s'"' >> "%s"\n' "${line}" "$(server_log)" >> "${stub_dir}/launchctl"
+  done
+  chmod +x "${stub_dir}/launchctl"
+}
+
+# dsh stub whose release dry run prints the given lines to stderr.
+dsh_dry_run_prints() {
+  {
+    printf '#!/bin/sh\n[ "${1:-}" = "--resolved-version" ] && { echo 0.2.2-rc.3; exit 0; }\n'
+    printf 'case "$*" in *--dump-config*)\n'
+    for line in "$@"; do
+      printf "  printf '%%s\\\\n' '%s' >&2\\n" "${line}"
+    done
+    printf '  printf "%%s\\\\n" "${DSH_VERSION:-}" > "${STUB_DIR}/dry-run-version"\n  exit "${DRY_RUN_STATUS:-0}" ;;\nesac\nexit 0\n'
+  } > "${home_dir}/.local/bin/dsh"
+  chmod +x "${home_dir}/.local/bin/dsh"
+}
+
+@test "takeover names the bundle and the range dsh skipped after it" {
+  supervisor_run_env
+  launchctl_writes_to_server_log "${incompatible_bundle_line}"
+  run_supervisor takeover
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'dsh-ops'* ]]
+  [[ "$output" == *'"engines.dsh":">=0.2.2-rc.1 <0.2.2-rc.3"'* ]]
+}
+
+@test "takeover names the plugin row and the range dsh disabled after it" {
+  supervisor_run_env
+  launchctl_writes_to_server_log "${incompatible_row_line}"
+  run_supervisor takeover
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'subagent-model-selection-settings'* ]]
+  [[ "$output" == *'dsh-tool-subagent@0.2.2-rc.1'* ]]
+  [[ "$output" == *'"@deepseek-ai/dsh-agent":"0.2.2-rc.1"'* ]]
+}
+
+@test "takeover ignores incompatibility lines the server logged before it" {
+  supervisor_run_env
+  printf '%s\n' "${incompatible_bundle_line}" > "$(server_log)"
+  run_supervisor takeover
+  [ "$status" -eq 0 ]
+  [[ "$output" != *'dsh-ops'* ]]
+}
+
+@test "takeover prints nothing about plugins when the server log has no incompatibility" {
+  supervisor_run_env
+  printf 'dsh: listening\n' > "$(server_log)"
+  run_supervisor takeover
+  [ "$status" -eq 0 ]
+  [[ "$output" != *'skipping profile bundle'* ]]
+  [[ "$output" != *'disabling profile plugin row'* ]]
+  [[ "$output" != *'incompatib'* ]]
+}
+
+@test "takeover warns before recording a release an installed plugin excludes, and completes" {
+  supervisor_run_env
+  dsh_dry_run_prints "${incompatible_bundle_line}"
+  run_supervisor takeover
+  [ "$status" -eq 0 ]
+  [ "$(cat "${stub_dir}/dry-run-version")" = 0.2.2-rc.3 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.3 ]
+  [[ "$output" == *'dsh-ops'* ]]
+  warned_at="${output%%dsh-ops*}"
+  recorded_at="${output%%recorded dsh*}"
+  [ "${#warned_at}" -lt "${#recorded_at}" ]
+}
+
+@test "takeover reports no file error when the server has not logged yet" {
+  supervisor_run_env
+  [ ! -e "$(server_log)" ]
+  run_supervisor takeover
+  [ "$status" -eq 0 ]
+  [[ "$output" != *'No such file'* ]]
+}
+
+@test "takeover after a rollback does not attribute the logged lines to the release that failed" {
+  supervisor_run_env
+  printf '#!/bin/sh\nif [ -e "%s/checked" ]; then printf 200; else : > "%s/checked"; printf 000; fi\n' \
+    "${stub_dir}" "${stub_dir}" > "${stub_dir}/curl"
+  printf '#!/bin/sh\n[ -e "%s/checked" ] && printf "%%s\\n" '"'%s'"' >> "%s"\nexit 0\n' \
+    "${stub_dir}" "${incompatible_bundle_line}" "$(server_log)" > "${stub_dir}/launchctl"
+  chmod +x "${stub_dir}/launchctl"
+  DSH_WEB_TAKEOVER_SECONDS=0 run_supervisor takeover
+  [[ "$output" == *'dsh-ops'* ]]
+  [[ "$output" != *'dsh 0.2.2-rc.3 disabled'* ]]
+}
+
+@test "takeover completes when the release dry run fails" {
+  supervisor_run_env
+  dsh_dry_run_prints
+  DRY_RUN_STATUS=1 run_supervisor takeover
+  [ "$status" -eq 0 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.3 ]
+}
+
+@test "takeover prints no warning when the release dry run reports no incompatibility" {
+  supervisor_run_env
+  dsh_dry_run_prints
+  run_supervisor takeover
+  [ "$status" -eq 0 ]
+  [[ "$output" != *'incompatib'* ]]
+  [[ "$output" != *'warning'* ]]
+}
+
 # --- install script ---
 
 install_script="run_after_dsh-profile-install.sh"
