@@ -326,6 +326,28 @@ SH
   [ "$(cut -d'|' -f2 "${stub_dir}/dsh.log")" = 'web --no-open' ]
 }
 
+@test "stopping the supervisor passes the stop request to the server" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  cat > "${home_dir}/.local/bin/dsh" <<'SH'
+#!/bin/bash
+if [ "${1:-}" = "--resolved-version" ]; then echo 0.2.2-rc.3; exit 0; fi
+trap 'echo drained >> "${STUB_DIR}/server.log"; exit 0' TERM
+echo started >> "${STUB_DIR}/server.log"
+while :; do sleep 0.1; done
+SH
+  HOME="${home_dir}" DSH_HOME="${dsh_dir}" PATH="${stub_dir}:/opt/homebrew/bin:/usr/bin:/bin" \
+    bash "${repo_root}/dot_local/bin/executable_dsh-web-supervisor" run 3>&- &
+  supervisor_pid=$!
+  for _ in $(seq 50); do grep -q started "${stub_dir}/server.log" 2>/dev/null && break; sleep 0.1; done
+  sleep 0.5
+  kill -TERM "${supervisor_pid}"
+  wait "${supervisor_pid}" || true
+  for _ in $(seq 30); do grep -q drained "${stub_dir}/server.log" && break; sleep 0.1; done
+  pkill -f "${home_dir}/.local/bin/dsh" || true
+  grep -q drained "${stub_dir}/server.log"
+}
+
 kept_version_file() {
   printf '%s' "${home_dir}/.local/state/dsh-web/version"
 }
