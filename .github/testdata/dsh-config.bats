@@ -284,12 +284,46 @@ run_supervisor() {
   [ "${lines[1]}" = 'last-good=0.2.2-rc.1' ]
 }
 
-@test "the supervisor refuses to start without its machine-local config" {
+# Stubs every command run and status reach outside the sandbox: the server
+# answers health checks, nothing listens on the port, and launchctl only logs.
+supervisor_run_env() {
   supervisor_env
+  cat > "${home_dir}/.local/bin/dsh" <<'SH'
+#!/bin/sh
+if [ "${1:-}" = "--resolved-version" ]; then echo "${DSH_VERSION:-0.2.2-rc.3}"; exit 0; fi
+printf '%s|%s\n' "${DSH_VERSION:-}" "$*" >> "${STUB_DIR}/dsh.log"
+SH
+  chmod +x "${home_dir}/.local/bin/dsh"
+  printf '#!/bin/sh\nprintf 200\n' > "${stub_dir}/curl"
+  printf '#!/bin/sh\nexit 1\n' > "${stub_dir}/lsof"
+  printf '#!/bin/sh\n' > "${stub_dir}/osascript"
+  printf '#!/bin/sh\nprintf "%%s\\n" "$*" >> "%s/launchctl.log"\n' "${stub_dir}" > "${stub_dir}/launchctl"
+  chmod +x "${stub_dir}/curl" "${stub_dir}/lsof" "${stub_dir}/osascript" "${stub_dir}/launchctl"
+  export STUB_DIR="${stub_dir}"
+}
+
+@test "the supervisor reports its status without the machine-local config" {
+  supervisor_run_env
   rm "${dsh_dir}/web-launch.conf"
   run_supervisor status
-  [ "$status" -ne 0 ]
-  [[ "$output" == *web-launch.conf* ]]
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"listener: none"* ]]
+}
+
+@test "the supervisor starts a local-only server without the machine-local config" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  run_supervisor run
+  [ "$status" -eq 0 ]
+  [ "$(cut -d'|' -f2 "${stub_dir}/dsh.log")" = 'web --no-open' ]
+}
+
+@test "the supervisor starts a local-only server when the config names no public URL" {
+  supervisor_run_env
+  printf 'PORT=3080\n' > "${dsh_dir}/web-launch.conf"
+  run_supervisor run
+  [ "$status" -eq 0 ]
+  [ "$(cut -d'|' -f2 "${stub_dir}/dsh.log")" = 'web --no-open' ]
 }
 
 # --- install script ---
