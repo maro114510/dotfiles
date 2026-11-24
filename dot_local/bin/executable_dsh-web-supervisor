@@ -147,8 +147,11 @@ cmd_run() {
   fi
   web_arguments
   log "starting dsh ${version}: dsh ${web_args[*]}"
-  ( DSH_VERSION="${version}" "${dsh_bin}" "${web_args[@]}" ) >>"${log_file}" 2>&1 &
+  DSH_VERSION="${version}" "${dsh_bin}" "${web_args[@]}" >>"${log_file}" 2>&1 &
   local pid=$!
+  # launchd signals only this script; the server needs the signal to drain its sessions.
+  # shellcheck disable=SC2064
+  trap "kill -TERM ${pid} 2>/dev/null; wait ${pid}; exit 0" TERM INT
   if wait_healthy "${health_seconds}"; then
     mkdir -p "${shared_state}"
     printf '%s\n' "${version}" >"${last_good_file}"
