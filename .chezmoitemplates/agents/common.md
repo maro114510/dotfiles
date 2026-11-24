@@ -81,7 +81,7 @@ When the human asks a design question, asks you to choose between options, or as
 - Compare the real options, including leaving things as they are, by their consequences, and recommend one.
 - Name every fatal flaw or logic gap in the human's plan that they may have missed.
 
-Every other task keeps its usual depth. This pass never widens scope: Simplicity First still limits the answer, so recommend the smallest option that solves the stated problem.
+Every other task keeps its usual depth and gets no added review pass. This pass never widens scope: Simplicity First still limits the answer, so recommend the smallest option that solves the stated problem.
 
 ## Simplicity First
 
