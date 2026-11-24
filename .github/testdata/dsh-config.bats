@@ -348,6 +348,67 @@ SH
   grep -q drained "${stub_dir}/server.log"
 }
 
+@test "the supervisor keeps its state directory and logs owner-only" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  state="${home_dir}/.local/state/dsh-web"
+  chmod 755 "${state}"
+  : > "${state}/server.log"
+  chmod 644 "${state}/server.log"
+  run_supervisor run
+  [ "$status" -eq 0 ]
+  [ "$(mode_of "${state}")" = 700 ]
+  [ "$(mode_of "${state}/server.log")" = 600 ]
+  [ "$(mode_of "${state}/launchd.log")" = 600 ]
+}
+
+@test "the state script creates the supervisor state directory owner-only" {
+  HOME="${home_dir}" run bash "${repo_root}/run_after_dsh-web-supervisor-state.sh"
+  [ "$status" -eq 0 ]
+  [ "$(mode_of "${home_dir}/.local/state/dsh-web")" = 700 ]
+}
+
+@test "the supervisor records the status a server exits with" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  printf '#!/bin/sh\n[ "${1:-}" = "--resolved-version" ] && { echo 0.2.2-rc.3; exit 0; }\nexit 3\n' \
+    > "${home_dir}/.local/bin/dsh"
+  run_supervisor run
+  [ "$status" -eq 3 ]
+  grep -q 'dsh 0.2.2-rc.3 exited with status 3$' "${home_dir}/.local/state/dsh-web/launchd.log"
+}
+
+@test "the supervisor records the signal that ended a server" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  printf '#!/bin/sh\n[ "${1:-}" = "--resolved-version" ] && { echo 0.2.2-rc.3; exit 0; }\nkill -KILL $$\n' \
+    > "${home_dir}/.local/bin/dsh"
+  run_supervisor run
+  [ "$status" -eq 137 ]
+  grep -q 'dsh 0.2.2-rc.3 exited with status 137 (signal KILL)$' "${home_dir}/.local/state/dsh-web/launchd.log"
+}
+
+@test "the supervisor records a stop it passed to the server" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  cat > "${home_dir}/.local/bin/dsh" <<'SH'
+#!/bin/bash
+if [ "${1:-}" = "--resolved-version" ]; then echo 0.2.2-rc.3; exit 0; fi
+trap 'echo drained >> "${STUB_DIR}/server.log"; exit 0' TERM
+echo started >> "${STUB_DIR}/server.log"
+while :; do sleep 0.1; done
+SH
+  HOME="${home_dir}" DSH_HOME="${dsh_dir}" PATH="${stub_dir}:/opt/homebrew/bin:/usr/bin:/bin" \
+    bash "${repo_root}/dot_local/bin/executable_dsh-web-supervisor" run 3>&- 2>/dev/null &
+  supervisor_pid=$!
+  for _ in $(seq 50); do grep -q started "${stub_dir}/server.log" 2>/dev/null && break; sleep 0.1; done
+  sleep 0.5
+  kill -TERM "${supervisor_pid}"
+  wait "${supervisor_pid}" || true
+  pkill -f "${home_dir}/.local/bin/dsh" || true
+  grep -q 'stopped on request; dsh 0.2.2-rc.3 exited with status 0$' "${home_dir}/.local/state/dsh-web/launchd.log"
+}
+
 kept_version_file() {
   printf '%s' "${home_dir}/.local/state/dsh-web/version"
 }
