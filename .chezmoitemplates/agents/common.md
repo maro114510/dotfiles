@@ -141,3 +141,4 @@ The writing preferences the human has stated are kept in this section. Add each 
 - Do not insert line breaks in the middle of a sentence.
 - Do not write in a discursive, essay-like style.
 - Write in natural Japanese, and keep English words out of Japanese sentences as much as possible.
+- Before writing a reply, decide the answer to the question, the evidence the reader needs to accept it, what the reader decides or what happens next, and the unverified points that change the answer. Leave out anything that supports none of these, anything obvious to the reader, and anything not at issue. Start with the answer, and order sentences so each builds on an earlier one. Say in words what an identifier, ticket number, or label means, or leave it out, unless the reader will open or type it.
