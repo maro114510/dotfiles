@@ -77,6 +77,13 @@ seed_manifest() {
   grep -A3 'id: mcp-notion$' "${home_patch}" | grep -q 'disabled: true'
 }
 
+@test "the home patch keeps the Claude prompt cache for one hour and restates the plugin's mount" {
+  run apply
+  [ "$status" -eq 0 ]
+  grep -A4 '^- id: llm-subscriptions$' "${home_patch}" | grep -q 'claudePromptCacheTtl: 1h'
+  grep -A2 '^- id: llm-subscriptions$' "${home_patch}" | grep -q 'name: dsh-plugin-subscriptions'
+}
+
 @test "the home patch leaves Web UI preferences to the profile" {
   run apply
   [ "$status" -eq 0 ]

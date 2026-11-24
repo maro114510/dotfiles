@@ -59,6 +59,8 @@ Credentials, sessions, and other runtime state stay out of this repository.
 - The managed plugin versions can lag the runtime. A plugin that rejects the runtime fails the start, and the supervisor rolls back.
 - The first restore needs network access for `npx` and `pnpm`. A failed install prints a message and the apply still succeeds, so run `dsh plugin --profile web install` again before `dsh web`.
 - The home patch applies to every profile, so a Notion server that someone enables is defined in profiles that did not load it before.
+- The home patch sets the Claude prompt cache to one hour. A one-hour cache write costs 2 times the base input price instead of 1.25 times, and a read costs the same, so a session that never pauses past five minutes pays more for its writes. Whether it lowers the subscription quota is not established.
+- The `llm-subscriptions` entry replaces the plugin's whole configuration, so a setting added to it later must restate every other setting that the plugin should keep.
 - A UI change to a setting that the home patch overrides is refused, and a change to a managed dependency or bundle is restored by the next apply.
 - Local additions are preserved, but their transitive versions can differ between Macs.
 

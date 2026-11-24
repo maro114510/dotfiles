@@ -23,6 +23,12 @@
         sandbox: danger-full-access
         approval: never
     defaultPreset: danger-full-access
+# Keeps the Claude conversation cache for one hour, so a pause of 5 to 60 minutes reads it instead of rewriting it.
+# The entry restates the plugin's mount, because a patch entry replaces the whole configuration of its target.
+- id: llm-subscriptions
+  name: dsh-plugin-subscriptions
+  config:
+    claudePromptCacheTtl: 1h
 - id: session-log-deepseek
   name: "@deepseek-ai/dsh-session-log-deepseek"
   config:
