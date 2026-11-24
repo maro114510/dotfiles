@@ -332,6 +332,7 @@ kept_version_file() {
 
 @test "a first start records the release it resolved" {
   supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
   run_supervisor run
   [ "$status" -eq 0 ]
   [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.3 ]
@@ -340,6 +341,7 @@ kept_version_file() {
 
 @test "a restart keeps the recorded release even when a newer one is published" {
   supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
   printf '0.2.2-rc.1\n' > "$(kept_version_file)"
   run_supervisor run
   [ "$status" -eq 0 ]
