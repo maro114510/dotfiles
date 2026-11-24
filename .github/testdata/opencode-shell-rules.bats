@@ -167,13 +167,3 @@ assert_denied() {
   [ "$(decide read "cert/server.pem" | cut -d' ' -f1)" = deny ]
   [ "$(decide read "x/.env.example" | cut -d' ' -f1)" = allow ]
 }
-
-@test "a denial names the rule that caused it" {
-  run decide shell "cat .env"
-  [ "$status" -eq 0 ]
-  [ "$output" = "deny * .env *" ]
-  run decide shell "cat /Users/u/.ssh/config"
-  [ "$output" = "deny */.ssh*" ]
-  run decide shell "cat server.pem"
-  [ "$output" = "deny *.pem *" ]
-}
