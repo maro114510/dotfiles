@@ -95,6 +95,14 @@ check() {
   [ "$(check nonTemporaryRemovals 'rm -f /tmp/a # old; b')" = '[]' ]
 }
 
+@test "a # inside a word does not hide the targets after it" {
+  [ "$(check nonTemporaryRemovals 'rm /tmp/x#y src/a')" = '["src/a"]' ]
+}
+
+@test "a temporary file whose name holds two dots passes" {
+  [ "$(check nonTemporaryRemovals 'rm /tmp/foo..bar')" = '[]' ]
+}
+
 @test "rm of a variable whose value is unknown is reported" {
   [ "$(check nonTemporaryRemovals 'rm -rf "$dir"')" = '["\"$dir\""]' ]
 }
