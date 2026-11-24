@@ -2,6 +2,7 @@
 
 Source: `dot_local/share/agent-writing-rules/`, applied to `~/.local/share/agent-writing-rules/`.
 The web profile of DeepSeek Harness links its `dsh/` bundle, so the check runs in every Web session after `chezmoi apply`.
+The Claude Code settings template adds `claude/hook.mjs` as a `Stop`, `UserPromptSubmit`, and `PostToolUse` hook, next to the hooks a machine already has.
 
 ## Layout
 
@@ -9,6 +10,7 @@ The web profile of DeepSeek Harness links its `dsh/` bundle, so the check runs i
 |---|---|
 | `rules.mjs` | The checks, as plain JavaScript with no harness import, so another harness can load the same file |
 | `dsh/` | The DeepSeek Harness bundle that applies the checks |
+| `claude/hook.mjs` | The Claude Code hook that applies the checks; its send-back count and pending aside warning live in a file per session under the temporary directory |
 
 ## What it does
 
@@ -22,8 +24,18 @@ The web profile of DeepSeek Harness links its `dsh/` bundle, so the check runs i
 - `/tmp`, `/private/tmp`, `/var/folders`, `/private/var/folders`, and `$TMPDIR` count as temporary; a target whose value the command does not show, such as `"$dir"`, does not.
 - The send-back count is read from the session log, so a resumed session keeps it.
 
+### Claude Code
+
+The rules and exemptions are the same; the delivery differs.
+
+- Claude Code blocks the stop with the reason, which makes it rewrite the reply, at most twice until the next human message.
+- Claude Code delivers the aside warning with the next human message through `UserPromptSubmit`, and a later reply without an aside clears it.
+- Claude Code warns about `rm` through `PostToolUse`, so the settings template no longer denies `Bash(rm:*)` and `Bash(rm -rf:*)`; a deny rule would stop the command before the hook runs.
+
 ## Limits
 
 - The human sees each reply that was sent back, followed by its rewrite, because the turn shows every step as it streams.
 - An aside warning reaches the agent only with the next human message, because context added while a turn stops opens another step.
-- Only DeepSeek Harness applies the checks so far; the other harnesses still rely on the shared instructions alone.
+- A hook that fails to run is ignored, so the session never stops on a broken check.
+- The `Stop` event can be blocked at most eight times in a row, which stays above the two send-backs.
+- Only DeepSeek Harness and Claude Code apply the checks so far; the other harnesses still rely on the shared instructions alone.

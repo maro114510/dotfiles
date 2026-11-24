@@ -28,8 +28,6 @@
       "Read(**/*token*.env)",
       "Read(**/*.token)",
       "Bash(sudo:*)",
-      "Bash(rm:*)",
-      "Bash(rm -rf:*)",
       "Bash(git reset:*)",
       "Bash(git rebase:*)",
       "Bash(curl:*)",
@@ -58,10 +56,33 @@
 {{- end -}}
 {{- $config = mergeOverwrite $config $managed -}}
 {{- /* Retired shared rules: Write() is never matched, and the bare token rule also blocked source files such as tokenizer.go. */ -}}
-{{- $deny := without (uniq (concat $managed.permissions.deny $liveDeny)) "Write(.env*)" "Write(**/secrets/**)" "Read(**/*token*)" -}}
+{{- /* Retired: the writing-rule hook warns about rm outside the temporary directories, which a deny rule would stop before the hook runs. */ -}}
+{{- $deny := without (uniq (concat $managed.permissions.deny $liveDeny)) "Write(.env*)" "Write(**/secrets/**)" "Read(**/*token*)" "Bash(rm:*)" "Bash(rm -rf:*)" -}}
 {{- $_ := set (get $config "permissions") "deny" $deny -}}
 {{- /* permissions.read is not a Claude Code setting; the deny list above replaces it. */ -}}
 {{- $_ := unset (get $config "permissions") "read" -}}
+{{- /* Add the writing-rule hooks to each event unless the machine already has them; its other hooks stay. */ -}}
+{{- $marker := "agent-writing-rules/claude/hook.mjs" -}}
+{{- $ruleHooks := dict "Stop" (dict "mode" "stop" "matcher" "") "UserPromptSubmit" (dict "mode" "prompt" "matcher" "") "PostToolUse" (dict "mode" "tool" "matcher" "Bash") -}}
+{{- $hooks := dict -}}
+{{- with (get $config "hooks") -}}{{- $hooks = . -}}{{- end -}}
+{{- range $event, $rule := $ruleHooks -}}
+  {{- $groups := list -}}
+  {{- with (get $hooks $event) -}}{{- $groups = . -}}{{- end -}}
+  {{- $present := false -}}
+  {{- range $groups -}}
+    {{- range .hooks -}}
+      {{- if contains $marker (default "" .command) -}}{{- $present = true -}}{{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if not $present -}}
+    {{- $handler := dict "type" "command" "command" (printf "node \"$HOME/.local/share/agent-writing-rules/claude/hook.mjs\" %s" $rule.mode) -}}
+    {{- $group := dict "hooks" (list $handler) -}}
+    {{- if $rule.matcher -}}{{- $_ := set $group "matcher" $rule.matcher -}}{{- end -}}
+    {{- $_ := set $hooks $event (append $groups $group) -}}
+  {{- end -}}
+{{- end -}}
+{{- $_ := set $config "hooks" $hooks -}}
 {{- if and $original (deepEqual (fromJson $original) $config) -}}
 {{ $original -}}
 {{- else -}}

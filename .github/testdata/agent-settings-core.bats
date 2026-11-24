@@ -38,7 +38,7 @@ EOF
   [ "$status" -eq 0 ]
   [ "$(jq -r .model <<<"$output")" = opus ]
   [ "$(jq -r '.enabledPlugins["p@m"]' <<<"$output")" = true ]
-  [ "$(jq -c .hooks <<<"$output")" = '{"SessionStart":[]}' ]
+  [ "$(jq -c '.hooks.SessionStart' <<<"$output")" = '[]' ]
   [ "$(jq -c .permissions.allow <<<"$output")" = '["Bash(ls:*)"]' ]
   [ "$(jq -r .permissions.defaultMode <<<"$output")" = bypassPermissions ]
   [ "$(jq '.permissions.deny | index("Read(~/.ssh/**/*)") != null' <<<"$output")" = true ]
@@ -53,6 +53,28 @@ EOF
   [ "$(jq '.permissions.deny | index("Write(.env*)") == null' <<<"$output")" = true ]
   [ "$(jq '.permissions.deny | index("Read(**/*token*)") == null' <<<"$output")" = true ]
   [ "$(jq '.permissions.deny | length == (unique | length)' <<<"$output")" = true ]
+}
+
+@test "claude drops the rm deny rules, which the writing-rule hook replaces with a warning" {
+  echo '{"permissions":{"deny":["Bash(rm:*)","Bash(rm -rf:*)","Bash(foo:*)"]}}' > "${home_dir}/.claude/settings.json"
+  run render dot_claude/settings.json.tmpl
+  [ "$status" -eq 0 ]
+  [ "$(jq '.permissions.deny | map(select(startswith("Bash(rm"))) | length' <<<"$output")" = 0 ]
+  [ "$(jq '.permissions.deny | index("Bash(foo:*)") != null' <<<"$output")" = true ]
+}
+
+@test "claude adds the writing-rule hooks next to the machine's own hooks, once" {
+  echo '{"hooks":{"Stop":[{"hooks":[{"type":"command","command":"echo done"}]}]}}' > "${home_dir}/.claude/settings.json"
+  run render dot_claude/settings.json.tmpl
+  [ "$status" -eq 0 ]
+  [ "$(jq -r '.hooks.Stop[0].hooks[0].command' <<<"$output")" = "echo done" ]
+  [ "$(jq '.hooks.Stop | length' <<<"$output")" = 2 ]
+  [ "$(jq -r '.hooks.PostToolUse[0].matcher' <<<"$output")" = Bash ]
+  [ "$(jq '.hooks.UserPromptSubmit | length' <<<"$output")" = 1 ]
+  echo "$output" > "${home_dir}/.claude/settings.json"
+  run render dot_claude/settings.json.tmpl
+  [ "$status" -eq 0 ]
+  [ "$(jq '.hooks.Stop | length' <<<"$output")" = 2 ]
 }
 
 @test "claude drops permissions.read, which Claude Code does not read" {
@@ -73,7 +95,7 @@ EOF
 @test "claude on a new machine writes only the core" {
   run render dot_claude/settings.json.tmpl
   [ "$status" -eq 0 ]
-  [ "$(jq -c 'keys' <<<"$output")" = '["attribution","cleanupPeriodDays","permissions"]' ]
+  [ "$(jq -c 'keys' <<<"$output")" = '["attribution","cleanupPeriodDays","hooks","permissions"]' ]
   [ "$(jq -c '.permissions | keys' <<<"$output")" = '["deny"]' ]
 }
 

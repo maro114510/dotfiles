@@ -6,7 +6,8 @@
 # the DeepSeek Harness plugin that applies them: it sends a reply that breaks
 # the spacing rule back to the agent at most twice per human message, warns
 # about an aside with the next human message instead of sending the reply
-# back, and warns about `rm` after the command has run.
+# back, and warns about `rm` after the command has run. The Claude Code hook
+# does the same through Stop, UserPromptSubmit, and PostToolUse events.
 #
 # Usage: bats .github/testdata/agent-writing-rules.bats
 
@@ -14,6 +15,8 @@ setup() {
   repo_root="$(cd "${BATS_TEST_DIRNAME}/../.." && pwd)"
   rules="${repo_root}/dot_local/share/agent-writing-rules/rules.mjs"
   plugin="${repo_root}/dot_local/share/agent-writing-rules/dsh/index.js"
+  claude_hook="${repo_root}/dot_local/share/agent-writing-rules/claude/hook.mjs"
+  export TMPDIR="${BATS_TEST_TMPDIR}"
 }
 
 # Prints the JSON result of one rule.
@@ -221,4 +224,120 @@ bash_call() {
   run bash_call 'rm -rf /tmp/x'
   [ "$status" -eq 0 ]
   [ "${output}" = accept ]
+}
+
+# --- Claude Code hook ---
+
+# Feeds one hook event to the Claude Code hook and prints what it answers.
+# Its state file lives in $TMPDIR, so a test keeps its own counts.
+#   $1 mode (stop, prompt, or tool), $2 the event's JSON
+claude_event() {
+  printf '%s' "$2" | node "${claude_hook}" "$1"
+}
+
+stop_event() {
+  jq -nc --arg reply "$1" \
+    '{session_id: "s1", hook_event_name: "Stop", last_assistant_message: $reply}'
+}
+
+prompt_event() {
+  jq -nc '{session_id: "s1", hook_event_name: "UserPromptSubmit", prompt: "次へ"}'
+}
+
+tool_event() {
+  jq -nc --arg command "$1" --arg tool "${2:-Bash}" \
+    '{session_id: "s1", hook_event_name: "PostToolUse", tool_name: $tool, tool_input: {command: $command}}'
+}
+
+@test "claude: a reply breaking the spacing rule is blocked with the reason, and its rewrite passes" {
+  run claude_event stop "$(stop_event '結果は2 点です')"
+  [ "$status" -eq 0 ]
+  [ "$(jq -r .decision <<<"$output")" = block ]
+  [[ "$(jq -r .reason <<<"$output")" == *'2 点'* ]]
+  run claude_event stop "$(stop_event '結果は2点です')"
+  [ "$status" -eq 0 ]
+  [ -z "${output}" ]
+}
+
+@test "claude: a reply with the spacing only inside a code span passes unchanged" {
+  run claude_event stop "$(stop_event '例は`2 点`です')"
+  [ "$status" -eq 0 ]
+  [ -z "${output}" ]
+}
+
+@test "claude: a reply with an aside passes, and the next human message carries a warning once" {
+  run claude_event stop "$(stop_event '設定を変えた（再起動は不要）。')"
+  [ "$status" -eq 0 ]
+  [ -z "${output}" ]
+  run claude_event prompt "$(prompt_event)"
+  [ "$status" -eq 0 ]
+  [[ "$(jq -r .hookSpecificOutput.additionalContext <<<"$output")" == *'（再起動は不要）'* ]]
+  [ "$(jq -r .hookSpecificOutput.hookEventName <<<"$output")" = UserPromptSubmit ]
+  run claude_event prompt "$(prompt_event)"
+  [ -z "${output}" ]
+}
+
+@test "claude: a reply without an aside adds nothing to the next human message" {
+  claude_event stop "$(stop_event '設定を変えた。')"
+  run claude_event prompt "$(prompt_event)"
+  [ "$status" -eq 0 ]
+  [ -z "${output}" ]
+}
+
+@test "claude: a later reply without an aside clears the earlier warning" {
+  claude_event stop "$(stop_event '設定を変えた（再起動は不要）。')"
+  claude_event stop "$(stop_event '設定を変えた。')"
+  run claude_event prompt "$(prompt_event)"
+  [ -z "${output}" ]
+}
+
+@test "claude: the same reply sent back twice passes on the third attempt" {
+  run claude_event stop "$(stop_event '2 点')"
+  [ "$(jq -r .decision <<<"$output")" = block ]
+  run claude_event stop "$(stop_event '3 点')"
+  [ "$(jq -r .decision <<<"$output")" = block ]
+  run claude_event stop "$(stop_event '4 点')"
+  [ "$status" -eq 0 ]
+  [ -z "${output}" ]
+}
+
+@test "claude: a new human message allows two more send-backs" {
+  claude_event stop "$(stop_event '2 点')"
+  claude_event stop "$(stop_event '3 点')"
+  claude_event prompt "$(prompt_event)"
+  run claude_event stop "$(stop_event '4 点')"
+  [ "$(jq -r .decision <<<"$output")" = block ]
+}
+
+@test "claude: a session does not use another session's send-back count" {
+  claude_event stop "$(stop_event '2 点')"
+  claude_event stop "$(stop_event '3 点')"
+  run claude_event stop "$(stop_event '4 点' | jq -c '.session_id = "s2"')"
+  [ "$(jq -r .decision <<<"$output")" = block ]
+}
+
+@test "claude: rm outside the temporary directories adds a warning with the path" {
+  run claude_event tool "$(tool_event 'rm -f src/old.ts')"
+  [ "$status" -eq 0 ]
+  [ "$(jq -r .hookSpecificOutput.hookEventName <<<"$output")" = PostToolUse ]
+  [[ "$(jq -r .hookSpecificOutput.additionalContext <<<"$output")" == *'src/old.ts'* ]]
+  [[ "$(jq -r .hookSpecificOutput.additionalContext <<<"$output")" == *trash* ]]
+}
+
+@test "claude: rm under /tmp adds no warning" {
+  run claude_event tool "$(tool_event 'rm -rf /tmp/x')"
+  [ "$status" -eq 0 ]
+  [ -z "${output}" ]
+}
+
+@test "claude: a tool other than Bash adds no warning" {
+  run claude_event tool "$(tool_event 'rm -f src/old.ts' Write)"
+  [ "$status" -eq 0 ]
+  [ -z "${output}" ]
+}
+
+@test "claude: input that is not JSON is ignored" {
+  run claude_event stop 'not json'
+  [ "$status" -eq 0 ]
+  [ -z "${output}" ]
 }
