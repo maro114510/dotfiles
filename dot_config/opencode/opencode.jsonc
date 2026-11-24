@@ -304,6 +304,25 @@
     { "action": "shell", "resource": "*'.env.*", "effect": "deny" },
     { "action": "shell", "resource": "*<.env.*", "effect": "deny" },
     { "action": "shell", "resource": "*@.env.*", "effect": "deny" },
+    // exceptions to the .env deny above: existence checks only. Narrow on
+    // purpose, because an allow here overrides every earlier rule. The rules
+    // after this block (.envrc, keys, ~/.ssh, ~/.aws) still win over it.
+    { "action": "shell", "resource": "ls .env*", "effect": "allow" },
+    { "action": "shell", "resource": "ls -? .env*", "effect": "allow" },
+    { "action": "shell", "resource": "ls -?? .env*", "effect": "allow" },
+    { "action": "shell", "resource": "test -f .env*", "effect": "allow" },
+    { "action": "shell", "resource": "test -e .env*", "effect": "allow" },
+    { "action": "shell", "resource": "[ -f .env* ]", "effect": "allow" },
+    { "action": "shell", "resource": "[ -e .env* ]", "effect": "allow" },
+    { "action": "shell", "resource": "git check-ignore .env", "effect": "allow" },
+    { "action": "shell", "resource": "git check-ignore -? .env", "effect": "allow" },
+    { "action": "shell", "resource": "git check-ignore .env 2>&1", "effect": "allow" },
+    { "action": "shell", "resource": "git check-ignore -? .env 2>&1", "effect": "allow" },
+    { "action": "shell", "resource": "git check-ignore .env 2>/dev/null", "effect": "allow" },
+    { "action": "shell", "resource": "git check-ignore -? .env 2>/dev/null", "effect": "allow" },
+    // The "*" in the rules above spans a redirect, so a write into an env file
+    // stays denied.
+    { "action": "shell", "resource": "*>*.env*", "effect": "deny" },
     // .envrc, also as .envrc.local: only as a path, like .env above, so a
     // command whose text merely names `.envrc`, such as an Issue body, runs.
     { "action": "shell", "resource": "* .envrc*", "effect": "deny" },
@@ -322,10 +341,16 @@
     { "action": "shell", "resource": "*id_rsa*", "effect": "deny" },
     { "action": "shell", "resource": "*id_ed25519*", "effect": "deny" },
     // bootstrap .env from a committed template (cp with a non-dir target
-    // takes exactly one source)
+    // takes exactly one source), also with a trailing stderr redirect
     { "action": "shell", "resource": "cp *.env.example *.env", "effect": "allow" },
     { "action": "shell", "resource": "cp *.env.sample *.env", "effect": "allow" },
     { "action": "shell", "resource": "cp *.env.template *.env", "effect": "allow" },
+    { "action": "shell", "resource": "cp *.env.example *.env 2>&1", "effect": "allow" },
+    { "action": "shell", "resource": "cp *.env.sample *.env 2>&1", "effect": "allow" },
+    { "action": "shell", "resource": "cp *.env.template *.env 2>&1", "effect": "allow" },
+    { "action": "shell", "resource": "cp *.env.example *.env 2>/dev/null", "effect": "allow" },
+    { "action": "shell", "resource": "cp *.env.sample *.env 2>/dev/null", "effect": "allow" },
+    { "action": "shell", "resource": "cp *.env.template *.env 2>/dev/null", "effect": "allow" },
 
     // deny: breaks the machine. Last, so no exception above re-allows it.
     { "action": "shell", "resource": "sudo *", "effect": "deny" },
