@@ -35,7 +35,14 @@ public_url=""
 trusted_host=""
 patch_file=""
 
+# The server log carries the process-token URL, so only the owner may read this directory.
 mkdir -p "${state_dir}"
+chmod 700 "${state_dir}"
+for private in "${log_file}" "${launchd_log}"; do
+  (umask 077 && : >>"${private}")
+  chmod 600 "${private}"
+done
+[ -e "${url_file}" ] && chmod 600 "${url_file}"
 
 log() {
   printf '%s %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" | tee -a "${launchd_log}" >&2
@@ -130,7 +137,24 @@ web_arguments() {
 record_url() {
   local found
   found="$(grep -Eo 'https?://[^ ]*token=[A-Za-z0-9._-]+' "${log_file}" 2>/dev/null | tail -1)"
-  [ -n "${found}" ] && printf '%s\n' "${found}" >"${url_file}"
+  [ -n "${found}" ] && (umask 077 && printf '%s\n' "${found}" >"${url_file}")
+}
+
+# Names how the server ended; a status above 128 is the signal that killed it.
+describe_exit() {
+  local text="dsh $1 exited with status $2"
+  [ "$2" -gt 128 ] && text+=" (signal $(kill -l "$(($2 - 128))" 2>/dev/null || printf '%s' "$(($2 - 128))"))"
+  printf '%s' "${text}"
+}
+
+# launchd signals only this script; the server needs the signal to drain its sessions.
+stop_server() {
+  local code
+  kill -TERM "$1" 2>/dev/null
+  wait "$1"
+  code=$?
+  log "stopped on request; $(describe_exit "$2" "${code}")"
+  exit 0
 }
 
 cmd_run() {
@@ -152,9 +176,8 @@ cmd_run() {
   log "starting dsh ${version}: dsh ${web_args[*]}"
   DSH_VERSION="${version}" "${dsh_bin}" "${web_args[@]}" >>"${log_file}" 2>&1 &
   local pid=$!
-  # launchd signals only this script; the server needs the signal to drain its sessions.
   # shellcheck disable=SC2064
-  trap "kill -TERM ${pid} 2>/dev/null; wait ${pid}; exit 0" TERM INT
+  trap "stop_server ${pid} ${version}" TERM INT
   if wait_healthy "${health_seconds}"; then
     mkdir -p "${shared_state}"
     printf '%s\n' "${version}" >"${last_good_file}"
@@ -162,10 +185,13 @@ cmd_run() {
     log "dsh ${version} is healthy on port ${port}"
     notify "DSH web ${version} is running"
     wait "${pid}"
-    exit $?
+    local code=$?
+    log "$(describe_exit "${version}" "${code}")"
+    exit "${code}"
   fi
   kill "${pid}" 2>/dev/null || true
-  wait "${pid}" 2>/dev/null || true
+  wait "${pid}" 2>/dev/null
+  log "$(describe_exit "${version}" "$?")"
   mkdir -p "${failing_dir}"
   date +%s >"${failing_dir}/${version}"
   # launchd's next restart runs the last good release instead of retrying this one.
