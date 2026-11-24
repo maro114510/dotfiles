@@ -106,6 +106,13 @@ gate_attempts() {
   [ "$output" = "errors=0 warnings=0" ]
 }
 
+@test "an option that says it is not recommended does not count as recommended" {
+  run check_question 'q.options[1].description = "非推奨です。翌朝まで気づけません。"'
+  [ "$output" = "errors=0 warnings=0" ]
+  run check_question 'q.options[1].description = "Not recommended: found only the next morning."'
+  [ "$output" = "errors=0 warnings=0" ]
+}
+
 @test "an internal ID such as A-12 only warns, naming the ID" {
   run check_question 'q.question = "A-12 の書き出しが失敗したとき、どう対応しますか。"'
   [ "${lines[0]}" = "errors=0 warnings=1" ]
