@@ -5,7 +5,8 @@
 # check    prints the resolved and last-good releases.
 # takeover stops a running server, loads the LaunchAgent, and starts the supervised one.
 #
-# Machine-local values live in ~/.dsh/web-launch.conf, never in this repository:
+# Machine-local values live in ~/.dsh/web-launch.conf, never in this repository.
+# The file and every key are optional; without PUBLIC_URL the server stays local-only.
 #   PORT=3080
 #   PUBLIC_URL=https://example.ts.net/
 #   TRUSTED_HOST=example.ts.net
@@ -46,7 +47,7 @@ fail() {
 }
 
 load_conf() {
-  [ -f "${conf}" ] || fail "missing ${conf}; copy the keys from docs/dsh.md"
+  [ -f "${conf}" ] || return 0
   while IFS='=' read -r key value; do
     case "${key}" in
       PORT) port="${value}" ;;
@@ -60,8 +61,6 @@ load_conf() {
   case "${port}" in
     '' | *[!0-9]*) fail "PORT must be a number in ${conf}" ;;
   esac
-  [ -n "${public_url}" ] || fail "PUBLIC_URL is required in ${conf}"
-  [ -n "${trusted_host}" ] || fail "TRUSTED_HOST is required in ${conf}"
 }
 
 resolved_version() {
@@ -104,7 +103,9 @@ wait_healthy() {
 }
 
 web_arguments() {
-  web_args=(web --no-open --public-url "${public_url}" --trusted-host "${trusted_host}")
+  web_args=(web --no-open)
+  [ -n "${public_url}" ] && web_args+=(--public-url "${public_url}")
+  [ -n "${trusted_host}" ] && web_args+=(--trusted-host "${trusted_host}")
   [ -n "${patch_file}" ] && [ -f "${patch_file}" ] && web_args+=(--patch "${patch_file}")
   [ "${#web_args[@]}" -gt 0 ]
 }
