@@ -65,7 +65,7 @@ const handlers = {
 	},
 
 	tool(input) {
-		if (input.tool_name !== "Bash" || typeof input.tool_input?.command !== "string") return undefined;
+		if (typeof input.tool_input?.command !== "string") return undefined;
 		const targets = nonTemporaryRemovals(input.tool_input.command);
 		if (targets.length === 0) return undefined;
 		return answer(
@@ -75,10 +75,5 @@ const handlers = {
 	},
 };
 
-try {
-	const input = JSON.parse(readFileSync(0, "utf8"));
-	const output = handlers[process.argv[2]]?.(input);
-	if (output) process.stdout.write(JSON.stringify(output));
-} catch {
-	// A check that cannot run never gets in the way of the session.
-}
+const output = handlers[process.argv[2]]?.(JSON.parse(readFileSync(0, "utf8")));
+if (output) process.stdout.write(JSON.stringify(output));

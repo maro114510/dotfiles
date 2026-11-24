@@ -329,15 +329,3 @@ tool_event() {
   [ "$status" -eq 0 ]
   [ -z "${output}" ]
 }
-
-@test "claude: a tool other than Bash adds no warning" {
-  run claude_event tool "$(tool_event 'rm -f src/old.ts' Write)"
-  [ "$status" -eq 0 ]
-  [ -z "${output}" ]
-}
-
-@test "claude: input that is not JSON is ignored" {
-  run claude_event stop 'not json'
-  [ "$status" -eq 0 ]
-  [ -z "${output}" ]
-}

@@ -36,6 +36,4 @@ The rules and exemptions are the same; the delivery differs.
 
 - The human sees each reply that was sent back, followed by its rewrite, because the turn shows every step as it streams.
 - An aside warning reaches the agent only with the next human message, because context added while a turn stops opens another step.
-- A hook that fails to run is ignored, so the session never stops on a broken check.
-- The `Stop` event can be blocked at most eight times in a row, which stays above the two send-backs.
 - Only DeepSeek Harness and Claude Code apply the checks so far; the other harnesses still rely on the shared instructions alone.
