@@ -37,7 +37,7 @@ Credentials, sessions, and other runtime state stay out of this repository.
 | Change a machine-local setting | Change it in the DSH UI; it stays in the profile patch |
 | Restore a new Mac | Follow [setup.md](setup.md), run `chezmoi apply`, then start `dsh web` |
 | Keep DSH newest | Run `dsh-web-supervisor takeover` when you want it. A manual `dsh` resolves the newest published release at each start, while the LaunchAgent keeps the release it recorded |
-| Move the Web GUI to the newest release | Run `dsh-web-supervisor takeover` from outside the session. It records the newest release, stops the running server, loads the LaunchAgent, and starts it. `DSH_VERSION=<version> dsh-web-supervisor takeover` records that release instead |
+| Move the Web GUI to the newest release | Run `dsh-web-supervisor takeover` from outside the session. It records the newest release, stops the running server, loads the LaunchAgent, and starts it. `DSH_VERSION=<version> dsh-web-supervisor takeover` records that release instead, and refuses one that failed in the last six hours until its marker in `~/.local/state/dsh/failing/` is removed |
 | Change the tested plugin versions | Edit the dependency versions in `modify_private_package.json`, then apply |
 
 ## Notion server
