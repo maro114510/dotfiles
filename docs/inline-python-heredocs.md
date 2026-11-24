@@ -70,9 +70,4 @@ The shared instruction names `~/.local/bin/file-replace` by its full path, becau
 | Date or time arithmetic | Most convert an epoch to a local time inside a larger analysis. `date -r <epoch>` covers the standalone case. |
 | Other one-off checks | No shared shape. |
 
-## Measuring again
-
-The acceptance condition on the number of heredoc calls one week after the helper lands is tracked in its own Issue, because a person or a scheduled run measures it and a checkout cannot.
-
-- The count of `python3 - <<` calls is not enough, because calling `file-replace` through a heredoc would lower it without changing the effort.
-- The measurement should also count calls to `file-replace` and the literal-replace heredocs that remain.
+The one-week recount is tracked in [a separate Issue](https://github.com/maro114510/dotfiles/issues/413).

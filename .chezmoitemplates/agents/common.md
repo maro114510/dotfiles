@@ -10,7 +10,7 @@ Hand a subagent the key points and targets you already read, unless its purpose 
 
 On a GitHub rate limit, stop and report instead of retrying. Combine terms into one search and reuse results within the session.
 
-Disable the test result cache only in the final verification run. Measure coverage only when a requirement asks for it.
+Disable the test result cache only in the final verification run. Measure coverage only when a requirement asks for it. Run a full test run that takes minutes in the background.
 
 Run a command that may take minutes as a background job, or give it an explicit time limit.
 
