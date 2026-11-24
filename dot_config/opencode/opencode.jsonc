@@ -325,6 +325,10 @@
     // in a script or a message still runs.
     { "action": "shell", "resource": "*>.env*", "effect": "deny" },
     { "action": "shell", "resource": "*> .env*", "effect": "deny" },
+    { "action": "shell", "resource": "*>  .env*", "effect": "deny" },
+    { "action": "shell", "resource": "*>\t.env*", "effect": "deny" },
+    { "action": "shell", "resource": "*>|*.env*", "effect": "deny" },
+    { "action": "shell", "resource": "*>&*.env*", "effect": "deny" },
     { "action": "shell", "resource": "*>*/.env*", "effect": "deny" },
     { "action": "shell", "resource": "*>\"*.env*", "effect": "deny" },
     { "action": "shell", "resource": "*> \"*.env*", "effect": "deny" },

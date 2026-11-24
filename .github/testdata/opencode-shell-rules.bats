@@ -44,7 +44,7 @@ decide() {
       return hit;
     };
     const pieces = action === "shell"
-      ? resource.split(/\n|;|&&|\|\||\||\$\(|<\(|>\(|`|\)/).map((s) => s.trim()).filter(Boolean)
+      ? resource.split(/\n|;|&&|(?<!>)\|\||(?<!>)\||\$\(|<\(|>\(|`|\)/).map((s) => s.trim()).filter(Boolean)
       : [resource];
     const rank = { allow: 0, ask: 1, deny: 2 };
     let worst;
@@ -143,6 +143,11 @@ assert_denied() {
   assert_denied "ls .env >> dir/.env"
   assert_denied "ls .env > \".env\""
   assert_denied "ls .env &>.env"
+  assert_denied "ls .env >|.env"
+  assert_denied "ls .env >&.env"
+  assert_denied "ls .env >& .env"
+  assert_denied "ls .env >  .env"
+  assert_denied "$(printf 'ls .env >\t.env')"
   assert_denied "test -f .env && cat .env"
   assert_denied "ls .env; cat .env"
   assert_denied "ls .env | grep X .env"
