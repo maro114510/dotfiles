@@ -74,6 +74,15 @@ Surface assumptions and flaws before writing code, not after.
 - Question relentlessly any fatal flaw or logic gap the user may not have noticed, in that same batch. Interrupt mid-task only for a fatal flaw you could not have seen earlier.
 - If something is still unclear after asking, name the ambiguity explicitly in your response.
 
+## Design Questions and Decisions
+
+When the human asks a design question, asks you to choose between options, or asks for a review, do this before answering, taking as long as it needs:
+- Check each premise the question rests on against the sources, and name any that fails.
+- Compare the real options, including leaving things as they are, by their consequences, and recommend one.
+- Name every fatal flaw or logic gap in the human's plan that they may have missed.
+
+Every other task keeps its usual depth. This pass never widens scope: Simplicity First still limits the answer, so recommend the smallest option that solves the stated problem.
+
 ## Simplicity First
 
 Solve the stated problem. Nothing more.
