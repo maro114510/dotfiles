@@ -14,7 +14,7 @@ Disable the test result cache only in the final verification run. Measure covera
 
 Run a command that may take minutes as a background job, or give it an explicit time limit.
 
-Edit files with the edit tool, not a `python3 - <<` heredoc. For several places or files, pipe SEARCH/REPLACE blocks to `~/.local/bin/file-replace` (see `--help`).
+Edit files with the edit tool, not a `python3 - <<` heredoc. For the same literal text in several files, use `sd -F -A OLD NEW files...`.
 
 ## Worktree Workflow
 
