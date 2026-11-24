@@ -104,6 +104,13 @@ seed_manifest() {
   [ "$(jq -r '.dsh.profile.bundles | index("dsh-context") != null' "${manifest}")" = true ]
 }
 
+@test "the writing-rule bundle is linked from its deployed directory and selected" {
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -r '.dependencies["agent-writing-rules"]' "${manifest}")" = 'link:~/.local/share/agent-writing-rules/dsh' ]
+  [ "$(jq -r '.dsh.profile.bundles | index("agent-writing-rules") != null' "${manifest}")" = true ]
+}
+
 @test "a local dependency and a local bundle survive an apply" {
   seed_manifest '{"name":"dsh-profile-web","dependencies":{"left-pad":"1.3.0"},"dsh":{"profile":{"bundles":["@deepseek-ai/dsh-base","left-pad"]}}}'
   run apply

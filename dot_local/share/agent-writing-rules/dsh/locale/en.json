@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Writing rule checks",
+    "description": "Sends a reply with a space between Japanese and an alphanumeric back to the agent, at most twice per turn, and warns the agent about parenthetical asides and rm outside the temporary directories."
+  }
+}
