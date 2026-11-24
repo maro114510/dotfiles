@@ -4,7 +4,8 @@
 # status   shows the recorded, resolved, and last good releases, the listener and health.
 # check    prints the resolved and last-good releases.
 # takeover records the newest release (or DSH_VERSION), stops a running server,
-#          loads the LaunchAgent, and starts the supervised one.
+#          loads the LaunchAgent, and starts the supervised one. It warns, and never
+#          stops, when the release excludes an installed plugin.
 #
 # Machine-local values live in ~/.dsh/web-launch.conf, never in this repository.
 # The file and every key are optional; without PUBLIC_URL the server stays local-only.
@@ -212,13 +213,41 @@ require_recorded() {
   fi
 }
 
+# Prints the lines dsh writes when it skips a profile bundle or disables a plugin row
+# for a version mismatch, without the remedy text after the reported range.
+incompatibility_lines() {
+  grep -E 'skipping profile bundle|disabling profile plugin row' \
+    | sed -E 's/\. Running it may cause.*$//' \
+    | awk '!seen[$0]++'
+}
+
+# Asks the release about to be recorded how it would load the profile, and warns
+# about every plugin it would skip. The check never fails a takeover.
+warn_before_recording() {
+  local found
+  found="$(DSH_VERSION="$1" "${dsh_bin}" web --dump-config 2>&1 >/dev/null | incompatibility_lines)"
+  [ -n "${found}" ] || return 0
+  log "warning: dsh $1 excludes installed plugins; the takeover continues"
+  printf '%s\n' "${found}" | while IFS= read -r line; do log "warning: ${line}"; done
+}
+
+# Reports what the server logged about plugins since the byte offset $1.
+report_after_start() {
+  local found
+  found="$(tail -c "+$(($1 + 1))" "${log_file}" 2>/dev/null | incompatibility_lines)"
+  [ -n "${found}" ] || return 0
+  log "warning: dsh $2 disabled installed plugins; see ${log_file}"
+  printf '%s\n' "${found}" | while IFS= read -r line; do log "warning: ${line}"; done
+}
+
 cmd_takeover() {
   load_conf
-  local pid version requested="${DSH_VERSION:-}"
+  local pid version log_offset requested="${DSH_VERSION:-}"
   version="$(resolved_version)" || exit 3
   if [ -n "${requested}" ] && [ "${version}" != "${requested}" ]; then
     fail "dsh ${requested} failed recently, so the wrapper would run ${version}; clear ${failing_dir}/${requested} to retry it"
   fi
+  warn_before_recording "${version}"
   printf '%s\n' "${version}" >"${kept_file}"
   log "recorded dsh ${version} for the supervised server"
   pid="$(listener_pid)"
@@ -243,10 +272,12 @@ cmd_takeover() {
     [ -f "${plist}" ] || fail "missing ${plist}; apply dotfiles first"
     launchctl bootstrap "gui/$(id -u)" "${plist}" || fail "cannot load ${label}"
   fi
+  log_offset="$(wc -c <"${log_file}" 2>/dev/null || printf 0)"
   launchctl kickstart -k "gui/$(id -u)/${label}" || fail "cannot start ${label}"
   if wait_healthy "${takeover_seconds}"; then
     require_recorded "${version}"
     log "takeover complete on port ${port}"
+    report_after_start "${log_offset// /}" "${version}"
     notify "DSH web ${version} is running"
     cmd_status
     exit 0
@@ -257,6 +288,7 @@ cmd_takeover() {
   wait_healthy "${takeover_seconds}" || fail "the last good release did not become healthy"
   require_recorded "${version}"
   log "takeover complete on port ${port}"
+  report_after_start "${log_offset// /}" "${version}"
   notify "DSH web ${version} is running"
   cmd_status
 }
