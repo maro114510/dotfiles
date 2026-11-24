@@ -72,3 +72,25 @@ check() {
 @test "prose without parentheses passes" {
   [ "$(check parentheticalAsides '再起動は不要です。')" = '[]' ]
 }
+
+# --- rm outside the temporary directories ---
+
+@test "rm on a project file is reported with its path" {
+  [ "$(check nonTemporaryRemovals 'rm -f src/old.ts')" = '["src/old.ts"]' ]
+}
+
+@test "rm after another command in the same line is reported" {
+  [ "$(check nonTemporaryRemovals 'cd repo && rm -rf build')" = '["build"]' ]
+}
+
+@test "rm under /tmp, \$TMPDIR, or the macOS temporary folder passes" {
+  [ "$(check nonTemporaryRemovals 'rm -rf /tmp/x "${TMPDIR}/y" /private/var/folders/ab/T/z')" = '[]' ]
+}
+
+@test "rm of a variable whose value is unknown is reported" {
+  [ "$(check nonTemporaryRemovals 'rm -rf "$dir"')" = '["\"$dir\""]' ]
+}
+
+@test "a command that only mentions rm passes" {
+  [ "$(check nonTemporaryRemovals 'trash old.ts && git rm --cached a && echo rm')" = '[]' ]
+}
