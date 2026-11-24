@@ -4,6 +4,8 @@ Keep changes minimal and maintain backward compatibility.
 
 Prioritize quality over speed.
 
+Do not re-read a file range that nothing has changed since your last read of it.
+
 ## Worktree Workflow
 
 - All work must be done on a worktree using [git-wt](https://github.com/k1LoW/git-wt)
@@ -73,7 +75,6 @@ Solve the stated problem. Nothing more.
 - No features beyond what was asked.
 - No abstractions for single-use code.
 - No "future-proofing" that wasn't requested.
-- If you've written significantly more code than the task warrants, reconsider the approach.
 
 ## Surgical Changes
 
