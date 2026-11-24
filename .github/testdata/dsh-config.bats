@@ -413,6 +413,54 @@ kept_version_file() {
   [[ "$output" == *0.2.2-rc.1* ]]
 }
 
+@test "a failed start leaves a release that takeover recorded meanwhile" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  printf '0.2.2-rc.3\n' > "$(kept_version_file)"
+  mkdir -p "${home_dir}/.local/state/dsh"
+  printf '0.2.2-rc.1\n' > "${home_dir}/.local/state/dsh/last-good"
+  # takeover records 0.2.2-rc.5 while this start is still waiting for its health check.
+  printf '#!/bin/sh\nprintf "0.2.2-rc.5\\n" > "%s"\nprintf 000\n' "$(kept_version_file)" > "${stub_dir}/curl"
+  DSH_WEB_HEALTH_SECONDS=0 run_supervisor run
+  [ "$status" -ne 0 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.5 ]
+}
+
+@test "a failed first start leaves a release that takeover recorded meanwhile" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  printf '0.2.2-rc.3\n' > "$(kept_version_file)"
+  printf '#!/bin/sh\nprintf "0.2.2-rc.5\\n" > "%s"\nprintf 000\n' "$(kept_version_file)" > "${stub_dir}/curl"
+  DSH_WEB_HEALTH_SECONDS=0 run_supervisor run
+  [ "$status" -ne 0 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.5 ]
+}
+
+@test "takeover fails when the recovery wait finds the last good release running" {
+  supervisor_run_env
+  # The first health check fails; launchd then falls back and the second one passes.
+  printf '#!/bin/sh\nif [ -e "%s/checked" ]; then printf 200; else : > "%s/checked"; printf 000; fi\n' \
+    "${stub_dir}" "${stub_dir}" > "${stub_dir}/curl"
+  printf '#!/bin/sh\n[ -e "%s/checked" ] && printf "0.2.2-rc.1\\n" > "%s"\nexit 0\n' \
+    "${stub_dir}" "$(kept_version_file)" > "${stub_dir}/launchctl"
+  DSH_WEB_TAKEOVER_SECONDS=0 run_supervisor takeover
+  [ "$status" -ne 0 ]
+  [[ "$output" == *0.2.2-rc.1* ]]
+}
+
+@test "takeover refuses a requested release the wrapper would replace" {
+  supervisor_run_env
+  printf '0.2.2-rc.3\n' > "$(kept_version_file)"
+  # The wrapper answers the last good release because the requested one failed recently.
+  printf '#!/bin/sh\n[ "${1:-}" = "--resolved-version" ] && { echo 0.2.2-rc.1; exit 0; }\nexit 0\n' \
+    > "${home_dir}/.local/bin/dsh"
+  DSH_VERSION=0.2.2-rc.5 run_supervisor takeover
+  [ "$status" -ne 0 ]
+  [[ "$output" == *0.2.2-rc.5* ]]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.3 ]
+  [ ! -e "${stub_dir}/launchctl.log" ]
+}
+
 @test "takeover moves the recorded release to the newest one and restarts the agent" {
   supervisor_run_env
   printf '0.2.2-rc.1\n' > "$(kept_version_file)"
