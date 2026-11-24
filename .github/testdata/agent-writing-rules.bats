@@ -4,9 +4,9 @@
 # spacing rule between Japanese characters and alphanumerics, parenthetical
 # asides in prose, and `rm` outside the temporary directories. Also verifies
 # the DeepSeek Harness plugin that applies them: it sends a reply that breaks
-# the spacing rule back to the agent at most twice per turn, warns about an
-# aside without sending the reply back, and warns about `rm` after the command
-# has run.
+# the spacing rule back to the agent at most twice per human message, warns
+# about an aside with the next human message instead of sending the reply
+# back, and warns about `rm` after the command has run.
 #
 # Usage: bats .github/testdata/agent-writing-rules.bats
 
@@ -99,7 +99,8 @@ check() {
 
 # Runs the plugin's turn-stopping listener the way DSH dispatches it, with a
 # stand-in agent whose session log grows as the turn goes, and prints one line
-# per message the plugin sent: "steer: <text>" or "inject: <text>".
+# per message the plugin sent: "steer: <text>" for a send-back, and
+# "context: <text>" for one it added to the step a human message opens.
 #   $1 JSON array; a string is the agent's reply followed by a turn stop, and
 #      {"human": "<text>"} is a new message from the human
 reply_turn() {
@@ -112,13 +113,19 @@ reply_turn() {
       console.log(kind + ": " + message.content[0].text);
       events.push({ type: "user/message", data: message });
     };
-    const agent = { session: { snapshotEvents: () => events }, steer: send("steer"), inject: send("inject") };
+    const agent = { session: { snapshotEvents: () => events }, steer: send("steer") };
     for (const item of JSON.parse(script)) {
       if (typeof item === "string") {
         events.push({ type: "assistant/message", data: { message: { content: [{ type: "text", text: item }] } } });
         await listeners["agent/turn-stopping"]({ agent, turn: 1, signal: new AbortController().signal });
       } else {
-        events.push({ type: "user/message", data: { source: { kind: "user" }, content: [{ type: "text", text: item.human }] } });
+        const human = { role: "user", source: { kind: "user" }, content: [{ type: "text", text: item.human }] };
+        const proposed = { agent, messages: [human], turn: 2, step: 1, signal: new AbortController().signal };
+        const decision = await listeners["agent/pre-step"](proposed, async () => ({ kind: "enter", messages: [human] }));
+        for (const message of decision.messages) {
+          if (message !== human) console.log("context: " + message.content[0].text);
+          events.push({ type: "user/message", data: message });
+        }
       }
     }
   ' "${plugin}" "$1"
@@ -153,12 +160,18 @@ bash_call() {
   [ -z "${output}" ]
 }
 
-@test "a reply with a parenthetical aside closes the turn with a warning" {
-  run reply_turn '["設定を変えた（再起動は不要）。"]'
+@test "a reply with a parenthetical aside closes the turn, and the next human message carries a warning" {
+  run reply_turn '["設定を変えた（再起動は不要）。",{"human":"次へ"}]'
   [ "$status" -eq 0 ]
   [ "${#lines[@]}" -eq 1 ]
-  [[ "${lines[0]}" == inject:* ]]
+  [[ "${lines[0]}" == context:* ]]
   [[ "${lines[0]}" == *'（再起動は不要）'* ]]
+}
+
+@test "a reply without an aside adds nothing to the next human message" {
+  run reply_turn '["設定を変えた。",{"human":"次へ"}]'
+  [ "$status" -eq 0 ]
+  [ -z "${output}" ]
 }
 
 @test "a reply sent back twice closes the turn on the third attempt" {
