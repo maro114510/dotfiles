@@ -231,12 +231,13 @@ warn_before_recording() {
   printf '%s\n' "${found}" | while IFS= read -r line; do log "warning: ${line}"; done
 }
 
-# Reports what the server logged about plugins since the byte offset $1.
+# Reports what the server logged about plugins since the byte offset $1. $2 names
+# the release the lines belong to; after a rollback the log mixes two releases.
 report_after_start() {
   local found
   found="$(tail -c "+$(($1 + 1))" "${log_file}" 2>/dev/null | incompatibility_lines)"
   [ -n "${found}" ] || return 0
-  log "warning: dsh $2 disabled installed plugins; see ${log_file}"
+  log "warning: $2 disabled installed plugins; see ${log_file}"
   printf '%s\n' "${found}" | while IFS= read -r line; do log "warning: ${line}"; done
 }
 
@@ -272,12 +273,13 @@ cmd_takeover() {
     [ -f "${plist}" ] || fail "missing ${plist}; apply dotfiles first"
     launchctl bootstrap "gui/$(id -u)" "${plist}" || fail "cannot load ${label}"
   fi
-  log_offset="$(wc -c <"${log_file}" 2>/dev/null || printf 0)"
+  log_offset=0
+  [ -f "${log_file}" ] && log_offset="$(wc -c <"${log_file}")"
   launchctl kickstart -k "gui/$(id -u)/${label}" || fail "cannot start ${label}"
   if wait_healthy "${takeover_seconds}"; then
     require_recorded "${version}"
     log "takeover complete on port ${port}"
-    report_after_start "${log_offset// /}" "${version}"
+    report_after_start "${log_offset}" "dsh ${version}"
     notify "DSH web ${version} is running"
     cmd_status
     exit 0
@@ -288,7 +290,7 @@ cmd_takeover() {
   wait_healthy "${takeover_seconds}" || fail "the last good release did not become healthy"
   require_recorded "${version}"
   log "takeover complete on port ${port}"
-  report_after_start "${log_offset// /}" "${version}"
+  report_after_start "${log_offset}" "the server after the rollback"
   notify "DSH web ${version} is running"
   cmd_status
 }
