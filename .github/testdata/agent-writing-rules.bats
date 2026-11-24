@@ -47,6 +47,10 @@ check() {
   [ "$(check spacingViolations $'説明\n```\necho 2 点\n```\n以上')" = '[]' ]
 }
 
+@test "a space inside a tilde-fenced code block is ignored" {
+  [ "$(check spacingViolations $'説明\n~~~text\n結果は2 点\n~~~\n以上')" = '[]' ]
+}
+
 @test "a space next to a URL or a path is ignored" {
   [ "$(check spacingViolations '詳細は https://example.com/a と ~/.dsh/AGENTS.md を参照')" = '[]' ]
 }
@@ -63,6 +67,10 @@ check() {
 
 @test "a half-width parenthetical aside is reported" {
   [ "$(check parentheticalAsides 'It runs twice (once per apply).')" = '[{"snippet":"(once per apply)"}]' ]
+}
+
+@test "an aside holding a code span is quoted from the original text" {
+  [ "$(check parentheticalAsides '設定した（`foo`を使う）。')" = '[{"snippet":"（`foo`を使う）"}]' ]
 }
 
 @test "parentheses inside code, a link target, or a path are ignored" {
@@ -85,6 +93,10 @@ check() {
 
 @test "rm under /tmp, \$TMPDIR, or the macOS temporary folder passes" {
   [ "$(check nonTemporaryRemovals 'rm -rf /tmp/x "${TMPDIR}/y" /private/var/folders/ab/T/z')" = '[]' ]
+}
+
+@test "rm after then or do in shell control syntax is reported" {
+  [ "$(check nonTemporaryRemovals 'if test -f a; then rm -f a; fi; for x in b; do rm -f b; done')" = '["a","b"]' ]
 }
 
 @test "rm of a temporary path that climbs out with .. is reported" {
