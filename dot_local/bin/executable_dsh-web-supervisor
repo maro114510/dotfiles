@@ -168,6 +168,8 @@ cmd_run() {
   # launchd's next restart runs the last good release instead of retrying this one.
   if [ -s "${last_good_file}" ] && [ "$(cat "${last_good_file}")" != "${version}" ]; then
     cp "${last_good_file}" "${kept_file}"
+  else
+    rm -f "${kept_file}"
   fi
   log "dsh ${version} did not become healthy; marked failing and exiting"
   notify "DSH web ${version} failed to start"
@@ -225,6 +227,9 @@ cmd_takeover() {
   fi
   launchctl kickstart -k "gui/$(id -u)/${label}" || fail "cannot start ${label}"
   if wait_healthy 150; then
+    local running
+    running="$(cat "${kept_file}" 2>/dev/null || printf none)"
+    [ "${running}" = "${version}" ] || fail "dsh ${version} failed; the server fell back to ${running}"
     log "takeover complete on port ${port}"
     notify "DSH web ${version} is running"
     cmd_status
