@@ -91,6 +91,10 @@ check() {
   [ "$(check nonTemporaryRemovals 'rm -rf /tmp/../etc')" = '["/tmp/../etc"]' ]
 }
 
+@test "rm of a quoted temporary path ending in .. is reported" {
+  [ "$(check nonTemporaryRemovals 'rm -rf "/tmp/x/.."')" = '["\"/tmp/x/..\""]' ]
+}
+
 @test "a shell comment after rm is not reported as a target" {
   [ "$(check nonTemporaryRemovals 'rm -f /tmp/a # old; b')" = '[]' ]
 }
