@@ -6,6 +6,8 @@ Prioritize quality over speed.
 
 Do not re-read a file range that nothing has changed since your last read of it.
 
+Hand a subagent the key points and targets you already read, unless its purpose is independent verification.
+
 ## Worktree Workflow
 
 - All work must be done on a worktree using [git-wt](https://github.com/k1LoW/git-wt)
@@ -61,7 +63,6 @@ Before writing anything a public audience can read (an Issue, PR, comment, commi
 
 Surface assumptions and flaws before writing code, not after.
 
-- Ask only about the decisions listed under Decision Rights; decide everything else you can verify yourself.
 - If multiple interpretations remain after verification and the choice belongs to the human, list them and ask — don't silently pick one.
 - If a simpler approach exists, say so before starting.
 - Ask once with all your questions grouped. Don't interrupt repeatedly mid-task.
