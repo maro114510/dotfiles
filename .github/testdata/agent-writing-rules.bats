@@ -54,3 +54,21 @@ check() {
 @test "English text without Japanese passes" {
   [ "$(check spacingViolations 'Use 2 spaces in DSH 3')" = '[]' ]
 }
+
+# --- parenthetical asides ---
+
+@test "a full-width parenthetical aside is reported" {
+  [ "$(check parentheticalAsides '設定を変えた（再起動は不要）。')" = '[{"snippet":"（再起動は不要）"}]' ]
+}
+
+@test "a half-width parenthetical aside is reported" {
+  [ "$(check parentheticalAsides 'It runs twice (once per apply).')" = '[{"snippet":"(once per apply)"}]' ]
+}
+
+@test "parentheses inside code, a link target, or a path are ignored" {
+  [ "$(check parentheticalAsides '`f(x)` と [説明](#L24) と [a](</tmp/b (c).md>) を見る')" = '[]' ]
+}
+
+@test "prose without parentheses passes" {
+  [ "$(check parentheticalAsides '再起動は不要です。')" = '[]' ]
+}
