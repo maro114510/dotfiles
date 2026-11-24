@@ -8,6 +8,9 @@ const SPACED = new RegExp(String.raw`[${JAPANESE}][ \u3000]+(?=[A-Za-z0-9])|[A-Z
 // swallows the start of a code span or a Markdown link.
 const EXEMPT = /```[\s\S]*?(?:```|$)|`[^`\n]*`|\]\(<[^>\n]*>\)|\]\([^)\n]*\)|[!-'*-;=?-Z\\^_a-z{-~]*\/[!-'*-;=?-Z\\^_a-z{-~]*/g;
 const ASIDE = /\([^()\n]*\)|（[^（）\n]*）/g;
+// rm as a command word: at the start or after a separator, never `git rm` or `echo rm`.
+const RM = /(?:^|[;&|\n(]\s*)rm\s+([^;&|\n)]*)/g;
+const TEMPORARY = /^["']?(?:\/tmp\/|\/private\/tmp\/|\/private\/var\/folders\/|\/var\/folders\/|\$\{?TMPDIR\}?\/)/;
 
 /** Replaces code and paths with filler of the same length, so indices still point into the original text. */
 function maskExempt(text) {
@@ -27,6 +30,8 @@ export function parentheticalAsides(text) {
 }
 
 /** `rm` targets outside the temporary directories, as path strings. */
-export function nonTemporaryRemovals(_command) {
-	return [];
+export function nonTemporaryRemovals(command) {
+	return [...command.matchAll(RM)].flatMap((match) =>
+		match[1].trim().split(/\s+/).filter((word) => !word.startsWith("-") && !TEMPORARY.test(word)),
+	);
 }
