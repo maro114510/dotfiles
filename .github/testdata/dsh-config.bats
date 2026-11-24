@@ -391,6 +391,18 @@ kept_version_file() {
   [ ! -e "$(kept_version_file)" ]
 }
 
+@test "a failed start of the last good release keeps it recorded" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  printf '#!/bin/sh\nprintf 000\n' > "${stub_dir}/curl"
+  printf '0.2.2-rc.1\n' > "$(kept_version_file)"
+  mkdir -p "${home_dir}/.local/state/dsh"
+  printf '0.2.2-rc.1\n' > "${home_dir}/.local/state/dsh/last-good"
+  DSH_WEB_HEALTH_SECONDS=0 run_supervisor run
+  [ "$status" -ne 0 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.1 ]
+}
+
 @test "takeover fails when the server came back on another release than it recorded" {
   supervisor_run_env
   # launchd restarted on the last good release after the newest one failed.
