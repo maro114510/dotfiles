@@ -8,6 +8,8 @@ Do not re-read a file range that nothing has changed since your last read of it.
 
 Hand a subagent the key points and targets you already read, unless its purpose is independent verification.
 
+On a GitHub rate limit, stop and report instead of retrying. Combine terms into one search and reuse results within the session.
+
 ## Worktree Workflow
 
 - All work must be done on a worktree using [git-wt](https://github.com/k1LoW/git-wt)
@@ -65,7 +67,7 @@ Surface assumptions and flaws before writing code, not after.
 
 - If multiple interpretations remain after verification and the choice belongs to the human, list them and ask — don't silently pick one.
 - If a simpler approach exists, say so before starting.
-- Ask once with all your questions grouped. Don't interrupt repeatedly mid-task.
+- Ask once with all your questions grouped.
 - Question relentlessly any fatal flaw or logic gap the user may not have noticed, in that same batch. Interrupt mid-task only for a fatal flaw you could not have seen earlier.
 - If something is still unclear after asking, name the ambiguity explicitly in your response.
 
@@ -112,8 +114,6 @@ Tests are specifications, not afterthoughts. If the test is hard to write, the d
 Define the observable change that confirms success before starting:
 - "The server returns 404 for unknown routes"
 - "The button is disabled when the form is empty"
-
-Don't mark a task complete until the exit condition is verified.
 
 ## Reporting
 
