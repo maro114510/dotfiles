@@ -559,6 +559,26 @@ dsh_dry_run_prints() {
   [ "${#warned_at}" -lt "${#recorded_at}" ]
 }
 
+@test "takeover reports no file error when the server has not logged yet" {
+  supervisor_run_env
+  [ ! -e "$(server_log)" ]
+  run_supervisor takeover
+  [ "$status" -eq 0 ]
+  [[ "$output" != *'No such file'* ]]
+}
+
+@test "takeover after a rollback does not attribute the logged lines to the release that failed" {
+  supervisor_run_env
+  printf '#!/bin/sh\nif [ -e "%s/checked" ]; then printf 200; else : > "%s/checked"; printf 000; fi\n' \
+    "${stub_dir}" "${stub_dir}" > "${stub_dir}/curl"
+  printf '#!/bin/sh\n[ -e "%s/checked" ] && printf "%%s\\n" '"'%s'"' >> "%s"\nexit 0\n' \
+    "${stub_dir}" "${incompatible_bundle_line}" "$(server_log)" > "${stub_dir}/launchctl"
+  chmod +x "${stub_dir}/launchctl"
+  DSH_WEB_TAKEOVER_SECONDS=0 run_supervisor takeover
+  [[ "$output" == *'dsh-ops'* ]]
+  [[ "$output" != *'dsh 0.2.2-rc.3 disabled'* ]]
+}
+
 @test "takeover completes when the release dry run fails" {
   supervisor_run_env
   dsh_dry_run_prints
