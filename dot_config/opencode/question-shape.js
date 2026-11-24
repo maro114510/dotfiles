@@ -8,7 +8,8 @@ const KANA = /[\u3040-\u30ff]/;
 // `e.g.,` stay one sentence.
 const SENTENCE_END = /[。！？!?]+|\.(?=\s|$)/;
 const MAX_SENTENCES = 2;
-const RECOMMENDED = /推奨|recommended/i;
+// The lookbehinds keep 非推奨 and "not recommended" from counting.
+const RECOMMENDED = /(?<!非)推奨|(?<!not )recommended/i;
 const PARENTHESIZED = /[(（][^()（）]*[)）]/g;
 // An internal key such as `A-12`.
 const INTERNAL_ID = /\b[A-Z][A-Z0-9]*-\d+\b/g;
