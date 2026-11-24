@@ -168,10 +168,13 @@ cmd_run() {
   mkdir -p "${failing_dir}"
   date +%s >"${failing_dir}/${version}"
   # launchd's next restart runs the last good release instead of retrying this one.
-  if [ ! -s "${last_good_file}" ]; then
-    rm -f "${kept_file}"
-  elif [ "$(cat "${last_good_file}")" != "${version}" ]; then
-    cp "${last_good_file}" "${kept_file}"
+  # A takeover may have recorded another release meanwhile; leave its choice alone.
+  if [ "$(cat "${kept_file}" 2>/dev/null)" = "${version}" ]; then
+    if [ ! -s "${last_good_file}" ]; then
+      rm -f "${kept_file}"
+    elif [ "$(cat "${last_good_file}")" != "${version}" ]; then
+      cp "${last_good_file}" "${kept_file}"
+    fi
   fi
   log "dsh ${version} did not become healthy; marked failing and exiting"
   notify "DSH web ${version} failed to start"
@@ -199,10 +202,23 @@ cmd_check() {
   printf 'last-good=%s\n' "$(cat "${last_good_file}" 2>/dev/null || printf none)"
 }
 
+# Fails unless the server came up on the release takeover recorded.
+require_recorded() {
+  local running
+  running="$(cat "${kept_file}" 2>/dev/null || printf none)"
+  if [ "${running}" != "$1" ]; then
+    notify "DSH web $1 failed; rolled back to ${running}"
+    fail "dsh $1 failed; the server fell back to ${running}"
+  fi
+}
+
 cmd_takeover() {
   load_conf
-  local pid version
+  local pid version requested="${DSH_VERSION:-}"
   version="$(resolved_version)" || exit 3
+  if [ -n "${requested}" ] && [ "${version}" != "${requested}" ]; then
+    fail "dsh ${requested} failed recently, so the wrapper would run ${version}; clear ${failing_dir}/${requested} to retry it"
+  fi
   printf '%s\n' "${version}" >"${kept_file}"
   log "recorded dsh ${version} for the supervised server"
   pid="$(listener_pid)"
@@ -229,12 +245,7 @@ cmd_takeover() {
   fi
   launchctl kickstart -k "gui/$(id -u)/${label}" || fail "cannot start ${label}"
   if wait_healthy "${takeover_seconds}"; then
-    local running
-    running="$(cat "${kept_file}" 2>/dev/null || printf none)"
-    if [ "${running}" != "${version}" ]; then
-      notify "DSH web ${version} failed; rolled back to ${running}"
-      fail "dsh ${version} failed; the server fell back to ${running}"
-    fi
+    require_recorded "${version}"
     log "takeover complete on port ${port}"
     notify "DSH web ${version} is running"
     cmd_status
@@ -244,8 +255,9 @@ cmd_takeover() {
   notify "DSH web ${version} failed; rolling back"
   launchctl kickstart -k "gui/$(id -u)/${label}" || fail "cannot restart ${label}"
   wait_healthy "${takeover_seconds}" || fail "the last good release did not become healthy"
-  log "rollback complete on port ${port}"
-  notify "DSH web rolled back to the last good release"
+  require_recorded "${version}"
+  log "takeover complete on port ${port}"
+  notify "DSH web ${version} is running"
   cmd_status
 }
 
