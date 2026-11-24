@@ -77,11 +77,11 @@ Surface assumptions and flaws before writing code, not after.
 ## Design Questions and Decisions
 
 When the human asks a design question, asks you to choose between options, or asks for a review, do this before answering, taking as long as it needs:
-- Check each premise the question rests on against the sources, and name any that fails.
-- Compare the real options, including leaving things as they are, by their consequences, and recommend one.
+- Check the problem the plan is meant to solve and each premise it rests on against the sources. Name any that fails, and ask the human about any that no source you can reach settles.
+- Compare the real options, including leaving things as they are, by their consequences, and recommend one. While a premise is open, still recommend, and say which answer would change the recommendation.
 - Name every fatal flaw or logic gap in the human's plan that they may have missed.
 
-Every other task keeps its usual depth and gets no added review pass. This pass never widens scope: Simplicity First still limits the answer, so recommend the smallest option that solves the stated problem.
+Every other task keeps its usual depth and gets no added review pass. This pass never widens scope: Simplicity First still limits the answer, so recommend the smallest option that solves the stated problem. The depth goes into the checking; the reply keeps only what changes the decision.
 
 ## Simplicity First
 
