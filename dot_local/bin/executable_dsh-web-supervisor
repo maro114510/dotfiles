@@ -127,10 +127,12 @@ wait_healthy() {
 }
 
 web_arguments() {
-  web_args=(web --no-open)
+  # --patch is a launcher option, so it must come before the web app's own flags.
+  web_args=(web)
+  [ -n "${patch_file}" ] && [ -f "${patch_file}" ] && web_args+=(--patch "${patch_file}")
+  web_args+=(--no-open)
   [ -n "${public_url}" ] && web_args+=(--public-url "${public_url}")
   [ -n "${trusted_host}" ] && web_args+=(--trusted-host "${trusted_host}")
-  [ -n "${patch_file}" ] && [ -f "${patch_file}" ] && web_args+=(--patch "${patch_file}")
   [ "${#web_args[@]}" -gt 0 ]
 }
 
