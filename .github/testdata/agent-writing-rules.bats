@@ -87,6 +87,14 @@ check() {
   [ "$(check nonTemporaryRemovals 'rm -rf /tmp/x "${TMPDIR}/y" /private/var/folders/ab/T/z')" = '[]' ]
 }
 
+@test "rm of a temporary path that climbs out with .. is reported" {
+  [ "$(check nonTemporaryRemovals 'rm -rf /tmp/../etc')" = '["/tmp/../etc"]' ]
+}
+
+@test "a shell comment after rm is not reported as a target" {
+  [ "$(check nonTemporaryRemovals 'rm -f /tmp/a # old; b')" = '[]' ]
+}
+
 @test "rm of a variable whose value is unknown is reported" {
   [ "$(check nonTemporaryRemovals 'rm -rf "$dir"')" = '["\"$dir\""]' ]
 }
