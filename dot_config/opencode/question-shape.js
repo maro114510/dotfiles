@@ -10,8 +10,8 @@ const SENTENCE_END = /[。！？!?]+|\.(?=\s|$)/;
 const MAX_SENTENCES = 2;
 const RECOMMENDED = /推奨|recommended/i;
 const PARENTHESIZED = /[(（][^()（）]*[)）]/g;
-// An Issue key such as `A-12` or a bare number such as `#162`.
-const INTERNAL_ID = /\b[A-Z][A-Z0-9]*-\d+\b|#\d+\b/g;
+// An internal key such as `A-12`.
+const INTERNAL_ID = /\b[A-Z][A-Z0-9]*-\d+\b/g;
 // After this many sends back in a row, the next question reaches the human
 // even if it still breaks a rule, so an agent that cannot comply never loops.
 const MAX_BLOCKS = 2;
@@ -94,7 +94,7 @@ export function createQuestionGate() {
         return { blocked: true, message, warnings: [] };
       }
       blocks.delete(sessionID);
-      return { blocked: false, message: "", warnings: [...errors, ...warnings] };
+      return { blocked: false, message: "", warnings };
     },
   };
 }
