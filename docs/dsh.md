@@ -1,7 +1,7 @@
 # DSH configuration
 
 `chezmoi apply` reproduces the DSH runtime, the shared plugin baseline, and the shared policy.
-The runtime tracks the newest published release instead of a pin, and a LaunchAgent keeps the Web GUI on it.
+The runtime tracks the newest published release instead of a pin, and a LaunchAgent keeps the Web GUI running on the release it was last moved to.
 Credentials, sessions, and other runtime state stay out of this repository.
 
 ## Ownership
@@ -36,8 +36,8 @@ Credentials, sessions, and other runtime state stay out of this repository.
 | Change a shared setting | Edit `private_dot_dsh/cordis.patch.yml`, then apply |
 | Change a machine-local setting | Change it in the DSH UI; it stays in the profile patch |
 | Restore a new Mac | Follow [setup.md](setup.md), run `chezmoi apply`, then start `dsh web` |
-| Keep DSH newest | Nothing. The `dsh` wrapper resolves the newest published release at each start, and the LaunchAgent starts the Web GUI with it |
-| Move the Web GUI to the newest release | Run `dsh-web-supervisor takeover` from outside the session. It stops the running server, loads the LaunchAgent, and starts the newest release |
+| Keep DSH newest | Run `dsh-web-supervisor takeover` when you want it. A manual `dsh` resolves the newest published release at each start, while the LaunchAgent keeps the release it recorded |
+| Move the Web GUI to the newest release | Run `dsh-web-supervisor takeover` from outside the session. It records the newest release, stops the running server, loads the LaunchAgent, and starts it. `DSH_VERSION=<version> dsh-web-supervisor takeover` records that release instead, and refuses one that failed in the last six hours until its marker in `~/.local/state/dsh/failing/` is removed |
 | Change the tested plugin versions | Edit the dependency versions in `modify_private_package.json`, then apply |
 
 ## Notion server
@@ -55,7 +55,7 @@ Credentials, sessions, and other runtime state stay out of this repository.
 ## Risks
 
 - The shared policy sets approval `never` with full access, so every restored Mac inherits it.
-- The newest release is a prerelease, so a release may regress. The supervisor marks a release that fails its health check and falls back to the last good one for six hours.
+- The newest release is a prerelease, so a release may regress. The supervisor marks a release that fails its health check, records the last good one, and the next restart runs it.
 - The managed plugin versions can lag the runtime. A plugin that rejects the runtime fails the start, and the supervisor rolls back.
 - The first restore needs network access for `npx` and `pnpm`. A failed install prints a message and the apply still succeeds, so run `dsh plugin --profile web install` again before `dsh web`.
 - The home patch applies to every profile, so a Notion server that someone enables is defined in profiles that did not load it before.
@@ -66,9 +66,9 @@ Credentials, sessions, and other runtime state stay out of this repository.
 
 ## Web GUI runtime
 
-`~/Library/LaunchAgents/local.dsh-web.plist` runs `dsh-web-supervisor run`, which resolves the newest release and starts `dsh web`. launchd restarts it when it exits and after login. The LaunchAgent starts with the next login; run `dsh-web-supervisor takeover` to move the current session under it now.
+`~/Library/LaunchAgents/local.dsh-web.plist` runs `dsh-web-supervisor run`, which starts `dsh web` on the release recorded in `~/.local/state/dsh-web/version`. A first start records the newest release. launchd restarts it on the same release when it exits and after login, and passes its stop request to the server. The LaunchAgent starts with the next login; run `dsh-web-supervisor takeover` to move the current session under it now.
 
-Machine-local flags live in `~/.dsh/web-launch.conf`, which this repository never tracks:
+Machine-local flags live in `~/.dsh/web-launch.conf`, which this repository never tracks. The file and every key are optional; without `PUBLIC_URL` and `TRUSTED_HOST` the server listens on loopback only:
 
 ```sh
 PORT=3080
@@ -77,7 +77,7 @@ TRUSTED_HOST=<host>
 PATCH_FILE=/Users/<you>/.dsh/web-extra.patch.yml
 ```
 
-- `dsh-web-supervisor status` shows the resolved release, the last good release, the listener and the health code.
+- `dsh-web-supervisor status` shows the recorded release, the resolved newest release, the last good release, the listener and the health code.
 - `dsh-web-supervisor check` prints the resolved and last good releases only.
 - The server writes its process-token URL to `~/.local/state/dsh-web/url`. The browser cookie stays valid across restarts, so a reload recovers an authenticated page.
 - A release that fails the health check is marked in `~/.local/state/dsh/failing/` and skipped for six hours, while the last good release runs.

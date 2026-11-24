@@ -284,12 +284,197 @@ run_supervisor() {
   [ "${lines[1]}" = 'last-good=0.2.2-rc.1' ]
 }
 
-@test "the supervisor refuses to start without its machine-local config" {
+# Stubs every command run and status reach outside the sandbox: the server
+# answers health checks, nothing listens on the port, and launchctl only logs.
+supervisor_run_env() {
   supervisor_env
+  cat > "${home_dir}/.local/bin/dsh" <<'SH'
+#!/bin/sh
+if [ "${1:-}" = "--resolved-version" ]; then echo "${DSH_VERSION:-0.2.2-rc.3}"; exit 0; fi
+printf '%s|%s\n' "${DSH_VERSION:-}" "$*" >> "${STUB_DIR}/dsh.log"
+SH
+  chmod +x "${home_dir}/.local/bin/dsh"
+  printf '#!/bin/sh\nprintf 200\n' > "${stub_dir}/curl"
+  printf '#!/bin/sh\nexit 1\n' > "${stub_dir}/lsof"
+  printf '#!/bin/sh\n' > "${stub_dir}/osascript"
+  printf '#!/bin/sh\nprintf "%%s\\n" "$*" >> "%s/launchctl.log"\n' "${stub_dir}" > "${stub_dir}/launchctl"
+  chmod +x "${stub_dir}/curl" "${stub_dir}/lsof" "${stub_dir}/osascript" "${stub_dir}/launchctl"
+  export STUB_DIR="${stub_dir}"
+}
+
+@test "the supervisor reports its status without the machine-local config" {
+  supervisor_run_env
   rm "${dsh_dir}/web-launch.conf"
   run_supervisor status
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"listener: none"* ]]
+}
+
+@test "the supervisor starts a local-only server without the machine-local config" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  run_supervisor run
+  [ "$status" -eq 0 ]
+  [ "$(cut -d'|' -f2 "${stub_dir}/dsh.log")" = 'web --no-open' ]
+}
+
+@test "the supervisor starts a local-only server when the config names no public URL" {
+  supervisor_run_env
+  printf 'PORT=3080\n' > "${dsh_dir}/web-launch.conf"
+  run_supervisor run
+  [ "$status" -eq 0 ]
+  [ "$(cut -d'|' -f2 "${stub_dir}/dsh.log")" = 'web --no-open' ]
+}
+
+@test "stopping the supervisor passes the stop request to the server" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  cat > "${home_dir}/.local/bin/dsh" <<'SH'
+#!/bin/bash
+if [ "${1:-}" = "--resolved-version" ]; then echo 0.2.2-rc.3; exit 0; fi
+trap 'echo drained >> "${STUB_DIR}/server.log"; exit 0' TERM
+echo started >> "${STUB_DIR}/server.log"
+while :; do sleep 0.1; done
+SH
+  HOME="${home_dir}" DSH_HOME="${dsh_dir}" PATH="${stub_dir}:/opt/homebrew/bin:/usr/bin:/bin" \
+    bash "${repo_root}/dot_local/bin/executable_dsh-web-supervisor" run 3>&- &
+  supervisor_pid=$!
+  for _ in $(seq 50); do grep -q started "${stub_dir}/server.log" 2>/dev/null && break; sleep 0.1; done
+  sleep 0.5
+  kill -TERM "${supervisor_pid}"
+  wait "${supervisor_pid}" || true
+  for _ in $(seq 30); do grep -q drained "${stub_dir}/server.log" && break; sleep 0.1; done
+  pkill -f "${home_dir}/.local/bin/dsh" || true
+  grep -q drained "${stub_dir}/server.log"
+}
+
+kept_version_file() {
+  printf '%s' "${home_dir}/.local/state/dsh-web/version"
+}
+
+@test "a first start records the release it resolved" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  run_supervisor run
+  [ "$status" -eq 0 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.3 ]
+  [ "$(cat "${stub_dir}/dsh.log")" = '0.2.2-rc.3|web --no-open' ]
+}
+
+@test "a restart keeps the recorded release even when a newer one is published" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  printf '0.2.2-rc.1\n' > "$(kept_version_file)"
+  run_supervisor run
+  [ "$status" -eq 0 ]
+  [ "$(cat "${stub_dir}/dsh.log")" = '0.2.2-rc.1|web --no-open' ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.1 ]
+}
+
+@test "a recorded release that fails its health check is replaced by the last good one" {
+  supervisor_run_env
+  printf '#!/bin/sh\nprintf 000\n' > "${stub_dir}/curl"
+  printf '0.2.2-rc.3\n' > "$(kept_version_file)"
+  mkdir -p "${home_dir}/.local/state/dsh"
+  printf '0.2.2-rc.1\n' > "${home_dir}/.local/state/dsh/last-good"
+  DSH_WEB_HEALTH_SECONDS=0 run_supervisor run
   [ "$status" -ne 0 ]
-  [[ "$output" == *web-launch.conf* ]]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.1 ]
+}
+
+@test "a first start that fails its health check without a last good release records nothing" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  printf '#!/bin/sh\nprintf 000\n' > "${stub_dir}/curl"
+  DSH_WEB_HEALTH_SECONDS=0 run_supervisor run
+  [ "$status" -ne 0 ]
+  [ ! -e "$(kept_version_file)" ]
+}
+
+@test "a failed start of the last good release keeps it recorded" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  printf '#!/bin/sh\nprintf 000\n' > "${stub_dir}/curl"
+  printf '0.2.2-rc.1\n' > "$(kept_version_file)"
+  mkdir -p "${home_dir}/.local/state/dsh"
+  printf '0.2.2-rc.1\n' > "${home_dir}/.local/state/dsh/last-good"
+  DSH_WEB_HEALTH_SECONDS=0 run_supervisor run
+  [ "$status" -ne 0 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.1 ]
+}
+
+@test "takeover fails when the server came back on another release than it recorded" {
+  supervisor_run_env
+  # launchd restarted on the last good release after the newest one failed.
+  printf '#!/bin/sh\nprintf "%%s\\n" "$*" >> "%s/launchctl.log"\nprintf "0.2.2-rc.1\\n" > "%s"\n' \
+    "${stub_dir}" "$(kept_version_file)" > "${stub_dir}/launchctl"
+  run_supervisor takeover
+  [ "$status" -ne 0 ]
+  [[ "$output" == *0.2.2-rc.1* ]]
+}
+
+@test "a failed start leaves a release that takeover recorded meanwhile" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  printf '0.2.2-rc.3\n' > "$(kept_version_file)"
+  mkdir -p "${home_dir}/.local/state/dsh"
+  printf '0.2.2-rc.1\n' > "${home_dir}/.local/state/dsh/last-good"
+  # takeover records 0.2.2-rc.5 while this start is still waiting for its health check.
+  printf '#!/bin/sh\nprintf "0.2.2-rc.5\\n" > "%s"\nprintf 000\n' "$(kept_version_file)" > "${stub_dir}/curl"
+  DSH_WEB_HEALTH_SECONDS=0 run_supervisor run
+  [ "$status" -ne 0 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.5 ]
+}
+
+@test "a failed first start leaves a release that takeover recorded meanwhile" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  printf '0.2.2-rc.3\n' > "$(kept_version_file)"
+  printf '#!/bin/sh\nprintf "0.2.2-rc.5\\n" > "%s"\nprintf 000\n' "$(kept_version_file)" > "${stub_dir}/curl"
+  DSH_WEB_HEALTH_SECONDS=0 run_supervisor run
+  [ "$status" -ne 0 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.5 ]
+}
+
+@test "takeover fails when the recovery wait finds the last good release running" {
+  supervisor_run_env
+  # The first health check fails; launchd then falls back and the second one passes.
+  printf '#!/bin/sh\nif [ -e "%s/checked" ]; then printf 200; else : > "%s/checked"; printf 000; fi\n' \
+    "${stub_dir}" "${stub_dir}" > "${stub_dir}/curl"
+  printf '#!/bin/sh\n[ -e "%s/checked" ] && printf "0.2.2-rc.1\\n" > "%s"\nexit 0\n' \
+    "${stub_dir}" "$(kept_version_file)" > "${stub_dir}/launchctl"
+  DSH_WEB_TAKEOVER_SECONDS=0 run_supervisor takeover
+  [ "$status" -ne 0 ]
+  [[ "$output" == *0.2.2-rc.1* ]]
+}
+
+@test "takeover refuses a requested release the wrapper would replace" {
+  supervisor_run_env
+  printf '0.2.2-rc.3\n' > "$(kept_version_file)"
+  # The wrapper answers the last good release because the requested one failed recently.
+  printf '#!/bin/sh\n[ "${1:-}" = "--resolved-version" ] && { echo 0.2.2-rc.1; exit 0; }\nexit 0\n' \
+    > "${home_dir}/.local/bin/dsh"
+  DSH_VERSION=0.2.2-rc.5 run_supervisor takeover
+  [ "$status" -ne 0 ]
+  [[ "$output" == *0.2.2-rc.5* ]]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.3 ]
+  [ ! -e "${stub_dir}/launchctl.log" ]
+}
+
+@test "takeover moves the recorded release to the newest one and restarts the agent" {
+  supervisor_run_env
+  printf '0.2.2-rc.1\n' > "$(kept_version_file)"
+  run_supervisor takeover
+  [ "$status" -eq 0 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.3 ]
+  grep -q '^kickstart -k gui/' "${stub_dir}/launchctl.log"
+}
+
+@test "takeover records the release DSH_VERSION names" {
+  supervisor_run_env
+  DSH_VERSION=0.2.2-rc.5 run_supervisor takeover
+  [ "$status" -eq 0 ]
+  [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.5 ]
 }
 
 # --- install script ---
