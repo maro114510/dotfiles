@@ -10,6 +10,8 @@ Hand a subagent the key points and targets you already read, unless its purpose 
 
 On a GitHub rate limit, stop and report instead of retrying. Combine terms into one search and reuse results within the session.
 
+Disable the test result cache only in the final verification run. Measure coverage only when a requirement asks for it. Run a full test run that takes minutes in the background.
+
 ## Worktree Workflow
 
 - All work must be done on a worktree using [git-wt](https://github.com/k1LoW/git-wt)
@@ -20,7 +22,6 @@ On a GitHub rate limit, stop and report instead of retrying. Combine terms into 
 
 - This file applies to all projects, so only generic rules belong here
 - Project-specific rules go in each project's own `AGENTS.md`
-- Avoid duplicating or contradicting a project's `AGENTS.md`
 
 ## Decision Rights
 
@@ -107,8 +108,6 @@ For any non-trivial task, make the exit condition explicit before writing code.
 3. Write the minimum code to make it pass — no more (Green)
 4. Refactor while keeping tests green (Refactor)
 5. Repeat until the test list is exhausted
-
-Tests are specifications, not afterthoughts. If the test is hard to write, the design is wrong.
 
 **For non-testable tasks (config, UI, scripts):**
 Define the observable change that confirms success before starting:
