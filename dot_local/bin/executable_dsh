@@ -1,7 +1,8 @@
 #!/bin/sh
 # Runs the newest published DSH release, so a machine that keeps this file does
 # not pin a version. Resolution order: DSH_VERSION, a fresh cache, the newest
-# published GitHub release, the npm dist-tags, then the last version that ran.
+# published GitHub release without alphas, the npm dist-tags, then the last version
+# that ran. Alphas are skipped because plugins such as dsh-ops reject them.
 # A version the supervisor marked as failing is skipped for six hours.
 set -eu
 
@@ -31,7 +32,7 @@ fetch_github() {
   command -v jq >/dev/null 2>&1 || return 1
   body="$(curl -fsS --max-time 8 -H 'Accept: application/vnd.github+json' \
     'https://api.github.com/repos/deepseek-ai/deepseek-harness/releases?per_page=10' 2>/dev/null)" || return 1
-  tag="$(printf '%s' "${body}" | jq -r '[.[] | select(.draft == false)] | sort_by(.published_at) | last | .tag_name // empty' 2>/dev/null)" || return 1
+  tag="$(printf '%s' "${body}" | jq -r '[.[] | select(.draft == false and (.tag_name | contains("-alpha") | not))] | sort_by(.published_at) | last | .tag_name // empty' 2>/dev/null)" || return 1
   [ -n "${tag}" ] || return 1
   version="${tag#dsh-v}"
   [ -n "${version}" ] || return 1
