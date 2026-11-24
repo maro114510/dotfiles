@@ -10,6 +10,7 @@ brew "buku"      # .zshrc bb() bookmark picker depends on this
 brew "git-delta"
 brew "git-lfs"
 brew "jq"
+brew "sd"        # agents replace literal text in files with it, see the shared agent instructions
 brew "tree"
 brew "wget"
 brew "yazi"      # .zshrc y() function depends on this

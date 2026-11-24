@@ -14,6 +14,8 @@ Disable the test result cache only in the final verification run. Measure covera
 
 Run a command that may take minutes as a background job, or give it an explicit time limit.
 
+Edit files with the edit tool, not a `python3 - <<` heredoc. For the same literal text in several files, use `sd -F -A OLD NEW files...`.
+
 ## Worktree Workflow
 
 - All work must be done on a worktree using [git-wt](https://github.com/k1LoW/git-wt)
