@@ -13,8 +13,8 @@
 #   PUBLIC_URL=https://example.ts.net/
 #   TRUSTED_HOST=example.ts.net
 #   PATCH_FILE=/Users/me/.dsh/web-extra.patch.yml
-#   TICKTICK_TASK_ID=...      with TICKTICK_PROJECT_ID, the task whose content is
-#   TICKTICK_PROJECT_ID=...   rewritten with the token URL at every healthy start
+#   TICKTICK_PROJECT_ID=...   the project that gets a new task holding the token URL
+#                             at every healthy start
 set -uo pipefail
 
 prog="dsh-web-supervisor"
@@ -36,7 +36,6 @@ port="3080"
 public_url=""
 trusted_host=""
 patch_file=""
-ticktick_task=""
 ticktick_project=""
 ticktick_bin="${DSH_WEB_TICKTICK:-${HOME}/.local/bin/ticktick}"
 
@@ -71,7 +70,6 @@ load_conf() {
       PUBLIC_URL) public_url="${value}" ;;
       TRUSTED_HOST) trusted_host="${value}" ;;
       PATCH_FILE) patch_file="${value}" ;;
-      TICKTICK_TASK_ID) ticktick_task="${value}" ;;
       TICKTICK_PROJECT_ID) ticktick_project="${value}" ;;
       '' | '#'*) ;;
       *) : ;;
@@ -147,22 +145,22 @@ record_url() {
   [ -n "${found}" ] && (umask 077 && printf '%s\n' "${found}" >"${url_file}")
 }
 
-# Rewrites the TickTick task with the current token URL. It runs in the background and
+# Creates a TickTick task holding the current token URL. It runs in the background and
 # only logs the exit status, so a locked 1Password or a network error never delays or
 # fails the start, and the URL never reaches a log.
 publish_url() {
-  [ -n "${ticktick_task}" ] && [ -n "${ticktick_project}" ] || return 0
+  [ -n "${ticktick_project}" ] || return 0
   [ -s "${url_file}" ] || return 0
   if [ ! -x "${ticktick_bin}" ]; then
-    log "warning: ${ticktick_bin} is missing; the TickTick task keeps the old URL"
+    log "warning: ${ticktick_bin} is missing; no TickTick task was created"
     return 0
   fi
   (
-    if "${ticktick_bin}" task update "${ticktick_task}" --id "${ticktick_task}" \
-      --project "${ticktick_project}" --content "$(cat "${url_file}")" >/dev/null 2>&1; then
-      log "published the token URL to TickTick task ${ticktick_task}"
+    if "${ticktick_bin}" task create --project "${ticktick_project}" \
+      --title "DSH Web GUI $(date '+%Y-%m-%d %H:%M')" --content "$(cat "${url_file}")" >/dev/null 2>&1; then
+      log "published the token URL to a new TickTick task"
     else
-      log "warning: publishing the token URL to TickTick task ${ticktick_task} failed"
+      log "warning: publishing the token URL to a new TickTick task failed"
     fi
   ) &
 }
