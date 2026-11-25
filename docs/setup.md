@@ -77,6 +77,29 @@ Check that the source path matches the clone location:
 chezmoi source-path   # $HOME/ghq/github.com/maro114510/dotfiles
 ```
 
+`dotfiles-pr.sh` and `dotfiles-autosync.sh` check the same thing. When
+`chezmoi source-path` is not the ghq checkout, they print a `warning:` line and
+carry on, so edits made in the ghq checkout are not what they act on until the
+source path is fixed.
+
+### Remove the clone you do not use
+
+An older setup may leave a second clone at the default path
+`~/.local/share/chezmoi`. Once `chezmoi source-path` prints the ghq checkout,
+confirm the second clone holds nothing that is not on `origin`, then move it to the Trash:
+
+```bash
+git -C ~/.local/share/chezmoi status --short                 # no output
+git -C ~/.local/share/chezmoi log --oneline origin/main..HEAD # no output
+git -C ~/.local/share/chezmoi stash list                     # no output
+mv ~/.local/share/chezmoi ~/.Trash/chezmoi-old
+```
+
+If `chezmoi source-path` still prints the second clone, the live
+`~/.config/chezmoi/chezmoi.toml` lacks the `sourceDir` line. Run
+`chezmoi --source "$HOME/ghq/github.com/maro114510/dotfiles" init` to write it
+again, and check `chezmoi source-path` before deleting anything.
+
 To add a new directory context in the future:
 
 ```bash

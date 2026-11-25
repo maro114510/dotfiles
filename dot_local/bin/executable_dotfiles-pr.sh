@@ -38,6 +38,21 @@ resolve_source() {
   fi
   SOURCE="$(git -C "${SOURCE}" rev-parse --show-toplevel 2>/dev/null)" ||
     fail "chezmoi source is not a git worktree"
+  warn_if_not_ghq_source "${SOURCE}"
+}
+
+# The ghq checkout is the canonical source; pull request worktrees are made
+# from it. Stopping would block a person who works from the other clone on
+# purpose, so this warns and goes on.
+warn_if_not_ghq_source() {
+  local source="${1}" expected="${HOME}/ghq/github.com/maro114510/dotfiles"
+  local physical_source physical_expected
+  physical_source="$(cd -P "${source}" 2>/dev/null && pwd)" || physical_source="${source}"
+  physical_expected="$(cd -P "${expected}" 2>/dev/null && pwd)" || physical_expected="${expected}"
+  if [ "${physical_source}" != "${physical_expected}" ]; then
+    printf '%s: warning: chezmoi source-path is %s, not the ghq checkout %s; see docs/setup.md\n' \
+      "${PROG}" "${source}" "${expected}" >&2
+  fi
 }
 
 finish_source() {

@@ -321,3 +321,28 @@ EOF
   [ "${status}" -eq 0 ]
   [ ! -e "${sandbox}/cache/dotfiles-autosync.lock" ] && [ ! -L "${sandbox}/cache/dotfiles-autosync.lock" ]
 }
+
+# The canonical source is the ghq checkout under HOME. Here the sandbox source
+# lives elsewhere, so it stands for a second clone.
+@test "warns and still syncs when the chezmoi source is not the ghq checkout" {
+  printf '{"new": true}\n' > "${home_dir}/.config/nvim/lazy-lock.json"
+
+  run run_autosync
+
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *"dotfiles-autosync: warning:"* ]]
+  [[ "${output}" == *"${source_dir}"* ]]
+  [[ "${output}" == *"${home_dir}/ghq/github.com/maro114510/dotfiles"* ]]
+  [ "$(git -C "${remote_dir}" show "chore/autosync:dot_config/nvim/lazy-lock.json")" = '{"new": true}' ]
+}
+
+@test "stays silent when the chezmoi source resolves to the ghq checkout through a symlink" {
+  mkdir -p "${home_dir}/ghq/github.com/maro114510"
+  ln -s "${source_dir}" "${home_dir}/ghq/github.com/maro114510/dotfiles"
+  printf '{"new": true}\n' > "${home_dir}/.config/nvim/lazy-lock.json"
+
+  run run_autosync
+
+  [ "${status}" -eq 0 ]
+  [[ "${output}" != *"dotfiles-autosync: warning:"* ]]
+}
