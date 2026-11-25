@@ -12,7 +12,7 @@ On a GitHub rate limit, stop and report instead of retrying. Combine terms into 
 
 Disable the test result cache only in the final verification run. Measure coverage only when a requirement asks for it. Run a full test run that takes minutes in the background.
 
-Run a command that may take minutes as a background job, or give it an explicit time limit.
+Run a command that may take minutes as a background job, or give it an explicit time limit. On macOS, set the limit with `gtimeout`, because `timeout` is not installed.
 
 Edit files with the edit tool, not a `python3 - <<` heredoc. For the same literal text in several files, use `sd -F -A OLD NEW files...`.
 
