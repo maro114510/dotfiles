@@ -4,6 +4,7 @@
 # published GitHub release without alphas, the npm dist-tags, then the last version
 # that ran. Alphas are skipped because plugins such as dsh-ops reject them.
 # A version the supervisor marked as failing is skipped for six hours.
+# The release runs on the node mise resolves, never through a mise shim.
 set -eu
 
 state_dir="${XDG_STATE_HOME:-${HOME}/.local/state}/dsh"
@@ -96,4 +97,15 @@ if [ "${1:-}" = "--resolved-version" ]; then
   exit 0
 fi
 
+# A mise shim puts every global tool install ahead of the shims on PATH, so a
+# server started through one makes each shell it runs ignore the tool versions a
+# repository pins. npx starts the dsh bin through `env node`, which is a shim, so
+# resolve the bin with npx and run it with the node that mise resolves instead.
+node_bin="$(mise which node 2>/dev/null)" || node_bin=""
+if [ -n "${node_bin}" ]; then
+  dsh_entry="$("${node_bin}" "$(dirname "${node_bin}")/npx" --yes -p "@deepseek-ai/dsh@${resolved}" -c 'command -v dsh')" || dsh_entry=""
+  if [ -n "${dsh_entry}" ]; then
+    exec "${node_bin}" "${dsh_entry}" "$@"
+  fi
+fi
 exec npx --yes "@deepseek-ai/dsh@${resolved}" "$@"

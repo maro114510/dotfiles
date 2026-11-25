@@ -170,6 +170,9 @@ seed_manifest() {
 wrapper_env() {
   printf '#!/bin/sh\nprintf "%%s\\n" "$*" >> "%s/npx.log"\n' "${stub_dir}" > "${stub_dir}/npx"
   chmod +x "${stub_dir}/npx"
+  # mise resolves no node unless a test installs one, so the wrapper uses plain npx.
+  printf '#!/bin/sh\nexit 1\n' > "${stub_dir}/mise"
+  chmod +x "${stub_dir}/mise"
   cat > "${stub_dir}/releases.json" <<'JSON'
 [{"tag_name":"dsh-v0.2.2-rc.2","draft":false,"published_at":"2026-11-12T02:16:12Z"},
  {"tag_name":"dsh-v0.2.2-rc.3","draft":false,"published_at":"2026-11-13T08:05:45Z"}]
@@ -245,6 +248,45 @@ JSON
   run_wrapper --resolved-version
   [ "$status" -eq 0 ]
   [[ "${output}" == *0.2.2-rc.1* ]]
+}
+
+# Installs a node that mise resolves, whose npx prints the dsh bin path and whose
+# node records how it was run, so a test sees what the wrapper executes.
+install_mise_node() {
+  node_dir="${stub_dir}/node/bin"
+  mkdir -p "${node_dir}"
+  printf '#!/bin/sh\n[ "$1 $2" = "which node" ] && { echo "%s/node"; exit 0; }\nexit 1\n' "${node_dir}" > "${stub_dir}/mise"
+  printf '#!/bin/sh\nprintf "%%s\\n" "$*" >> "%s/node.log"\nprintf "PATH=%%s\\n" "${PATH}" >> "%s/node.log"\n[ "${1##*/}" = npx ] && exec "$@"\nexit 0\n' \
+    "${stub_dir}" "${stub_dir}" > "${node_dir}/node"
+  printf '#!/bin/sh\nprintf "%%s\\n" "$*" >> "%s/node-npx.log"\necho /cache/node_modules/.bin/dsh\n' "${stub_dir}" > "${node_dir}/npx"
+  chmod +x "${stub_dir}/mise" "${node_dir}/node" "${node_dir}/npx"
+}
+
+@test "the dsh wrapper runs the release with the node that mise resolves, not through a shim" {
+  wrapper_env
+  install_mise_node
+  run_wrapper web --no-open
+  [ "$status" -eq 0 ]
+  [ "$(cat "${stub_dir}/node-npx.log")" = '--yes -p @deepseek-ai/dsh@0.2.2-rc.3 -c command -v dsh' ]
+  grep -qx '/cache/node_modules/.bin/dsh web --no-open' "${stub_dir}/node.log"
+  [ ! -e "${stub_dir}/npx.log" ]
+}
+
+@test "the dsh wrapper leaves PATH as it was for the server" {
+  wrapper_env
+  install_mise_node
+  run_wrapper web
+  [ "$status" -eq 0 ]
+  [ "$(grep '^PATH=' "${stub_dir}/node.log" | tail -1)" = "PATH=${stub_dir}:/opt/homebrew/bin:/usr/bin:/bin" ]
+}
+
+@test "the dsh wrapper falls back to npx when the dsh bin cannot be resolved" {
+  wrapper_env
+  install_mise_node
+  printf '#!/bin/sh\nexit 1\n' > "${stub_dir}/node/bin/npx"
+  run_wrapper web
+  [ "$status" -eq 0 ]
+  [ "$(cat "${stub_dir}/npx.log")" = '--yes @deepseek-ai/dsh@0.2.2-rc.3 web' ]
 }
 
 @test "the wrapper no longer pins a release" {
