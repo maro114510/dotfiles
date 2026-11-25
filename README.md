@@ -1,6 +1,7 @@
 # dotfiles
 
 Personal macOS development environment configuration files managed with chezmoi.
+The mission and the goals of this repository are in [MISSION.md](MISSION.md).
 
 ## Supported platform
 
