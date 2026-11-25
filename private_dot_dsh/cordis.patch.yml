@@ -29,6 +29,11 @@
   name: dsh-plugin-subscriptions
   config:
     claudePromptCacheTtl: 1h
+# Caps automatic goal rounds; the model-created or /goal-created goal stops at this count unless a create names its own cap.
+- id: goal
+  name: "@deepseek-ai/dsh-goal"
+  config:
+    defaultMaxGoalRounds: 8
 - id: session-log-deepseek
   name: "@deepseek-ai/dsh-session-log-deepseek"
   config:
