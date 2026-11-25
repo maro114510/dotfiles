@@ -1,0 +1,2 @@
+#!/usr/bin/env node
+// Stub of the Web GUI login gateway; the next commits give it behavior.
