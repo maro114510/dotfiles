@@ -233,6 +233,23 @@ resolve_source() {
     fail "chezmoi returned an empty source directory"
   fi
   SOURCE_DIR="$(git -C "${resolved}" rev-parse --show-toplevel 2>/dev/null)" || fail "chezmoi source is not a git worktree: ${resolved}"
+  warn_if_not_ghq_source "${SOURCE_DIR}"
+}
+
+# The ghq checkout is the canonical source. A run from another clone is still
+# useful, so this warns and goes on; a dry run already prints its log lines.
+warn_if_not_ghq_source() {
+  local source="${1}" expected="${HOME}/ghq/github.com/maro114510/dotfiles"
+  local physical_source physical_expected message
+  physical_source="$(cd -P "${source}" 2>/dev/null && pwd)" || physical_source="${source}"
+  physical_expected="$(cd -P "${expected}" 2>/dev/null && pwd)" || physical_expected="${expected}"
+  if [ "${physical_source}" != "${physical_expected}" ]; then
+    message="warning: chezmoi source-path is ${source}, not the ghq checkout ${expected}; see docs/setup.md"
+    log "${message}"
+    if [ "${DRY_RUN}" != 1 ]; then
+      printf '%s: %s\n' "${PROG}" "${message}" >&2
+    fi
+  fi
 }
 
 run_mise_lock() {
