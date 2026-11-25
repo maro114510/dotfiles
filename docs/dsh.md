@@ -11,6 +11,7 @@ Credentials, sessions, and other runtime state stay out of this repository.
 | `~/.dsh/cordis.patch.yml` | dotfiles |
 | `~/.dsh/AGENTS.md` | dotfiles |
 | `~/.dsh/profiles/web/package.json` | dotfiles merges the managed part, DSH owns the rest |
+| `~/.dsh/profiles/headless/package.json` | dotfiles merges the subscriptions plugin, DSH owns the rest |
 | `~/.dsh/profiles/web/cordis.patch.yml` | DSH |
 | `~/.dsh/profiles/web/pnpm-lock.yaml`, `pnpm-workspace.yaml` | DSH |
 | `~/.dsh/.credentials.yaml`, `plugins/`, `storages/`, `sessions/`, `logs/`, `attachments/`, `profiles/web/.dsh-market/`, `profiles/web/.plugin-manager/` | DSH, never tracked |
@@ -66,6 +67,12 @@ Open `https://<host>:10000/` on the device. To remove it, run `tailscale serve -
 - A device the tailnet marks with a tag sends no login header and is refused.
 - The log `~/.local/state/dsh-web/login.log` never holds the token URL.
 
+## Headless profile
+
+- The home patch picks a Claude model for every profile, and only `dsh-plugin-subscriptions` provides it, so the `headless` profile carries that plugin. Without it a headless run, such as the separate-context review, ends in `NO_ADAPTER`.
+- The plugin keeps its sign-in in `~/.dsh/plugins/subscriptions/auth.json`, which the Web GUI writes, so the sign-in happens once in the Web GUI and the headless profile only reads it.
+- Apply installs the plugin with `dsh plugin --profile headless install`; run it by hand when the apply printed a failure.
+
 ## Notion server
 
 - The patch defines the Notion MCP server as disabled, because an unused server adds tool definitions to every request.
@@ -75,7 +82,7 @@ Open `https://<host>:10000/` on the device. To remove it, run `tailscale serve -
 
 - Web UI preferences such as language, transcript view, and dismissed notices.
 - The scheduled preset, which mounts a plugin from a local repository.
-- The `headless` profile and any other profile than `web`.
+- The `headless` profile beyond the subscriptions plugin, and any other profile than `web`.
 - The managed plugin versions, which stay at the last set tested against the runtime.
 
 ## Risks
