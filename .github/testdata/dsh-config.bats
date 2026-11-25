@@ -876,6 +876,33 @@ run_install() {
   [ ! -e "${stub_dir}/dsh.log" ]
 }
 
+@test "the install script also installs the headless profile when its manifest exists" {
+  stub_install_env
+  mkdir -p "${dsh_dir}/profiles/headless"
+  : > "${headless_manifest}"
+  run_install
+  [ "$status" -eq 0 ]
+  [ "$(cat "${stub_dir}/dsh.log")" = "$(printf 'plugin --profile web install\nplugin --profile headless install')" ]
+}
+
+@test "the install script skips the headless profile when its manifest is missing" {
+  stub_install_env
+  run_install
+  [ "$status" -eq 0 ]
+  [ "$(cat "${stub_dir}/dsh.log")" = 'plugin --profile web install' ]
+}
+
+@test "a failed headless install does not fail the apply and does not hide the web install" {
+  stub_install_env
+  mkdir -p "${dsh_dir}/profiles/headless"
+  : > "${headless_manifest}"
+  printf '#!/bin/sh\nprintf "%%s\\n" "$*" >> "%s/dsh.log"\n[ "$3" = headless ] && exit 1\nexit 0\n' "${stub_dir}" > "${home_dir}/.local/bin/dsh"
+  run_install
+  [ "$status" -eq 0 ]
+  [[ "$output" == *failed* ]]
+  grep -q 'plugin --profile web install' "${stub_dir}/dsh.log"
+}
+
 @test "the install script reports a failed install and still succeeds" {
   stub_install_env
   printf '#!/bin/sh\nexit 1\n' > "${home_dir}/.local/bin/dsh"
