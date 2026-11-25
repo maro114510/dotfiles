@@ -1,6 +1,7 @@
 #!/bin/bash
 # Keeps the DSH Web GUI on the release it was last moved to.
 # run      starts the recorded release and waits for it; launchd restarts it when it exits.
+#          It warns, and never stops, when the server disabled an installed plugin.
 # status   shows the recorded, resolved, and last good releases, the listener and health.
 # check    prints the resolved and last-good releases.
 # takeover records the newest release (or DSH_VERSION), stops a running server,
@@ -175,6 +176,8 @@ cmd_run() {
     done
   fi
   web_arguments
+  local log_offset
+  log_offset="$(wc -c <"${log_file}")"
   log "starting dsh ${version}: dsh ${web_args[*]}"
   DSH_VERSION="${version}" "${dsh_bin}" "${web_args[@]}" >>"${log_file}" 2>&1 &
   local pid=$!
@@ -185,6 +188,7 @@ cmd_run() {
     printf '%s\n' "${version}" >"${last_good_file}"
     record_url
     log "dsh ${version} is healthy on port ${port}"
+    report_after_start "${log_offset}" "dsh ${version}"
     notify "DSH web ${version} is running"
     wait "${pid}"
     local code=$?

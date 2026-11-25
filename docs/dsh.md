@@ -81,5 +81,6 @@ PATCH_FILE=/Users/<you>/.dsh/web-extra.patch.yml
 - `dsh-web-supervisor check` prints the resolved and last good releases only.
 - The server writes its process-token URL to `~/.local/state/dsh-web/url`. The browser cookie stays valid across restarts, so a reload recovers an authenticated page.
 - The state directory `~/.local/state/dsh-web` is mode 700 and its logs are mode 600, because `server.log` carries the process-token URL.
+- After each start, including a restart by launchd, `launchd.log` names every skipped bundle and disabled plugin row that the server wrote to `server.log` during that start, with the version range that excluded it. The warning never stops the server.
 - Every exit of the server adds one line to `~/.local/state/dsh-web/launchd.log` with its status, and the signal name when the status is above 128. A stop that launchd or a person requested is marked `stopped on request`. A server killed by SIGKILL leaves status 137 there.
 - A release that fails the health check is marked in `~/.local/state/dsh/failing/` and skipped for six hours, while the last good release runs.
