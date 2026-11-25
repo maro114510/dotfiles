@@ -218,3 +218,42 @@ script() {
   [ "${status}" -eq 0 ]
   [ "$(grep -c -- "pr create" "${sandbox}/gh.log")" -eq 2 ]
 }
+
+# The canonical source is the ghq checkout under HOME. The default stub source
+# lives elsewhere in the sandbox, so it stands for a second clone.
+ghq_checkout() {
+  printf '%s' "${sandbox}/home/ghq/github.com/maro114510/dotfiles"
+}
+
+@test "warns and still opens the pull request when the chezmoi source is not the ghq checkout" {
+  printf 'two\n' >>"${source_dir}/dot_zshrc"
+
+  HOME="${sandbox}/home" run script "feat: add two"
+
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *"dotfiles-pr: warning:"* ]]
+  [[ "${output}" == *"${source_dir}"* ]]
+  [[ "${output}" == *"$(ghq_checkout)"* ]]
+  [[ "${output}" == *"https://example.com/pr/1"* ]]
+  grep -q -- "pr create --fill --base main" "${sandbox}/gh.log"
+}
+
+@test "warns on --finish and still applies when the chezmoi source is not the ghq checkout" {
+  HOME="${sandbox}/home" run script --finish
+
+  [ "${status}" -eq 0 ]
+  [[ "${output}" == *"dotfiles-pr: warning:"* ]]
+  [ -f "${sandbox}/apply-head" ]
+}
+
+@test "stays silent when the chezmoi source resolves to the ghq checkout through a symlink" {
+  mkdir -p "$(dirname "$(ghq_checkout)")"
+  ln -s "${source_dir}" "$(ghq_checkout)"
+  printf 'two\n' >>"${source_dir}/dot_zshrc"
+
+  HOME="${sandbox}/home" run script "feat: add two"
+
+  [ "${status}" -eq 0 ]
+  [[ "${output}" != *"dotfiles-pr: warning:"* ]]
+  [[ "${output}" == *"https://example.com/pr/1"* ]]
+}
