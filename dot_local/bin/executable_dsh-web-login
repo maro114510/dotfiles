@@ -1,2 +1,72 @@
 #!/usr/bin/env node
-// Stub of the Web GUI login gateway; the next commits give it behavior.
+// Login gateway for the Web GUI. Tailscale Serve forwards each tailnet request here
+// with the caller's login in Tailscale-User-Login and drops any copy a client sent,
+// so a request whose login equals LOGIN_ALLOWED_USER is the owner. The owner gets a
+// redirect to the token URL the supervisor recorded; everyone else gets nothing.
+// Machine-local values live in ~/.dsh/web-launch.conf, never in this repository:
+//   LOGIN_ALLOWED_USER=you@example.com   required
+//   LOGIN_PORT=3081                      optional; 0 picks a free port
+// Why not a larger server: the one decision here is "is this login the owner", and
+// every extra route or header read widens what the token URL can leak through.
+'use strict'
+const http = require('node:http')
+const fs = require('node:fs')
+const os = require('node:os')
+const path = require('node:path')
+
+const home = os.homedir()
+const stateHome = process.env.XDG_STATE_HOME || path.join(home, '.local', 'state')
+const urlFile = path.join(stateHome, 'dsh-web', 'url')
+const confFile = process.env.DSH_WEB_CONF || path.join(process.env.DSH_HOME || path.join(home, '.dsh'), 'web-launch.conf')
+
+function readConf(file) {
+  const values = {}
+  let text = ''
+  try { text = fs.readFileSync(file, 'utf8') } catch { return values }
+  for (const line of text.split('\n')) {
+    const at = line.indexOf('=')
+    if (at < 1 || line.startsWith('#')) continue
+    values[line.slice(0, at)] = line.slice(at + 1).trim()
+  }
+  return values
+}
+
+const conf = readConf(confFile)
+const allowed = conf.LOGIN_ALLOWED_USER || ''
+if (!allowed) {
+  console.error('dsh-web-login: LOGIN_ALLOWED_USER is not set in ' + confFile)
+  process.exit(2)
+}
+const port = conf.LOGIN_PORT === undefined ? 3081 : Number(conf.LOGIN_PORT)
+if (!Number.isInteger(port) || port < 0 || port > 65535) {
+  console.error('dsh-web-login: LOGIN_PORT must be a port number')
+  process.exit(2)
+}
+
+function currentUrl() {
+  let text = ''
+  try { text = fs.readFileSync(urlFile, 'utf8').split('\n')[0].trim() } catch { return '' }
+  try {
+    const parsed = new URL(text)
+    return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : ''
+  } catch { return '' }
+}
+
+function reply(res, status, extra) {
+  res.writeHead(status, { 'cache-control': 'no-store', 'referrer-policy': 'no-referrer', ...extra })
+  res.end()
+}
+
+const server = http.createServer((req, res) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return reply(res, 405, { allow: 'GET, HEAD' })
+  const login = req.headers['tailscale-user-login']
+  if (typeof login !== 'string' || login !== allowed) return reply(res, 403)
+  const target = currentUrl()
+  if (!target) return reply(res, 503)
+  reply(res, 303, { location: target })
+})
+
+server.listen(port, '127.0.0.1', () => {
+  console.log('listening on 127.0.0.1:' + server.address().port)
+})
+for (const signal of ['SIGTERM', 'SIGINT']) process.on(signal, () => server.close(() => process.exit(0)))
