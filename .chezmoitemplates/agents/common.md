@@ -34,13 +34,9 @@ The human decides:
 - Changes to another team's assets
 - Production and shared-environment targets, and the risk accepted there
 - Domain meaning: what a term means in the user's domain
-- Irreversible operations
-- Changes to an interface that others depend on, such as a public API, a schema, a CLI argument, or a configuration format
-- Posting or sending a message beyond what Pushing and Pull Requests below allows, such as a comment in another's repository or a chat message; reading is not included
+- Design direction
 
 Everything else that you can verify, you decide without asking. Ask only when the answer changes one of these decisions.
-
-Never end a turn with an offer such as "let me know if you want me to" or "if needed I can look into it"; do the in-scope next step.
 
 ### What Counts as Agreement
 
