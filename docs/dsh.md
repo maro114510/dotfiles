@@ -75,11 +75,14 @@ PORT=3080
 PUBLIC_URL=https://<host>/
 TRUSTED_HOST=<host>
 PATCH_FILE=/Users/<you>/.dsh/web-extra.patch.yml
+TICKTICK_TASK_ID=<task id>
+TICKTICK_PROJECT_ID=<project id>
 ```
 
 - `dsh-web-supervisor status` shows the recorded release, the resolved newest release, the last good release, the listener and the health code.
 - `dsh-web-supervisor check` prints the resolved and last good releases only.
 - The server writes its process-token URL to `~/.local/state/dsh-web/url`. The browser cookie stays valid across restarts, so a reload recovers an authenticated page.
+- With `TICKTICK_TASK_ID` and `TICKTICK_PROJECT_ID` both set, every healthy start rewrites the content of that task with the token URL through `~/.local/bin/ticktick`, so the saved link works on a device that has no cookie yet. The call runs in the background and logs only its status to `launchd.log`. A failure, such as a locked 1Password, leaves the old URL and never fails the start. The TickTick account and every list sharer can read the token.
 - The state directory `~/.local/state/dsh-web` is mode 700 and its logs are mode 600, because `server.log` carries the process-token URL.
 - Every exit of the server adds one line to `~/.local/state/dsh-web/launchd.log` with its status, and the signal name when the status is above 128. A stop that launchd or a person requested is marked `stopped on request`. A server killed by SIGKILL leaves status 137 there.
 - A release that fails the health check is marked in `~/.local/state/dsh/failing/` and skipped for six hours, while the last good release runs.

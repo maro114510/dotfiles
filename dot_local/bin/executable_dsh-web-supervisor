@@ -13,6 +13,8 @@
 #   PUBLIC_URL=https://example.ts.net/
 #   TRUSTED_HOST=example.ts.net
 #   PATCH_FILE=/Users/me/.dsh/web-extra.patch.yml
+#   TICKTICK_TASK_ID=...      with TICKTICK_PROJECT_ID, the task whose content is
+#   TICKTICK_PROJECT_ID=...   rewritten with the token URL at every healthy start
 set -uo pipefail
 
 prog="dsh-web-supervisor"
@@ -34,6 +36,9 @@ port="3080"
 public_url=""
 trusted_host=""
 patch_file=""
+ticktick_task=""
+ticktick_project=""
+ticktick_bin="${DSH_WEB_TICKTICK:-${HOME}/.local/bin/ticktick}"
 
 # The server log carries the process-token URL, so only the owner may read this directory.
 mkdir -p "${state_dir}"
@@ -66,6 +71,8 @@ load_conf() {
       PUBLIC_URL) public_url="${value}" ;;
       TRUSTED_HOST) trusted_host="${value}" ;;
       PATCH_FILE) patch_file="${value}" ;;
+      TICKTICK_TASK_ID) ticktick_task="${value}" ;;
+      TICKTICK_PROJECT_ID) ticktick_project="${value}" ;;
       '' | '#'*) ;;
       *) : ;;
     esac
@@ -140,6 +147,26 @@ record_url() {
   [ -n "${found}" ] && (umask 077 && printf '%s\n' "${found}" >"${url_file}")
 }
 
+# Rewrites the TickTick task with the current token URL. It runs in the background and
+# only logs the exit status, so a locked 1Password or a network error never delays or
+# fails the start, and the URL never reaches a log.
+publish_url() {
+  [ -n "${ticktick_task}" ] && [ -n "${ticktick_project}" ] || return 0
+  [ -s "${url_file}" ] || return 0
+  if [ ! -x "${ticktick_bin}" ]; then
+    log "warning: ${ticktick_bin} is missing; the TickTick task keeps the old URL"
+    return 0
+  fi
+  (
+    if "${ticktick_bin}" task update "${ticktick_task}" --id "${ticktick_task}" \
+      --project "${ticktick_project}" --content "$(cat "${url_file}")" >/dev/null 2>&1; then
+      log "published the token URL to TickTick task ${ticktick_task}"
+    else
+      log "warning: publishing the token URL to TickTick task ${ticktick_task} failed"
+    fi
+  ) &
+}
+
 # Names how the server ended; a status above 128 is the signal that killed it.
 describe_exit() {
   local text="dsh $1 exited with status $2"
@@ -182,6 +209,7 @@ cmd_run() {
     mkdir -p "${shared_state}"
     printf '%s\n' "${version}" >"${last_good_file}"
     record_url
+    publish_url
     log "dsh ${version} is healthy on port ${port}"
     notify "DSH web ${version} is running"
     wait "${pid}"
