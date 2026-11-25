@@ -16,7 +16,9 @@ Credentials, sessions, and other runtime state stay out of this repository.
 | `~/.dsh/.credentials.yaml`, `plugins/`, `storages/`, `sessions/`, `logs/`, `attachments/`, `profiles/web/.dsh-market/`, `profiles/web/.plugin-manager/` | DSH, never tracked |
 | `~/.local/bin/dsh` | dotfiles |
 | `~/.local/bin/dsh-web-supervisor` | dotfiles |
+| `~/.local/bin/dsh-web-login` | dotfiles |
 | `~/Library/LaunchAgents/local.dsh-web.plist` | dotfiles |
+| `~/Library/LaunchAgents/local.dsh-web-login.plist` | dotfiles |
 | `~/.dsh/web-launch.conf` | the machine, never tracked |
 | `~/.local/state/dsh/`, `~/.local/state/dsh-web/` | runtime state, never tracked |
 
@@ -39,6 +41,30 @@ Credentials, sessions, and other runtime state stay out of this repository.
 | Keep DSH newest | Run `dsh-web-supervisor takeover` when you want it. A manual `dsh` resolves the newest published release at each start, skipping alpha releases because plugins such as `dsh-ops` reject them, while the LaunchAgent keeps the release it recorded |
 | Move the Web GUI to the newest release | Run `dsh-web-supervisor takeover` from outside the session. It records the newest release, stops the running server, loads the LaunchAgent, and starts it. `DSH_VERSION=<version> dsh-web-supervisor takeover` records that release instead, and refuses one that failed in the last six hours until its marker in `~/.local/state/dsh/failing/` is removed. Before recording, it warns when the release would skip a profile bundle for a version mismatch, using a `dsh web --dump-config` dry run. After the restart it reports every skipped bundle and disabled plugin row from `server.log`; neither stops the takeover |
 | Change the tested plugin versions | Edit the dependency versions in `modify_private_package.json`, then apply |
+
+## Login gateway
+
+A device with no cookie cannot open the Web GUI, because the process token changes at every start and the URL is not stored anywhere a person could read it without the Mac. `dsh-web-login` closes that gap without a new secret: Tailscale Serve forwards each tailnet request to it and puts the caller's login in `Tailscale-User-Login`, dropping any copy a client sent. A request from the one allowed login gets a redirect to the current token URL in `~/.local/state/dsh-web/url`, and the Web GUI turns that into its usual cookie. Any other login, or none, gets 403.
+
+Add the allowed login to `~/.dsh/web-launch.conf`, then load the agent and publish the port:
+
+```sh
+LOGIN_ALLOWED_USER=<your Tailscale login>
+LOGIN_PORT=3081
+```
+
+```sh
+launchctl bootstrap "gui/$(id -u)" ~/Library/LaunchAgents/local.dsh-web-login.plist
+tailscale serve --bg --https=10000 http://127.0.0.1:3081
+```
+
+Open `https://<host>:10000/` on the device. To remove it, run `tailscale serve --https=10000 off` and `launchctl bootout "gui/$(id -u)/local.dsh-web-login"`.
+
+- The gateway listens on loopback only, so the allowed login is decided by Tailscale Serve and not by the caller.
+- Never expose the gateway with `tailscale funnel`, and never forward it from another proxy that lets a client set `Tailscale-User-Login`. Either lets anyone claim the allowed login.
+- The gateway reads the URL file at each request, so a restart of the server needs no change here.
+- A device the tailnet marks with a tag sends no login header and is refused.
+- The log `~/.local/state/dsh-web/login.log` never holds the token URL.
 
 ## Notion server
 
