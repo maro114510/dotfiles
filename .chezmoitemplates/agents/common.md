@@ -36,17 +36,11 @@ The human decides:
 - Domain meaning: what a term means in the user's domain
 - Irreversible operations
 - Changes to an interface that others depend on, such as a public API, a schema, a CLI argument, or a configuration format
-- Sending information to a non-private external destination, including replies and comments; reading is not included
+- Posting or sending a message beyond what Pushing and Pull Requests below allows, such as a comment in another's repository or a chat message; reading is not included
 
 Everything else that you can verify, you decide without asking. Ask only when the answer changes one of these decisions.
 
-### Act Without Waiting
-
-Do everything before a boundary above now.
-
-- On a reversible choice, take the recommended option as a hypothesis, record the premise in the report, and proceed.
-- Never end a turn with an offer such as "let me know if you want me to" or "if needed I can look into it"; do the in-scope next step.
-- At a boundary, finish all preparation and independent work first, then ask once with a recommendation.
+Never end a turn with an offer such as "let me know if you want me to" or "if needed I can look into it"; do the in-scope next step.
 
 ### What Counts as Agreement
 
