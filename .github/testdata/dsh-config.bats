@@ -491,6 +491,49 @@ kept_version_file() {
   [ "$(cat "$(kept_version_file)")" = 0.2.2-rc.1 ]
 }
 
+# dsh stub whose web server prints the given lines to stderr as it starts, the
+# way dsh reports a plugin it disabled; stderr lands in server.log.
+dsh_server_prints() {
+  {
+    printf '#!/bin/sh\n[ "${1:-}" = "--resolved-version" ] && { echo 0.2.2-rc.3; exit 0; }\n'
+    for line in "$@"; do
+      printf "printf '%%s\\n' '%s' >&2\n" "${line}"
+    done
+  } > "${home_dir}/.local/bin/dsh"
+  chmod +x "${home_dir}/.local/bin/dsh"
+}
+
+@test "a restart warns about a plugin the recorded release disabled" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  printf '0.2.2-rc.3\n' > "$(kept_version_file)"
+  dsh_server_prints "${incompatible_row_line}"
+  run_supervisor run
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'warning: dsh 0.2.2-rc.3 disabled installed plugins'* ]]
+  [[ "$output" == *'subagent-model-selection-settings'* ]]
+  [[ "$output" == *'"@deepseek-ai/dsh-agent":"0.2.2-rc.1"'* ]]
+  grep -q 'subagent-model-selection-settings' "${home_dir}/.local/state/dsh-web/launchd.log"
+}
+
+@test "a restart ignores incompatibility lines an earlier start logged" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  printf '%s\n' "${incompatible_row_line}" > "$(server_log)"
+  run_supervisor run
+  [ "$status" -eq 0 ]
+  [[ "$output" != *'disabled installed plugins'* ]]
+  [[ "$output" != *'subagent-model-selection-settings'* ]]
+}
+
+@test "a restart prints no warning when the server disabled no plugin" {
+  supervisor_run_env
+  rm "${dsh_dir}/web-launch.conf"
+  run_supervisor run
+  [ "$status" -eq 0 ]
+  [[ "$output" != *'warning'* ]]
+}
+
 @test "a recorded release that fails its health check is replaced by the last good one" {
   supervisor_run_env
   printf '#!/bin/sh\nprintf 000\n' > "${stub_dir}/curl"
