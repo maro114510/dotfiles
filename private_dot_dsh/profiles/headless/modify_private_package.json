@@ -1,0 +1,36 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* The shared home patch picks a Claude model for every profile, and only dsh-plugin-subscriptions provides it, so a headless run without the plugin ends in NO_ADAPTER. */ -}}
+{{- /* Only the managed dependency and bundles are enforced; whatever DSH or the machine added stays. The version matches the web profile's manifest. */ -}}
+{{- $dependencies := fromJson `
+{
+  "dsh-plugin-subscriptions": "^0.9.13"
+}
+` -}}
+{{- /* The order is the precedence order of the layers: the plugin follows the headless bundle so its provider is mounted after the task runner. */ -}}
+{{- $bundles := list
+  "@deepseek-ai/dsh-base"
+  "@deepseek-ai/dsh-headless"
+  "dsh-plugin-subscriptions"
+-}}
+{{- $original := .chezmoi.stdin | trim -}}
+{{- $config := dict "name" "dsh-profile-headless" "private" true -}}
+{{- if $original -}}
+  {{- $config = fromJson $original -}}
+{{- end -}}
+{{- $existing := get $config "dependencies" | default dict -}}
+{{- $config = set $config "dependencies" (mergeOverwrite $existing $dependencies) -}}
+{{- $dsh := get $config "dsh" | default dict -}}
+{{- $profile := get $dsh "profile" | default dict -}}
+{{- $merged := $bundles -}}
+{{- range (get $profile "bundles" | default list) -}}
+  {{- if not (has . $bundles) -}}
+    {{- $merged = append $merged . -}}
+  {{- end -}}
+{{- end -}}
+{{- $profile = set $profile "bundles" $merged -}}
+{{- $config = set $config "dsh" (set $dsh "profile" $profile) -}}
+{{- if and $original (deepEqual (fromJson $original) $config) -}}
+{{ .chezmoi.stdin -}}
+{{- else -}}
+{{ toPrettyJson $config }}
+{{ end -}}

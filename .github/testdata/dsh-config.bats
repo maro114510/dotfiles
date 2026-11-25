@@ -16,6 +16,7 @@ setup() {
   home_dir="$(mktemp -d)"
   dsh_dir="${home_dir}/.dsh"
   manifest="${dsh_dir}/profiles/web/package.json"
+  headless_manifest="${dsh_dir}/profiles/headless/package.json"
   home_patch="${dsh_dir}/cordis.patch.yml"
   stub_dir="$(mktemp -d)"
   : > "${home_dir}/chezmoi.toml"
@@ -163,7 +164,63 @@ seed_manifest() {
   [ "$status" -eq 0 ]
 }
 
-# --- wrapper ---
+# --- headless manifest ---
+
+# The review and one-shot runs boot the headless profile, whose shared policy picks a
+# Claude model; without the subscriptions plugin that run ends in NO_ADAPTER.
+
+seed_headless_manifest() {
+  mkdir -p "${dsh_dir}/profiles/headless"
+  printf '%s\n' "$1" > "${headless_manifest}"
+}
+
+@test "a fresh home gets the subscriptions plugin as a dependency and a bundle of the headless profile" {
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(mode_of "${headless_manifest}")" = 600 ]
+  [ "$(jq -r '.dependencies["dsh-plugin-subscriptions"]' "${headless_manifest}")" = '^0.9.13' ]
+  [ "$(jq -r '.dsh.profile.bundles | index("dsh-plugin-subscriptions") != null' "${headless_manifest}")" = true ]
+  [ "$(jq -r '.dsh.profile.bundles[0]' "${headless_manifest}")" = '@deepseek-ai/dsh-base' ]
+  [ "$(jq -r '.dsh.profile.bundles[1]' "${headless_manifest}")" = '@deepseek-ai/dsh-headless' ]
+}
+
+@test "the headless profile keeps the subscriptions plugin after the headless bundle so it can provide the model" {
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -r '.dsh.profile.bundles | index("dsh-plugin-subscriptions") > index("@deepseek-ai/dsh-headless")' "${headless_manifest}")" = true ]
+}
+
+@test "a local dependency and a local bundle of the headless profile survive an apply" {
+  seed_headless_manifest '{"dependencies":{"left-pad":"1.3.0"},"dsh":{"profile":{"bundles":["@deepseek-ai/dsh-base","@deepseek-ai/dsh-headless","left-pad"]}}}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -r '.dependencies["left-pad"]' "${headless_manifest}")" = 1.3.0 ]
+  [ "$(jq -r '.dsh.profile.bundles[-1]' "${headless_manifest}")" = left-pad ]
+  [ "$(jq -r '.dsh.profile.bundles | index("dsh-plugin-subscriptions") != null' "${headless_manifest}")" = true ]
+}
+
+@test "a differing subscriptions version in the headless manifest is restored to the managed value" {
+  seed_headless_manifest '{"dependencies":{"dsh-plugin-subscriptions":"^0.1.0"},"dsh":{"profile":{"bundles":["@deepseek-ai/dsh-base","@deepseek-ai/dsh-headless"]}}}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -r '.dependencies["dsh-plugin-subscriptions"]' "${headless_manifest}")" = '^0.9.13' ]
+}
+
+@test "a headless manifest that already lists the subscriptions bundle is not given a second entry" {
+  seed_headless_manifest '{"dsh":{"profile":{"bundles":["@deepseek-ai/dsh-base","@deepseek-ai/dsh-headless","dsh-plugin-subscriptions"]}}}'
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -r '.dsh.profile.bundles | map(select(. == "dsh-plugin-subscriptions")) | length' "${headless_manifest}")" = 1 ]
+}
+
+@test "a second apply leaves the headless manifest unchanged" {
+  run apply
+  [ "$status" -eq 0 ]
+  before="$(cat "${headless_manifest}")"
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(cat "${headless_manifest}")" = "${before}" ]
+}
 
 # --- wrapper ---
 
@@ -817,6 +874,33 @@ run_install() {
   [ "$status" -eq 0 ]
   [[ "$output" == *skipping* ]]
   [ ! -e "${stub_dir}/dsh.log" ]
+}
+
+@test "the install script also installs the headless profile when its manifest exists" {
+  stub_install_env
+  mkdir -p "${dsh_dir}/profiles/headless"
+  : > "${headless_manifest}"
+  run_install
+  [ "$status" -eq 0 ]
+  [ "$(cat "${stub_dir}/dsh.log")" = "$(printf 'plugin --profile web install\nplugin --profile headless install')" ]
+}
+
+@test "the install script skips the headless profile when its manifest is missing" {
+  stub_install_env
+  run_install
+  [ "$status" -eq 0 ]
+  [ "$(cat "${stub_dir}/dsh.log")" = 'plugin --profile web install' ]
+}
+
+@test "a failed headless install does not fail the apply and does not hide the web install" {
+  stub_install_env
+  mkdir -p "${dsh_dir}/profiles/headless"
+  : > "${headless_manifest}"
+  printf '#!/bin/sh\nprintf "%%s\\n" "$*" >> "%s/dsh.log"\n[ "$3" = headless ] && exit 1\nexit 0\n' "${stub_dir}" > "${home_dir}/.local/bin/dsh"
+  run_install
+  [ "$status" -eq 0 ]
+  [[ "$output" == *failed* ]]
+  grep -q 'plugin --profile web install' "${stub_dir}/dsh.log"
 }
 
 @test "the install script reports a failed install and still succeeds" {
