@@ -72,8 +72,10 @@ Surface assumptions and flaws before writing code, not after.
 
 - If multiple interpretations remain after verification and the choice belongs to the human, list them and ask — don't silently pick one.
 - If a simpler approach exists, say so before starting.
-- Ask once with all your questions grouped.
-- Question relentlessly any fatal flaw or logic gap the user may not have noticed, in that same batch. Interrupt mid-task only for a fatal flaw you could not have seen earlier.
+- Ask each decision as its own question, one decision per question.
+- Ask through the harness's question tool in the session. Never end your turn to say you are stopping while you can still act.
+- With several open decisions, first list them all, then ask them in dependency order. Independent decisions may share one call of the question tool.
+- Question relentlessly any fatal flaw or logic gap the user may not have noticed, as its own question. Interrupt mid-task only for a fatal flaw you could not have seen earlier.
 - If something is still unclear after asking, name the ambiguity explicitly in your response.
 
 ## Design Questions and Decisions
