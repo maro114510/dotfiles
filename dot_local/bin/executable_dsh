@@ -1,52 +1,26 @@
 #!/bin/sh
-# Runs the newest published DSH release, so a machine that keeps this file does
-# not pin a version. Resolution order: DSH_VERSION, a fresh cache, the newest
-# published GitHub release without alphas, the npm dist-tags, then the last version
-# that ran. Alphas are skipped because plugins such as dsh-ops reject them.
-# A version the supervisor marked as failing is skipped for six hours.
+# Runs the DSH release the repository pins in ~/.config/dsh/package.json, which
+# chezmoi applies from dot_config/dsh and Dependabot updates. DSH_VERSION
+# overrides the pin. Without either, the wrapper stops instead of guessing.
+# A version the supervisor marked as failing is skipped for six hours, in favor
+# of the last version that ran.
 # The release runs on the node mise resolves, never through a mise shim.
 set -eu
 
 state_dir="${XDG_STATE_HOME:-${HOME}/.local/state}/dsh"
-cache_file="${state_dir}/latest-release"
+pin_file="${XDG_CONFIG_HOME:-${HOME}/.config}/dsh/package.json"
 last_good_file="${state_dir}/last-good"
 failing_dir="${state_dir}/failing"
-cache_ttl_seconds="${DSH_RELEASE_CACHE_SECONDS:-300}"
 failing_ttl_seconds="${DSH_FAILING_TTL_SECONDS:-21600}"
 mkdir -p "${state_dir}"
 
 resolved=""
 now="$(date +%s)"
 
-read_cache() {
-  [ -f "${cache_file}" ] || return 1
-  cached_version="$(cut -f1 "${cache_file}")"
-  cached_epoch="$(cut -f2 "${cache_file}")"
-  [ -n "${cached_version}" ] || return 1
-  [ -n "${cached_epoch}" ] || return 1
-  [ $((now - cached_epoch)) -lt "${cache_ttl_seconds}" ] || return 1
-  resolved="${cached_version}"
-}
-
-fetch_github() {
-  command -v curl >/dev/null 2>&1 || return 1
-  command -v jq >/dev/null 2>&1 || return 1
-  body="$(curl -fsS --max-time 8 -H 'Accept: application/vnd.github+json' \
-    'https://api.github.com/repos/deepseek-ai/deepseek-harness/releases?per_page=10' 2>/dev/null)" || return 1
-  tag="$(printf '%s' "${body}" | jq -r '[.[] | select(.draft == false and (.tag_name | contains("-alpha") | not))] | sort_by(.published_at) | last | .tag_name // empty' 2>/dev/null)" || return 1
-  [ -n "${tag}" ] || return 1
-  version="${tag#dsh-v}"
-  [ -n "${version}" ] || return 1
-  resolved="${version}"
-}
-
-fetch_npm() {
-  command -v curl >/dev/null 2>&1 || return 1
-  command -v jq >/dev/null 2>&1 || return 1
-  body="$(curl -fsS --max-time 8 'https://registry.npmjs.org/-/package/@deepseek-ai/dsh/dist-tags' 2>/dev/null)" || return 1
-  version="$(printf '%s' "${body}" | jq -r '.next // .latest // empty' 2>/dev/null)" || return 1
-  [ -n "${version}" ] || return 1
-  resolved="${version}"
+read_pin() {
+  [ -f "${pin_file}" ] || return 1
+  resolved="$(sed -n 's/.*"@deepseek-ai\/dsh"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "${pin_file}" | head -n 1)"
+  [ -n "${resolved}" ]
 }
 
 resolve() {
@@ -54,21 +28,11 @@ resolve() {
     resolved="${DSH_VERSION}"
     return 0
   fi
-  if read_cache; then
+  if read_pin; then
     return 0
   fi
-  if fetch_github; then
-    :
-  elif fetch_npm; then
-    :
-  elif [ -s "${last_good_file}" ]; then
-    resolved="$(cat "${last_good_file}")"
-    return 0
-  else
-    echo "dsh: cannot resolve the newest release; no network and no last-good version" >&2
-    return 3
-  fi
-  printf '%s\t%s\n' "${resolved}" "${now}" > "${cache_file}"
+  echo "dsh: no pinned release in ${pin_file}; apply dotfiles or set DSH_VERSION" >&2
+  return 3
 }
 
 resolve

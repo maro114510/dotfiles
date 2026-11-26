@@ -20,3 +20,13 @@ updates:
       default-days: 5
       exclude:
         - "maro114510/*"
+
+  # The pinned dsh release that dot_local/bin/executable_dsh runs.
+  - package-ecosystem: "npm"
+    directory: "/dot_config/dsh"
+    schedule:
+      interval: "daily"
+    assignees:
+      - "maro114510"
+    cooldown:
+      default-days: 5
