@@ -1,6 +1,6 @@
 lockfile_version: '4'
-generated_at: '2026-11-25T00:51:20.093236+00:00'
-apm_version: 0.38.0
+generated_at: '2026-11-26T00:51:03.321259+00:00'
+apm_version: 0.39.0
 manifest_targets:
 - claude
 - codex
@@ -77,6 +77,9 @@ dependencies:
     .agents/skills/rust-mentor/SKILL.md: sha256:9c6a2f1cb0e4304fa098482ce817ca0ee9af4af990870565dbfdf1bca43c2275
     .agents/skills/rust-mentor/agents/openai.yaml: sha256:a6860e1128c7917cdb561d83c5c859c89e84308aff734ba0681e78de50761f14
   content_hash: sha256:89d9d9896d27739626f50c16b5cf8a7a0138fb60687554b7df2369a7cb14640b
+  package_targets:
+  - claude
+  - codex
   declared_license: UNLICENSED
   native_plugin:
     name: private-skills
@@ -90,7 +93,7 @@ dependencies:
 - repo_url: maro114510/skills
   name: skills
   host: github.com
-  resolved_commit: c917e21276ba699737d1054147bc3b2c6a99a5bd
+  resolved_commit: d426a9532518473d9a0bf71e2cf39e07a93a2e81
   resolved_ref: main
   version: 1.2.0
   package_type: marketplace_plugin
@@ -165,6 +168,7 @@ dependencies:
   - .agents/skills/manage-design-documents/references/design-doc.md
   - .agents/skills/orchestrate-epic
   - .agents/skills/orchestrate-epic/SKILL.md
+  - .agents/skills/orchestrate-epic/agents/openai.yaml
   - .agents/skills/orchestrate-epic/scripts/oe
   - .agents/skills/orchestrate-epic/scripts/oe-bot.sh
   - .agents/skills/orchestrate-epic/scripts/oe-brief.sh
@@ -211,6 +215,7 @@ dependencies:
   - .agents/skills/pr-doc-review-pe/scripts/pr-review-pe-identify-pr.sh
   - .agents/skills/pr-owner
   - .agents/skills/pr-owner/SKILL.md
+  - .agents/skills/pr-owner/agents/openai.yaml
   - .agents/skills/pr-review-pe
   - .agents/skills/pr-review-pe/SKILL.md
   - .agents/skills/pr-review-pe/references/ai-specific-risks.md
@@ -220,38 +225,7 @@ dependencies:
   - .agents/skills/pr-review-pe/scripts/pr-review-pe-identify-pr.sh
   - .agents/skills/pr-verify
   - .agents/skills/pr-verify/SKILL.md
-  - .agents/skills/research-transfer-checker
-  - .agents/skills/research-transfer-checker/SKILL.md
-  - .agents/skills/research-transfer-checker/agents/openai.yaml
-  - .agents/skills/research-transfer-checker/evals/01-direct-support.md
-  - .agents/skills/research-transfer-checker/evals/02-abstract-only-access.md
-  - .agents/skills/research-transfer-checker/evals/03-observational-to-causal.md
-  - .agents/skills/research-transfer-checker/evals/04-animal-to-human.md
-  - .agents/skills/research-transfer-checker/evals/05-group-to-individual.md
-  - .agents/skills/research-transfer-checker/evals/06-surrogate-marker-to-outcome.md
-  - .agents/skills/research-transfer-checker/evals/07-past-study-to-present.md
-  - .agents/skills/research-transfer-checker/evals/08-cross-cultural-transfer.md
-  - .agents/skills/research-transfer-checker/evals/09-descriptive-to-mandate.md
-  - .agents/skills/research-transfer-checker/evals/10-bridging-evidence-justified.md
-  - .agents/skills/research-transfer-checker/evals/11-mixed-evidence.md
-  - .agents/skills/research-transfer-checker/evals/12-correction-retraction.md
-  - .agents/skills/research-transfer-checker/evals/RESULTS.md
-  - .agents/skills/research-transfer-checker/evals/results/01-direct-support.md
-  - .agents/skills/research-transfer-checker/evals/results/02-abstract-only-access.md
-  - .agents/skills/research-transfer-checker/evals/results/03-observational-to-causal.md
-  - .agents/skills/research-transfer-checker/evals/results/04-animal-to-human.md
-  - .agents/skills/research-transfer-checker/evals/results/05-group-to-individual.md
-  - .agents/skills/research-transfer-checker/evals/results/06-surrogate-marker-to-outcome.md
-  - .agents/skills/research-transfer-checker/evals/results/07-past-study-to-present.md
-  - .agents/skills/research-transfer-checker/evals/results/08-cross-cultural-transfer.md
-  - .agents/skills/research-transfer-checker/evals/results/09-descriptive-to-mandate.md
-  - .agents/skills/research-transfer-checker/evals/results/10-bridging-evidence-justified.md
-  - .agents/skills/research-transfer-checker/evals/results/11-mixed-evidence.md
-  - .agents/skills/research-transfer-checker/evals/results/12-correction-retraction.md
-  - .agents/skills/research-transfer-checker/references/bridging-search.md
-  - .agents/skills/research-transfer-checker/references/decision-rubric.md
-  - .agents/skills/research-transfer-checker/references/harm-assessment.md
-  - .agents/skills/research-transfer-checker/references/standards-map.md
+  - .agents/skills/pr-verify/agents/openai.yaml
   - .agents/skills/shakedown
   - .agents/skills/shakedown/SKILL.md
   - .agents/skills/shakedown/references/rebaseline.md
@@ -266,10 +240,6 @@ dependencies:
   - .agents/skills/tear-down/SKILL.md
   - .agents/skills/why-man
   - .agents/skills/why-man/SKILL.md
-  - .agents/skills/write-researched-document
-  - .agents/skills/write-researched-document/SKILL.md
-  - .agents/skills/write-researched-document/agents/openai.yaml
-  - .agents/skills/write-researched-document/references/evidence-workflow.md
   - .codex/agents/pr-owner.toml
   - .codex/agents/pr-verify.toml
   - .config/opencode/agents/pr-owner.md
@@ -344,6 +314,7 @@ dependencies:
   - .config/opencode/skills/manage-design-documents/references/design-doc.md
   - .config/opencode/skills/orchestrate-epic
   - .config/opencode/skills/orchestrate-epic/SKILL.md
+  - .config/opencode/skills/orchestrate-epic/agents/openai.yaml
   - .config/opencode/skills/orchestrate-epic/scripts/oe
   - .config/opencode/skills/orchestrate-epic/scripts/oe-bot.sh
   - .config/opencode/skills/orchestrate-epic/scripts/oe-brief.sh
@@ -390,6 +361,7 @@ dependencies:
   - .config/opencode/skills/pr-doc-review-pe/scripts/pr-review-pe-identify-pr.sh
   - .config/opencode/skills/pr-owner
   - .config/opencode/skills/pr-owner/SKILL.md
+  - .config/opencode/skills/pr-owner/agents/openai.yaml
   - .config/opencode/skills/pr-review-pe
   - .config/opencode/skills/pr-review-pe/SKILL.md
   - .config/opencode/skills/pr-review-pe/references/ai-specific-risks.md
@@ -399,38 +371,7 @@ dependencies:
   - .config/opencode/skills/pr-review-pe/scripts/pr-review-pe-identify-pr.sh
   - .config/opencode/skills/pr-verify
   - .config/opencode/skills/pr-verify/SKILL.md
-  - .config/opencode/skills/research-transfer-checker
-  - .config/opencode/skills/research-transfer-checker/SKILL.md
-  - .config/opencode/skills/research-transfer-checker/agents/openai.yaml
-  - .config/opencode/skills/research-transfer-checker/evals/01-direct-support.md
-  - .config/opencode/skills/research-transfer-checker/evals/02-abstract-only-access.md
-  - .config/opencode/skills/research-transfer-checker/evals/03-observational-to-causal.md
-  - .config/opencode/skills/research-transfer-checker/evals/04-animal-to-human.md
-  - .config/opencode/skills/research-transfer-checker/evals/05-group-to-individual.md
-  - .config/opencode/skills/research-transfer-checker/evals/06-surrogate-marker-to-outcome.md
-  - .config/opencode/skills/research-transfer-checker/evals/07-past-study-to-present.md
-  - .config/opencode/skills/research-transfer-checker/evals/08-cross-cultural-transfer.md
-  - .config/opencode/skills/research-transfer-checker/evals/09-descriptive-to-mandate.md
-  - .config/opencode/skills/research-transfer-checker/evals/10-bridging-evidence-justified.md
-  - .config/opencode/skills/research-transfer-checker/evals/11-mixed-evidence.md
-  - .config/opencode/skills/research-transfer-checker/evals/12-correction-retraction.md
-  - .config/opencode/skills/research-transfer-checker/evals/RESULTS.md
-  - .config/opencode/skills/research-transfer-checker/evals/results/01-direct-support.md
-  - .config/opencode/skills/research-transfer-checker/evals/results/02-abstract-only-access.md
-  - .config/opencode/skills/research-transfer-checker/evals/results/03-observational-to-causal.md
-  - .config/opencode/skills/research-transfer-checker/evals/results/04-animal-to-human.md
-  - .config/opencode/skills/research-transfer-checker/evals/results/05-group-to-individual.md
-  - .config/opencode/skills/research-transfer-checker/evals/results/06-surrogate-marker-to-outcome.md
-  - .config/opencode/skills/research-transfer-checker/evals/results/07-past-study-to-present.md
-  - .config/opencode/skills/research-transfer-checker/evals/results/08-cross-cultural-transfer.md
-  - .config/opencode/skills/research-transfer-checker/evals/results/09-descriptive-to-mandate.md
-  - .config/opencode/skills/research-transfer-checker/evals/results/10-bridging-evidence-justified.md
-  - .config/opencode/skills/research-transfer-checker/evals/results/11-mixed-evidence.md
-  - .config/opencode/skills/research-transfer-checker/evals/results/12-correction-retraction.md
-  - .config/opencode/skills/research-transfer-checker/references/bridging-search.md
-  - .config/opencode/skills/research-transfer-checker/references/decision-rubric.md
-  - .config/opencode/skills/research-transfer-checker/references/harm-assessment.md
-  - .config/opencode/skills/research-transfer-checker/references/standards-map.md
+  - .config/opencode/skills/pr-verify/agents/openai.yaml
   - .config/opencode/skills/shakedown
   - .config/opencode/skills/shakedown/SKILL.md
   - .config/opencode/skills/shakedown/references/rebaseline.md
@@ -445,27 +386,23 @@ dependencies:
   - .config/opencode/skills/tear-down/SKILL.md
   - .config/opencode/skills/why-man
   - .config/opencode/skills/why-man/SKILL.md
-  - .config/opencode/skills/write-researched-document
-  - .config/opencode/skills/write-researched-document/SKILL.md
-  - .config/opencode/skills/write-researched-document/agents/openai.yaml
-  - .config/opencode/skills/write-researched-document/references/evidence-workflow.md
   deployed_file_hashes:
     .agents/skills/commit/SKILL.md: sha256:fc3bae7a6c61acd90e36b00794901280a10dd757adfa604f17af4cf44b209970
     .agents/skills/commit/references/issue-footer.md: sha256:d0de99850abd7e584461c3cd562a9d4dd41ebce8e1248a34160cde3d0f0589bb
     .agents/skills/commit/references/message-examples.md: sha256:798da812f9886b7208bebcef7c427cd1cf5ea1116c0b307cb98fb93eec4e1979
-    .agents/skills/create-github-issues/SKILL.md: sha256:24dd3c61f4f72099885a630c9d3ae94ad3591ed457239cb5937030d4753e875b
-    .agents/skills/create-github-issues/references/bodies.md: sha256:18b05e8ce893e30e7c05d86eb3c041cd47ca048bb21f30f618ea574a575cb63b
+    .agents/skills/create-github-issues/SKILL.md: sha256:4e5b1a51dd3c75c8b1e0cc6602a6adaa609d2c4112436b44b3b5df9bd3ba0fca
+    .agents/skills/create-github-issues/references/bodies.md: sha256:e3df77183278a9d1760dbe03e0f83cd3f2d90e7e1cb393e7a817c592ee483d0c
     .agents/skills/create-github-issues/references/change-units.md: sha256:bf091076052add0ee3f864793a4b60a173ca26daa152745a8f59fa6d030301e9
     .agents/skills/create-github-issues/references/commands.md: sha256:e23ee67625df91020cd2345b8b087de4bd425d4baba365a2ab8447811c71fe7c
     .agents/skills/create-github-issues/references/question.md: sha256:f0d7abf6b12015327c35946e27f904af1c0cecd725455442ca85a80911842d3a
     .agents/skills/create-github-issues/references/structure.md: sha256:804e62116a36c4fd92a6e126d68c0cbaf97d49c4b25144e7c2177b0410403fa4
     .agents/skills/create-github-issues/references/templates.en.md: sha256:215162ef683eb9c6a4784c0c1c9e577b310e312d111c7eb2ae06b8c3752d3732
     .agents/skills/create-github-issues/references/templates.ja.md: sha256:bb1b49b3b1be521d1709371158b3f96d6adf8e8e1f89d380eaf5e87dd2f72f8e
-    .agents/skills/create-pr/SKILL.md: sha256:d8905e10d99f5c4f59391519b57ff80d620170e15ffe8167b358434499e97208
+    .agents/skills/create-pr/SKILL.md: sha256:af8df8eb40c20338a38bc6051569efaf0d3bfa62474a9ac8fd36d3febd511fe8
     .agents/skills/create-pr/references/description.md: sha256:f732c996a18c8aa39622851dcf566a33c0392cb0ea3253b449f962d6ee745b3f
     .agents/skills/create-pr/references/result.md: sha256:a9e52e969a9eee8745d5655c1b5714f3bd99c19f2535c4f40497176afd253eff
     .agents/skills/create-pr/scripts/create-linked-pr.sh: sha256:11ec31a86e529766fe83134f7c25f0383223290636f88bcf09d364e028b04045
-    .agents/skills/create-pr/scripts/describe.sh: sha256:8c55a55864684d9dbbf24cc6bb9d907a3d501f3cc9f8694c1b1f628e9ff66607
+    .agents/skills/create-pr/scripts/describe.sh: sha256:cc8ab388cf2c94302dccfec182dce31fc24c11a27781fafcb79cf74aaaccb8cf
     .agents/skills/create-pr/scripts/issue-refs.sh: sha256:18d32c12e45ac35f6cfe171b5a8ad74ed7e766b70ba7f92423bf8312aacd1aaa
     .agents/skills/create-pr/scripts/lang.sh: sha256:2bce3cda52901d4d50766aa17e347387ae6921005a705d1499a4cc051b5b1217
     .agents/skills/create-pr/scripts/pr-context.sh: sha256:42c2cf63ecfc176398a75f277b272bed10fa4d9ec570e4f7e24225674a1acc25
@@ -483,12 +420,12 @@ dependencies:
     .agents/skills/diagram-conventions/references/sequence.md: sha256:35114d1c5890af13a22ee5cc2ffa77b37db2f2d99452fd1131f03a573613f851
     .agents/skills/diagram-conventions/references/state.md: sha256:7b257943ff1bc79f3c6170b63f696dfe60d3500d0a5baa4fe8ba5fa747bd9b4b
     .agents/skills/domain-master/SKILL.md: sha256:0de52141a458a198feccdbc5cf9478a35a6c7df73c481174d2203901a53c024c
-    .agents/skills/extreme-compact/SKILL.md: sha256:c2ecebc1b4902d365e478d722f110cb7c7dea19d47c2fed7cdc270cb6c42552b
-    .agents/skills/frame-problem/SKILL.md: sha256:cbfb9aaba3b4a15b9d60a993a0639b05b8ef6e91d46adbf162163724b66e37a0
+    .agents/skills/extreme-compact/SKILL.md: sha256:5d92367fa0535efb8cf4e5e245afc8b141f04aa43c7e00f8dc2802e258dcaa1f
+    .agents/skills/frame-problem/SKILL.md: sha256:7482f3b551d3f42bc3468fb8adcaaf5b17bcd71ca4109f5b12b8fb49a0c0b5f7
     .agents/skills/frame-problem/references/question-loop.md: sha256:8e432ef20504effa9b92c83674110a3c793f3ddeb551afcf7635be740ce6d4ec
     .agents/skills/frame-problem/references/template.md: sha256:e7beb1dbc4f13862166550f429c0bbc6d05dbf59f69f80edc672a34c911000ee
-    .agents/skills/implement/SKILL.md: sha256:503c16daf76e857828d7567e74eb9262c2a158d1efbd61beaba4c2270d7b56dc
-    .agents/skills/implement/references/evidence.md: sha256:32c5fa52e533e455d838566f6dda5118f757e36dc17bec315c53e60a2ea6d061
+    .agents/skills/implement/SKILL.md: sha256:ee92b359b7a2ea64926f55d5d896e2d88833f7d7acfd7fa4b2acf1de8aa56b3d
+    .agents/skills/implement/references/evidence.md: sha256:eb0ead1907d72fde66d5c25ed97a88f126ac315bca8e8a76926b1c1cb8a8b01f
     .agents/skills/implement/references/playbooks/behavior-change.md: sha256:d46cd7aca956fa25e7a11b2ff553dbc4f6c6b24c4ba8d53da11e6718070cc17e
     .agents/skills/implement/references/playbooks/bug-fix.md: sha256:dc76a41c3c08598a84deeff0418ae1c7cdc460f00cdaca2b023b1816369bd7cf
     .agents/skills/implement/references/playbooks/refactor.md: sha256:26f41e26844874d47f29e3732d9bf9d298fc5b443ccad250e95a71cc5703e63c
@@ -497,10 +434,10 @@ dependencies:
     .agents/skills/implement/references/test-policy.md: sha256:519f4e8bcd3da8660676cb72d5574ef1a9930c726eff99f81cfe764333e43982
     .agents/skills/implement/references/worktree.md: sha256:23a6cfb891e59337fd1dbf242c4bf02c96e4722c47ac0818d4b5278945cad317
     .agents/skills/implement/scripts/lock.sh: sha256:874e6689c8bc2f91d4e39979d570c679a4f62e688a170a7a2e3041cb580c8510
-    .agents/skills/implement/scripts/self-review.sh: sha256:f85303fa8ade5e0ffb8d81dc06556063eaa766474a492978111e6dac18cbddc9
+    .agents/skills/implement/scripts/self-review.sh: sha256:a1f3d92d0daace4c05e4cdd4783bf2bcec1296f7e091bd74c7b39a77b610325b
     .agents/skills/implement/scripts/test-lock.bats: sha256:0c50119ff54b552cfa2950d4ee28df3c8bc3988bf804b3023b445ed379e38b5a
     .agents/skills/implement/scripts/test-self-review.bats: sha256:2a0fd2b0085455f2b0449f58878780b80f3f353454cec9770ba06d82dc92abd2
-    .agents/skills/locate/SKILL.md: sha256:884340d74626747fc8f802b68e73412bbf6741facb561354559f00d051de51ef
+    .agents/skills/locate/SKILL.md: sha256:868b3a5f9a3ce80deaa758367bbcd4529c14973f2317bff0da1aa4b53bdafd2c
     .agents/skills/locate/scripts/locate.sh: sha256:5d933b8bff970e1312f279eafaa1cbb213909ca7475d6f580e25543d76b6a107
     .agents/skills/locate/scripts/pr-state.sh: sha256:7a959f29beb6df4f0b5386f23b52203456b32dc5eafd39c89ff5231da407fe1a
     .agents/skills/locate/scripts/test-locate.bats: sha256:c4b6220214de3b88c3209f604128f8481d4f383ab9c172ba998cc0c8732a3a20
@@ -509,10 +446,11 @@ dependencies:
     .agents/skills/manage-design-documents/references/adr.md: sha256:d56595684fc701f848f8ad855b1b93e25f9327ae92f77e774474f48ebd1dfee5
     .agents/skills/manage-design-documents/references/design-doc.md: sha256:6b3ff3bedf5d083776f3ef8fe224b0bbbd04aca502ca989ca0ce4731c17a396f
     .agents/skills/orchestrate-epic/SKILL.md: sha256:f76427482b15d613ac2e525933c069f5e78a8d3ea2bf5b67359e843074555d96
+    .agents/skills/orchestrate-epic/agents/openai.yaml: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
     .agents/skills/orchestrate-epic/scripts/oe: sha256:699ef679d5de0507ae53beaeb5bf30563fe55da4e368f46100fb2bcfbd3b3c23
     .agents/skills/orchestrate-epic/scripts/oe-bot.sh: sha256:6189be68b4ec5325b77f896901e58ed5c49106ad518647dcdf470195391a6a9f
     .agents/skills/orchestrate-epic/scripts/oe-brief.sh: sha256:596a31e5ae2e2e6521847ff228408e630ccf9d1bade8765eac725134975a9d8c
-    .agents/skills/orchestrate-epic/scripts/oe-config.sh: sha256:523a6be173d953da9c84306b1cb65373314ebf4d32c958bff6be75b96ce20129
+    .agents/skills/orchestrate-epic/scripts/oe-config.sh: sha256:0b6a0b13a9c0e09918c9e5efad1f9715dd5133791eec6a2fb9da67307ae9d65c
     .agents/skills/orchestrate-epic/scripts/oe-hold.sh: sha256:c8c8a30540aea8ae938eae6f123b25dcf25f0222a506d5c98487ebd3f6a53cec
     .agents/skills/orchestrate-epic/scripts/oe-question.jq: sha256:d70086fdf21be8cccd70526b86fe788de5d98969aad91dfccc4b2e685b72ea19
     .agents/skills/orchestrate-epic/scripts/oe-question.sh: sha256:12893fc3fe8ea7317d812a9fdd73e20889a07da656e0eefbc3069528541d9777
@@ -522,36 +460,37 @@ dependencies:
     .agents/skills/orchestrate-epic/scripts/oe-ready-head.graphql: sha256:e471a0779b7617e6ad9460f4f9779e35976a86143a04e7511d399dafa58eb705
     .agents/skills/orchestrate-epic/scripts/oe-ready-issue.graphql: sha256:ba6727303a9b3438cefcd677b201828e1157413074a96b6ec961cf958a9c512f
     .agents/skills/orchestrate-epic/scripts/oe-ready.jq: sha256:114e8300cb040e13d8b23532f1210e9019c860425a2db873397806e3ec6683ee
-    .agents/skills/orchestrate-epic/scripts/oe-ready.sh: sha256:f7c991f70edfaab241583a9b12f3daaa51d684ab932e43bf2103afa33d68dda7
+    .agents/skills/orchestrate-epic/scripts/oe-ready.sh: sha256:f4240696d769e037d23fb6f06ef29094d900680ab22322f2ba051952edef9f45
     .agents/skills/orchestrate-epic/scripts/oe-records.jq: sha256:dbfd58f651d1b3eee90e944d62e60c7351a7ef6f64ce7642ce4b4c8d6ac411e8
     .agents/skills/orchestrate-epic/scripts/oe-start.sh: sha256:0ec1629362c97067ed077e9495df0acf741d0722453c170e99c70d0910fae885
     .agents/skills/orchestrate-epic/scripts/oe-verdict.sh: sha256:d9faa0de5f6b7ad7f1f7f7f7b1f7787a21c52ed2ed153fe3b29d65f85755c950
-    .agents/skills/orchestrate-epic/scripts/oe-wait.sh: sha256:7945b50c98a01a0afcea98648ca90803a560a00fc72257bb7800edff4e3f18ec
+    .agents/skills/orchestrate-epic/scripts/oe-wait.sh: sha256:73f02bfa24cbb56e297972147d6fc83c40b9dfcd500142de3ba94127b9c88e5c
     .agents/skills/orchestrate-epic/scripts/oe-worktree.sh: sha256:931b788704c3a0d8f5f3ae22c1f9d1cc2bde6aa79460b47ebc79ae7007754ecd
-    .agents/skills/orchestrate-epic/scripts/test-oe-answer.bats: sha256:ebbc827b478910652706ec31e0f170f742efceaac3559e22c3b19a0dcac6a38d
+    .agents/skills/orchestrate-epic/scripts/test-oe-answer.bats: sha256:802c060ce9d6940ea64784765aa398a6cab3b5583a7cca8c69e7f32789a7ce23
     .agents/skills/orchestrate-epic/scripts/test-oe-bot.bats: sha256:317c8417ed14ec310f3485fd010a7d37f0d1cde8669c6f915c4634f798c59c79
     .agents/skills/orchestrate-epic/scripts/test-oe-brief.bats: sha256:24356bac18cb289d914ff9f483a57770bbeea50f431cdd3ae509d0bc8834be8a
-    .agents/skills/orchestrate-epic/scripts/test-oe-hold.bats: sha256:6187190ed5e1f97a449e6bf92433c53860fc270fc11abaa6452083b84e47f21d
-    .agents/skills/orchestrate-epic/scripts/test-oe-question.bats: sha256:2a2019bbf856c3754f4e151ff063176d289c745fa9e1dd1f9b74712afc02a28c
-    .agents/skills/orchestrate-epic/scripts/test-oe-ready.bats: sha256:8a53fd9e7eb930f4f8feca5c563bd52ad2510f1e02815e2dede199b88de519c5
+    .agents/skills/orchestrate-epic/scripts/test-oe-hold.bats: sha256:abc27aad46708ae12d1b97723856c3be13e16eccd2ce1689d55d898b9ec7987e
+    .agents/skills/orchestrate-epic/scripts/test-oe-question.bats: sha256:4f8194e90dc182f99d9878bfc6e246de73717ddc419bd9c0aac71344cc8a02ec
+    .agents/skills/orchestrate-epic/scripts/test-oe-ready.bats: sha256:ed47f62ce7d158b402b91752b9b80c330070491c84caa472f720c570b896aa1d
     .agents/skills/orchestrate-epic/scripts/test-oe-start.bats: sha256:5b4c21538e2b4202638f9f05e7813da92484af62c6e708e8daeb8b408b586108
-    .agents/skills/orchestrate-epic/scripts/test-oe-verdict.bats: sha256:acbc962c809f2fd9af58435f5d5d64f9f647bf16e21f195a7844f4fbf08a9ef0
-    .agents/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:45c0f9188142bc9ddf6b084d523a8e393f12fbc99498e3f32959d2e50e3afadf
+    .agents/skills/orchestrate-epic/scripts/test-oe-verdict.bats: sha256:6102006bd334129f82777d75a6156d5f968f9d4c3801e93e51540a1d65daa114
+    .agents/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:492985e9bdc91ab1f03e13b1f34c236efbf7af845b74ff783e8e12aab0f6fe3c
     .agents/skills/orchestrate-epic/scripts/test-oe-worktree.bats: sha256:59893c4415ac02f07e7a4ea37b3432925cfaad9d0efd914c93a0c81a7373351a
     .agents/skills/orchestrate-epic/scripts/test-oe.bats: sha256:16e9af472f1793a4b229d3747cb68ff83daceef4414ce56fff07df64a3f90a59
-    .agents/skills/orchestrate-epic/scripts/testdata/fake-gh.sh: sha256:b2399fdead4160e57db24e37a6cf0839da1695a4f577e194735189db8d0972c8
+    .agents/skills/orchestrate-epic/scripts/testdata/fake-gh.sh: sha256:eb179296a4bc102a7b575fdfac70b197369e582bf895365f29ad4884b2c4c088
     .agents/skills/orchestrate-epic/scripts/testdata/fake-github-write.jq: sha256:a2e729e937cb3b5a23c3f09b8efc79343969790aedb05f33ab25837eb95190f8
     .agents/skills/orchestrate-epic/scripts/testdata/fake-github.jq: sha256:16f45a9f3a718296299d330f1b6482097e7fc8db175fb67d9d839b65b53a8e91
-    .agents/skills/pick-next/SKILL.md: sha256:c11c5a1f4ee9032f39b0f98f8cebbd2cbfeb9817fc63036dd52527b05cdacfc6
+    .agents/skills/pick-next/SKILL.md: sha256:10c7125b19a8e90d01da36ce02642624264f0d52f3f716fffd6f64843443eae5
     .agents/skills/pick-next/scripts/pick-discussions.graphql: sha256:181769731b55397814a7927b0c4f2f7d616721450515726fdde2cd7e4d627b73
     .agents/skills/pick-next/scripts/pick-issues.graphql: sha256:bf2a0acedde8438f5f9b58c5306fe20d2c43e929b399ef24288271593483121d
     .agents/skills/pick-next/scripts/pick-prs.graphql: sha256:f6cf46cc76175dd5a9bcbba5c56733ff26b23485d874ae789175dfc82e4b4f50
     .agents/skills/pick-next/scripts/pick.jq: sha256:bae6e39ec60e30d4b005c04696ec66bc7c192704dd83b6fa0e058ce6d1b8f54a
     .agents/skills/pick-next/scripts/pick.sh: sha256:8b01ee58d01bc02f636eb447c56d4195abe54932677187d65c43a376e28a2aaf
     .agents/skills/pick-next/scripts/test-pick.bats: sha256:f4d2019348643133a6d0af30727be47471a1319248185a3dffeddc9a59a4ffae
-    .agents/skills/pr-doc-review-pe/SKILL.md: sha256:2349a00ce69ff098dc350b717c6743bfa4c1887097e4f90708c7e26d5f21865c
+    .agents/skills/pr-doc-review-pe/SKILL.md: sha256:ea654d4a90957c855a64cc9d23227a30c7ed7d1d5c4702c08967100a6d1d8478
     .agents/skills/pr-doc-review-pe/scripts/pr-review-pe-identify-pr.sh: sha256:845dc1c54f113ce9bf1ec1e6f1366398e54f40193965f6d5bf6986458fc3a63b
     .agents/skills/pr-owner/SKILL.md: sha256:5648434a5e651082229a902df6b689a2aeed1929d3d46e3877d25e4008fe5299
+    .agents/skills/pr-owner/agents/openai.yaml: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
     .agents/skills/pr-review-pe/SKILL.md: sha256:dce23e667df87f9aad362dec9c811c6c11998f43a5a6e95988f97951d04fd6bb
     .agents/skills/pr-review-pe/references/ai-specific-risks.md: sha256:dc842fc0dce7d7636e93724f2e2d9d3fa37d2ff82f1470f9a0651fb7328f2fe2
     .agents/skills/pr-review-pe/references/existing-pattern-matching.md: sha256:a07ef21da8d1fe50b9eb0116530ba45a184f7d36d2fa8b613c0a2df402b2c8c8
@@ -559,49 +498,16 @@ dependencies:
     .agents/skills/pr-review-pe/references/specialist-restart.md: sha256:00b59c07ca7fb76588dc2da230abc68fd9cb99b4cc75b266bb156c59198ac228
     .agents/skills/pr-review-pe/scripts/pr-review-pe-identify-pr.sh: sha256:845dc1c54f113ce9bf1ec1e6f1366398e54f40193965f6d5bf6986458fc3a63b
     .agents/skills/pr-verify/SKILL.md: sha256:5f01da6c7be59cb108ad8099f7db362a5c62ddb15901b33fb5a7c59f0eef79be
-    .agents/skills/research-transfer-checker/SKILL.md: sha256:27e109eda32552c4caa39a564aaf3508780e025e1a6f06bdae80b7df94d3ef1a
-    .agents/skills/research-transfer-checker/agents/openai.yaml: sha256:c4c49760cf80af759eb1cea4994a0b9e1ed530efdb015a2f2ba7323bc135bbad
-    .agents/skills/research-transfer-checker/evals/01-direct-support.md: sha256:94726ba33d6b701fad62af359f824301f5a9d16c6567a09bef15b3dbf0a0dbe3
-    .agents/skills/research-transfer-checker/evals/02-abstract-only-access.md: sha256:5828564f355b488c9e862019e30c15c0c261dfc8f33f41446d3763a571b346e4
-    .agents/skills/research-transfer-checker/evals/03-observational-to-causal.md: sha256:ba080b38f2b7eb1c8be90300785f985f9b21f97fc68d14b95ff9a9d88e15bb09
-    .agents/skills/research-transfer-checker/evals/04-animal-to-human.md: sha256:e17675cb25c0532f7b3476a54750d4f1373a2ff12db4d43feecf84922c4efc70
-    .agents/skills/research-transfer-checker/evals/05-group-to-individual.md: sha256:29ab954c31f05530c0929b95e0bfd56757f812af2ee930b034ffb00fc933f7c6
-    .agents/skills/research-transfer-checker/evals/06-surrogate-marker-to-outcome.md: sha256:85ded21b19dda01f3afdba9c0a0b9e6e4bf0407dd9a8da050f63fb4513a3aa6b
-    .agents/skills/research-transfer-checker/evals/07-past-study-to-present.md: sha256:2e6b595ee926a5afe50dea3c542aceddb5353f310e3048f669e20c004e7d3f67
-    .agents/skills/research-transfer-checker/evals/08-cross-cultural-transfer.md: sha256:9bebb2285cb2c5bd20659be70d50f418b0cc98c43d8ef16a24b097b9500b2fb0
-    .agents/skills/research-transfer-checker/evals/09-descriptive-to-mandate.md: sha256:02e9e9666645115bf94b8872a0665aabf4933b82dc00d10a11940d5f403dcd8b
-    .agents/skills/research-transfer-checker/evals/10-bridging-evidence-justified.md: sha256:cf021399d6ae2c68474aec1a77a5f06a57cef62a27b6dca178ffb69eaac05301
-    .agents/skills/research-transfer-checker/evals/11-mixed-evidence.md: sha256:5cf38ce68375b7e79a91b12e3534a874ff4f23eaa4ca6a5e627434ec81806437
-    .agents/skills/research-transfer-checker/evals/12-correction-retraction.md: sha256:49195b708604a7a40ab70400a00eaa7fdc64a7a1b85d78a8cf9b74cd921d8f75
-    .agents/skills/research-transfer-checker/evals/RESULTS.md: sha256:518b78b00fb88d27f4ec22bd207a914f4336b32ebe997e404f78ef0fda725def
-    .agents/skills/research-transfer-checker/evals/results/01-direct-support.md: sha256:b0ed7a276d18082a6697f104427f0be11a78a9c6a916c0cfa737c7fc088f22cf
-    .agents/skills/research-transfer-checker/evals/results/02-abstract-only-access.md: sha256:940aab7a4a6fd3d6f9deff074f717b016fb3798e1947147d1c0190191a54aa72
-    .agents/skills/research-transfer-checker/evals/results/03-observational-to-causal.md: sha256:30da5c4df7948f358b78a0a5bd4c2ff84f9db93782dda7d73fc02336c2246875
-    .agents/skills/research-transfer-checker/evals/results/04-animal-to-human.md: sha256:19174fe2b56f8d684d5784ce9ae27e527c4091d7b6b1fd0c921e866270d6ad6a
-    .agents/skills/research-transfer-checker/evals/results/05-group-to-individual.md: sha256:6408334ef4611faeeb9ef7d556f87e86d063f6367ee102be2639f2879bd258e3
-    .agents/skills/research-transfer-checker/evals/results/06-surrogate-marker-to-outcome.md: sha256:7c6b549c087982652f48862b7152678c8b2422b640d5da51843fece100ca907a
-    .agents/skills/research-transfer-checker/evals/results/07-past-study-to-present.md: sha256:ba27803fa3b3cee9e02b7ef2a0aef0eb871de5cf09a07e638e8f4a03554ae5a0
-    .agents/skills/research-transfer-checker/evals/results/08-cross-cultural-transfer.md: sha256:0b6404d0eca5f21ff31984d5393f439809c17c1d8f1d3d61f0442ded58db18bf
-    .agents/skills/research-transfer-checker/evals/results/09-descriptive-to-mandate.md: sha256:41acda16001dbb813fa6c162ab2948c13213c42edb9b2a95d4976bbd283a1046
-    .agents/skills/research-transfer-checker/evals/results/10-bridging-evidence-justified.md: sha256:9144b8d46af5d7af77082b21bb16c7927fbaf03bb242caab315aa4be9ad1cdcc
-    .agents/skills/research-transfer-checker/evals/results/11-mixed-evidence.md: sha256:47a2f0e44a4c983e7d484260cc1aefba89bbb4cf684df5f895d2cb0797818044
-    .agents/skills/research-transfer-checker/evals/results/12-correction-retraction.md: sha256:0a2957ccb0e0657358fa4fce6666781e0e584aea6c162810c1ae1a4c779bc37b
-    .agents/skills/research-transfer-checker/references/bridging-search.md: sha256:c9e20f87234cea72b57562d5453bc9564175baee1d90ed3f45503d2d3a14c304
-    .agents/skills/research-transfer-checker/references/decision-rubric.md: sha256:ae95a836ffcfa3f696a61f66dfff73ea1c4c583dd8f40ee606f1d202fe373ff1
-    .agents/skills/research-transfer-checker/references/harm-assessment.md: sha256:ff2dcecce4dd21e1d2cd77ca44764837ac517af5f097cdca3f3bd226ab64a0ef
-    .agents/skills/research-transfer-checker/references/standards-map.md: sha256:4836f7799c1c6db77a0705e2581ad4830ade0ea06288ff08734749aa629359f1
-    .agents/skills/shakedown/SKILL.md: sha256:a7331b83d543f587e701ef8917ee130842187a7549ac71e98c703e793a8fe225
+    .agents/skills/pr-verify/agents/openai.yaml: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
+    .agents/skills/shakedown/SKILL.md: sha256:81a1a10ac6937d85d2cab78843fd8e62eaabad7af46d945776e787acd06c1d9a
     .agents/skills/shakedown/references/rebaseline.md: sha256:37fce2e094f91cc001f37c294ee9b51c51528ae631fb00b3bdbd9c3310bf7e3a
     .agents/skills/shakedown/references/template.md: sha256:e7511e302b1a5913575be280eaba943ccfd3acd73e8835079a1a0afabac264e5
     .agents/skills/shakedown/references/viewpoints.md: sha256:1076b156e4ee0a4d0b84637b45ff80506ed40e3026d671e92d7a198eeb97a141
     .agents/skills/skill-cleaner/SKILL.md: sha256:3028fa526dbb5769c8f81dcf2b223a7c0a5d3badddacd551d73604d6afd8161f
     .agents/skills/steering-audit/SKILL.md: sha256:c5e3cca53cc0fb89ea5412868c2fda1918704a7f885856c448858b34d216d629
     .agents/skills/steering-audit/agents/openai.yaml: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
-    .agents/skills/tear-down/SKILL.md: sha256:8a6ca596a6f23a2e8eb32dba6e3fa633474db545cb69afad56e6a634ecb0d52c
-    .agents/skills/why-man/SKILL.md: sha256:d5fd24e7ffc3542982c8f3eba4ce0d315327a988073ed2f77422fdbdcd6b1b77
-    .agents/skills/write-researched-document/SKILL.md: sha256:c52561c4b94df76640ac2b05d128eaeae2679eeb3cf398eb9a4c0f3eb9676be7
-    .agents/skills/write-researched-document/agents/openai.yaml: sha256:1421516b58df14e15896071d2bb116367f59a3186ba7a66e502ecd92e75d6a6d
-    .agents/skills/write-researched-document/references/evidence-workflow.md: sha256:51de21573a16a72db453f79debd7fdc9facfc8e6fc1cc26ecf6e090a30e1e0a5
+    .agents/skills/tear-down/SKILL.md: sha256:a9fe728d256eef32bcbb0b47c24a401cbb25b11d837ad80b9ae3b49f0983c293
+    .agents/skills/why-man/SKILL.md: sha256:761ade2d3fd6d54bdd2b3a8cb702689f5f1b0855d93788f1c06b3a9baab3c41b
     .codex/agents/pr-owner.toml: sha256:b80aad0a77e8385821dd09dbea47939a7879d4e6a4c2ee46ae963bdaec14529a
     .codex/agents/pr-verify.toml: sha256:14a3708c123768e91db120b8735f97749e9cc9ec5642188b746c443f5189a4cf
     .config/opencode/agents/pr-owner.md: sha256:aaccc50f4557632fc4a441bdd96b2a4855acdd2081444da3759e513461f56532
@@ -609,19 +515,19 @@ dependencies:
     .config/opencode/skills/commit/SKILL.md: sha256:fc3bae7a6c61acd90e36b00794901280a10dd757adfa604f17af4cf44b209970
     .config/opencode/skills/commit/references/issue-footer.md: sha256:d0de99850abd7e584461c3cd562a9d4dd41ebce8e1248a34160cde3d0f0589bb
     .config/opencode/skills/commit/references/message-examples.md: sha256:798da812f9886b7208bebcef7c427cd1cf5ea1116c0b307cb98fb93eec4e1979
-    .config/opencode/skills/create-github-issues/SKILL.md: sha256:24dd3c61f4f72099885a630c9d3ae94ad3591ed457239cb5937030d4753e875b
-    .config/opencode/skills/create-github-issues/references/bodies.md: sha256:18b05e8ce893e30e7c05d86eb3c041cd47ca048bb21f30f618ea574a575cb63b
+    .config/opencode/skills/create-github-issues/SKILL.md: sha256:4e5b1a51dd3c75c8b1e0cc6602a6adaa609d2c4112436b44b3b5df9bd3ba0fca
+    .config/opencode/skills/create-github-issues/references/bodies.md: sha256:e3df77183278a9d1760dbe03e0f83cd3f2d90e7e1cb393e7a817c592ee483d0c
     .config/opencode/skills/create-github-issues/references/change-units.md: sha256:bf091076052add0ee3f864793a4b60a173ca26daa152745a8f59fa6d030301e9
     .config/opencode/skills/create-github-issues/references/commands.md: sha256:e23ee67625df91020cd2345b8b087de4bd425d4baba365a2ab8447811c71fe7c
     .config/opencode/skills/create-github-issues/references/question.md: sha256:f0d7abf6b12015327c35946e27f904af1c0cecd725455442ca85a80911842d3a
     .config/opencode/skills/create-github-issues/references/structure.md: sha256:804e62116a36c4fd92a6e126d68c0cbaf97d49c4b25144e7c2177b0410403fa4
     .config/opencode/skills/create-github-issues/references/templates.en.md: sha256:215162ef683eb9c6a4784c0c1c9e577b310e312d111c7eb2ae06b8c3752d3732
     .config/opencode/skills/create-github-issues/references/templates.ja.md: sha256:bb1b49b3b1be521d1709371158b3f96d6adf8e8e1f89d380eaf5e87dd2f72f8e
-    .config/opencode/skills/create-pr/SKILL.md: sha256:d8905e10d99f5c4f59391519b57ff80d620170e15ffe8167b358434499e97208
+    .config/opencode/skills/create-pr/SKILL.md: sha256:af8df8eb40c20338a38bc6051569efaf0d3bfa62474a9ac8fd36d3febd511fe8
     .config/opencode/skills/create-pr/references/description.md: sha256:f732c996a18c8aa39622851dcf566a33c0392cb0ea3253b449f962d6ee745b3f
     .config/opencode/skills/create-pr/references/result.md: sha256:a9e52e969a9eee8745d5655c1b5714f3bd99c19f2535c4f40497176afd253eff
     .config/opencode/skills/create-pr/scripts/create-linked-pr.sh: sha256:11ec31a86e529766fe83134f7c25f0383223290636f88bcf09d364e028b04045
-    .config/opencode/skills/create-pr/scripts/describe.sh: sha256:8c55a55864684d9dbbf24cc6bb9d907a3d501f3cc9f8694c1b1f628e9ff66607
+    .config/opencode/skills/create-pr/scripts/describe.sh: sha256:cc8ab388cf2c94302dccfec182dce31fc24c11a27781fafcb79cf74aaaccb8cf
     .config/opencode/skills/create-pr/scripts/issue-refs.sh: sha256:18d32c12e45ac35f6cfe171b5a8ad74ed7e766b70ba7f92423bf8312aacd1aaa
     .config/opencode/skills/create-pr/scripts/lang.sh: sha256:2bce3cda52901d4d50766aa17e347387ae6921005a705d1499a4cc051b5b1217
     .config/opencode/skills/create-pr/scripts/pr-context.sh: sha256:42c2cf63ecfc176398a75f277b272bed10fa4d9ec570e4f7e24225674a1acc25
@@ -639,12 +545,12 @@ dependencies:
     .config/opencode/skills/diagram-conventions/references/sequence.md: sha256:35114d1c5890af13a22ee5cc2ffa77b37db2f2d99452fd1131f03a573613f851
     .config/opencode/skills/diagram-conventions/references/state.md: sha256:7b257943ff1bc79f3c6170b63f696dfe60d3500d0a5baa4fe8ba5fa747bd9b4b
     .config/opencode/skills/domain-master/SKILL.md: sha256:0de52141a458a198feccdbc5cf9478a35a6c7df73c481174d2203901a53c024c
-    .config/opencode/skills/extreme-compact/SKILL.md: sha256:c2ecebc1b4902d365e478d722f110cb7c7dea19d47c2fed7cdc270cb6c42552b
-    .config/opencode/skills/frame-problem/SKILL.md: sha256:cbfb9aaba3b4a15b9d60a993a0639b05b8ef6e91d46adbf162163724b66e37a0
+    .config/opencode/skills/extreme-compact/SKILL.md: sha256:5d92367fa0535efb8cf4e5e245afc8b141f04aa43c7e00f8dc2802e258dcaa1f
+    .config/opencode/skills/frame-problem/SKILL.md: sha256:7482f3b551d3f42bc3468fb8adcaaf5b17bcd71ca4109f5b12b8fb49a0c0b5f7
     .config/opencode/skills/frame-problem/references/question-loop.md: sha256:8e432ef20504effa9b92c83674110a3c793f3ddeb551afcf7635be740ce6d4ec
     .config/opencode/skills/frame-problem/references/template.md: sha256:e7beb1dbc4f13862166550f429c0bbc6d05dbf59f69f80edc672a34c911000ee
-    .config/opencode/skills/implement/SKILL.md: sha256:503c16daf76e857828d7567e74eb9262c2a158d1efbd61beaba4c2270d7b56dc
-    .config/opencode/skills/implement/references/evidence.md: sha256:32c5fa52e533e455d838566f6dda5118f757e36dc17bec315c53e60a2ea6d061
+    .config/opencode/skills/implement/SKILL.md: sha256:ee92b359b7a2ea64926f55d5d896e2d88833f7d7acfd7fa4b2acf1de8aa56b3d
+    .config/opencode/skills/implement/references/evidence.md: sha256:eb0ead1907d72fde66d5c25ed97a88f126ac315bca8e8a76926b1c1cb8a8b01f
     .config/opencode/skills/implement/references/playbooks/behavior-change.md: sha256:d46cd7aca956fa25e7a11b2ff553dbc4f6c6b24c4ba8d53da11e6718070cc17e
     .config/opencode/skills/implement/references/playbooks/bug-fix.md: sha256:dc76a41c3c08598a84deeff0418ae1c7cdc460f00cdaca2b023b1816369bd7cf
     .config/opencode/skills/implement/references/playbooks/refactor.md: sha256:26f41e26844874d47f29e3732d9bf9d298fc5b443ccad250e95a71cc5703e63c
@@ -653,10 +559,10 @@ dependencies:
     .config/opencode/skills/implement/references/test-policy.md: sha256:519f4e8bcd3da8660676cb72d5574ef1a9930c726eff99f81cfe764333e43982
     .config/opencode/skills/implement/references/worktree.md: sha256:23a6cfb891e59337fd1dbf242c4bf02c96e4722c47ac0818d4b5278945cad317
     .config/opencode/skills/implement/scripts/lock.sh: sha256:874e6689c8bc2f91d4e39979d570c679a4f62e688a170a7a2e3041cb580c8510
-    .config/opencode/skills/implement/scripts/self-review.sh: sha256:f85303fa8ade5e0ffb8d81dc06556063eaa766474a492978111e6dac18cbddc9
+    .config/opencode/skills/implement/scripts/self-review.sh: sha256:a1f3d92d0daace4c05e4cdd4783bf2bcec1296f7e091bd74c7b39a77b610325b
     .config/opencode/skills/implement/scripts/test-lock.bats: sha256:0c50119ff54b552cfa2950d4ee28df3c8bc3988bf804b3023b445ed379e38b5a
     .config/opencode/skills/implement/scripts/test-self-review.bats: sha256:2a0fd2b0085455f2b0449f58878780b80f3f353454cec9770ba06d82dc92abd2
-    .config/opencode/skills/locate/SKILL.md: sha256:884340d74626747fc8f802b68e73412bbf6741facb561354559f00d051de51ef
+    .config/opencode/skills/locate/SKILL.md: sha256:868b3a5f9a3ce80deaa758367bbcd4529c14973f2317bff0da1aa4b53bdafd2c
     .config/opencode/skills/locate/scripts/locate.sh: sha256:5d933b8bff970e1312f279eafaa1cbb213909ca7475d6f580e25543d76b6a107
     .config/opencode/skills/locate/scripts/pr-state.sh: sha256:7a959f29beb6df4f0b5386f23b52203456b32dc5eafd39c89ff5231da407fe1a
     .config/opencode/skills/locate/scripts/test-locate.bats: sha256:c4b6220214de3b88c3209f604128f8481d4f383ab9c172ba998cc0c8732a3a20
@@ -665,10 +571,11 @@ dependencies:
     .config/opencode/skills/manage-design-documents/references/adr.md: sha256:d56595684fc701f848f8ad855b1b93e25f9327ae92f77e774474f48ebd1dfee5
     .config/opencode/skills/manage-design-documents/references/design-doc.md: sha256:6b3ff3bedf5d083776f3ef8fe224b0bbbd04aca502ca989ca0ce4731c17a396f
     .config/opencode/skills/orchestrate-epic/SKILL.md: sha256:f76427482b15d613ac2e525933c069f5e78a8d3ea2bf5b67359e843074555d96
+    .config/opencode/skills/orchestrate-epic/agents/openai.yaml: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
     .config/opencode/skills/orchestrate-epic/scripts/oe: sha256:699ef679d5de0507ae53beaeb5bf30563fe55da4e368f46100fb2bcfbd3b3c23
     .config/opencode/skills/orchestrate-epic/scripts/oe-bot.sh: sha256:6189be68b4ec5325b77f896901e58ed5c49106ad518647dcdf470195391a6a9f
     .config/opencode/skills/orchestrate-epic/scripts/oe-brief.sh: sha256:596a31e5ae2e2e6521847ff228408e630ccf9d1bade8765eac725134975a9d8c
-    .config/opencode/skills/orchestrate-epic/scripts/oe-config.sh: sha256:523a6be173d953da9c84306b1cb65373314ebf4d32c958bff6be75b96ce20129
+    .config/opencode/skills/orchestrate-epic/scripts/oe-config.sh: sha256:0b6a0b13a9c0e09918c9e5efad1f9715dd5133791eec6a2fb9da67307ae9d65c
     .config/opencode/skills/orchestrate-epic/scripts/oe-hold.sh: sha256:c8c8a30540aea8ae938eae6f123b25dcf25f0222a506d5c98487ebd3f6a53cec
     .config/opencode/skills/orchestrate-epic/scripts/oe-question.jq: sha256:d70086fdf21be8cccd70526b86fe788de5d98969aad91dfccc4b2e685b72ea19
     .config/opencode/skills/orchestrate-epic/scripts/oe-question.sh: sha256:12893fc3fe8ea7317d812a9fdd73e20889a07da656e0eefbc3069528541d9777
@@ -678,36 +585,37 @@ dependencies:
     .config/opencode/skills/orchestrate-epic/scripts/oe-ready-head.graphql: sha256:e471a0779b7617e6ad9460f4f9779e35976a86143a04e7511d399dafa58eb705
     .config/opencode/skills/orchestrate-epic/scripts/oe-ready-issue.graphql: sha256:ba6727303a9b3438cefcd677b201828e1157413074a96b6ec961cf958a9c512f
     .config/opencode/skills/orchestrate-epic/scripts/oe-ready.jq: sha256:114e8300cb040e13d8b23532f1210e9019c860425a2db873397806e3ec6683ee
-    .config/opencode/skills/orchestrate-epic/scripts/oe-ready.sh: sha256:f7c991f70edfaab241583a9b12f3daaa51d684ab932e43bf2103afa33d68dda7
+    .config/opencode/skills/orchestrate-epic/scripts/oe-ready.sh: sha256:f4240696d769e037d23fb6f06ef29094d900680ab22322f2ba051952edef9f45
     .config/opencode/skills/orchestrate-epic/scripts/oe-records.jq: sha256:dbfd58f651d1b3eee90e944d62e60c7351a7ef6f64ce7642ce4b4c8d6ac411e8
     .config/opencode/skills/orchestrate-epic/scripts/oe-start.sh: sha256:0ec1629362c97067ed077e9495df0acf741d0722453c170e99c70d0910fae885
     .config/opencode/skills/orchestrate-epic/scripts/oe-verdict.sh: sha256:d9faa0de5f6b7ad7f1f7f7f7b1f7787a21c52ed2ed153fe3b29d65f85755c950
-    .config/opencode/skills/orchestrate-epic/scripts/oe-wait.sh: sha256:7945b50c98a01a0afcea98648ca90803a560a00fc72257bb7800edff4e3f18ec
+    .config/opencode/skills/orchestrate-epic/scripts/oe-wait.sh: sha256:73f02bfa24cbb56e297972147d6fc83c40b9dfcd500142de3ba94127b9c88e5c
     .config/opencode/skills/orchestrate-epic/scripts/oe-worktree.sh: sha256:931b788704c3a0d8f5f3ae22c1f9d1cc2bde6aa79460b47ebc79ae7007754ecd
-    .config/opencode/skills/orchestrate-epic/scripts/test-oe-answer.bats: sha256:ebbc827b478910652706ec31e0f170f742efceaac3559e22c3b19a0dcac6a38d
+    .config/opencode/skills/orchestrate-epic/scripts/test-oe-answer.bats: sha256:802c060ce9d6940ea64784765aa398a6cab3b5583a7cca8c69e7f32789a7ce23
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-bot.bats: sha256:317c8417ed14ec310f3485fd010a7d37f0d1cde8669c6f915c4634f798c59c79
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-brief.bats: sha256:24356bac18cb289d914ff9f483a57770bbeea50f431cdd3ae509d0bc8834be8a
-    .config/opencode/skills/orchestrate-epic/scripts/test-oe-hold.bats: sha256:6187190ed5e1f97a449e6bf92433c53860fc270fc11abaa6452083b84e47f21d
-    .config/opencode/skills/orchestrate-epic/scripts/test-oe-question.bats: sha256:2a2019bbf856c3754f4e151ff063176d289c745fa9e1dd1f9b74712afc02a28c
-    .config/opencode/skills/orchestrate-epic/scripts/test-oe-ready.bats: sha256:8a53fd9e7eb930f4f8feca5c563bd52ad2510f1e02815e2dede199b88de519c5
+    .config/opencode/skills/orchestrate-epic/scripts/test-oe-hold.bats: sha256:abc27aad46708ae12d1b97723856c3be13e16eccd2ce1689d55d898b9ec7987e
+    .config/opencode/skills/orchestrate-epic/scripts/test-oe-question.bats: sha256:4f8194e90dc182f99d9878bfc6e246de73717ddc419bd9c0aac71344cc8a02ec
+    .config/opencode/skills/orchestrate-epic/scripts/test-oe-ready.bats: sha256:ed47f62ce7d158b402b91752b9b80c330070491c84caa472f720c570b896aa1d
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-start.bats: sha256:5b4c21538e2b4202638f9f05e7813da92484af62c6e708e8daeb8b408b586108
-    .config/opencode/skills/orchestrate-epic/scripts/test-oe-verdict.bats: sha256:acbc962c809f2fd9af58435f5d5d64f9f647bf16e21f195a7844f4fbf08a9ef0
-    .config/opencode/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:45c0f9188142bc9ddf6b084d523a8e393f12fbc99498e3f32959d2e50e3afadf
+    .config/opencode/skills/orchestrate-epic/scripts/test-oe-verdict.bats: sha256:6102006bd334129f82777d75a6156d5f968f9d4c3801e93e51540a1d65daa114
+    .config/opencode/skills/orchestrate-epic/scripts/test-oe-wait.bats: sha256:492985e9bdc91ab1f03e13b1f34c236efbf7af845b74ff783e8e12aab0f6fe3c
     .config/opencode/skills/orchestrate-epic/scripts/test-oe-worktree.bats: sha256:59893c4415ac02f07e7a4ea37b3432925cfaad9d0efd914c93a0c81a7373351a
     .config/opencode/skills/orchestrate-epic/scripts/test-oe.bats: sha256:16e9af472f1793a4b229d3747cb68ff83daceef4414ce56fff07df64a3f90a59
-    .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-gh.sh: sha256:b2399fdead4160e57db24e37a6cf0839da1695a4f577e194735189db8d0972c8
+    .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-gh.sh: sha256:eb179296a4bc102a7b575fdfac70b197369e582bf895365f29ad4884b2c4c088
     .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-github-write.jq: sha256:a2e729e937cb3b5a23c3f09b8efc79343969790aedb05f33ab25837eb95190f8
     .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-github.jq: sha256:16f45a9f3a718296299d330f1b6482097e7fc8db175fb67d9d839b65b53a8e91
-    .config/opencode/skills/pick-next/SKILL.md: sha256:c11c5a1f4ee9032f39b0f98f8cebbd2cbfeb9817fc63036dd52527b05cdacfc6
+    .config/opencode/skills/pick-next/SKILL.md: sha256:10c7125b19a8e90d01da36ce02642624264f0d52f3f716fffd6f64843443eae5
     .config/opencode/skills/pick-next/scripts/pick-discussions.graphql: sha256:181769731b55397814a7927b0c4f2f7d616721450515726fdde2cd7e4d627b73
     .config/opencode/skills/pick-next/scripts/pick-issues.graphql: sha256:bf2a0acedde8438f5f9b58c5306fe20d2c43e929b399ef24288271593483121d
     .config/opencode/skills/pick-next/scripts/pick-prs.graphql: sha256:f6cf46cc76175dd5a9bcbba5c56733ff26b23485d874ae789175dfc82e4b4f50
     .config/opencode/skills/pick-next/scripts/pick.jq: sha256:bae6e39ec60e30d4b005c04696ec66bc7c192704dd83b6fa0e058ce6d1b8f54a
     .config/opencode/skills/pick-next/scripts/pick.sh: sha256:8b01ee58d01bc02f636eb447c56d4195abe54932677187d65c43a376e28a2aaf
     .config/opencode/skills/pick-next/scripts/test-pick.bats: sha256:f4d2019348643133a6d0af30727be47471a1319248185a3dffeddc9a59a4ffae
-    .config/opencode/skills/pr-doc-review-pe/SKILL.md: sha256:2349a00ce69ff098dc350b717c6743bfa4c1887097e4f90708c7e26d5f21865c
+    .config/opencode/skills/pr-doc-review-pe/SKILL.md: sha256:ea654d4a90957c855a64cc9d23227a30c7ed7d1d5c4702c08967100a6d1d8478
     .config/opencode/skills/pr-doc-review-pe/scripts/pr-review-pe-identify-pr.sh: sha256:845dc1c54f113ce9bf1ec1e6f1366398e54f40193965f6d5bf6986458fc3a63b
     .config/opencode/skills/pr-owner/SKILL.md: sha256:5648434a5e651082229a902df6b689a2aeed1929d3d46e3877d25e4008fe5299
+    .config/opencode/skills/pr-owner/agents/openai.yaml: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
     .config/opencode/skills/pr-review-pe/SKILL.md: sha256:dce23e667df87f9aad362dec9c811c6c11998f43a5a6e95988f97951d04fd6bb
     .config/opencode/skills/pr-review-pe/references/ai-specific-risks.md: sha256:dc842fc0dce7d7636e93724f2e2d9d3fa37d2ff82f1470f9a0651fb7328f2fe2
     .config/opencode/skills/pr-review-pe/references/existing-pattern-matching.md: sha256:a07ef21da8d1fe50b9eb0116530ba45a184f7d36d2fa8b613c0a2df402b2c8c8
@@ -715,55 +623,22 @@ dependencies:
     .config/opencode/skills/pr-review-pe/references/specialist-restart.md: sha256:00b59c07ca7fb76588dc2da230abc68fd9cb99b4cc75b266bb156c59198ac228
     .config/opencode/skills/pr-review-pe/scripts/pr-review-pe-identify-pr.sh: sha256:845dc1c54f113ce9bf1ec1e6f1366398e54f40193965f6d5bf6986458fc3a63b
     .config/opencode/skills/pr-verify/SKILL.md: sha256:5f01da6c7be59cb108ad8099f7db362a5c62ddb15901b33fb5a7c59f0eef79be
-    .config/opencode/skills/research-transfer-checker/SKILL.md: sha256:27e109eda32552c4caa39a564aaf3508780e025e1a6f06bdae80b7df94d3ef1a
-    .config/opencode/skills/research-transfer-checker/agents/openai.yaml: sha256:c4c49760cf80af759eb1cea4994a0b9e1ed530efdb015a2f2ba7323bc135bbad
-    .config/opencode/skills/research-transfer-checker/evals/01-direct-support.md: sha256:94726ba33d6b701fad62af359f824301f5a9d16c6567a09bef15b3dbf0a0dbe3
-    .config/opencode/skills/research-transfer-checker/evals/02-abstract-only-access.md: sha256:5828564f355b488c9e862019e30c15c0c261dfc8f33f41446d3763a571b346e4
-    .config/opencode/skills/research-transfer-checker/evals/03-observational-to-causal.md: sha256:ba080b38f2b7eb1c8be90300785f985f9b21f97fc68d14b95ff9a9d88e15bb09
-    .config/opencode/skills/research-transfer-checker/evals/04-animal-to-human.md: sha256:e17675cb25c0532f7b3476a54750d4f1373a2ff12db4d43feecf84922c4efc70
-    .config/opencode/skills/research-transfer-checker/evals/05-group-to-individual.md: sha256:29ab954c31f05530c0929b95e0bfd56757f812af2ee930b034ffb00fc933f7c6
-    .config/opencode/skills/research-transfer-checker/evals/06-surrogate-marker-to-outcome.md: sha256:85ded21b19dda01f3afdba9c0a0b9e6e4bf0407dd9a8da050f63fb4513a3aa6b
-    .config/opencode/skills/research-transfer-checker/evals/07-past-study-to-present.md: sha256:2e6b595ee926a5afe50dea3c542aceddb5353f310e3048f669e20c004e7d3f67
-    .config/opencode/skills/research-transfer-checker/evals/08-cross-cultural-transfer.md: sha256:9bebb2285cb2c5bd20659be70d50f418b0cc98c43d8ef16a24b097b9500b2fb0
-    .config/opencode/skills/research-transfer-checker/evals/09-descriptive-to-mandate.md: sha256:02e9e9666645115bf94b8872a0665aabf4933b82dc00d10a11940d5f403dcd8b
-    .config/opencode/skills/research-transfer-checker/evals/10-bridging-evidence-justified.md: sha256:cf021399d6ae2c68474aec1a77a5f06a57cef62a27b6dca178ffb69eaac05301
-    .config/opencode/skills/research-transfer-checker/evals/11-mixed-evidence.md: sha256:5cf38ce68375b7e79a91b12e3534a874ff4f23eaa4ca6a5e627434ec81806437
-    .config/opencode/skills/research-transfer-checker/evals/12-correction-retraction.md: sha256:49195b708604a7a40ab70400a00eaa7fdc64a7a1b85d78a8cf9b74cd921d8f75
-    .config/opencode/skills/research-transfer-checker/evals/RESULTS.md: sha256:518b78b00fb88d27f4ec22bd207a914f4336b32ebe997e404f78ef0fda725def
-    .config/opencode/skills/research-transfer-checker/evals/results/01-direct-support.md: sha256:b0ed7a276d18082a6697f104427f0be11a78a9c6a916c0cfa737c7fc088f22cf
-    .config/opencode/skills/research-transfer-checker/evals/results/02-abstract-only-access.md: sha256:940aab7a4a6fd3d6f9deff074f717b016fb3798e1947147d1c0190191a54aa72
-    .config/opencode/skills/research-transfer-checker/evals/results/03-observational-to-causal.md: sha256:30da5c4df7948f358b78a0a5bd4c2ff84f9db93782dda7d73fc02336c2246875
-    .config/opencode/skills/research-transfer-checker/evals/results/04-animal-to-human.md: sha256:19174fe2b56f8d684d5784ce9ae27e527c4091d7b6b1fd0c921e866270d6ad6a
-    .config/opencode/skills/research-transfer-checker/evals/results/05-group-to-individual.md: sha256:6408334ef4611faeeb9ef7d556f87e86d063f6367ee102be2639f2879bd258e3
-    .config/opencode/skills/research-transfer-checker/evals/results/06-surrogate-marker-to-outcome.md: sha256:7c6b549c087982652f48862b7152678c8b2422b640d5da51843fece100ca907a
-    .config/opencode/skills/research-transfer-checker/evals/results/07-past-study-to-present.md: sha256:ba27803fa3b3cee9e02b7ef2a0aef0eb871de5cf09a07e638e8f4a03554ae5a0
-    .config/opencode/skills/research-transfer-checker/evals/results/08-cross-cultural-transfer.md: sha256:0b6404d0eca5f21ff31984d5393f439809c17c1d8f1d3d61f0442ded58db18bf
-    .config/opencode/skills/research-transfer-checker/evals/results/09-descriptive-to-mandate.md: sha256:41acda16001dbb813fa6c162ab2948c13213c42edb9b2a95d4976bbd283a1046
-    .config/opencode/skills/research-transfer-checker/evals/results/10-bridging-evidence-justified.md: sha256:9144b8d46af5d7af77082b21bb16c7927fbaf03bb242caab315aa4be9ad1cdcc
-    .config/opencode/skills/research-transfer-checker/evals/results/11-mixed-evidence.md: sha256:47a2f0e44a4c983e7d484260cc1aefba89bbb4cf684df5f895d2cb0797818044
-    .config/opencode/skills/research-transfer-checker/evals/results/12-correction-retraction.md: sha256:0a2957ccb0e0657358fa4fce6666781e0e584aea6c162810c1ae1a4c779bc37b
-    .config/opencode/skills/research-transfer-checker/references/bridging-search.md: sha256:c9e20f87234cea72b57562d5453bc9564175baee1d90ed3f45503d2d3a14c304
-    .config/opencode/skills/research-transfer-checker/references/decision-rubric.md: sha256:ae95a836ffcfa3f696a61f66dfff73ea1c4c583dd8f40ee606f1d202fe373ff1
-    .config/opencode/skills/research-transfer-checker/references/harm-assessment.md: sha256:ff2dcecce4dd21e1d2cd77ca44764837ac517af5f097cdca3f3bd226ab64a0ef
-    .config/opencode/skills/research-transfer-checker/references/standards-map.md: sha256:4836f7799c1c6db77a0705e2581ad4830ade0ea06288ff08734749aa629359f1
-    .config/opencode/skills/shakedown/SKILL.md: sha256:a7331b83d543f587e701ef8917ee130842187a7549ac71e98c703e793a8fe225
+    .config/opencode/skills/pr-verify/agents/openai.yaml: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
+    .config/opencode/skills/shakedown/SKILL.md: sha256:81a1a10ac6937d85d2cab78843fd8e62eaabad7af46d945776e787acd06c1d9a
     .config/opencode/skills/shakedown/references/rebaseline.md: sha256:37fce2e094f91cc001f37c294ee9b51c51528ae631fb00b3bdbd9c3310bf7e3a
     .config/opencode/skills/shakedown/references/template.md: sha256:e7511e302b1a5913575be280eaba943ccfd3acd73e8835079a1a0afabac264e5
     .config/opencode/skills/shakedown/references/viewpoints.md: sha256:1076b156e4ee0a4d0b84637b45ff80506ed40e3026d671e92d7a198eeb97a141
     .config/opencode/skills/skill-cleaner/SKILL.md: sha256:3028fa526dbb5769c8f81dcf2b223a7c0a5d3badddacd551d73604d6afd8161f
     .config/opencode/skills/steering-audit/SKILL.md: sha256:c5e3cca53cc0fb89ea5412868c2fda1918704a7f885856c448858b34d216d629
     .config/opencode/skills/steering-audit/agents/openai.yaml: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
-    .config/opencode/skills/tear-down/SKILL.md: sha256:8a6ca596a6f23a2e8eb32dba6e3fa633474db545cb69afad56e6a634ecb0d52c
-    .config/opencode/skills/why-man/SKILL.md: sha256:d5fd24e7ffc3542982c8f3eba4ce0d315327a988073ed2f77422fdbdcd6b1b77
-    .config/opencode/skills/write-researched-document/SKILL.md: sha256:c52561c4b94df76640ac2b05d128eaeae2679eeb3cf398eb9a4c0f3eb9676be7
-    .config/opencode/skills/write-researched-document/agents/openai.yaml: sha256:1421516b58df14e15896071d2bb116367f59a3186ba7a66e502ecd92e75d6a6d
-    .config/opencode/skills/write-researched-document/references/evidence-workflow.md: sha256:51de21573a16a72db453f79debd7fdc9facfc8e6fc1cc26ecf6e090a30e1e0a5
-  content_hash: sha256:c7a68c299698ca72aa94b3aa8ff6412d513bf2bfa0c478ded0a931938b0cc559
+    .config/opencode/skills/tear-down/SKILL.md: sha256:a9fe728d256eef32bcbb0b47c24a401cbb25b11d837ad80b9ae3b49f0983c293
+    .config/opencode/skills/why-man/SKILL.md: sha256:761ade2d3fd6d54bdd2b3a8cb702689f5f1b0855d93788f1c06b3a9baab3c41b
+  content_hash: sha256:a88735b272cdd2ca18b6825c182fdd8715f383fbf0659e56b99f49b15c857b8f
   declared_license: MIT
   native_plugin:
     name: skills
     root: .agents/plugins/skills
-    fingerprint: sha256:8eed37936dc804a60f9c30962628b624eba76af3cf870933518a7cffeda63234
+    fingerprint: sha256:262e7bb41100b2bb7862440eb0effc329e9cd92b71d4e18c56bc7e66be9ac96d
     marketplace:
       name: apm-u-580620a6
       path: /Users/atsuki.nohira/.agents/plugins
@@ -772,7 +647,7 @@ dependencies:
 - repo_url: mizchi/skills
   name: empirical-prompt-tuning
   host: github.com
-  resolved_commit: ec5c980f0090922ac18ea67c695e4cf04c8d5879
+  resolved_commit: 672a5b282ab736e8cd7468094918b439f82f3918
   resolved_ref: main
   version: unknown
   virtual_path: empirical-prompt-tuning
@@ -802,6 +677,201 @@ dependencies:
     .config/opencode/skills/empirical-prompt-tuning/SKILL-ja.md: sha256:0a58ca4405635a7e79944736b93a8844d0b08b65c95a1f09ad971a3e496e82a7
     .config/opencode/skills/empirical-prompt-tuning/SKILL.md: sha256:252418e7ef022981d2dda2e3ec57fa1c786d30af68c50b7e062edf1d7361b0cb
   content_hash: sha256:57d571a8de0477775db300e3248080a55a996a3bcc7d8ef4ab1fe0bac88a3a0e
+- repo_url: x-asia/kauche-app
+  name: partner
+  host: github.com
+  resolved_commit: c6c2d3046be357653c559332b71397152fafb597
+  resolved_ref: c6c2d3046be357653c559332b71397152fafb597
+  version: 1.0.0
+  virtual_path: .claude/marketplace/plugins/partner
+  is_virtual: true
+  package_type: marketplace_plugin
+  deployed_files:
+  - .agents/skills/consignment-hub
+  - .agents/skills/consignment-hub/SKILL.md
+  - .agents/skills/consignment-hub/references/create-issue.md
+  - .agents/skills/consignment-hub/references/domain-map.md
+  - .agents/skills/consignment-hub/references/investigate.md
+  - .agents/skills/consignment-hub/references/record-decision.md
+  - .agents/skills/consignment-hub/references/source-map.md
+  - .agents/skills/consignment-hub/references/weekly-review.md
+  - .agents/skills/consignment-hub/scripts/check-hub.sh
+  - .agents/skills/consignment-hub/scripts/check-registration.sh
+  - .agents/skills/consignment-hub/scripts/observe-closed.sh
+  - .agents/skills/consignment-hub/scripts/project-read.sh
+  - .agents/skills/consignment-hub/tests/check-hub.test.sh
+  - .agents/skills/consignment-hub/tests/check-registration.test.sh
+  - .agents/skills/consignment-hub/tests/observe-closed.test.sh
+  - .agents/skills/consignment-hub/tests/project-read.test.sh
+  - .agents/skills/cpc-triage
+  - .agents/skills/cpc-triage/SKILL.md
+  - .agents/skills/grant-order-permission
+  - .agents/skills/grant-order-permission/SKILL.md
+  - .agents/skills/logiless-triage
+  - .agents/skills/logiless-triage/SKILL.md
+  - .agents/skills/logiless-triage/references/article-code-match.sql
+  - .agents/skills/qa-regression
+  - .agents/skills/qa-regression/SKILL.md
+  - .agents/skills/qa-regression/assets/sample-product-image.jpeg
+  - .agents/skills/qa-regression/assets/sample-product-upload.csv
+  - .agents/skills/qa-regression/references/checklist.md
+  - .agents/skills/qa-regression/references/deploy-check.md
+  - .agents/skills/qa-regression/references/notion-report.md
+  - .agents/skills/qa-regression/scripts/check-datadog-monitors.sh
+  - .agents/skills/qa-regression/scripts/check-deploy.sh
+  - .agents/skills/qa-regression/scripts/issue-login-link.sh
+  - .agents/skills/qa-regression/scripts/login.sh
+  - .agents/skills/qa-regression/scripts/prepare-product-csv.sh
+  - .agents/skills/qa-regression/tests/.gitignore
+  - .agents/skills/qa-regression/tests/check-deploy.test.sh
+  - .agents/skills/qa-regression/tests/global-setup.ts
+  - .agents/skills/qa-regression/tests/helpers.ts
+  - .agents/skills/qa-regression/tests/package-lock.json
+  - .agents/skills/qa-regression/tests/package.json
+  - .agents/skills/qa-regression/tests/playwright.config.ts
+  - .agents/skills/qa-regression/tests/specs/orders.spec.ts
+  - .agents/skills/qa-regression/tests/specs/products.spec.ts
+  - .agents/skills/qa-regression/tests/specs/release-additions.spec.ts
+  - .agents/skills/qa-regression/tests/specs/sale-suggestions.spec.ts
+  - .agents/skills/water-plus-triage
+  - .agents/skills/water-plus-triage/SKILL.md
+  - .config/opencode/skills/consignment-hub
+  - .config/opencode/skills/consignment-hub/SKILL.md
+  - .config/opencode/skills/consignment-hub/references/create-issue.md
+  - .config/opencode/skills/consignment-hub/references/domain-map.md
+  - .config/opencode/skills/consignment-hub/references/investigate.md
+  - .config/opencode/skills/consignment-hub/references/record-decision.md
+  - .config/opencode/skills/consignment-hub/references/source-map.md
+  - .config/opencode/skills/consignment-hub/references/weekly-review.md
+  - .config/opencode/skills/consignment-hub/scripts/check-hub.sh
+  - .config/opencode/skills/consignment-hub/scripts/check-registration.sh
+  - .config/opencode/skills/consignment-hub/scripts/observe-closed.sh
+  - .config/opencode/skills/consignment-hub/scripts/project-read.sh
+  - .config/opencode/skills/consignment-hub/tests/check-hub.test.sh
+  - .config/opencode/skills/consignment-hub/tests/check-registration.test.sh
+  - .config/opencode/skills/consignment-hub/tests/observe-closed.test.sh
+  - .config/opencode/skills/consignment-hub/tests/project-read.test.sh
+  - .config/opencode/skills/cpc-triage
+  - .config/opencode/skills/cpc-triage/SKILL.md
+  - .config/opencode/skills/grant-order-permission
+  - .config/opencode/skills/grant-order-permission/SKILL.md
+  - .config/opencode/skills/logiless-triage
+  - .config/opencode/skills/logiless-triage/SKILL.md
+  - .config/opencode/skills/logiless-triage/references/article-code-match.sql
+  - .config/opencode/skills/qa-regression
+  - .config/opencode/skills/qa-regression/SKILL.md
+  - .config/opencode/skills/qa-regression/assets/sample-product-image.jpeg
+  - .config/opencode/skills/qa-regression/assets/sample-product-upload.csv
+  - .config/opencode/skills/qa-regression/references/checklist.md
+  - .config/opencode/skills/qa-regression/references/deploy-check.md
+  - .config/opencode/skills/qa-regression/references/notion-report.md
+  - .config/opencode/skills/qa-regression/scripts/check-datadog-monitors.sh
+  - .config/opencode/skills/qa-regression/scripts/check-deploy.sh
+  - .config/opencode/skills/qa-regression/scripts/issue-login-link.sh
+  - .config/opencode/skills/qa-regression/scripts/login.sh
+  - .config/opencode/skills/qa-regression/scripts/prepare-product-csv.sh
+  - .config/opencode/skills/qa-regression/tests/.gitignore
+  - .config/opencode/skills/qa-regression/tests/check-deploy.test.sh
+  - .config/opencode/skills/qa-regression/tests/global-setup.ts
+  - .config/opencode/skills/qa-regression/tests/helpers.ts
+  - .config/opencode/skills/qa-regression/tests/package-lock.json
+  - .config/opencode/skills/qa-regression/tests/package.json
+  - .config/opencode/skills/qa-regression/tests/playwright.config.ts
+  - .config/opencode/skills/qa-regression/tests/specs/orders.spec.ts
+  - .config/opencode/skills/qa-regression/tests/specs/products.spec.ts
+  - .config/opencode/skills/qa-regression/tests/specs/release-additions.spec.ts
+  - .config/opencode/skills/qa-regression/tests/specs/sale-suggestions.spec.ts
+  - .config/opencode/skills/water-plus-triage
+  - .config/opencode/skills/water-plus-triage/SKILL.md
+  deployed_file_hashes:
+    .agents/skills/consignment-hub/SKILL.md: sha256:b59845f636eff0772e17c67df76d8a2f986ca11a63987b5b908a5ac05cda816e
+    .agents/skills/consignment-hub/references/create-issue.md: sha256:01c3ff15f4a6b9f813063bfa1a28e857c4f54362af945d9cc5ca93b809bbcc13
+    .agents/skills/consignment-hub/references/domain-map.md: sha256:1decdc9953f0d9276fd1e16228ff522f1af57e2e8b1c120c8bf8b27a1699ed7c
+    .agents/skills/consignment-hub/references/investigate.md: sha256:2f5349552eab911e49d2b8463458572a16c829d2007afe3b87c608ec4c467195
+    .agents/skills/consignment-hub/references/record-decision.md: sha256:2b95d52462def50673b68e0081620b6dd27b7549485fd76609e196bcbc12cc46
+    .agents/skills/consignment-hub/references/source-map.md: sha256:7881678b72850952fac8aa01819f7253e3e07e458eb219534df4870b591513cc
+    .agents/skills/consignment-hub/references/weekly-review.md: sha256:915e95f7d63df3c960ad6f151bdedea9bedd5f0337795e3d56e28f47ae4c3dd4
+    .agents/skills/consignment-hub/scripts/check-hub.sh: sha256:c8b50a31d84ab481b87aa738ab12ea5c5eb38efc9e7b7fd08be7b9fae10d3635
+    .agents/skills/consignment-hub/scripts/check-registration.sh: sha256:cbc488cc17f8627b74b49d7d9c9ca883bdc9694d03c625708257d07525af528d
+    .agents/skills/consignment-hub/scripts/observe-closed.sh: sha256:6b2b411518fc419b9463bdd0664fb3a882c7084e0a9bbe7f8a94d716dca93030
+    .agents/skills/consignment-hub/scripts/project-read.sh: sha256:8330429328fde11b6646178ffef1a2248bd384d8b96cd19b789c7663d4235656
+    .agents/skills/consignment-hub/tests/check-hub.test.sh: sha256:4bf3d063e2b30044f40dc6566934163d659c41e8780fc8f6fb1cfbc3fc73a7d9
+    .agents/skills/consignment-hub/tests/check-registration.test.sh: sha256:30d1587c38b7ff3abfc886f206321055fe3e21a3ac8423ea3bfa4b6d5be56044
+    .agents/skills/consignment-hub/tests/observe-closed.test.sh: sha256:2b4a0d84b108c99095b9f3fe5e9e5b2b9ca29ff25c46fb1b586c48742b259cc3
+    .agents/skills/consignment-hub/tests/project-read.test.sh: sha256:36d055ce3012fe577bde7f220ea71d268ce29e82a10d94a6380e0ec602b46590
+    .agents/skills/cpc-triage/SKILL.md: sha256:a7d420e4ba3bd2edb24929d613dc052b2fdaab1e47c6e46866c6348a0071d571
+    .agents/skills/grant-order-permission/SKILL.md: sha256:4a92150ccc58378ec68fdb83f68d7fe34b083f1de29f8e28f83293befe9d0eeb
+    .agents/skills/logiless-triage/SKILL.md: sha256:e15ff21efe1acfc3da99438aca5f44cd18cc505c71f46cdba32631d2248f314f
+    .agents/skills/logiless-triage/references/article-code-match.sql: sha256:71dcf6c27fef82413c4588c57d69f19a8824d2023111668cc946fb22d3c67090
+    .agents/skills/qa-regression/SKILL.md: sha256:ee29164119c8774ea8feeea3acac1099556f0cbcb848a811089b74499405cb64
+    .agents/skills/qa-regression/assets/sample-product-image.jpeg: sha256:81f840a32f3dfede7786eca0cadbc7a6a580dfdd55cd5788609d191f3c0fedc5
+    .agents/skills/qa-regression/assets/sample-product-upload.csv: sha256:88785a3d7dd388b6b0b8901ee2c4523e70c4dc3562b1f23b0a8beaa4ca7feedf
+    .agents/skills/qa-regression/references/checklist.md: sha256:38268473742ab5a1d05331df9b0bc5bd885d0b7ab727626fee7271d2e4ad884e
+    .agents/skills/qa-regression/references/deploy-check.md: sha256:2277a4b9d70b47b64ac2036becdf72c115db2dfe834c6e465b95973832ecba1b
+    .agents/skills/qa-regression/references/notion-report.md: sha256:4bfd23a091ace5095e1429d196ed85f7dd2bad6c90cc511a0e5c65e0141ffc1d
+    .agents/skills/qa-regression/scripts/check-datadog-monitors.sh: sha256:5dd6ce30f6d8f58f2f38eb6ec0e83c6c32d9e523e0302ff93a95697166311793
+    .agents/skills/qa-regression/scripts/check-deploy.sh: sha256:94f814fe6c417826d61844ed560a3b3ac6a95b42d3a32a7f29536456f1bde434
+    .agents/skills/qa-regression/scripts/issue-login-link.sh: sha256:3673cf2cb05a88fea1afc524bfe12dd85bf1d73d0c7add4444e4df97d80a2af8
+    .agents/skills/qa-regression/scripts/login.sh: sha256:58a5b348aa6158122e9565fd2ac53681088d60845ca8fea4bc8c5d9643eb96b1
+    .agents/skills/qa-regression/scripts/prepare-product-csv.sh: sha256:6e3919c43f23ed09029c4fa0624f1c17f6372ba1123c03bc399efff64f65a9c1
+    .agents/skills/qa-regression/tests/.gitignore: sha256:74ca265d0617bb8cbdf121f792125d7dee5f4ef32ade123420c3c42210d34b06
+    .agents/skills/qa-regression/tests/check-deploy.test.sh: sha256:8275e0634d09fda2149a4da2e02313df8db0ce8742d6a5f583b222ed2fb4a58d
+    .agents/skills/qa-regression/tests/global-setup.ts: sha256:ddfc91c0469d12e6f899949878bd3a89169948469b75942793aee14d20e43e90
+    .agents/skills/qa-regression/tests/helpers.ts: sha256:20a7b190de09cc6d2b6973b3420c2503cfa3815a264806bb2bc3b43bd054d409
+    .agents/skills/qa-regression/tests/package-lock.json: sha256:f978cf1e2db6799da39a3a04998f6ed8ac7e5f1a3fbe831a3b51357e25b1cb3e
+    .agents/skills/qa-regression/tests/package.json: sha256:cfed27b1dbd5804129081df39a1b202a8046c06122c5fcc437b6ca5d885f3336
+    .agents/skills/qa-regression/tests/playwright.config.ts: sha256:b3ed702becb34243dccf0713eda08a436ac171a7a8a0ea7e8d5d36ffb87fb5b4
+    .agents/skills/qa-regression/tests/specs/orders.spec.ts: sha256:69558d78adb396b154ef3feac99a4c98345a2bb3f5b1b1e88fd2be1683dbea84
+    .agents/skills/qa-regression/tests/specs/products.spec.ts: sha256:deb3abf0d3809756ece6a2b786584f7e080e84fdb49d7f2f2c6f5e8fb124535e
+    .agents/skills/qa-regression/tests/specs/release-additions.spec.ts: sha256:b1bb4e4936bb056994d4a4959a099908d521035e93f9d1b5cc790143c78dea80
+    .agents/skills/qa-regression/tests/specs/sale-suggestions.spec.ts: sha256:6ae6b00ca1ee5ad52f458fd975718f15307fdbf0cd12ba3636760958c393e764
+    .agents/skills/water-plus-triage/SKILL.md: sha256:2e991354af9e3a5564f2597ea2a8bb37f7d47ce4f906d0a9dffd9bf532dcbac6
+    .config/opencode/skills/consignment-hub/SKILL.md: sha256:b59845f636eff0772e17c67df76d8a2f986ca11a63987b5b908a5ac05cda816e
+    .config/opencode/skills/consignment-hub/references/create-issue.md: sha256:01c3ff15f4a6b9f813063bfa1a28e857c4f54362af945d9cc5ca93b809bbcc13
+    .config/opencode/skills/consignment-hub/references/domain-map.md: sha256:1decdc9953f0d9276fd1e16228ff522f1af57e2e8b1c120c8bf8b27a1699ed7c
+    .config/opencode/skills/consignment-hub/references/investigate.md: sha256:2f5349552eab911e49d2b8463458572a16c829d2007afe3b87c608ec4c467195
+    .config/opencode/skills/consignment-hub/references/record-decision.md: sha256:2b95d52462def50673b68e0081620b6dd27b7549485fd76609e196bcbc12cc46
+    .config/opencode/skills/consignment-hub/references/source-map.md: sha256:7881678b72850952fac8aa01819f7253e3e07e458eb219534df4870b591513cc
+    .config/opencode/skills/consignment-hub/references/weekly-review.md: sha256:915e95f7d63df3c960ad6f151bdedea9bedd5f0337795e3d56e28f47ae4c3dd4
+    .config/opencode/skills/consignment-hub/scripts/check-hub.sh: sha256:c8b50a31d84ab481b87aa738ab12ea5c5eb38efc9e7b7fd08be7b9fae10d3635
+    .config/opencode/skills/consignment-hub/scripts/check-registration.sh: sha256:cbc488cc17f8627b74b49d7d9c9ca883bdc9694d03c625708257d07525af528d
+    .config/opencode/skills/consignment-hub/scripts/observe-closed.sh: sha256:6b2b411518fc419b9463bdd0664fb3a882c7084e0a9bbe7f8a94d716dca93030
+    .config/opencode/skills/consignment-hub/scripts/project-read.sh: sha256:8330429328fde11b6646178ffef1a2248bd384d8b96cd19b789c7663d4235656
+    .config/opencode/skills/consignment-hub/tests/check-hub.test.sh: sha256:4bf3d063e2b30044f40dc6566934163d659c41e8780fc8f6fb1cfbc3fc73a7d9
+    .config/opencode/skills/consignment-hub/tests/check-registration.test.sh: sha256:30d1587c38b7ff3abfc886f206321055fe3e21a3ac8423ea3bfa4b6d5be56044
+    .config/opencode/skills/consignment-hub/tests/observe-closed.test.sh: sha256:2b4a0d84b108c99095b9f3fe5e9e5b2b9ca29ff25c46fb1b586c48742b259cc3
+    .config/opencode/skills/consignment-hub/tests/project-read.test.sh: sha256:36d055ce3012fe577bde7f220ea71d268ce29e82a10d94a6380e0ec602b46590
+    .config/opencode/skills/cpc-triage/SKILL.md: sha256:a7d420e4ba3bd2edb24929d613dc052b2fdaab1e47c6e46866c6348a0071d571
+    .config/opencode/skills/grant-order-permission/SKILL.md: sha256:4a92150ccc58378ec68fdb83f68d7fe34b083f1de29f8e28f83293befe9d0eeb
+    .config/opencode/skills/logiless-triage/SKILL.md: sha256:e15ff21efe1acfc3da99438aca5f44cd18cc505c71f46cdba32631d2248f314f
+    .config/opencode/skills/logiless-triage/references/article-code-match.sql: sha256:71dcf6c27fef82413c4588c57d69f19a8824d2023111668cc946fb22d3c67090
+    .config/opencode/skills/qa-regression/SKILL.md: sha256:ee29164119c8774ea8feeea3acac1099556f0cbcb848a811089b74499405cb64
+    .config/opencode/skills/qa-regression/assets/sample-product-image.jpeg: sha256:81f840a32f3dfede7786eca0cadbc7a6a580dfdd55cd5788609d191f3c0fedc5
+    .config/opencode/skills/qa-regression/assets/sample-product-upload.csv: sha256:88785a3d7dd388b6b0b8901ee2c4523e70c4dc3562b1f23b0a8beaa4ca7feedf
+    .config/opencode/skills/qa-regression/references/checklist.md: sha256:38268473742ab5a1d05331df9b0bc5bd885d0b7ab727626fee7271d2e4ad884e
+    .config/opencode/skills/qa-regression/references/deploy-check.md: sha256:2277a4b9d70b47b64ac2036becdf72c115db2dfe834c6e465b95973832ecba1b
+    .config/opencode/skills/qa-regression/references/notion-report.md: sha256:4bfd23a091ace5095e1429d196ed85f7dd2bad6c90cc511a0e5c65e0141ffc1d
+    .config/opencode/skills/qa-regression/scripts/check-datadog-monitors.sh: sha256:5dd6ce30f6d8f58f2f38eb6ec0e83c6c32d9e523e0302ff93a95697166311793
+    .config/opencode/skills/qa-regression/scripts/check-deploy.sh: sha256:94f814fe6c417826d61844ed560a3b3ac6a95b42d3a32a7f29536456f1bde434
+    .config/opencode/skills/qa-regression/scripts/issue-login-link.sh: sha256:3673cf2cb05a88fea1afc524bfe12dd85bf1d73d0c7add4444e4df97d80a2af8
+    .config/opencode/skills/qa-regression/scripts/login.sh: sha256:58a5b348aa6158122e9565fd2ac53681088d60845ca8fea4bc8c5d9643eb96b1
+    .config/opencode/skills/qa-regression/scripts/prepare-product-csv.sh: sha256:6e3919c43f23ed09029c4fa0624f1c17f6372ba1123c03bc399efff64f65a9c1
+    .config/opencode/skills/qa-regression/tests/.gitignore: sha256:74ca265d0617bb8cbdf121f792125d7dee5f4ef32ade123420c3c42210d34b06
+    .config/opencode/skills/qa-regression/tests/check-deploy.test.sh: sha256:8275e0634d09fda2149a4da2e02313df8db0ce8742d6a5f583b222ed2fb4a58d
+    .config/opencode/skills/qa-regression/tests/global-setup.ts: sha256:ddfc91c0469d12e6f899949878bd3a89169948469b75942793aee14d20e43e90
+    .config/opencode/skills/qa-regression/tests/helpers.ts: sha256:20a7b190de09cc6d2b6973b3420c2503cfa3815a264806bb2bc3b43bd054d409
+    .config/opencode/skills/qa-regression/tests/package-lock.json: sha256:f978cf1e2db6799da39a3a04998f6ed8ac7e5f1a3fbe831a3b51357e25b1cb3e
+    .config/opencode/skills/qa-regression/tests/package.json: sha256:cfed27b1dbd5804129081df39a1b202a8046c06122c5fcc437b6ca5d885f3336
+    .config/opencode/skills/qa-regression/tests/playwright.config.ts: sha256:b3ed702becb34243dccf0713eda08a436ac171a7a8a0ea7e8d5d36ffb87fb5b4
+    .config/opencode/skills/qa-regression/tests/specs/orders.spec.ts: sha256:69558d78adb396b154ef3feac99a4c98345a2bb3f5b1b1e88fd2be1683dbea84
+    .config/opencode/skills/qa-regression/tests/specs/products.spec.ts: sha256:deb3abf0d3809756ece6a2b786584f7e080e84fdb49d7f2f2c6f5e8fb124535e
+    .config/opencode/skills/qa-regression/tests/specs/release-additions.spec.ts: sha256:b1bb4e4936bb056994d4a4959a099908d521035e93f9d1b5cc790143c78dea80
+    .config/opencode/skills/qa-regression/tests/specs/sale-suggestions.spec.ts: sha256:6ae6b00ca1ee5ad52f458fd975718f15307fdbf0cd12ba3636760958c393e764
+    .config/opencode/skills/water-plus-triage/SKILL.md: sha256:2e991354af9e3a5564f2597ea2a8bb37f7d47ce4f906d0a9dffd9bf532dcbac6
+  content_hash: sha256:bf4e669b64eada41208b2f8cde09ba32d8b454be30ecc9d761f8c32ccc2f4c6b
+  package_targets:
+  - codex
+  - opencode
 - repo_url: yoshiko-pg/difit
   name: difit
   host: github.com
@@ -1165,6 +1235,168 @@ deployments:
   content_hash: sha256:7e9355a1697726a319ee773d55cdd1e985aea4a9a059c102a90ec5c0fdaee64a
 - kind: project-relative
   target: codex
+  value: .agents/skills/consignment-hub
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/SKILL.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:b59845f636eff0772e17c67df76d8a2f986ca11a63987b5b908a5ac05cda816e
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/references/create-issue.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:01c3ff15f4a6b9f813063bfa1a28e857c4f54362af945d9cc5ca93b809bbcc13
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/references/domain-map.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:1decdc9953f0d9276fd1e16228ff522f1af57e2e8b1c120c8bf8b27a1699ed7c
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/references/investigate.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:2f5349552eab911e49d2b8463458572a16c829d2007afe3b87c608ec4c467195
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/references/record-decision.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:2b95d52462def50673b68e0081620b6dd27b7549485fd76609e196bcbc12cc46
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/references/source-map.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:7881678b72850952fac8aa01819f7253e3e07e458eb219534df4870b591513cc
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/references/weekly-review.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:915e95f7d63df3c960ad6f151bdedea9bedd5f0337795e3d56e28f47ae4c3dd4
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/scripts/check-hub.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:c8b50a31d84ab481b87aa738ab12ea5c5eb38efc9e7b7fd08be7b9fae10d3635
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/scripts/check-registration.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:cbc488cc17f8627b74b49d7d9c9ca883bdc9694d03c625708257d07525af528d
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/scripts/observe-closed.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:6b2b411518fc419b9463bdd0664fb3a882c7084e0a9bbe7f8a94d716dca93030
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/scripts/project-read.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:8330429328fde11b6646178ffef1a2248bd384d8b96cd19b789c7663d4235656
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/tests/check-hub.test.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:4bf3d063e2b30044f40dc6566934163d659c41e8780fc8f6fb1cfbc3fc73a7d9
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/tests/check-registration.test.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:30d1587c38b7ff3abfc886f206321055fe3e21a3ac8423ea3bfa4b6d5be56044
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/tests/observe-closed.test.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:2b4a0d84b108c99095b9f3fe5e9e5b2b9ca29ff25c46fb1b586c48742b259cc3
+- kind: project-relative
+  target: codex
+  value: .agents/skills/consignment-hub/tests/project-read.test.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:36d055ce3012fe577bde7f220ea71d268ce29e82a10d94a6380e0ec602b46590
+- kind: project-relative
+  target: codex
+  value: .agents/skills/cpc-triage
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/cpc-triage/SKILL.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:a7d420e4ba3bd2edb24929d613dc052b2fdaab1e47c6e46866c6348a0071d571
+- kind: project-relative
+  target: codex
   value: .agents/skills/create-github-issues
   runtime: null
   scope: user
@@ -1180,7 +1412,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:24dd3c61f4f72099885a630c9d3ae94ad3591ed457239cb5937030d4753e875b
+  content_hash: sha256:4e5b1a51dd3c75c8b1e0cc6602a6adaa609d2c4112436b44b3b5df9bd3ba0fca
 - kind: project-relative
   target: codex
   value: .agents/skills/create-github-issues/references/bodies.md
@@ -1189,7 +1421,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:18b05e8ce893e30e7c05d86eb3c041cd47ca048bb21f30f618ea574a575cb63b
+  content_hash: sha256:e3df77183278a9d1760dbe03e0f83cd3f2d90e7e1cb393e7a817c592ee483d0c
 - kind: project-relative
   target: codex
   value: .agents/skills/create-github-issues/references/change-units.md
@@ -1261,7 +1493,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:d8905e10d99f5c4f59391519b57ff80d620170e15ffe8167b358434499e97208
+  content_hash: sha256:af8df8eb40c20338a38bc6051569efaf0d3bfa62474a9ac8fd36d3febd511fe8
 - kind: project-relative
   target: codex
   value: .agents/skills/create-pr/references/description.md
@@ -1297,7 +1529,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:8c55a55864684d9dbbf24cc6bb9d907a3d501f3cc9f8694c1b1f628e9ff66607
+  content_hash: sha256:cc8ab388cf2c94302dccfec182dce31fc24c11a27781fafcb79cf74aaaccb8cf
 - kind: project-relative
   target: codex
   value: .agents/skills/create-pr/scripts/issue-refs.sh
@@ -1576,7 +1808,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:c2ecebc1b4902d365e478d722f110cb7c7dea19d47c2fed7cdc270cb6c42552b
+  content_hash: sha256:5d92367fa0535efb8cf4e5e245afc8b141f04aa43c7e00f8dc2802e258dcaa1f
 - kind: project-relative
   target: codex
   value: .agents/skills/frame-problem
@@ -1594,7 +1826,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:cbfb9aaba3b4a15b9d60a993a0639b05b8ef6e91d46adbf162163724b66e37a0
+  content_hash: sha256:7482f3b551d3f42bc3468fb8adcaaf5b17bcd71ca4109f5b12b8fb49a0c0b5f7
 - kind: project-relative
   target: codex
   value: .agents/skills/frame-problem/references/question-loop.md
@@ -1613,6 +1845,24 @@ deployments:
   - maro114510/skills
   active_owner: maro114510/skills
   content_hash: sha256:e7beb1dbc4f13862166550f429c0bbc6d05dbf59f69f80edc672a34c911000ee
+- kind: project-relative
+  target: codex
+  value: .agents/skills/grant-order-permission
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/grant-order-permission/SKILL.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:4a92150ccc58378ec68fdb83f68d7fe34b083f1de29f8e28f83293befe9d0eeb
 - kind: project-relative
   target: codex
   value: .agents/skills/herdr
@@ -1648,7 +1898,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:503c16daf76e857828d7567e74eb9262c2a158d1efbd61beaba4c2270d7b56dc
+  content_hash: sha256:ee92b359b7a2ea64926f55d5d896e2d88833f7d7acfd7fa4b2acf1de8aa56b3d
 - kind: project-relative
   target: codex
   value: .agents/skills/implement/references/evidence.md
@@ -1657,7 +1907,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:32c5fa52e533e455d838566f6dda5118f757e36dc17bec315c53e60a2ea6d061
+  content_hash: sha256:eb0ead1907d72fde66d5c25ed97a88f126ac315bca8e8a76926b1c1cb8a8b01f
 - kind: project-relative
   target: codex
   value: .agents/skills/implement/references/playbooks/behavior-change.md
@@ -1738,7 +1988,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:f85303fa8ade5e0ffb8d81dc06556063eaa766474a492978111e6dac18cbddc9
+  content_hash: sha256:a1f3d92d0daace4c05e4cdd4783bf2bcec1296f7e091bd74c7b39a77b610325b
 - kind: project-relative
   target: codex
   value: .agents/skills/implement/scripts/test-lock.bats
@@ -1774,7 +2024,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:884340d74626747fc8f802b68e73412bbf6741facb561354559f00d051de51ef
+  content_hash: sha256:868b3a5f9a3ce80deaa758367bbcd4529c14973f2317bff0da1aa4b53bdafd2c
 - kind: project-relative
   target: codex
   value: .agents/skills/locate/scripts/locate.sh
@@ -1811,6 +2061,33 @@ deployments:
   - maro114510/skills
   active_owner: maro114510/skills
   content_hash: sha256:3e04d454e06399de32e8f5af61043affebc2189a085abc8940efe3e9c0a8a0c4
+- kind: project-relative
+  target: codex
+  value: .agents/skills/logiless-triage
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/logiless-triage/SKILL.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:e15ff21efe1acfc3da99438aca5f44cd18cc505c71f46cdba32631d2248f314f
+- kind: project-relative
+  target: codex
+  value: .agents/skills/logiless-triage/references/article-code-match.sql
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:71dcf6c27fef82413c4588c57d69f19a8824d2023111668cc946fb22d3c67090
 - kind: project-relative
   target: codex
   value: .agents/skills/manage-design-documents
@@ -1867,6 +2144,15 @@ deployments:
   content_hash: sha256:f76427482b15d613ac2e525933c069f5e78a8d3ea2bf5b67359e843074555d96
 - kind: project-relative
   target: codex
+  value: .agents/skills/orchestrate-epic/agents/openai.yaml
+  runtime: null
+  scope: user
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
+- kind: project-relative
+  target: codex
   value: .agents/skills/orchestrate-epic/scripts/oe
   runtime: null
   scope: user
@@ -1900,7 +2186,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:523a6be173d953da9c84306b1cb65373314ebf4d32c958bff6be75b96ce20129
+  content_hash: sha256:0b6a0b13a9c0e09918c9e5efad1f9715dd5133791eec6a2fb9da67307ae9d65c
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/oe-hold.sh
@@ -1990,7 +2276,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:f7c991f70edfaab241583a9b12f3daaa51d684ab932e43bf2103afa33d68dda7
+  content_hash: sha256:f4240696d769e037d23fb6f06ef29094d900680ab22322f2ba051952edef9f45
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/oe-records.jq
@@ -2026,7 +2312,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:7945b50c98a01a0afcea98648ca90803a560a00fc72257bb7800edff4e3f18ec
+  content_hash: sha256:73f02bfa24cbb56e297972147d6fc83c40b9dfcd500142de3ba94127b9c88e5c
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/oe-worktree.sh
@@ -2044,7 +2330,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:ebbc827b478910652706ec31e0f170f742efceaac3559e22c3b19a0dcac6a38d
+  content_hash: sha256:802c060ce9d6940ea64784765aa398a6cab3b5583a7cca8c69e7f32789a7ce23
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/test-oe-bot.bats
@@ -2071,7 +2357,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:6187190ed5e1f97a449e6bf92433c53860fc270fc11abaa6452083b84e47f21d
+  content_hash: sha256:abc27aad46708ae12d1b97723856c3be13e16eccd2ce1689d55d898b9ec7987e
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/test-oe-question.bats
@@ -2080,7 +2366,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:2a2019bbf856c3754f4e151ff063176d289c745fa9e1dd1f9b74712afc02a28c
+  content_hash: sha256:4f8194e90dc182f99d9878bfc6e246de73717ddc419bd9c0aac71344cc8a02ec
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/test-oe-ready.bats
@@ -2089,7 +2375,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:8a53fd9e7eb930f4f8feca5c563bd52ad2510f1e02815e2dede199b88de519c5
+  content_hash: sha256:ed47f62ce7d158b402b91752b9b80c330070491c84caa472f720c570b896aa1d
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/test-oe-start.bats
@@ -2107,7 +2393,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:acbc962c809f2fd9af58435f5d5d64f9f647bf16e21f195a7844f4fbf08a9ef0
+  content_hash: sha256:6102006bd334129f82777d75a6156d5f968f9d4c3801e93e51540a1d65daa114
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/test-oe-wait.bats
@@ -2116,7 +2402,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:45c0f9188142bc9ddf6b084d523a8e393f12fbc99498e3f32959d2e50e3afadf
+  content_hash: sha256:492985e9bdc91ab1f03e13b1f34c236efbf7af845b74ff783e8e12aab0f6fe3c
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/test-oe-worktree.bats
@@ -2143,7 +2429,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:b2399fdead4160e57db24e37a6cf0839da1695a4f577e194735189db8d0972c8
+  content_hash: sha256:eb179296a4bc102a7b575fdfac70b197369e582bf895365f29ad4884b2c4c088
 - kind: project-relative
   target: codex
   value: .agents/skills/orchestrate-epic/scripts/testdata/fake-github-write.jq
@@ -2179,7 +2465,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:c11c5a1f4ee9032f39b0f98f8cebbd2cbfeb9817fc63036dd52527b05cdacfc6
+  content_hash: sha256:10c7125b19a8e90d01da36ce02642624264f0d52f3f716fffd6f64843443eae5
 - kind: project-relative
   target: codex
   value: .agents/skills/pick-next/scripts/pick-discussions.graphql
@@ -2251,7 +2537,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:2349a00ce69ff098dc350b717c6743bfa4c1887097e4f90708c7e26d5f21865c
+  content_hash: sha256:ea654d4a90957c855a64cc9d23227a30c7ed7d1d5c4702c08967100a6d1d8478
 - kind: project-relative
   target: codex
   value: .agents/skills/pr-doc-review-pe/scripts/pr-review-pe-identify-pr.sh
@@ -2279,6 +2565,15 @@ deployments:
   - maro114510/skills
   active_owner: maro114510/skills
   content_hash: sha256:5648434a5e651082229a902df6b689a2aeed1929d3d46e3877d25e4008fe5299
+- kind: project-relative
+  target: codex
+  value: .agents/skills/pr-owner/agents/openai.yaml
+  runtime: null
+  scope: user
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
 - kind: project-relative
   target: codex
   value: .agents/skills/pr-review-pe
@@ -2362,292 +2657,220 @@ deployments:
   content_hash: sha256:5f01da6c7be59cb108ad8099f7db362a5c62ddb15901b33fb5a7c59f0eef79be
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker
+  value: .agents/skills/pr-verify/agents/openai.yaml
   runtime: null
   scope: user
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
+  content_hash: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
+- kind: project-relative
+  target: codex
+  value: .agents/skills/qa-regression
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
   content_hash: null
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/SKILL.md
+  value: .agents/skills/qa-regression/SKILL.md
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:27e109eda32552c4caa39a564aaf3508780e025e1a6f06bdae80b7df94d3ef1a
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:ee29164119c8774ea8feeea3acac1099556f0cbcb848a811089b74499405cb64
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/agents/openai.yaml
+  value: .agents/skills/qa-regression/assets/sample-product-image.jpeg
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:c4c49760cf80af759eb1cea4994a0b9e1ed530efdb015a2f2ba7323bc135bbad
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:81f840a32f3dfede7786eca0cadbc7a6a580dfdd55cd5788609d191f3c0fedc5
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/01-direct-support.md
+  value: .agents/skills/qa-regression/assets/sample-product-upload.csv
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:94726ba33d6b701fad62af359f824301f5a9d16c6567a09bef15b3dbf0a0dbe3
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:88785a3d7dd388b6b0b8901ee2c4523e70c4dc3562b1f23b0a8beaa4ca7feedf
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/02-abstract-only-access.md
+  value: .agents/skills/qa-regression/references/checklist.md
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:5828564f355b488c9e862019e30c15c0c261dfc8f33f41446d3763a571b346e4
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:38268473742ab5a1d05331df9b0bc5bd885d0b7ab727626fee7271d2e4ad884e
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/03-observational-to-causal.md
+  value: .agents/skills/qa-regression/references/deploy-check.md
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:ba080b38f2b7eb1c8be90300785f985f9b21f97fc68d14b95ff9a9d88e15bb09
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:2277a4b9d70b47b64ac2036becdf72c115db2dfe834c6e465b95973832ecba1b
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/04-animal-to-human.md
+  value: .agents/skills/qa-regression/references/notion-report.md
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:e17675cb25c0532f7b3476a54750d4f1373a2ff12db4d43feecf84922c4efc70
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:4bfd23a091ace5095e1429d196ed85f7dd2bad6c90cc511a0e5c65e0141ffc1d
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/05-group-to-individual.md
+  value: .agents/skills/qa-regression/scripts/check-datadog-monitors.sh
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:29ab954c31f05530c0929b95e0bfd56757f812af2ee930b034ffb00fc933f7c6
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:5dd6ce30f6d8f58f2f38eb6ec0e83c6c32d9e523e0302ff93a95697166311793
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/06-surrogate-marker-to-outcome.md
+  value: .agents/skills/qa-regression/scripts/check-deploy.sh
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:85ded21b19dda01f3afdba9c0a0b9e6e4bf0407dd9a8da050f63fb4513a3aa6b
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:94f814fe6c417826d61844ed560a3b3ac6a95b42d3a32a7f29536456f1bde434
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/07-past-study-to-present.md
+  value: .agents/skills/qa-regression/scripts/issue-login-link.sh
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:2e6b595ee926a5afe50dea3c542aceddb5353f310e3048f669e20c004e7d3f67
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:3673cf2cb05a88fea1afc524bfe12dd85bf1d73d0c7add4444e4df97d80a2af8
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/08-cross-cultural-transfer.md
+  value: .agents/skills/qa-regression/scripts/login.sh
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:9bebb2285cb2c5bd20659be70d50f418b0cc98c43d8ef16a24b097b9500b2fb0
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:58a5b348aa6158122e9565fd2ac53681088d60845ca8fea4bc8c5d9643eb96b1
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/09-descriptive-to-mandate.md
+  value: .agents/skills/qa-regression/scripts/prepare-product-csv.sh
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:02e9e9666645115bf94b8872a0665aabf4933b82dc00d10a11940d5f403dcd8b
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:6e3919c43f23ed09029c4fa0624f1c17f6372ba1123c03bc399efff64f65a9c1
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/10-bridging-evidence-justified.md
+  value: .agents/skills/qa-regression/tests/.gitignore
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:cf021399d6ae2c68474aec1a77a5f06a57cef62a27b6dca178ffb69eaac05301
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:74ca265d0617bb8cbdf121f792125d7dee5f4ef32ade123420c3c42210d34b06
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/11-mixed-evidence.md
+  value: .agents/skills/qa-regression/tests/check-deploy.test.sh
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:5cf38ce68375b7e79a91b12e3534a874ff4f23eaa4ca6a5e627434ec81806437
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:8275e0634d09fda2149a4da2e02313df8db0ce8742d6a5f583b222ed2fb4a58d
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/12-correction-retraction.md
+  value: .agents/skills/qa-regression/tests/global-setup.ts
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:49195b708604a7a40ab70400a00eaa7fdc64a7a1b85d78a8cf9b74cd921d8f75
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:ddfc91c0469d12e6f899949878bd3a89169948469b75942793aee14d20e43e90
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/RESULTS.md
+  value: .agents/skills/qa-regression/tests/helpers.ts
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:518b78b00fb88d27f4ec22bd207a914f4336b32ebe997e404f78ef0fda725def
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:20a7b190de09cc6d2b6973b3420c2503cfa3815a264806bb2bc3b43bd054d409
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/results/01-direct-support.md
+  value: .agents/skills/qa-regression/tests/package-lock.json
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:b0ed7a276d18082a6697f104427f0be11a78a9c6a916c0cfa737c7fc088f22cf
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:f978cf1e2db6799da39a3a04998f6ed8ac7e5f1a3fbe831a3b51357e25b1cb3e
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/results/02-abstract-only-access.md
+  value: .agents/skills/qa-regression/tests/package.json
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:940aab7a4a6fd3d6f9deff074f717b016fb3798e1947147d1c0190191a54aa72
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:cfed27b1dbd5804129081df39a1b202a8046c06122c5fcc437b6ca5d885f3336
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/results/03-observational-to-causal.md
+  value: .agents/skills/qa-regression/tests/playwright.config.ts
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:30da5c4df7948f358b78a0a5bd4c2ff84f9db93782dda7d73fc02336c2246875
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:b3ed702becb34243dccf0713eda08a436ac171a7a8a0ea7e8d5d36ffb87fb5b4
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/results/04-animal-to-human.md
+  value: .agents/skills/qa-regression/tests/specs/orders.spec.ts
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:19174fe2b56f8d684d5784ce9ae27e527c4091d7b6b1fd0c921e866270d6ad6a
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:69558d78adb396b154ef3feac99a4c98345a2bb3f5b1b1e88fd2be1683dbea84
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/results/05-group-to-individual.md
+  value: .agents/skills/qa-regression/tests/specs/products.spec.ts
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:6408334ef4611faeeb9ef7d556f87e86d063f6367ee102be2639f2879bd258e3
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:deb3abf0d3809756ece6a2b786584f7e080e84fdb49d7f2f2c6f5e8fb124535e
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/results/06-surrogate-marker-to-outcome.md
+  value: .agents/skills/qa-regression/tests/specs/release-additions.spec.ts
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:7c6b549c087982652f48862b7152678c8b2422b640d5da51843fece100ca907a
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:b1bb4e4936bb056994d4a4959a099908d521035e93f9d1b5cc790143c78dea80
 - kind: project-relative
   target: codex
-  value: .agents/skills/research-transfer-checker/evals/results/07-past-study-to-present.md
+  value: .agents/skills/qa-regression/tests/specs/sale-suggestions.spec.ts
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:ba27803fa3b3cee9e02b7ef2a0aef0eb871de5cf09a07e638e8f4a03554ae5a0
-- kind: project-relative
-  target: codex
-  value: .agents/skills/research-transfer-checker/evals/results/08-cross-cultural-transfer.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:0b6404d0eca5f21ff31984d5393f439809c17c1d8f1d3d61f0442ded58db18bf
-- kind: project-relative
-  target: codex
-  value: .agents/skills/research-transfer-checker/evals/results/09-descriptive-to-mandate.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:41acda16001dbb813fa6c162ab2948c13213c42edb9b2a95d4976bbd283a1046
-- kind: project-relative
-  target: codex
-  value: .agents/skills/research-transfer-checker/evals/results/10-bridging-evidence-justified.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:9144b8d46af5d7af77082b21bb16c7927fbaf03bb242caab315aa4be9ad1cdcc
-- kind: project-relative
-  target: codex
-  value: .agents/skills/research-transfer-checker/evals/results/11-mixed-evidence.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:47a2f0e44a4c983e7d484260cc1aefba89bbb4cf684df5f895d2cb0797818044
-- kind: project-relative
-  target: codex
-  value: .agents/skills/research-transfer-checker/evals/results/12-correction-retraction.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:0a2957ccb0e0657358fa4fce6666781e0e584aea6c162810c1ae1a4c779bc37b
-- kind: project-relative
-  target: codex
-  value: .agents/skills/research-transfer-checker/references/bridging-search.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:c9e20f87234cea72b57562d5453bc9564175baee1d90ed3f45503d2d3a14c304
-- kind: project-relative
-  target: codex
-  value: .agents/skills/research-transfer-checker/references/decision-rubric.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:ae95a836ffcfa3f696a61f66dfff73ea1c4c583dd8f40ee606f1d202fe373ff1
-- kind: project-relative
-  target: codex
-  value: .agents/skills/research-transfer-checker/references/harm-assessment.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:ff2dcecce4dd21e1d2cd77ca44764837ac517af5f097cdca3f3bd226ab64a0ef
-- kind: project-relative
-  target: codex
-  value: .agents/skills/research-transfer-checker/references/standards-map.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:4836f7799c1c6db77a0705e2581ad4830ade0ea06288ff08734749aa629359f1
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:6ae6b00ca1ee5ad52f458fd975718f15307fdbf0cd12ba3636760958c393e764
 - kind: project-relative
   target: codex
   value: .agents/skills/rust-mentor
@@ -2692,7 +2915,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:a7331b83d543f587e701ef8917ee130842187a7549ac71e98c703e793a8fe225
+  content_hash: sha256:81a1a10ac6937d85d2cab78843fd8e62eaabad7af46d945776e787acd06c1d9a
 - kind: project-relative
   target: codex
   value: .agents/skills/shakedown/references/rebaseline.md
@@ -2782,7 +3005,25 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:8a6ca596a6f23a2e8eb32dba6e3fa633474db545cb69afad56e6a634ecb0d52c
+  content_hash: sha256:a9fe728d256eef32bcbb0b47c24a401cbb25b11d837ad80b9ae3b49f0983c293
+- kind: project-relative
+  target: codex
+  value: .agents/skills/water-plus-triage
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/water-plus-triage/SKILL.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:2e991354af9e3a5564f2597ea2a8bb37f7d47ce4f906d0a9dffd9bf532dcbac6
 - kind: project-relative
   target: codex
   value: .agents/skills/why-man
@@ -2800,43 +3041,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:d5fd24e7ffc3542982c8f3eba4ce0d315327a988073ed2f77422fdbdcd6b1b77
-- kind: project-relative
-  target: codex
-  value: .agents/skills/write-researched-document
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: null
-- kind: project-relative
-  target: codex
-  value: .agents/skills/write-researched-document/SKILL.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:c52561c4b94df76640ac2b05d128eaeae2679eeb3cf398eb9a4c0f3eb9676be7
-- kind: project-relative
-  target: codex
-  value: .agents/skills/write-researched-document/agents/openai.yaml
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:1421516b58df14e15896071d2bb116367f59a3186ba7a66e502ecd92e75d6a6d
-- kind: project-relative
-  target: codex
-  value: .agents/skills/write-researched-document/references/evidence-workflow.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:51de21573a16a72db453f79debd7fdc9facfc8e6fc1cc26ecf6e090a30e1e0a5
+  content_hash: sha256:761ade2d3fd6d54bdd2b3a8cb702689f5f1b0855d93788f1c06b3a9baab3c41b
 - kind: project-relative
   target: codex
   value: .codex/agents/pr-owner.toml
@@ -2911,6 +3116,168 @@ deployments:
   content_hash: sha256:798da812f9886b7208bebcef7c427cd1cf5ea1116c0b307cb98fb93eec4e1979
 - kind: project-relative
   target: opencode
+  value: .config/opencode/skills/consignment-hub
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: null
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/SKILL.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:b59845f636eff0772e17c67df76d8a2f986ca11a63987b5b908a5ac05cda816e
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/references/create-issue.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:01c3ff15f4a6b9f813063bfa1a28e857c4f54362af945d9cc5ca93b809bbcc13
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/references/domain-map.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:1decdc9953f0d9276fd1e16228ff522f1af57e2e8b1c120c8bf8b27a1699ed7c
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/references/investigate.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:2f5349552eab911e49d2b8463458572a16c829d2007afe3b87c608ec4c467195
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/references/record-decision.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:2b95d52462def50673b68e0081620b6dd27b7549485fd76609e196bcbc12cc46
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/references/source-map.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:7881678b72850952fac8aa01819f7253e3e07e458eb219534df4870b591513cc
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/references/weekly-review.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:915e95f7d63df3c960ad6f151bdedea9bedd5f0337795e3d56e28f47ae4c3dd4
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/scripts/check-hub.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:c8b50a31d84ab481b87aa738ab12ea5c5eb38efc9e7b7fd08be7b9fae10d3635
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/scripts/check-registration.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:cbc488cc17f8627b74b49d7d9c9ca883bdc9694d03c625708257d07525af528d
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/scripts/observe-closed.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:6b2b411518fc419b9463bdd0664fb3a882c7084e0a9bbe7f8a94d716dca93030
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/scripts/project-read.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:8330429328fde11b6646178ffef1a2248bd384d8b96cd19b789c7663d4235656
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/tests/check-hub.test.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:4bf3d063e2b30044f40dc6566934163d659c41e8780fc8f6fb1cfbc3fc73a7d9
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/tests/check-registration.test.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:30d1587c38b7ff3abfc886f206321055fe3e21a3ac8423ea3bfa4b6d5be56044
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/tests/observe-closed.test.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:2b4a0d84b108c99095b9f3fe5e9e5b2b9ca29ff25c46fb1b586c48742b259cc3
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/consignment-hub/tests/project-read.test.sh
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:36d055ce3012fe577bde7f220ea71d268ce29e82a10d94a6380e0ec602b46590
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/cpc-triage
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: null
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/cpc-triage/SKILL.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:a7d420e4ba3bd2edb24929d613dc052b2fdaab1e47c6e46866c6348a0071d571
+- kind: project-relative
+  target: opencode
   value: .config/opencode/skills/create-github-issues
   runtime: null
   scope: user
@@ -2926,7 +3293,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:24dd3c61f4f72099885a630c9d3ae94ad3591ed457239cb5937030d4753e875b
+  content_hash: sha256:4e5b1a51dd3c75c8b1e0cc6602a6adaa609d2c4112436b44b3b5df9bd3ba0fca
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/create-github-issues/references/bodies.md
@@ -2935,7 +3302,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:18b05e8ce893e30e7c05d86eb3c041cd47ca048bb21f30f618ea574a575cb63b
+  content_hash: sha256:e3df77183278a9d1760dbe03e0f83cd3f2d90e7e1cb393e7a817c592ee483d0c
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/create-github-issues/references/change-units.md
@@ -3007,7 +3374,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:d8905e10d99f5c4f59391519b57ff80d620170e15ffe8167b358434499e97208
+  content_hash: sha256:af8df8eb40c20338a38bc6051569efaf0d3bfa62474a9ac8fd36d3febd511fe8
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/create-pr/references/description.md
@@ -3043,7 +3410,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:8c55a55864684d9dbbf24cc6bb9d907a3d501f3cc9f8694c1b1f628e9ff66607
+  content_hash: sha256:cc8ab388cf2c94302dccfec182dce31fc24c11a27781fafcb79cf74aaaccb8cf
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/create-pr/scripts/issue-refs.sh
@@ -3322,7 +3689,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:c2ecebc1b4902d365e478d722f110cb7c7dea19d47c2fed7cdc270cb6c42552b
+  content_hash: sha256:5d92367fa0535efb8cf4e5e245afc8b141f04aa43c7e00f8dc2802e258dcaa1f
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/frame-problem
@@ -3340,7 +3707,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:cbfb9aaba3b4a15b9d60a993a0639b05b8ef6e91d46adbf162163724b66e37a0
+  content_hash: sha256:7482f3b551d3f42bc3468fb8adcaaf5b17bcd71ca4109f5b12b8fb49a0c0b5f7
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/frame-problem/references/question-loop.md
@@ -3359,6 +3726,24 @@ deployments:
   - maro114510/skills
   active_owner: maro114510/skills
   content_hash: sha256:e7beb1dbc4f13862166550f429c0bbc6d05dbf59f69f80edc672a34c911000ee
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/grant-order-permission
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: null
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/grant-order-permission/SKILL.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:4a92150ccc58378ec68fdb83f68d7fe34b083f1de29f8e28f83293befe9d0eeb
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/herdr
@@ -3394,7 +3779,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:503c16daf76e857828d7567e74eb9262c2a158d1efbd61beaba4c2270d7b56dc
+  content_hash: sha256:ee92b359b7a2ea64926f55d5d896e2d88833f7d7acfd7fa4b2acf1de8aa56b3d
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/implement/references/evidence.md
@@ -3403,7 +3788,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:32c5fa52e533e455d838566f6dda5118f757e36dc17bec315c53e60a2ea6d061
+  content_hash: sha256:eb0ead1907d72fde66d5c25ed97a88f126ac315bca8e8a76926b1c1cb8a8b01f
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/implement/references/playbooks/behavior-change.md
@@ -3484,7 +3869,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:f85303fa8ade5e0ffb8d81dc06556063eaa766474a492978111e6dac18cbddc9
+  content_hash: sha256:a1f3d92d0daace4c05e4cdd4783bf2bcec1296f7e091bd74c7b39a77b610325b
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/implement/scripts/test-lock.bats
@@ -3520,7 +3905,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:884340d74626747fc8f802b68e73412bbf6741facb561354559f00d051de51ef
+  content_hash: sha256:868b3a5f9a3ce80deaa758367bbcd4529c14973f2317bff0da1aa4b53bdafd2c
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/locate/scripts/locate.sh
@@ -3557,6 +3942,33 @@ deployments:
   - maro114510/skills
   active_owner: maro114510/skills
   content_hash: sha256:3e04d454e06399de32e8f5af61043affebc2189a085abc8940efe3e9c0a8a0c4
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/logiless-triage
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: null
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/logiless-triage/SKILL.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:e15ff21efe1acfc3da99438aca5f44cd18cc505c71f46cdba32631d2248f314f
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/logiless-triage/references/article-code-match.sql
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:71dcf6c27fef82413c4588c57d69f19a8824d2023111668cc946fb22d3c67090
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/manage-design-documents
@@ -3613,6 +4025,15 @@ deployments:
   content_hash: sha256:f76427482b15d613ac2e525933c069f5e78a8d3ea2bf5b67359e843074555d96
 - kind: project-relative
   target: opencode
+  value: .config/opencode/skills/orchestrate-epic/agents/openai.yaml
+  runtime: null
+  scope: user
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
+- kind: project-relative
+  target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/oe
   runtime: null
   scope: user
@@ -3646,7 +4067,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:523a6be173d953da9c84306b1cb65373314ebf4d32c958bff6be75b96ce20129
+  content_hash: sha256:0b6a0b13a9c0e09918c9e5efad1f9715dd5133791eec6a2fb9da67307ae9d65c
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/oe-hold.sh
@@ -3736,7 +4157,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:f7c991f70edfaab241583a9b12f3daaa51d684ab932e43bf2103afa33d68dda7
+  content_hash: sha256:f4240696d769e037d23fb6f06ef29094d900680ab22322f2ba051952edef9f45
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/oe-records.jq
@@ -3772,7 +4193,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:7945b50c98a01a0afcea98648ca90803a560a00fc72257bb7800edff4e3f18ec
+  content_hash: sha256:73f02bfa24cbb56e297972147d6fc83c40b9dfcd500142de3ba94127b9c88e5c
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/oe-worktree.sh
@@ -3790,7 +4211,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:ebbc827b478910652706ec31e0f170f742efceaac3559e22c3b19a0dcac6a38d
+  content_hash: sha256:802c060ce9d6940ea64784765aa398a6cab3b5583a7cca8c69e7f32789a7ce23
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/test-oe-bot.bats
@@ -3817,7 +4238,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:6187190ed5e1f97a449e6bf92433c53860fc270fc11abaa6452083b84e47f21d
+  content_hash: sha256:abc27aad46708ae12d1b97723856c3be13e16eccd2ce1689d55d898b9ec7987e
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/test-oe-question.bats
@@ -3826,7 +4247,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:2a2019bbf856c3754f4e151ff063176d289c745fa9e1dd1f9b74712afc02a28c
+  content_hash: sha256:4f8194e90dc182f99d9878bfc6e246de73717ddc419bd9c0aac71344cc8a02ec
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/test-oe-ready.bats
@@ -3835,7 +4256,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:8a53fd9e7eb930f4f8feca5c563bd52ad2510f1e02815e2dede199b88de519c5
+  content_hash: sha256:ed47f62ce7d158b402b91752b9b80c330070491c84caa472f720c570b896aa1d
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/test-oe-start.bats
@@ -3853,7 +4274,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:acbc962c809f2fd9af58435f5d5d64f9f647bf16e21f195a7844f4fbf08a9ef0
+  content_hash: sha256:6102006bd334129f82777d75a6156d5f968f9d4c3801e93e51540a1d65daa114
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/test-oe-wait.bats
@@ -3862,7 +4283,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:45c0f9188142bc9ddf6b084d523a8e393f12fbc99498e3f32959d2e50e3afadf
+  content_hash: sha256:492985e9bdc91ab1f03e13b1f34c236efbf7af845b74ff783e8e12aab0f6fe3c
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/test-oe-worktree.bats
@@ -3889,7 +4310,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:b2399fdead4160e57db24e37a6cf0839da1695a4f577e194735189db8d0972c8
+  content_hash: sha256:eb179296a4bc102a7b575fdfac70b197369e582bf895365f29ad4884b2c4c088
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/orchestrate-epic/scripts/testdata/fake-github-write.jq
@@ -3925,7 +4346,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:c11c5a1f4ee9032f39b0f98f8cebbd2cbfeb9817fc63036dd52527b05cdacfc6
+  content_hash: sha256:10c7125b19a8e90d01da36ce02642624264f0d52f3f716fffd6f64843443eae5
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/pick-next/scripts/pick-discussions.graphql
@@ -3997,7 +4418,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:2349a00ce69ff098dc350b717c6743bfa4c1887097e4f90708c7e26d5f21865c
+  content_hash: sha256:ea654d4a90957c855a64cc9d23227a30c7ed7d1d5c4702c08967100a6d1d8478
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/pr-doc-review-pe/scripts/pr-review-pe-identify-pr.sh
@@ -4025,6 +4446,15 @@ deployments:
   - maro114510/skills
   active_owner: maro114510/skills
   content_hash: sha256:5648434a5e651082229a902df6b689a2aeed1929d3d46e3877d25e4008fe5299
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/pr-owner/agents/openai.yaml
+  runtime: null
+  scope: user
+  owners:
+  - maro114510/skills
+  active_owner: maro114510/skills
+  content_hash: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/pr-review-pe
@@ -4108,292 +4538,220 @@ deployments:
   content_hash: sha256:5f01da6c7be59cb108ad8099f7db362a5c62ddb15901b33fb5a7c59f0eef79be
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker
+  value: .config/opencode/skills/pr-verify/agents/openai.yaml
   runtime: null
   scope: user
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
+  content_hash: sha256:a1499d95abd8447558c535fe5554adcc3c9b988a0a39264a6283d430effe1e94
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/qa-regression
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
   content_hash: null
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/SKILL.md
+  value: .config/opencode/skills/qa-regression/SKILL.md
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:27e109eda32552c4caa39a564aaf3508780e025e1a6f06bdae80b7df94d3ef1a
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:ee29164119c8774ea8feeea3acac1099556f0cbcb848a811089b74499405cb64
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/agents/openai.yaml
+  value: .config/opencode/skills/qa-regression/assets/sample-product-image.jpeg
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:c4c49760cf80af759eb1cea4994a0b9e1ed530efdb015a2f2ba7323bc135bbad
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:81f840a32f3dfede7786eca0cadbc7a6a580dfdd55cd5788609d191f3c0fedc5
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/01-direct-support.md
+  value: .config/opencode/skills/qa-regression/assets/sample-product-upload.csv
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:94726ba33d6b701fad62af359f824301f5a9d16c6567a09bef15b3dbf0a0dbe3
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:88785a3d7dd388b6b0b8901ee2c4523e70c4dc3562b1f23b0a8beaa4ca7feedf
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/02-abstract-only-access.md
+  value: .config/opencode/skills/qa-regression/references/checklist.md
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:5828564f355b488c9e862019e30c15c0c261dfc8f33f41446d3763a571b346e4
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:38268473742ab5a1d05331df9b0bc5bd885d0b7ab727626fee7271d2e4ad884e
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/03-observational-to-causal.md
+  value: .config/opencode/skills/qa-regression/references/deploy-check.md
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:ba080b38f2b7eb1c8be90300785f985f9b21f97fc68d14b95ff9a9d88e15bb09
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:2277a4b9d70b47b64ac2036becdf72c115db2dfe834c6e465b95973832ecba1b
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/04-animal-to-human.md
+  value: .config/opencode/skills/qa-regression/references/notion-report.md
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:e17675cb25c0532f7b3476a54750d4f1373a2ff12db4d43feecf84922c4efc70
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:4bfd23a091ace5095e1429d196ed85f7dd2bad6c90cc511a0e5c65e0141ffc1d
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/05-group-to-individual.md
+  value: .config/opencode/skills/qa-regression/scripts/check-datadog-monitors.sh
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:29ab954c31f05530c0929b95e0bfd56757f812af2ee930b034ffb00fc933f7c6
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:5dd6ce30f6d8f58f2f38eb6ec0e83c6c32d9e523e0302ff93a95697166311793
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/06-surrogate-marker-to-outcome.md
+  value: .config/opencode/skills/qa-regression/scripts/check-deploy.sh
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:85ded21b19dda01f3afdba9c0a0b9e6e4bf0407dd9a8da050f63fb4513a3aa6b
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:94f814fe6c417826d61844ed560a3b3ac6a95b42d3a32a7f29536456f1bde434
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/07-past-study-to-present.md
+  value: .config/opencode/skills/qa-regression/scripts/issue-login-link.sh
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:2e6b595ee926a5afe50dea3c542aceddb5353f310e3048f669e20c004e7d3f67
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:3673cf2cb05a88fea1afc524bfe12dd85bf1d73d0c7add4444e4df97d80a2af8
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/08-cross-cultural-transfer.md
+  value: .config/opencode/skills/qa-regression/scripts/login.sh
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:9bebb2285cb2c5bd20659be70d50f418b0cc98c43d8ef16a24b097b9500b2fb0
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:58a5b348aa6158122e9565fd2ac53681088d60845ca8fea4bc8c5d9643eb96b1
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/09-descriptive-to-mandate.md
+  value: .config/opencode/skills/qa-regression/scripts/prepare-product-csv.sh
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:02e9e9666645115bf94b8872a0665aabf4933b82dc00d10a11940d5f403dcd8b
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:6e3919c43f23ed09029c4fa0624f1c17f6372ba1123c03bc399efff64f65a9c1
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/10-bridging-evidence-justified.md
+  value: .config/opencode/skills/qa-regression/tests/.gitignore
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:cf021399d6ae2c68474aec1a77a5f06a57cef62a27b6dca178ffb69eaac05301
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:74ca265d0617bb8cbdf121f792125d7dee5f4ef32ade123420c3c42210d34b06
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/11-mixed-evidence.md
+  value: .config/opencode/skills/qa-regression/tests/check-deploy.test.sh
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:5cf38ce68375b7e79a91b12e3534a874ff4f23eaa4ca6a5e627434ec81806437
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:8275e0634d09fda2149a4da2e02313df8db0ce8742d6a5f583b222ed2fb4a58d
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/12-correction-retraction.md
+  value: .config/opencode/skills/qa-regression/tests/global-setup.ts
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:49195b708604a7a40ab70400a00eaa7fdc64a7a1b85d78a8cf9b74cd921d8f75
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:ddfc91c0469d12e6f899949878bd3a89169948469b75942793aee14d20e43e90
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/RESULTS.md
+  value: .config/opencode/skills/qa-regression/tests/helpers.ts
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:518b78b00fb88d27f4ec22bd207a914f4336b32ebe997e404f78ef0fda725def
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:20a7b190de09cc6d2b6973b3420c2503cfa3815a264806bb2bc3b43bd054d409
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/results/01-direct-support.md
+  value: .config/opencode/skills/qa-regression/tests/package-lock.json
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:b0ed7a276d18082a6697f104427f0be11a78a9c6a916c0cfa737c7fc088f22cf
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:f978cf1e2db6799da39a3a04998f6ed8ac7e5f1a3fbe831a3b51357e25b1cb3e
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/results/02-abstract-only-access.md
+  value: .config/opencode/skills/qa-regression/tests/package.json
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:940aab7a4a6fd3d6f9deff074f717b016fb3798e1947147d1c0190191a54aa72
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:cfed27b1dbd5804129081df39a1b202a8046c06122c5fcc437b6ca5d885f3336
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/results/03-observational-to-causal.md
+  value: .config/opencode/skills/qa-regression/tests/playwright.config.ts
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:30da5c4df7948f358b78a0a5bd4c2ff84f9db93782dda7d73fc02336c2246875
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:b3ed702becb34243dccf0713eda08a436ac171a7a8a0ea7e8d5d36ffb87fb5b4
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/results/04-animal-to-human.md
+  value: .config/opencode/skills/qa-regression/tests/specs/orders.spec.ts
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:19174fe2b56f8d684d5784ce9ae27e527c4091d7b6b1fd0c921e866270d6ad6a
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:69558d78adb396b154ef3feac99a4c98345a2bb3f5b1b1e88fd2be1683dbea84
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/results/05-group-to-individual.md
+  value: .config/opencode/skills/qa-regression/tests/specs/products.spec.ts
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:6408334ef4611faeeb9ef7d556f87e86d063f6367ee102be2639f2879bd258e3
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:deb3abf0d3809756ece6a2b786584f7e080e84fdb49d7f2f2c6f5e8fb124535e
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/results/06-surrogate-marker-to-outcome.md
+  value: .config/opencode/skills/qa-regression/tests/specs/release-additions.spec.ts
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:7c6b549c087982652f48862b7152678c8b2422b640d5da51843fece100ca907a
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:b1bb4e4936bb056994d4a4959a099908d521035e93f9d1b5cc790143c78dea80
 - kind: project-relative
   target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/results/07-past-study-to-present.md
+  value: .config/opencode/skills/qa-regression/tests/specs/sale-suggestions.spec.ts
   runtime: null
   scope: user
   owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:ba27803fa3b3cee9e02b7ef2a0aef0eb871de5cf09a07e638e8f4a03554ae5a0
-- kind: project-relative
-  target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/results/08-cross-cultural-transfer.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:0b6404d0eca5f21ff31984d5393f439809c17c1d8f1d3d61f0442ded58db18bf
-- kind: project-relative
-  target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/results/09-descriptive-to-mandate.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:41acda16001dbb813fa6c162ab2948c13213c42edb9b2a95d4976bbd283a1046
-- kind: project-relative
-  target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/results/10-bridging-evidence-justified.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:9144b8d46af5d7af77082b21bb16c7927fbaf03bb242caab315aa4be9ad1cdcc
-- kind: project-relative
-  target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/results/11-mixed-evidence.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:47a2f0e44a4c983e7d484260cc1aefba89bbb4cf684df5f895d2cb0797818044
-- kind: project-relative
-  target: opencode
-  value: .config/opencode/skills/research-transfer-checker/evals/results/12-correction-retraction.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:0a2957ccb0e0657358fa4fce6666781e0e584aea6c162810c1ae1a4c779bc37b
-- kind: project-relative
-  target: opencode
-  value: .config/opencode/skills/research-transfer-checker/references/bridging-search.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:c9e20f87234cea72b57562d5453bc9564175baee1d90ed3f45503d2d3a14c304
-- kind: project-relative
-  target: opencode
-  value: .config/opencode/skills/research-transfer-checker/references/decision-rubric.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:ae95a836ffcfa3f696a61f66dfff73ea1c4c583dd8f40ee606f1d202fe373ff1
-- kind: project-relative
-  target: opencode
-  value: .config/opencode/skills/research-transfer-checker/references/harm-assessment.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:ff2dcecce4dd21e1d2cd77ca44764837ac517af5f097cdca3f3bd226ab64a0ef
-- kind: project-relative
-  target: opencode
-  value: .config/opencode/skills/research-transfer-checker/references/standards-map.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:4836f7799c1c6db77a0705e2581ad4830ade0ea06288ff08734749aa629359f1
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:6ae6b00ca1ee5ad52f458fd975718f15307fdbf0cd12ba3636760958c393e764
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/shakedown
@@ -4411,7 +4769,7 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:a7331b83d543f587e701ef8917ee130842187a7549ac71e98c703e793a8fe225
+  content_hash: sha256:81a1a10ac6937d85d2cab78843fd8e62eaabad7af46d945776e787acd06c1d9a
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/shakedown/references/rebaseline.md
@@ -4501,7 +4859,25 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:8a6ca596a6f23a2e8eb32dba6e3fa633474db545cb69afad56e6a634ecb0d52c
+  content_hash: sha256:a9fe728d256eef32bcbb0b47c24a401cbb25b11d837ad80b9ae3b49f0983c293
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/water-plus-triage
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: null
+- kind: project-relative
+  target: opencode
+  value: .config/opencode/skills/water-plus-triage/SKILL.md
+  runtime: null
+  scope: user
+  owners:
+  - x-asia/kauche-app/.claude/marketplace/plugins/partner
+  active_owner: x-asia/kauche-app/.claude/marketplace/plugins/partner
+  content_hash: sha256:2e991354af9e3a5564f2597ea2a8bb37f7d47ce4f906d0a9dffd9bf532dcbac6
 - kind: project-relative
   target: opencode
   value: .config/opencode/skills/why-man
@@ -4519,40 +4895,4 @@ deployments:
   owners:
   - maro114510/skills
   active_owner: maro114510/skills
-  content_hash: sha256:d5fd24e7ffc3542982c8f3eba4ce0d315327a988073ed2f77422fdbdcd6b1b77
-- kind: project-relative
-  target: opencode
-  value: .config/opencode/skills/write-researched-document
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: null
-- kind: project-relative
-  target: opencode
-  value: .config/opencode/skills/write-researched-document/SKILL.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:c52561c4b94df76640ac2b05d128eaeae2679eeb3cf398eb9a4c0f3eb9676be7
-- kind: project-relative
-  target: opencode
-  value: .config/opencode/skills/write-researched-document/agents/openai.yaml
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:1421516b58df14e15896071d2bb116367f59a3186ba7a66e502ecd92e75d6a6d
-- kind: project-relative
-  target: opencode
-  value: .config/opencode/skills/write-researched-document/references/evidence-workflow.md
-  runtime: null
-  scope: user
-  owners:
-  - maro114510/skills
-  active_owner: maro114510/skills
-  content_hash: sha256:51de21573a16a72db453f79debd7fdc9facfc8e6fc1cc26ecf6e090a30e1e0a5
+  content_hash: sha256:761ade2d3fd6d54bdd2b3a8cb702689f5f1b0855d93788f1c06b3a9baab3c41b
