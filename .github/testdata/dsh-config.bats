@@ -383,6 +383,14 @@ run_supervisor() {
   grep -A1 '<key>RunAtLoad</key>' "${agent}" | grep -q '<true/>'
 }
 
+@test "a LaunchAgent puts the user's local bin on the server's PATH so a session can run dsh" {
+  run apply_agent
+  [ "$status" -eq 0 ]
+  agent="${home_dir}/Library/LaunchAgents/local.dsh-web.plist"
+  agent_path="$(grep -A1 '<key>PATH</key>' "${agent}" | sed -n 's|.*<string>\(.*\)</string>.*|\1|p')"
+  [[ ":${agent_path}:" == *":${home_dir}/.local/bin:"* ]]
+}
+
 @test "the supervisor reports the resolved and last good releases" {
   supervisor_env
   run_supervisor check
