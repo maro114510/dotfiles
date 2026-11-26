@@ -4,10 +4,12 @@ Turns a small Issue into a draft pull request in GitHub Actions without the owne
 
 ## When a run starts
 
-- issue-size labels a newly opened Issue `size/S`, once per Issue.
+- issue-size labels a newly opened Issue `size/S`. Its label job then starts this workflow with `workflow_dispatch`, because a label that `GITHUB_TOKEN` adds starts no workflow, and a dispatch does. Only the run that issue-size started for the opening does this, so a later re-judged size starts nothing.
 - The owner adds the `opencode` label, to run again.
 
-Only Issues opened by the owner or maronium[bot] run. An edit to the Issue does not cancel a run already started.
+Only Issues opened by the owner or maronium[bot] run. A run is separate from issue-size, so a later edit does not cancel it. An edit before issue-size finishes cancels issue-size itself, and then no run starts; the owner adds the `opencode` label instead.
+
+The issue-size caller also needs Actions write to dispatch.
 
 ## Two jobs
 
@@ -28,7 +30,7 @@ Each repository allows GitHub Actions to create pull requests. The checks on suc
 
 ## Layout
 
-A reusable workflow in this repository, called from each repository as with issue-size.
+A reusable workflow in this repository, called from each repository as with issue-size, and run apart from it.
 
 ## Appendix
 
@@ -39,12 +41,14 @@ Items this design does not cover, listed without a decision.
 - Fixing an existing pull request from a comment on it.
 - Running OpenCode on Issues already open when this is deployed.
 - A queue or a limit on concurrent runs.
+- Replacing the 7-day key on schedule; a run after it expires fails.
 - A separate Go plan for CI, so a leak cannot stop local work.
 
 ### Paths
 
 - A local agent acting as the owner opens an Issue or adds the `opencode` label after reading steering text.
 - An Issue body written by maronium[bot] carries steering text from what its agent read.
+- maronium[bot] adds the `opencode` label, which starts a run as the owner's label does.
 - The model reaches the network or files outside the checkout through its shell.
 - The patch artifact holds the key, and anyone who can read the repository downloads it.
 - A file in the patch runs on checkout or when a tool starts, such as `mise.toml`, `.envrc`, or `.opencode/`.
