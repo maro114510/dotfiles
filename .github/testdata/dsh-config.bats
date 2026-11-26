@@ -236,6 +236,7 @@ wrapper_env() {
   export STUB_DIR="${stub_dir}"
   export HOME="${home_dir}"
   export XDG_STATE_HOME="${home_dir}/.local/state"
+  export XDG_CONFIG_HOME="${home_dir}/.config"
   seed_pin '0.2.2-rc.3'
 }
 
