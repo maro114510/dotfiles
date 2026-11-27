@@ -34,9 +34,9 @@ fi
 
 guard="$(dirname "${BASH_SOURCE[0]}")/opencode-guard.sh"
 
-"${guard}" patch "${patch}"
 git apply --index --whitespace=nowarn "${patch}"
 git diff --cached --name-only -z --no-renames HEAD | "${guard}" paths
+"${guard}" staged
 
 branch="opencode/issue-${issue}-${run_id}"
 git switch -q -c "${branch}"

@@ -2,12 +2,14 @@
 # Refuses what a model-written change must not carry into a pull request.
 #
 # Usage:
-#   opencode-guard.sh patch <patch-file>   refuse a patch holding the API key
+#   opencode-guard.sh staged               refuse staged changes holding the API key
 #   opencode-guard.sh paths                refuse NUL-separated paths on stdin
 #
-# patch: the repository is public and the model can read the key from its
-#   environment, so a patch holding the key format "oc_sk_" or this run's key
-#   value is refused.
+# staged: the repository is public and the model can read the key from its
+#   environment, so staged changes holding the key format "oc_sk_" or this run's
+#   key value are refused. The staged content is searched as text, never the
+#   patch that carries it, because git stores a binary file, or any file that
+#   .gitattributes marks binary, as compressed base85.
 # paths: a workflow, and a file that runs when the checkout is opened or a tool
 #   starts, never come from the model. Names are compared case-insensitively,
 #   at any depth, because macOS resolves .GitHub to .github.
@@ -21,18 +23,20 @@ refused_names=(
 )
 
 case "${1:-}" in
-  patch)
-    [[ $# -eq 2 ]] || { echo "Usage: opencode-guard.sh patch <patch-file>" >&2; exit 2; }
-    file=$2
-    if grep -qF 'oc_sk_' "${file}"; then
-      echo "opencode-guard: the patch holds the API key format" >&2
-      exit 1
-    fi
-    if [[ -n "${OPENCODE_API_KEY:-}" ]] && grep -qF -- "${OPENCODE_API_KEY}" "${file}"; then
-      echo "opencode-guard: the patch holds this run's API key" >&2
-      exit 1
-    fi
-    ;;
+staged)
+  [[ $# -eq 1 ]] || { echo "Usage: opencode-guard.sh staged" >&2; exit 2; }
+  diff="$(mktemp)"
+  trap 'rm -f "${diff}"' EXIT
+  git diff --cached --text --no-color --no-ext-diff --no-textconv HEAD >"${diff}"
+  if grep -aqF 'oc_sk_' "${diff}"; then
+    echo "opencode-guard: the staged changes hold the API key format" >&2
+    exit 1
+  fi
+  if [[ -n "${OPENCODE_API_KEY:-}" ]] && grep -aqF -- "${OPENCODE_API_KEY}" "${diff}"; then
+    echo "opencode-guard: the staged changes hold this run's API key" >&2
+    exit 1
+  fi
+  ;;
   paths)
     [[ $# -eq 1 ]] || { echo "Usage: opencode-guard.sh paths" >&2; exit 2; }
     status=0
@@ -52,7 +56,7 @@ case "${1:-}" in
     exit "${status}"
     ;;
   *)
-    echo "Usage: opencode-guard.sh patch <patch-file> | paths" >&2
+    echo "Usage: opencode-guard.sh staged | paths" >&2
     exit 2
     ;;
 esac
