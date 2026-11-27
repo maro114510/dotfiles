@@ -13,7 +13,7 @@ The issue-size caller also needs Actions write to dispatch.
 
 ## Two jobs
 
-No job holds both the model key and a token that can write.
+No job holds both the model key and a token that can write, except that the model can write the key into the patch, and Publish applies it. The Appendix leaves that open.
 
 | Job | Holds | Does |
 |---|---|---|
@@ -25,7 +25,7 @@ Each repository allows GitHub Actions to create pull requests. The checks on suc
 ## Model and key
 
 - The model is `opencode-go/deepseek-v4.1-flash` on the owner's OpenCode Go plan.
-- The key belongs to a service account, can only call models, expires after 7 days, and has a `$0` budget, so it cannot spend beyond the Go allowance.
+- The key belongs to a service account, can only call models, expires after 7 days, and has a `$0` budget. The budget blocks every spend that counts toward budgets, and Go usage within the plan does not count. It does not cover a model on an own provider without a price, so the workspace must have no such provider; with one, a leaked key can spend beyond the Go allowance.
 - The model can read the key through its shell. If it leaks, the worst case is the month's Go allowance, which local work shares.
 
 ## Layout
@@ -43,6 +43,7 @@ Items this design does not cover, listed without a decision.
 - A queue or a limit on concurrent runs.
 - Replacing the 7-day key on schedule; a run after it expires fails.
 - A separate Go plan for CI, so a leak cannot stop local work.
+- Enforcing that the workspace has no own provider without a price.
 
 ### Paths
 
