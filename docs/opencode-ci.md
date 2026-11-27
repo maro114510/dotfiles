@@ -32,7 +32,7 @@ Each repository allows GitHub Actions to create pull requests. A pull request th
 
 A reusable workflow in this repository, called from each repository as with issue-size, and run apart from it. Its scripts are in `.github/scripts/` and are fetched from `main`, as issue-size does. A caller in each repository starts it on the `opencode` label or by hand with an Issue number, and passes the key as the `OPENCODE_API_KEY` secret and the required workflows to start.
 
-The branch is `opencode/issue-<Issue>-<run id>`, so a rerun never meets an earlier branch. The pull request's title and body are fixed text and copy nothing from the Issue or the model. OpenCode is pinned by version and checksum in the reusable workflow, and its project config is off.
+The branch is `opencode/issue-<Issue>-<run id>-<attempt>`, so a rerun never meets an earlier branch. The pull request's title and body are fixed text and copy nothing from the Issue or the model. OpenCode is pinned by version and checksum in the reusable workflow, and its project config is off.
 
 ## Blocks
 
