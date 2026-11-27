@@ -1,0 +1,158 @@
+# Turns an Issue into a draft pull request with OpenCode.
+#
+# This file is called by a small workflow in each repository that wants the
+# behavior: the caller declares the triggers and the permissions, and passes
+# the OPENCODE_API_KEY secret. See docs/opencode-ci.md for the design.
+#
+# The work is split in two jobs so that no job holds both the model key and a
+# token that can write:
+#   - generate holds the key and read-only access. It runs OpenCode on the
+#     Issue and hands over a patch. It refuses a patch holding the key before
+#     uploading it, because the artifact is public in a public repository.
+#   - publish holds the token that can write and no key. It applies the patch to
+#     the commit the run started on, refuses files it must not take, opens a
+#     draft pull request, and starts each required workflow on its branch.
+#
+# The Issue text is untrusted input: it reaches the model only through a file
+# the script writes, and never enters a command line.
+name: reusable-opencode
+
+on:
+  workflow_call:
+    inputs:
+      issue:
+        description: The Issue number
+        required: true
+        type: string
+      required-workflows:
+        description: Space-separated workflow files the ruleset requires, started on the pull request's branch
+        required: false
+        default: ''
+        type: string
+    secrets:
+      OPENCODE_API_KEY:
+        required: true
+
+env:
+  SCRIPTS_URL: https://raw.githubusercontent.com/maro114510/dotfiles/main/.github/scripts
+
+jobs:
+  generate:
+    name: Generate a patch with OpenCode
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: read
+    outputs:
+      has-patch: ${{ steps.collect.outputs.has-patch }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Fetch the scripts
+        run: |
+          mkdir -p "${RUNNER_TEMP}/scripts"
+          for name in opencode-issue.sh opencode-guard.sh; do
+            curl -fsS --retry 2 -o "${RUNNER_TEMP}/scripts/${name}" "${SCRIPTS_URL}/${name}"
+            chmod +x "${RUNNER_TEMP}/scripts/${name}"
+          done
+
+      - name: Read the Issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ inputs.issue }}
+        run: '"${RUNNER_TEMP}/scripts/opencode-issue.sh" "${REPO}" "${ISSUE}" "${RUNNER_TEMP}/prompt.md"'
+
+      - name: Install OpenCode
+        env:
+          OPENCODE_VERSION: 2.3.2
+          OPENCODE_SHA256: 563b5d663637226b6e3bb4bb6803281bc39b0d2cd88db06d674b6420aab009b0
+        run: |
+          curl -fsSL --retry 2 -o "${RUNNER_TEMP}/opencode.tar.gz" \
+            "https://github.com/anomalyco/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-x64.tar.gz"
+          echo "${OPENCODE_SHA256}  ${RUNNER_TEMP}/opencode.tar.gz" | sha256sum -c -
+          mkdir -p "${RUNNER_TEMP}/opencode-bin"
+          tar -xzf "${RUNNER_TEMP}/opencode.tar.gz" -C "${RUNNER_TEMP}/opencode-bin"
+          echo "${RUNNER_TEMP}/opencode-bin" >>"${GITHUB_PATH}"
+
+      # The project's own OpenCode config is off and the denials come from the
+      # environment, so a file in the checkout cannot loosen them.
+      - name: Run OpenCode
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          OPENCODE_DISABLE_PROJECT_CONFIG: '1'
+          OPENCODE_CONFIG_CONTENT: >-
+            {"update":"disable","snapshots":false,"permissions":[
+            {"action":"external_directory","resource":"*","effect":"deny"},
+            {"action":"webfetch","resource":"*","effect":"deny"},
+            {"action":"websearch","resource":"*","effect":"deny"},
+            {"action":"question","resource":"*","effect":"deny"},
+            {"action":"shell","resource":"git commit *","effect":"deny"},
+            {"action":"shell","resource":"git push *","effect":"deny"}]}
+        run: opencode run --standalone --auto -m opencode-go/deepseek-v4.1-flash "$(cat "${RUNNER_TEMP}/prompt.md")"
+
+      - name: Collect the patch
+        id: collect
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+        run: |
+          git add -A
+          git diff --cached --binary >"${RUNNER_TEMP}/opencode.patch"
+          if [[ ! -s "${RUNNER_TEMP}/opencode.patch" ]]; then
+            echo "OpenCode changed nothing"
+            echo 'has-patch=false' >>"${GITHUB_OUTPUT}"
+            exit 0
+          fi
+          "${RUNNER_TEMP}/scripts/opencode-guard.sh" patch "${RUNNER_TEMP}/opencode.patch"
+          echo 'has-patch=true' >>"${GITHUB_OUTPUT}"
+
+      - name: Upload the patch
+        if: steps.collect.outputs.has-patch == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: opencode-patch
+          path: ${{ runner.temp }}/opencode.patch
+          retention-days: 1
+          if-no-files-found: error
+
+  publish:
+    name: Open a draft pull request
+    needs: generate
+    if: needs.generate.outputs.has-patch == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Fetch the scripts
+        run: |
+          mkdir -p "${RUNNER_TEMP}/scripts"
+          for name in opencode-publish.sh opencode-guard.sh; do
+            curl -fsS --retry 2 -o "${RUNNER_TEMP}/scripts/${name}" "${SCRIPTS_URL}/${name}"
+            chmod +x "${RUNNER_TEMP}/scripts/${name}"
+          done
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: opencode-patch
+          path: ${{ runner.temp }}/patch
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ inputs.issue }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REQUIRED_WORKFLOWS: ${{ inputs.required-workflows }}
+        run: |
+          read -r -a required <<<"${REQUIRED_WORKFLOWS}"
+          "${RUNNER_TEMP}/scripts/opencode-publish.sh" "${REPO}" "${ISSUE}" "${RUN_ID}" "${RUN_URL}" \
+            "${RUNNER_TEMP}/patch/opencode.patch" "${required[@]}"
