@@ -83,3 +83,69 @@ issue_json() {
   [ "$status" -eq 0 ]
   grep -qF "Only a title" "${sandbox}/prompt.md"
 }
+
+# guard
+
+guard_script() { printf '%s\n' "${repo_root}/.github/scripts/opencode-guard.sh"; }
+
+patch_with() {
+  printf '%s\n' "diff --git a/x b/x" "+++ b/x" "+$1" >"${sandbox}/change.patch"
+  printf '%s\n' "${sandbox}/change.patch"
+}
+
+
+@test "a patch with no key passes" {
+  run "$(guard_script)" patch "$(patch_with 'echo hello')"
+  [ "$status" -eq 0 ]
+}
+
+@test "a patch holding the key format is refused" {
+  run "$(guard_script)" patch "$(patch_with 'token=oc_sk_abc123')"
+  [ "$status" -eq 1 ]
+}
+
+@test "a patch holding the run's key value is refused" {
+  OPENCODE_API_KEY=value-without-the-prefix run "$(guard_script)" patch "$(patch_with 'x=value-without-the-prefix')"
+  [ "$status" -eq 1 ]
+}
+
+@test "an empty key value does not refuse every patch" {
+  OPENCODE_API_KEY= run "$(guard_script)" patch "$(patch_with 'echo hello')"
+  [ "$status" -eq 0 ]
+}
+
+@test "ordinary paths pass" {
+  run bash -c "printf '%s\0' README.md docs/opencode-ci.md .github-notes.md | '$(guard_script)' paths"
+  [ "$status" -eq 0 ]
+}
+
+@test "a path under .github is refused" {
+  run bash -c "printf '%s\0' README.md .github/workflows/x.yml | '$(guard_script)' paths"
+  [ "$status" -eq 1 ]
+  [[ "$output" == *".github/workflows/x.yml"* ]]
+}
+
+@test "a refused path is refused in any letter case" {
+  run bash -c "printf '%s\0' .GitHub/workflows/x.yml | '$(guard_script)' paths"
+  [ "$status" -eq 1 ]
+  run bash -c "printf '%s\0' Mise.toml | '$(guard_script)' paths"
+  [ "$status" -eq 1 ]
+  run bash -c "printf '%s\0' .ENVRC | '$(guard_script)' paths"
+  [ "$status" -eq 1 ]
+}
+
+@test "files that run on checkout are refused at any depth" {
+  run bash -c "printf '%s\0' sub/dir/.envrc | '$(guard_script)' paths"
+  [ "$status" -eq 1 ]
+  run bash -c "printf '%s\0' sub/mise.toml | '$(guard_script)' paths"
+  [ "$status" -eq 1 ]
+  run bash -c "printf '%s\0' sub/.opencode/agents/a.md | '$(guard_script)' paths"
+  [ "$status" -eq 1 ]
+}
+
+@test "a path with a space or a newline is read as one path" {
+  run bash -c "printf '%s\0' 'a dir/file.md' \$'odd\nname.md' | '$(guard_script)' paths"
+  [ "$status" -eq 0 ]
+  run bash -c "printf '%s\0' 'a dir/.github/x' | '$(guard_script)' paths"
+  [ "$status" -eq 1 ]
+}
