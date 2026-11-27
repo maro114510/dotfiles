@@ -106,29 +106,57 @@ issue_json() {
 
 guard_script() { printf '%s\n' "${repo_root}/.github/scripts/opencode-guard.sh"; }
 
-patch_with() {
-  printf '%s\n' "diff --git a/x b/x" "+++ b/x" "+$1" >"${sandbox}/change.patch"
-  printf '%s\n' "${sandbox}/change.patch"
+# A repository holding README.md, with the given content staged as the file and
+# the cwd moved into it. The content is printf-formatted, so \0 writes a NUL.
+stage_file() {
+  git init -q "${sandbox}/staged"
+  cd "${sandbox}/staged"
+  git config user.name test
+  git config user.email test@example.test
+  printf "base\n" >README.md
+  git add README.md
+  git commit -q -m init
+  # shellcheck disable=SC2059
+  printf "$2" >"$1"
+  git add -A
 }
 
-@test "a patch with no key passes" {
-  run "$(guard_script)" patch "$(patch_with 'echo hello')"
+@test "staged changes with no key pass" {
+  stage_file notes.txt "echo hello\n"
+  run "$(guard_script)" staged
   [ "$status" -eq 0 ]
 }
 
-@test "a patch holding the key format is refused" {
-  run "$(guard_script)" patch "$(patch_with 'token=oc_sk_abc123')"
+@test "a staged file holding the key format is refused" {
+  stage_file notes.txt "token=oc_sk_abc123\n"
+  run "$(guard_script)" staged
   [ "$status" -eq 1 ]
 }
 
-@test "a patch holding the run's key value is refused" {
-  OPENCODE_API_KEY=value-without-the-prefix run "$(guard_script)" patch "$(patch_with 'x=value-without-the-prefix')"
+@test "a staged file holding the run's key value is refused" {
+  stage_file notes.txt "x=value-without-the-prefix\n"
+  OPENCODE_API_KEY=value-without-the-prefix run "$(guard_script)" staged
   [ "$status" -eq 1 ]
 }
 
-@test "an empty key value does not refuse every patch" {
-  OPENCODE_API_KEY= run "$(guard_script)" patch "$(patch_with 'echo hello')"
+@test "an empty key value does not refuse every change" {
+  stage_file notes.txt "echo hello\n"
+  OPENCODE_API_KEY= run "$(guard_script)" staged
   [ "$status" -eq 0 ]
+}
+
+@test "a staged binary file holding the key format is refused" {
+  stage_file blob.bin "bin\0data oc_sk_abc123 more\0"
+  run "$(guard_script)" staged
+  [ "$status" -eq 1 ]
+}
+
+@test "a key is refused even when .gitattributes marks every file binary" {
+  stage_file notes.txt "token=oc_sk_abc123\n"
+  printf "* binary\n" >.gitattributes
+  git add -A
+  run "$(guard_script)" staged
+  [ "$status" -eq 1 ]
 }
 
 @test "ordinary paths pass" {
@@ -195,6 +223,16 @@ change_patch() {
   git clean -qfd
 }
 
+# Like change_patch, for a file whose content holds a NUL byte, so that git
+# stores it as a binary patch.
+change_patch_binary() {
+  printf 'bin\0data %s more\0' "$2" >"$1"
+  git add -A
+  git diff --cached --binary >"${sandbox}/change.patch"
+  git reset -q --hard HEAD
+  git clean -qfd
+}
+
 origin_branches() {
   git --git-dir="${sandbox}/origin.git" for-each-ref --format='%(refname:short)' refs/heads
 }
@@ -235,6 +273,15 @@ origin_branches() {
 @test "a patch holding the key format pushes nothing and opens no pull request" {
   make_clone
   change_patch README.md "token oc_sk_abc123"
+  run "$(publish_script)" maro114510/dotfiles 7 123 https://example.test/run/123 "${sandbox}/change.patch"
+  [ "$status" -eq 1 ]
+  [ "$(origin_branches)" = "main" ]
+  ! grep -q '^pr create' "${GH_LOG}"
+}
+
+@test "a binary file holding the key format pushes nothing and opens no pull request" {
+  make_clone
+  change_patch_binary blob.bin oc_sk_abc123
   run "$(publish_script)" maro114510/dotfiles 7 123 https://example.test/run/123 "${sandbox}/change.patch"
   [ "$status" -eq 1 ]
   [ "$(origin_branches)" = "main" ]
