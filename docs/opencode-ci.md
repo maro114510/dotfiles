@@ -20,7 +20,7 @@ No job holds both the model key and a token that can write, except that the mode
 | Generate | The model key, read-only access | Runs OpenCode on the Issue's title and body, and hands over a patch |
 | Publish | `GITHUB_TOKEN` that can write | Applies the patch to the event's commit, refuses it if it touches `.github/`, and opens a draft pull request |
 
-Each repository allows GitHub Actions to create pull requests. The checks on such a pull request start after the owner approves them.
+Each repository allows GitHub Actions to create pull requests. A pull request that `GITHUB_TOKEN` opens starts no `pull_request` workflow, and there is nothing for the owner to approve, so a required check never reports and the ruleset blocks the merge. After opening the pull request, Publish therefore starts each required check with `workflow_dispatch` on the pull request's branch, so its result attaches to the head commit. The check's workflow accepts `workflow_dispatch`, and the Actions write that dispatching needs belongs to Publish only. Whether a dispatched run satisfies the ruleset's required check is not yet verified; the implementation Issue verifies it first, and if it does not, Publish opens the pull request with a GitHub App or a personal access token instead, kept out of Generate.
 
 ## Model and key
 
