@@ -259,6 +259,7 @@ origin_branches() {
   [[ "${pr}" == *"--head opencode/issue-7-123"* ]]
   [[ "${pr}" == *"Closes #7"* ]]
   [[ "${pr}" == *"https://example.test/run/123"* ]]
+  [[ "${pr}" == *"Close and reopen this pull request to start its checks"* ]]
 }
 
 @test "a patch that touches .github pushes nothing and opens no pull request" {
@@ -341,4 +342,13 @@ origin_branches() {
   run "$(publish_script)" maro114510/dotfiles 7 123-2 https://example.test/run/123 "${sandbox}/change.patch"
   [ "$status" -eq 0 ]
   [[ "$(origin_branches)" == *"opencode/issue-7-123-2"* ]]
+}
+
+@test "a workflow file is refused because a dispatched run cannot satisfy a required check" {
+  make_clone
+  change_patch README.md "hello, world"
+  run "$(publish_script)" maro114510/dotfiles 7 123 https://example.test/run/123 "${sandbox}/change.patch" secret-scan.yml
+  [ "$status" -eq 2 ]
+  [ "$(origin_branches)" = "main" ]
+  ! grep -q '^workflow run' "${GH_LOG}"
 }
