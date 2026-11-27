@@ -25,7 +25,6 @@ printf '%s\n' "${*//$'\n'/ }" >>"${GH_LOG}"
 case "$*" in
   "api repos/"*"/issues/"*) cat "${GH_ISSUE_FILE}" ;;
   "api repos/"*" --jq .default_branch") echo main ;;
-  "workflow run "*) [[ -z "${GH_FAIL_DISPATCH:-}" ]] || exit 1 ;;
 esac
 EOF
   chmod +x "${sandbox}/bin/gh"
@@ -300,30 +299,12 @@ origin_branches() {
   ! grep -q '^pr create' "${GH_LOG}"
 }
 
-@test "each required workflow is started on the new branch after the pull request opens" {
-  make_clone
-  change_patch README.md "hello, world"
-  run "$(publish_script)" maro114510/dotfiles 7 123 https://example.test/run/123 "${sandbox}/change.patch" secret-scan.yml bats.yml
-  [ "$status" -eq 0 ]
-  grep -qx 'workflow run secret-scan.yml --repo maro114510/dotfiles --ref opencode/issue-7-123' "${GH_LOG}"
-  grep -qx 'workflow run bats.yml --repo maro114510/dotfiles --ref opencode/issue-7-123' "${GH_LOG}"
-  [ "$(grep -n '^pr create' "${GH_LOG}" | cut -d: -f1)" -lt "$(grep -n '^workflow run' "${GH_LOG}" | head -1 | cut -d: -f1)" ]
-}
-
-@test "no workflow is started when none is required" {
+@test "no workflow run is started after the pull request opens" {
   make_clone
   change_patch README.md "hello, world"
   run "$(publish_script)" maro114510/dotfiles 7 123 https://example.test/run/123 "${sandbox}/change.patch"
   [ "$status" -eq 0 ]
   ! grep -q '^workflow run' "${GH_LOG}"
-}
-
-@test "a workflow that fails to start fails the run after the pull request exists" {
-  make_clone
-  change_patch README.md "hello, world"
-  GH_FAIL_DISPATCH=1 run "$(publish_script)" maro114510/dotfiles 7 123 https://example.test/run/123 "${sandbox}/change.patch" secret-scan.yml
-  [ "$status" -ne 0 ]
-  grep -q '^pr create' "${GH_LOG}"
 }
 
 @test "an Issue number or run id that is not digits is refused before any change" {
