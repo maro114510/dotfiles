@@ -23,10 +23,6 @@ permissions:
   issues: read
   actions: write
 
-concurrency:
-  group: opencode-${{ github.event.issue.number || inputs.issue }}
-  cancel-in-progress: false
-
 jobs:
   run:
     if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'opencode'

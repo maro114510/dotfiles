@@ -49,6 +49,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ github.sha }}
           persist-credentials: false
 
       - name: Fetch the scripts
@@ -85,13 +86,12 @@ jobs:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           OPENCODE_DISABLE_PROJECT_CONFIG: '1'
           OPENCODE_CONFIG_CONTENT: >-
-            {"update":"disable","snapshots":false,"permissions":[
+            {"permissions":[
             {"action":"external_directory","resource":"*","effect":"deny"},
             {"action":"webfetch","resource":"*","effect":"deny"},
             {"action":"websearch","resource":"*","effect":"deny"},
             {"action":"question","resource":"*","effect":"deny"},
-            {"action":"shell","resource":"git commit *","effect":"deny"},
-            {"action":"shell","resource":"git push *","effect":"deny"}]}
+            {"action":"shell","resource":"git commit *","effect":"deny"}]}
         run: opencode run --standalone --auto -m opencode-go/deepseek-v4.1-flash "$(cat "${RUNNER_TEMP}/prompt.md")"
 
       - name: Collect the patch
@@ -130,6 +130,8 @@ jobs:
       actions: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
 
       - name: Fetch the scripts
         run: |
