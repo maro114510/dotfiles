@@ -2,11 +2,11 @@
 # Applies a model-written patch to the checked-out commit and opens a draft
 # pull request, then starts each required workflow on the new branch.
 #
-# Usage: opencode-publish.sh <owner/repo> <issue-number> <run-id> <run-url> <patch-file> [workflow-file...]
+# Usage: opencode-publish.sh <owner/repo> <issue-number> <run-id[-attempt]> <run-url> <patch-file> [workflow-file...]
 #
 # Run it inside a checkout whose origin accepts the push. Nothing is pushed
 # unless the patch applies and passes opencode-guard.sh, which must sit beside
-# this script. The branch is named from the Issue and the run, so a rerun never
+# this script. The branch is named from the Issue, the run and its attempt, so a rerun never
 # meets an earlier branch. The title and body are fixed text: nothing from the
 # Issue or the model is copied into them.
 #
@@ -16,7 +16,7 @@
 set -euo pipefail
 
 if [[ $# -lt 5 ]]; then
-  echo "Usage: opencode-publish.sh <owner/repo> <issue-number> <run-id> <run-url> <patch-file> [workflow-file...]" >&2
+  echo "Usage: opencode-publish.sh <owner/repo> <issue-number> <run-id[-attempt]> <run-url> <patch-file> [workflow-file...]" >&2
   exit 2
 fi
 
@@ -27,8 +27,8 @@ run_url=$4
 patch=$5
 shift 5
 
-if [[ ! "${issue}" =~ ^[0-9]+$ || ! "${run_id}" =~ ^[0-9]+$ ]]; then
-  echo "opencode-publish: the Issue number and run id must be digits" >&2
+if [[ ! "${issue}" =~ ^[0-9]+$ || ! "${run_id}" =~ ^[0-9]+(-[0-9]+)?$ ]]; then
+  echo "opencode-publish: the Issue number must be digits and the run id digits with an optional -attempt" >&2
   exit 2
 fi
 
