@@ -86,6 +86,22 @@ issue_json() {
   grep -qF "Only a title" "${sandbox}/prompt.md"
 }
 
+@test "a body longer than 20000 characters is cut so the prompt fits one argument" {
+  body="$(head -c 20000 /dev/zero | tr "\0" a)TAILMARK"
+  issue_json maro114510 "Long" "${body}"
+  run "${issue_script}" maro114510/dotfiles 7 "${sandbox}/prompt.md"
+  [ "$status" -eq 0 ]
+  ! grep -qF TAILMARK "${sandbox}/prompt.md"
+}
+
+@test "a body of exactly 20000 characters is kept whole" {
+  body="$(head -c 19999 /dev/zero | tr "\0" a)Z"
+  issue_json maro114510 "Edge" "${body}"
+  run "${issue_script}" maro114510/dotfiles 7 "${sandbox}/prompt.md"
+  [ "$status" -eq 0 ]
+  grep -qF "aZ" "${sandbox}/prompt.md"
+}
+
 # guard
 
 guard_script() { printf '%s\n' "${repo_root}/.github/scripts/opencode-guard.sh"; }
@@ -270,4 +286,12 @@ origin_branches() {
   run "$(publish_script)" maro114510/dotfiles 7 "1 2" https://example.test/run/123 "${sandbox}/change.patch"
   [ "$status" -eq 2 ]
   [ "$(origin_branches)" = "main" ]
+}
+
+@test "a rerun of the same run names a new branch by its attempt" {
+  make_clone
+  change_patch README.md "hello, world"
+  run "$(publish_script)" maro114510/dotfiles 7 123-2 https://example.test/run/123 "${sandbox}/change.patch"
+  [ "$status" -eq 0 ]
+  [[ "$(origin_branches)" == *"opencode/issue-7-123-2"* ]]
 }
