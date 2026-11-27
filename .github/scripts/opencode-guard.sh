@@ -23,19 +23,19 @@ refused_names=(
 )
 
 case "${1:-}" in
-staged)
-  [[ $# -eq 1 ]] || { echo "Usage: opencode-guard.sh staged" >&2; exit 2; }
-  diff="$(mktemp)"
-  trap 'rm -f "${diff}"' EXIT
-  git diff --cached --text --no-color --no-ext-diff --no-textconv HEAD >"${diff}"
-  if grep -aqF 'oc_sk_' "${diff}"; then
-    echo "opencode-guard: the staged changes hold the API key format" >&2
-    exit 1
-  fi
-  if [[ -n "${OPENCODE_API_KEY:-}" ]] && grep -aqF -- "${OPENCODE_API_KEY}" "${diff}"; then
-    echo "opencode-guard: the staged changes hold this run's API key" >&2
-    exit 1
-  fi
+  staged)
+    [[ $# -eq 1 ]] || { echo "Usage: opencode-guard.sh staged" >&2; exit 2; }
+    diff="$(mktemp)"
+    trap 'rm -f "${diff}"' EXIT
+    git diff --cached --text --no-color --no-ext-diff --no-textconv HEAD >"${diff}"
+    if grep -aqF 'oc_sk_' "${diff}"; then
+      echo "opencode-guard: the staged changes hold the API key format" >&2
+      exit 1
+    fi
+    if [[ -n "${OPENCODE_API_KEY:-}" ]] && grep -aqF -- "${OPENCODE_API_KEY}" "${diff}"; then
+      echo "opencode-guard: the staged changes hold this run's API key" >&2
+      exit 1
+    fi
   ;;
   paths)
     [[ $# -eq 1 ]] || { echo "Usage: opencode-guard.sh paths" >&2; exit 2; }
