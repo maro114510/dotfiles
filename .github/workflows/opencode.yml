@@ -1,0 +1,32 @@
+# Turns an Issue into a draft pull request with OpenCode, when the owner adds
+# the `opencode` label or runs this workflow by hand with an Issue number.
+#
+# The behavior lives in the reusable workflow this job calls, so every
+# repository shares one implementation. This file holds only the triggers, the
+# permissions, and the secret. The reusable workflow refuses an Issue that the
+# owner or maronium[bot] did not open.
+name: opencode
+
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: The Issue number
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
+jobs:
+  run:
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'opencode'
+    uses: maro114510/dotfiles/.github/workflows/reusable-opencode.yml@main
+    with:
+      issue: ${{ github.event.issue.number || inputs.issue }}
+    secrets:
+      OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
