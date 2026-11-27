@@ -36,7 +36,7 @@ case "${1:-}" in
       echo "opencode-guard: the staged changes hold this run's API key" >&2
       exit 1
     fi
-  ;;
+    ;;
   paths)
     [[ $# -eq 1 ]] || { echo "Usage: opencode-guard.sh paths" >&2; exit 2; }
     status=0
