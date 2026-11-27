@@ -21,7 +21,6 @@ permissions:
   contents: write
   pull-requests: write
   issues: read
-  actions: write
 
 jobs:
   run:
@@ -29,6 +28,5 @@ jobs:
     uses: maro114510/dotfiles/.github/workflows/reusable-opencode.yml@main
     with:
       issue: ${{ github.event.issue.number || inputs.issue }}
-      required-workflows: secret-scan.yml
     secrets:
       OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}

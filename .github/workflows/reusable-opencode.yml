@@ -7,11 +7,11 @@
 # The work is split in two jobs so that no job holds both the model key and a
 # token that can write:
 #   - generate holds the key and read-only access. It runs OpenCode on the
-#     Issue and hands over a patch. It refuses a patch holding the key before
-#     uploading it, because the artifact is public in a public repository.
+#     Issue and hands over a patch. It refuses changes holding the key before
+#     uploading them, because the artifact is public in a public repository.
 #   - publish holds the token that can write and no key. It applies the patch to
-#     the commit the run started on, refuses files it must not take, opens a
-#     draft pull request, and starts each required workflow on its branch.
+#     the commit the run started on, refuses files it must not take, and opens a
+#     draft pull request.
 #
 # The Issue text is untrusted input: it reaches the model only through a file
 # the script writes, and never enters a command line.
@@ -23,11 +23,6 @@ on:
       issue:
         description: The Issue number
         required: true
-        type: string
-      required-workflows:
-        description: Space-separated workflow files the ruleset requires, started on the pull request's branch
-        required: false
-        default: ''
         type: string
     secrets:
       OPENCODE_API_KEY:
@@ -127,7 +122,6 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      actions: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -153,8 +147,4 @@ jobs:
           ISSUE: ${{ inputs.issue }}
           RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          REQUIRED_WORKFLOWS: ${{ inputs.required-workflows }}
-        run: |
-          read -r -a required <<<"${REQUIRED_WORKFLOWS}"
-          "${RUNNER_TEMP}/scripts/opencode-publish.sh" "${REPO}" "${ISSUE}" "${RUN_ID}" "${RUN_URL}" \
-            "${RUNNER_TEMP}/patch/opencode.patch" "${required[@]}"
+        run: '"${RUNNER_TEMP}/scripts/opencode-publish.sh" "${REPO}" "${ISSUE}" "${RUN_ID}" "${RUN_URL}" "${RUNNER_TEMP}/patch/opencode.patch"'
