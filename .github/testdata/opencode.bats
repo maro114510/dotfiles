@@ -21,9 +21,11 @@ setup() {
   # GH_ISSUE_FILE, as `gh api repos/<repo>/issues/<n>` does.
   cat >"${sandbox}/bin/gh" <<'EOF'
 #!/usr/bin/env bash
-printf '%s\n' "$*" >>"${GH_LOG}"
+printf '%s\n' "${*//$'\n'/ }" >>"${GH_LOG}"
 case "$*" in
   "api repos/"*"/issues/"*) cat "${GH_ISSUE_FILE}" ;;
+  "api repos/"*" --jq .default_branch") echo main ;;
+  "workflow run "*) [[ -z "${GH_FAIL_DISPATCH:-}" ]] || exit 1 ;;
 esac
 EOF
   chmod +x "${sandbox}/bin/gh"
@@ -93,7 +95,6 @@ patch_with() {
   printf '%s\n' "${sandbox}/change.patch"
 }
 
-
 @test "a patch with no key passes" {
   run "$(guard_script)" patch "$(patch_with 'echo hello')"
   [ "$status" -eq 0 ]
@@ -148,4 +149,125 @@ patch_with() {
   [ "$status" -eq 0 ]
   run bash -c "printf '%s\0' 'a dir/.github/x' | '$(guard_script)' paths"
   [ "$status" -eq 1 ]
+}
+
+# publish
+
+publish_script() { printf '%s\n' "${repo_root}/.github/scripts/opencode-publish.sh"; }
+
+# A clone of a bare origin holding README.md on main, and the cwd for the run.
+# change_patch turns the edit it is given into a patch file and resets the clone.
+make_clone() {
+  git init -q --bare "${sandbox}/origin.git"
+  git clone -q "${sandbox}/origin.git" "${sandbox}/work" 2>/dev/null
+  cd "${sandbox}/work"
+  git config user.name test
+  git config user.email test@example.test
+  git checkout -q -b main
+  printf 'hello\n' >README.md
+  git add README.md
+  git commit -q -m init
+  git push -q origin main
+}
+
+change_patch() {
+  mkdir -p "$(dirname "$1")"
+  printf '%s\n' "$2" >"$1"
+  git add -A
+  git diff --cached --binary >"${sandbox}/change.patch"
+  git reset -q --hard HEAD
+  git clean -qfd
+}
+
+origin_branches() {
+  git --git-dir="${sandbox}/origin.git" for-each-ref --format='%(refname:short)' refs/heads
+}
+
+@test "a clean patch is pushed as one commit on a branch named for the Issue and run" {
+  make_clone
+  change_patch README.md "hello, world"
+  run "$(publish_script)" maro114510/dotfiles 7 123 https://example.test/run/123 "${sandbox}/change.patch"
+  [ "$status" -eq 0 ]
+  [[ "$(origin_branches)" == *"opencode/issue-7-123"* ]]
+  [ "$(git --git-dir="${sandbox}/origin.git" rev-list --count main..opencode/issue-7-123)" -eq 1 ]
+  [ "$(git --git-dir="${sandbox}/origin.git" show opencode/issue-7-123:README.md)" = "hello, world" ]
+}
+
+@test "a draft pull request opens against the default branch with fixed text" {
+  make_clone
+  change_patch README.md "hello, world"
+  run "$(publish_script)" maro114510/dotfiles 7 123 https://example.test/run/123 "${sandbox}/change.patch"
+  [ "$status" -eq 0 ]
+  pr="$(grep '^pr create' "${GH_LOG}")"
+  [[ "${pr}" == *"--draft"* ]]
+  [[ "${pr}" == *"--repo maro114510/dotfiles"* ]]
+  [[ "${pr}" == *"--base main"* ]]
+  [[ "${pr}" == *"--head opencode/issue-7-123"* ]]
+  [[ "${pr}" == *"Closes #7"* ]]
+  [[ "${pr}" == *"https://example.test/run/123"* ]]
+}
+
+@test "a patch that touches .github pushes nothing and opens no pull request" {
+  make_clone
+  change_patch .github/workflows/evil.yml "on: push"
+  run "$(publish_script)" maro114510/dotfiles 7 123 https://example.test/run/123 "${sandbox}/change.patch"
+  [ "$status" -eq 1 ]
+  [ "$(origin_branches)" = "main" ]
+  ! grep -q '^pr create' "${GH_LOG}"
+}
+
+@test "a patch holding the key format pushes nothing and opens no pull request" {
+  make_clone
+  change_patch README.md "token oc_sk_abc123"
+  run "$(publish_script)" maro114510/dotfiles 7 123 https://example.test/run/123 "${sandbox}/change.patch"
+  [ "$status" -eq 1 ]
+  [ "$(origin_branches)" = "main" ]
+  ! grep -q '^pr create' "${GH_LOG}"
+}
+
+@test "a patch that does not apply pushes nothing and opens no pull request" {
+  make_clone
+  change_patch README.md "hello, world"
+  printf 'changed upstream\n' >README.md
+  git commit -q -am upstream
+  run "$(publish_script)" maro114510/dotfiles 7 123 https://example.test/run/123 "${sandbox}/change.patch"
+  [ "$status" -ne 0 ]
+  [ "$(origin_branches)" = "main" ]
+  ! grep -q '^pr create' "${GH_LOG}"
+}
+
+@test "each required workflow is started on the new branch after the pull request opens" {
+  make_clone
+  change_patch README.md "hello, world"
+  run "$(publish_script)" maro114510/dotfiles 7 123 https://example.test/run/123 "${sandbox}/change.patch" secret-scan.yml bats.yml
+  [ "$status" -eq 0 ]
+  grep -qx 'workflow run secret-scan.yml --repo maro114510/dotfiles --ref opencode/issue-7-123' "${GH_LOG}"
+  grep -qx 'workflow run bats.yml --repo maro114510/dotfiles --ref opencode/issue-7-123' "${GH_LOG}"
+  [ "$(grep -n '^pr create' "${GH_LOG}" | cut -d: -f1)" -lt "$(grep -n '^workflow run' "${GH_LOG}" | head -1 | cut -d: -f1)" ]
+}
+
+@test "no workflow is started when none is required" {
+  make_clone
+  change_patch README.md "hello, world"
+  run "$(publish_script)" maro114510/dotfiles 7 123 https://example.test/run/123 "${sandbox}/change.patch"
+  [ "$status" -eq 0 ]
+  ! grep -q '^workflow run' "${GH_LOG}"
+}
+
+@test "a workflow that fails to start fails the run after the pull request exists" {
+  make_clone
+  change_patch README.md "hello, world"
+  GH_FAIL_DISPATCH=1 run "$(publish_script)" maro114510/dotfiles 7 123 https://example.test/run/123 "${sandbox}/change.patch" secret-scan.yml
+  [ "$status" -ne 0 ]
+  grep -q '^pr create' "${GH_LOG}"
+}
+
+@test "an Issue number or run id that is not digits is refused before any change" {
+  make_clone
+  change_patch README.md "hello, world"
+  run "$(publish_script)" maro114510/dotfiles "7; id" 123 https://example.test/run/123 "${sandbox}/change.patch"
+  [ "$status" -eq 2 ]
+  run "$(publish_script)" maro114510/dotfiles 7 "1 2" https://example.test/run/123 "${sandbox}/change.patch"
+  [ "$status" -eq 2 ]
+  [ "$(origin_branches)" = "main" ]
 }
