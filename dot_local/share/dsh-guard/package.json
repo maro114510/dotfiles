@@ -1,0 +1,14 @@
+{
+  "name": "dsh-guard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Refuses secret reads, protected writes, and major destructive shell commands in every DSH tool call.",
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": ["index.js", "cordis.patch.yml", "locale/*.json", "icon.svg"],
+  "dsh": { "bundle": { "patch": "./cordis.patch.yml" } }
+}
