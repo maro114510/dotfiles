@@ -111,6 +111,24 @@ seed_manifest() {
   [ "$(jq -r '.dsh.profile.bundles | index("dsh-context") != null' "${manifest}")" = true ]
 }
 
+@test "a fresh home links the guard plugin as a dependency and a bundle of the web profile" {
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -r '.dependencies["dsh-guard"]' "${manifest}")" = 'link:../../../.local/share/dsh-guard' ]
+  [ "$(jq -r '.dsh.profile.bundles | index("dsh-guard") != null' "${manifest}")" = true ]
+}
+
+@test "the guard link resolves from the profile directory to the plugin that apply installs" {
+  run apply
+  [ "$status" -eq 0 ]
+  HOME="${home_dir}" "${chezmoi_bin}" --config "${home_dir}/chezmoi.toml" \
+    --source "${repo_root}" --destination "${home_dir}" apply "${home_dir}/.local"
+  for profile in web headless; do
+    link="$(jq -r '.dependencies["dsh-guard"]' "${dsh_dir}/profiles/${profile}/package.json")"
+    [ -f "${dsh_dir}/profiles/${profile}/${link#link:}/index.js" ]
+  done
+}
+
 @test "a local dependency and a local bundle survive an apply" {
   seed_manifest '{"name":"dsh-profile-web","dependencies":{"left-pad":"1.3.0"},"dsh":{"profile":{"bundles":["@deepseek-ai/dsh-base","left-pad"]}}}'
   run apply
@@ -211,6 +229,13 @@ seed_headless_manifest() {
   run apply
   [ "$status" -eq 0 ]
   [ "$(jq -r '.dsh.profile.bundles | map(select(. == "dsh-plugin-subscriptions")) | length' "${headless_manifest}")" = 1 ]
+}
+
+@test "a fresh home links the guard plugin as a dependency and a bundle of the headless profile" {
+  run apply
+  [ "$status" -eq 0 ]
+  [ "$(jq -r '.dependencies["dsh-guard"]' "${headless_manifest}")" = 'link:../../../.local/share/dsh-guard' ]
+  [ "$(jq -r '.dsh.profile.bundles | index("dsh-guard") != null' "${headless_manifest}")" = true ]
 }
 
 @test "a second apply leaves the headless manifest unchanged" {
