@@ -4,7 +4,7 @@
 #          It warns, and never stops, when the server disabled an installed plugin.
 # status   shows the recorded, resolved, and last good releases, the listener and health.
 # check    prints the resolved and last-good releases.
-# takeover records the newest release (or DSH_VERSION), stops a running server,
+# takeover records the pinned release (or DSH_VERSION), stops a running server,
 #          loads the LaunchAgent, and starts the supervised one. It warns, and never
 #          stops, when the release excludes an installed plugin.
 #
@@ -78,10 +78,10 @@ load_conf() {
 
 resolved_version() {
   [ -x "${dsh_bin}" ] || fail "${dsh_bin} is missing; apply dotfiles first"
-  "${dsh_bin}" --resolved-version || fail "cannot resolve the newest release"
+  "${dsh_bin}" --resolved-version || fail "cannot resolve the pinned release"
 }
 
-# The release run starts: the recorded one, or the newest on a first start.
+# The release run starts: the recorded one, or the pinned one on a first start.
 kept_version() {
   local kept
   kept="$(cat "${kept_file}" 2>/dev/null || true)"

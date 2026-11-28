@@ -230,55 +230,55 @@ wrapper_env() {
   # mise resolves no node unless a test installs one, so the wrapper uses plain npx.
   printf '#!/bin/sh\nexit 1\n' > "${stub_dir}/mise"
   chmod +x "${stub_dir}/mise"
-  cat > "${stub_dir}/releases.json" <<'JSON'
-[{"tag_name":"dsh-v0.2.2-rc.2","draft":false,"published_at":"2026-11-12T02:16:12Z"},
- {"tag_name":"dsh-v0.2.2-rc.3","draft":false,"published_at":"2026-11-13T08:05:45Z"}]
-JSON
-  cat > "${stub_dir}/dist-tags.json" <<'JSON'
-{"latest":"0.2.2-rc.1","next":"0.2.2-rc.3"}
-JSON
-  cat > "${stub_dir}/curl" <<'CURL'
-#!/bin/sh
-case "$*" in
-  *api.github.com*) [ -f "${STUB_DIR}/github-fails" ] && exit 22; cat "${STUB_DIR}/releases.json" ;;
-  *registry.npmjs.org*) cat "${STUB_DIR}/dist-tags.json" ;;
-  *) exit 22 ;;
-esac
-CURL
+  # Any network request is recorded and refused, so a test sees the wrapper reach out.
+  printf '#!/bin/sh\nprintf "%%s\\n" "$*" >> "%s/curl.log"\nexit 22\n' "${stub_dir}" > "${stub_dir}/curl"
   chmod +x "${stub_dir}/curl"
   export STUB_DIR="${stub_dir}"
   export HOME="${home_dir}"
   export XDG_STATE_HOME="${home_dir}/.local/state"
+  export XDG_CONFIG_HOME="${home_dir}/.config"
+  seed_pin '0.2.2-rc.3'
+}
+
+# The pin is the version chezmoi applies to ~/.config/dsh/package.json.
+seed_pin() {
+  mkdir -p "${home_dir}/.config/dsh"
+  printf '{"private":true,"dependencies":{"@deepseek-ai/dsh":"%s"}}\n' "$1" > "${home_dir}/.config/dsh/package.json"
 }
 
 run_wrapper() {
   PATH="${stub_dir}:/opt/homebrew/bin:/usr/bin:/bin" run bash "${repo_root}/dot_local/bin/executable_dsh" "$@"
 }
 
-@test "the dsh wrapper runs the newest published release and passes every argument" {
+@test "the dsh wrapper runs the pinned release and passes every argument" {
   wrapper_env
   run_wrapper web --no-open
   [ "$status" -eq 0 ]
   [ "$(cat "${stub_dir}/npx.log")" = '--yes @deepseek-ai/dsh@0.2.2-rc.3 web --no-open' ]
 }
 
-@test "the dsh wrapper skips an alpha release newer than the newest release candidate" {
+@test "the dsh wrapper resolves the pinned release without any network request" {
   wrapper_env
-  cat > "${stub_dir}/releases.json" <<'JSON'
-[{"tag_name":"dsh-v0.2.2-rc.3","draft":false,"published_at":"2026-11-13T08:05:45Z"},
- {"tag_name":"dsh-v0.2.3-alpha.2","draft":false,"published_at":"2026-11-22T11:00:39Z"}]
-JSON
   run_wrapper --resolved-version
   [ "$status" -eq 0 ]
   [ "$output" = '0.2.2-rc.3' ]
+  [ ! -e "${stub_dir}/curl.log" ]
 }
 
-@test "the dsh wrapper reuses a fresh resolution instead of asking again" {
+@test "the dsh wrapper exits 3 and runs nothing when the pin file is missing" {
   wrapper_env
-  run_wrapper --resolved-version
-  run_wrapper --resolved-version
-  [ "$status" -eq 0 ]
-  [ "$output" = '0.2.2-rc.3' ]
+  rm "${home_dir}/.config/dsh/package.json"
+  run_wrapper web
+  [ "$status" -eq 3 ]
+  [[ "${output}" == *'no pinned release'* ]]
+  [ ! -e "${stub_dir}/npx.log" ]
+}
+
+@test "the dsh wrapper exits 3 when the pin file holds no release" {
+  wrapper_env
+  printf '{"private":true,"dependencies":{}}\n' > "${home_dir}/.config/dsh/package.json"
+  run_wrapper web
+  [ "$status" -eq 3 ]
   [ ! -e "${stub_dir}/npx.log" ]
 }
 
@@ -287,14 +287,6 @@ JSON
   DSH_VERSION=0.2.2-rc.9 run_wrapper web
   [ "$status" -eq 0 ]
   [ "$(cat "${stub_dir}/npx.log")" = '--yes @deepseek-ai/dsh@0.2.2-rc.9 web' ]
-}
-
-@test "the dsh wrapper falls back to npm when GitHub is unreachable" {
-  wrapper_env
-  : > "${stub_dir}/github-fails"
-  run_wrapper --resolved-version
-  [ "$status" -eq 0 ]
-  [ "$output" = '0.2.2-rc.3' ]
 }
 
 @test "a release marked failing is replaced by the last good one" {
@@ -350,6 +342,16 @@ install_mise_node() {
   ! grep -q '@deepseek-ai/dsh@0\.' "${repo_root}/dot_local/bin/executable_dsh"
 }
 
+@test "the repository pins one exact dsh release for chezmoi to apply" {
+  [[ "$(jq -r '.dependencies["@deepseek-ai/dsh"]' "${repo_root}/dot_config/dsh/package.json")" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]
+}
+
+@test "Dependabot proposes updates to the dsh pin through the npm ecosystem" {
+  run awk '/package-ecosystem: "npm"/ { found = 1; next } found && /directory:/ { print $2; exit }' "${repo_root}/.github/dependabot.yaml"
+  [ "$status" -eq 0 ]
+  [ "$output" = '"/dot_config/dsh"' ]
+}
+
 # --- LaunchAgent and supervisor ---
 
 apply_agent() {
@@ -372,7 +374,7 @@ run_supervisor() {
     run bash "${repo_root}/dot_local/bin/executable_dsh-web-supervisor" "$@"
 }
 
-@test "a LaunchAgent keeps the Web GUI on the newest release" {
+@test "a LaunchAgent keeps the Web GUI on the recorded release" {
   run apply_agent
   [ "$status" -eq 0 ]
   agent="${home_dir}/Library/LaunchAgents/local.dsh-web.plist"
@@ -381,6 +383,14 @@ run_supervisor() {
   grep -q 'dsh-web-supervisor' "${agent}"
   grep -A1 '<key>KeepAlive</key>' "${agent}" | grep -q '<true/>'
   grep -A1 '<key>RunAtLoad</key>' "${agent}" | grep -q '<true/>'
+}
+
+@test "a LaunchAgent puts the user's local bin on the server's PATH so a session can run dsh" {
+  run apply_agent
+  [ "$status" -eq 0 ]
+  agent="${home_dir}/Library/LaunchAgents/local.dsh-web.plist"
+  agent_path="$(grep -A1 '<key>PATH</key>' "${agent}" | sed -n 's|.*<string>\(.*\)</string>.*|\1|p')"
+  [[ ":${agent_path}:" == *":${home_dir}/.local/bin:"* ]]
 }
 
 @test "the supervisor reports the resolved and last good releases" {
@@ -681,7 +691,7 @@ dsh_server_prints() {
   [ ! -e "${stub_dir}/launchctl.log" ]
 }
 
-@test "takeover moves the recorded release to the newest one and restarts the agent" {
+@test "takeover moves the recorded release to the pinned one and restarts the agent" {
   supervisor_run_env
   printf '0.2.2-rc.1\n' > "$(kept_version_file)"
   run_supervisor takeover
