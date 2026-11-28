@@ -19,6 +19,7 @@ Credentials, sessions, and other runtime state stay out of this repository.
 | `~/.local/bin/dsh` | dotfiles |
 | `~/.local/bin/dsh-web-supervisor` | dotfiles |
 | `~/.local/bin/dsh-web-login` | dotfiles |
+| `~/.local/share/dsh-guard/` | dotfiles, the [guard plugin](dsh-guard.md) that the web and headless profiles link |
 | `~/Library/LaunchAgents/local.dsh-web.plist` | dotfiles |
 | `~/Library/LaunchAgents/local.dsh-web-login.plist` | dotfiles |
 | `~/.dsh/web-launch.conf` | the machine, never tracked |
@@ -88,7 +89,7 @@ Open `https://<host>:10000/` on the device. To remove it, run `tailscale serve -
 
 ## Risks
 
-- The shared policy sets approval `never` with full access, so every restored Mac inherits it.
+- The shared policy sets approval `never` with full access, so every restored Mac inherits it. The [guard plugin](dsh-guard.md) refuses secret reads, protected writes, and major destructive commands, but it sees tool arguments only and is no security boundary.
 - The pinned release is a prerelease, so a release may regress. The supervisor marks a release that fails its health check, records the last good one, and the next restart runs it.
 - The managed plugin versions can lag the runtime. A plugin that rejects the runtime fails the start, and the supervisor rolls back.
 - The first restore needs network access for `npx` and `pnpm`. A failed install prints a message and the apply still succeeds, so run `dsh plugin --profile web install` again before `dsh web`.
