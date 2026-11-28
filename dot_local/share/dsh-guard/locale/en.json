@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Guard",
+    "description": "Refuses reads of secret files, writes to credentials and agent configuration, and major destructive shell commands, including calls made through run_code. Every rule is a refusal that names a safe alternative."
+  }
+}
